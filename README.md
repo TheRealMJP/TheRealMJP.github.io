@@ -1,2 +1,2 @@
 # TheRealMJP.github.io
-Backing repo for my blog
+Repo for hosting my blog using GitHub pages
