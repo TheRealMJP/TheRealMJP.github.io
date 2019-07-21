@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The Danger Zone</title>
+    <link>https://therealmjp.github.io/</link>
+    <description>Recent content on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 20 Jul 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About This Site</title>
+      <link>https://therealmjp.github.io/about/</link>
+      <pubDate>Sat, 20 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/about/</guid>
+      <description>This is a test site for my new blog (probably). Nothing to see here yet!</description>
+    </item>
+    
+    <item>
+      <title>Test Blog Post</title>
+      <link>https://therealmjp.github.io/posts/test/</link>
+      <pubDate>Sat, 20 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/test/</guid>
+      <description>Hello there! Here&amp;rsquo;s some inline math: \( \int x^3 dx \)
+And here&amp;rsquo;s some centered math:
+$$\int_{a}^{b} x^2 dx$$
+And now for some code!
+void DoSomething() { Whatever(); for(int i = 0; i &amp;lt; 10; ++i) { auto x = i * 2; printf(&amp;#34;i&amp;#34;, x); } }  How about a cool image?
+Conclusion This has been a great test.</description>
+    </item>
+    
+  </channel>
+</rss>
