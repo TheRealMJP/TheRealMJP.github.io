@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>XNA on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/xna/</link>
+    <description>Recent content in XNA on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 23 Mar 2010 07:42:36 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/xna/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Attack of the depth buffer</title>
+      <link>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</link>
+      <pubDate>Tue, 23 Mar 2010 07:42:36 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</guid>
+      <description>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel. This can be a powerful performance optimization, since the alternative is to output position into a &amp;ldquo;fat&amp;rdquo; floating-point buffer.</description>
+    </item>
+    
+    <item>
+      <title>D3D Performance and Debugging Tools Round-Up: PerfHUD</title>
+      <link>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</link>
+      <pubDate>Sun, 07 Mar 2010 05:42:44 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</guid>
+      <description>Officially, Nvidia&amp;rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&amp;rsquo;s. Unofficially, it&amp;rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&amp;rsquo;s a performance issue on the PC. Here&amp;rsquo;s some of the things I like to do with it (warning, it&amp;rsquo;s a long list!</description>
+    </item>
+    
+    <item>
+      <title>D3D Performance and Debugging Tools Round-Up: PIX</title>
+      <link>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</link>
+      <pubDate>Mon, 15 Feb 2010 05:17:18 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</guid>
+      <description>So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&amp;rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent.</description>
+    </item>
+    
+    <item>
+      <title>New Series: D3D Performance and Debugging Tools Round-Up</title>
+      <link>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</link>
+      <pubDate>Mon, 15 Feb 2010 05:16:17 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</guid>
+      <description>Recently I&amp;rsquo;ve been spending a lot of time with the various performance and debugging utilities available for Direct3D, and I thought it might be useful to give a quick overview of what&amp;rsquo;s out there. I&amp;rsquo;m sure most people who do a lot of Direct3D/XNA work are aware of these tools, but probably aren&amp;rsquo;t familiar with all of the really cool things you can do with them.
+What I&amp;rsquo;m going to do is run through each tool one at a time, and share some of the common use cases and show some screenshots of features I think are neat.</description>
+    </item>
+    
+    <item>
+      <title>Inferred Rendering</title>
+      <link>https://therealmjp.github.io/posts/inferred-rendering/</link>
+      <pubDate>Sun, 10 Jan 2010 17:30:10 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/inferred-rendering/</guid>
+      <description>So like I said in my last post, I&amp;rsquo;ve been doing some research into Inferred Rendering. If you&amp;rsquo;re not familiar with the technique, Scott Kircher has the original paper and presentation materials hosted on his website. The main topic of the paper is what they call &amp;ldquo;Discontinuity Sensitive Filtering&amp;rdquo;, or &amp;ldquo;DSF&amp;rdquo; for short. Basically it&amp;rsquo;s standard 2x2 bilinear filtering, except in addition to sampling the texture you&amp;rsquo;re interested in you also sample what they call a a &amp;ldquo;DSF buffer&amp;rdquo; containing depth, an instance ID (semi-unique for each instance rendering on-screen), and a normal ID (a semi-unique value identifying areas where the normals are continuous).</description>
+    </item>
+    
+    <item>
+      <title>Correcting XNA&#39;s Gamma Correction</title>
+      <link>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</link>
+      <pubDate>Thu, 31 Dec 2009 22:31:58 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</guid>
+      <description>One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
+Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.</description>
+    </item>
+    
+    <item>
+      <title>Two Samples For The Price Of One</title>
+      <link>https://therealmjp.github.io/posts/two-samples/</link>
+      <pubDate>Sun, 06 Dec 2009 04:22:29 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/two-samples/</guid>
+      <description>Today I have two XNA samples fresh out of the oven: a Motion Blur Sample, and Depth Of Field Sample. I figure all of the kids these days wanna add fancy post-processing tricks to their games, right? The motion blur sample shows you how to do camera motion blur using a depth buffer, or full object motion blur using a velocity buffer. The depth of field sample shows you how to do a standard blur-based DOF, a slightly-smarter blur-based DOF that doesn&amp;rsquo;t blur across edges, and the somewhat more physically accurate disc blur approach.</description>
+    </item>
+    
+    <item>
+      <title>New Tutorial: Using PIX With XNA</title>
+      <link>https://therealmjp.github.io/posts/pix-with-xna/</link>
+      <pubDate>Fri, 16 Oct 2009 15:49:13 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/pix-with-xna/</guid>
+      <description>Ladies and gentlemen, I present you with the most epic of tutorials: Using PIX With XNA. This 37-page monster teaches PIX for the XNA programmer, and includes an in-depth explanation of the XNA/D3D9 relationship as well as 6 excercises that show you the how to solve common problems (full source code and XNA 3.1 projects included). I sure hope somebody finds this thing useful&amp;hellip;it took me forever to write this thing.</description>
+    </item>
+    
+    <item>
+      <title>Scintillating Snippets: Storing Normals Using Spherical Coordinates</title>
+      <link>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</link>
+      <pubDate>Wed, 17 Jun 2009 16:36:06 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</guid>
+      <description>Update: n00body posted this link in the comments, which is way more in-depth than my post. Check it out!
+If you&amp;rsquo;ve ever implemented a deferred renderer, you know that one of the important points is keeping your G-Buffer small enough as to be reasonable in terms of bandwidth and your number of render targets. Thanks to that constant struggle between good and evil, people have come up with some reasonable clever approaches towards packing necessary attributes in your G-Buffer.</description>
+    </item>
+    
+    <item>
+      <title>What&#39;s good on the menu, waiter?</title>
+      <link>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</link>
+      <pubDate>Wed, 20 May 2009 16:28:39 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</guid>
+      <description>I remember reading someone say on gamedev.net that at some point everyone tries to write their own UI system, and usually gets it wrong. Apparently he&amp;rsquo;s right (or at least about the first part), because I&amp;rsquo;ve gone ahead and written a menu/UI system. While it initially started out as part of the engine/framework I&amp;rsquo;ve been working on for my game, as I worked on it I decided it might be better off if I decoupled it from the rest of the engine components and made it a standalone library/editor package so that other people could make use of it.</description>
+    </item>
+    
+    <item>
+      <title>Reconstructing Position From Depth, Continued</title>
+      <link>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</link>
+      <pubDate>Tue, 05 May 2009 20:09:33 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</guid>
+      <description>Picking up where I left off here&amp;hellip;
+As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &amp;ldquo;camera world matrix&amp;rdquo;, which is a matrix representing the camera&amp;rsquo;s position and orientation in world-space.</description>
+    </item>
+    
+    <item>
+      <title>There&#39;s More Than One Way To Defer A Renderer</title>
+      <link>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</link>
+      <pubDate>Fri, 27 Mar 2009 19:21:49 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</guid>
+      <description>While the idea of deferred shading/deferred rendering isn&amp;rsquo;t quite as hot as it was year or two ago (OMG, Killzone 2 uses deferred rendering!), it&amp;rsquo;s still a cool idea that gets discussed rather often. People generally tend to be attracted to way a &amp;ldquo;pure&amp;rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene. However as anyone who&amp;rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.</description>
+    </item>
+    
+    <item>
+      <title>Scintillating Snippets: Reconstructing Position From Depth</title>
+      <link>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</link>
+      <pubDate>Tue, 10 Mar 2009 19:06:31 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</guid>
+      <description>There are times I wish I&amp;rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&amp;rsquo;s that I still get about it. Wouldn&amp;rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&amp;rsquo;re right, it would be!
+First things first: what am I talking about? I&amp;rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.</description>
+    </item>
+    
+    <item>
+      <title>Scintillating Snippets: Programatically Adding Content To A Content Project</title>
+      <link>https://therealmjp.github.io/posts/snippet-content-project/</link>
+      <pubDate>Thu, 19 Feb 2009 21:36:05 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/snippet-content-project/</guid>
+      <description>One of the tools I made for my current project is a model editor. Basically it can import in .fbx or .x models, and then you can apply my custom effects, set parameters, set textures, and then save it using my custom model format I named &amp;ldquo;.jsm&amp;rdquo; (it&amp;rsquo;s just XML&amp;hellip;don&amp;rsquo;t tell anyone!). Anyway one of the neat features I wanted it to have was the ability to add a model to my game&amp;rsquo;s Content project so that you wouldn&amp;rsquo;t have to manually do it through Visual Studio.</description>
+    </item>
+    
+    <item>
+      <title>Deferred Cascaded Shadow Maps</title>
+      <link>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</link>
+      <pubDate>Wed, 18 Feb 2009 04:22:32 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</guid>
+      <description>For my next sample I was planning on extending my deferred shadow maps sample to implement cascaded shadow maps. I got an email asking about how to make the sample look decent with large viewing distances which is exactly the problem CSM&amp;rsquo;s solve. So I decided to bump up my plans a little early and get the code up and running. It&amp;rsquo;ll be a while before I get the write-up finished, but until then feel free to play around with code (PC and 360 projects included).</description>
+    </item>
+    
+    <item>
+      <title>Profiling Events vs. Virtual Functions On The 360</title>
+      <link>https://therealmjp.github.io/posts/profiling-events/</link>
+      <pubDate>Fri, 23 Jan 2009 17:31:19 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/profiling-events/</guid>
+      <description>Over the past week or so I&amp;rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible. One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something. I narrowed it down to two options:
+ notify owners via the ICollisionOwner interface I was using  OR</description>
+    </item>
+    
+    <item>
+      <title>Deferred Shadow Maps Sample</title>
+      <link>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</link>
+      <pubDate>Tue, 20 Jan 2009 01:24:19 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
+      <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
+ Comments: sam - Feb 4, 2009
+This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+    </item>
+    
+    <item>
+      <title>Teach Your Effects A New Trick</title>
+      <link>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</link>
+      <pubDate>Mon, 19 Jan 2009 19:51:51 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</guid>
+      <description>The Effects Framework is a pretty damn awesome tool. However I&amp;rsquo;m afraid that&amp;rsquo;s not totally obvious to a lot of newbies, who either just don&amp;rsquo;t what it can do or haven&amp;rsquo;t been exposed to some of the situations where Effect&amp;rsquo;s can really come in handy.
+One neat thing Effect&amp;rsquo;s can do that isn&amp;rsquo;t obvious from the documentation or samples is auto-generate variants of shaders for you based on the value of uniform parameters.</description>
+    </item>
+    
+    <item>
+      <title>Fun With Compiled Content</title>
+      <link>https://therealmjp.github.io/posts/fun-with-compiled-content/</link>
+      <pubDate>Sun, 18 Jan 2009 21:36:14 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/fun-with-compiled-content/</guid>
+      <description>EDIT: I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere. So here it is.
+Wouldn&amp;rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure? Of course it would!</description>
+    </item>
+    
+    <item>
+      <title>LogLuv Encoding for HDR</title>
+      <link>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</link>
+      <pubDate>Fri, 12 Dec 2008 17:00:59 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</guid>
+      <description>Okay so this marks the third time I&amp;rsquo;ve posted this blog entry somewhere. What can I say&amp;hellip;I like it! I also think it&amp;rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&amp;rsquo;m hoping some people will stumble upon it.
+Designing an effective and performant HDR implementation for my game&amp;rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.</description>
+    </item>
+    
+  </channel>
+</rss>

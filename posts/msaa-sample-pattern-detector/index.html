@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="MSAA Sample Pattern Detector">
+<meta itemprop="description" content="Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option.">
+
+
+<meta itemprop="datePublished" content="2010-07-07T08:42:23&#43;00:00" />
+<meta itemprop="dateModified" content="2010-07-07T08:42:23&#43;00:00" />
+<meta itemprop="wordCount" content="680">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11,Programming," />
+<meta property="og:title" content="MSAA Sample Pattern Detector" />
+<meta property="og:description" content="Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/msaa-sample-pattern-detector/" />
+<meta property="article:published_time" content="2010-07-07T08:42:23+00:00" />
+<meta property="article:modified_time" content="2010-07-07T08:42:23+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MSAA Sample Pattern Detector"/>
+<meta name="twitter:description" content="Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>MSAA Sample Pattern Detector</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 7, 2010</span></div>
+				<h1>MSAA Sample Pattern Detector</h1>
+			</header>
+			<div class="content">
+				
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png"><img src="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png" alt="" title="SamplePattern" /></a></p>
+
+<p>Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage.  However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index.  With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option.  After some thinking I realized that it wouldn&rsquo;t be too hard to write an app that could determine the sample positions within a reasonable degree of accuracy, so that&rsquo;s what I did!  The basic process is like this:</p>
+
+<ol>
+<li>Create a 1x1 render target with the desired MSAA sample count + quality</li>
+<li>Render a grid of sub-pixel quads onto the render target (I used 25x25). The output of each quad is just the position of the quad in pixel space.</li>
+<li>Render N pixel-sized quads onto an Nx1 non-MSAA render target, where N is the number of subsamples. For each quad, a pixel shader samples one of the subsamples from the MSAA render target and outputs the value.</li>
+<li>Copy the Nx1 render target to a staging texture , and then map it to retrieve the contents on the CPU. Each texel is the XY position of the subsample.</li>
+</ol>
+
+<p>It was a piece of cake to implement, and it seems to actually work! So I added a super-sweet visualizer (as you can see in the picture above), and packaged it up so that you guys can enjoy it as well.  Download it here: <a href="https://mynameismjp.files.wordpress.com/2014/06/samplepattern.zip">http://mynameismjp.files.wordpress.com/2014/06/samplepattern.zip</a> (includes source and binaries, requires a DX10-capable GPU).</p>
+
+<p><strong>Update 9/13/2015:</strong> I updated this project while working on a blog post about programmable sample points, and uploaded it to <a href="https://github.com/TheRealMJP/SamplePattern">GitHub</a>. The new version has more accurate sample point detection, and displays the positions using the conventions established by the D3D Sample Coordinate System. It also can optionally link to NVAPI, in which case it can show a demonstration of how to setup programmable sample points that vary across a 2x2 quad of pixels.</p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+[castano]( &ldquo;castano@gmail.com&rdquo;) - <time datetime="2010-07-07 09:31:52">Jul 3, 2010</time></p>
+
+<p>You could achieve the same thing in OpenGL with the explicit_multisample extension: <a href="http://www.opengl.org/registry/specs/NV/explicit_multisample.txt">http://www.opengl.org/registry/specs/NV/explicit_multisample.txt</a> float pos[2]; glGetMultisamplefvNV(GL_SAMPLE_POSITION, index, pos);
+<hr />
+####
+<a href="http://www.jb101.co.uk/" title="james.anthony.bird@gmail.com">James Bird</a> - <time datetime="2010-08-04 01:54:17">Aug 3, 2010</time></p>
+
+<p>I have also recently been experimenting with anti-aliassing techniques on DirectX 10. At the 2009 GDC, there was a talk called the &ldquo;A to Z of DX10 Performance&rdquo;. On the topic of &ldquo;Resolving MSAA Buffers&rdquo;, the slides advise not to create the back buffer with MSAA, but I cannot figure out why. I can only assume that this is so that the graphics programmer has explicit control over when they perform an MSAA resolve (as this operation isn&rsquo;t free), but I suspect there could be other reasons. I was wondering if you knew anything about this, and if so, if you could share your thoughts?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-08-05 10:00:26">Aug 4, 2010</time></p>
+
+<p>There&rsquo;s certainly a lot of cases where you might want to have a custom MSAA resolve&hellip;for instance if you use HDR you can get significantly better results if you tonemap the subsamples individually. However I think they&rsquo;re saying that because pretty much any DX10 game is going to be doing some sort of post-processing, and thus will want to render their geometry to a render target texture and not the back buffer. In that case there&rsquo;s no reason to make the back buffer MSAA, since you only need MSAA when rendering scene geometry.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2014-06-01 02:01:39">Jun 0, 2014</time></p>
+
+<p>I re-hosted the zip file here at wordpress, and updated the link.
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2014-07-24 03:06:25">Jul 4, 2014</time></p>
+
+<p>Thanks! Great tool =)
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2015/09/13/programmable-sample-points/">Stairway To (Programmable Sample Point) Heaven | The Danger Zone</a> - <time datetime="2015-09-13 19:31:44">Sep 0, 2015</time></p>
+
+<p>[…] the samples would be located. Without that, you either had to use shader intrinsics or resort to wackier methods for figuring out the sample positions. In theory it also gives you a very limited ability to […]
+<hr />
+####
+<a href="http://ndotl.wordpress.com" title="somemail256@gmail.com">somemail256</a> - <time datetime="2014-05-31 08:44:06">May 6, 2014</time></p>
+
+<p>The link says &ldquo;service unavailable&rdquo;&hellip; can you please reupload it?
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>680 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-07-07 01:42 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/deferred-msaa/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Deferred MSAA</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>A Closer Look At Tone Mapping</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

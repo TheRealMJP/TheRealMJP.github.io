@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Deferred MSAA">
+<meta itemprop="description" content="A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.">
+
+
+<meta itemprop="datePublished" content="2010-08-16T08:57:37&#43;00:00" />
+<meta itemprop="dateModified" content="2010-08-16T08:57:37&#43;00:00" />
+<meta itemprop="wordCount" content="1269">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11,Graphics,Programming," />
+<meta property="og:title" content="Deferred MSAA" />
+<meta property="og:description" content="A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/deferred-msaa/" />
+<meta property="article:published_time" content="2010-08-16T08:57:37+00:00" />
+<meta property="article:modified_time" content="2010-08-16T08:57:37+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Deferred MSAA"/>
+<meta name="twitter:description" content="A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Deferred MSAA</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Aug 16, 2010</span></div>
+				<h1>Deferred MSAA</h1>
+			</header>
+			<div class="content">
+				
+
+<p>A long while ago I was looking into <a href="http://visual-computing.intel-research.net/publications/papers/2009/mlaa/mlaa.pdf">morphological antialiasing</a> (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image.  It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.  This seems pretty important to me, since in real-time rendering we&rsquo;re getting further and further away from the old days of forward rendering to the backbuffer (AKA, the case where MSAA actually works properly).</p>
+
+<p>Anyway I never really got anywhere (although someone took a <a href="http://igm.univ-mlv.fr/~biri/mlaa-gpu/MLAAGPU.pdf">stab at it</a> in the meantime), but what <em>DID</em> happen is that I spent some time thinking about the downsides of MLAA and how they could be avoided.  In particular, I&rsquo;m talking about the inability of MLAA to handle temporal changes to polygon edges due to no sub-pixel information being available.  MSAA doesn&rsquo;t have the same problem, since it at handles depth testing and triangle coverage at a sub-pixel level.  So I thought to myself: &ldquo;wouldn&rsquo;t it be nice to use MSAA to get coverage info, and then use that to some smart filtering in a post process?&ldquo;  Turns out it&rsquo;s not too difficult to pull it off, and the results aren&rsquo;t too bad.  I&rsquo;m calling my sample &ldquo;Deferred MSAA&rdquo; even though that&rsquo;s a terrible name for it, but I can&rsquo;t really think of anything better. Here&rsquo;s the basic premise:</p>
+
+<ol>
+<li><p>Render all scene geometry in a depth-only prepass, with 4xMSAA enabled</p></li>
+
+<li><p>Render the scene normally with no MSAA to an HDR render target</p></li>
+
+<li><p>Apply tone mapping and other post processes</p></li>
+
+<li><p>Apply a single &ldquo;deferred AA&rdquo; pass that samples the MSAA depth buffer from step #1, uses it to calculate pixel coverage, and filters based on the coverage</p></li>
+</ol>
+
+<p>To &ldquo;calculate pixel coverage&rdquo;, all I do is read all 4 depth subsamples and compare them (with a small tolerance) with the depth value from the non-MSAA pass.  The idea is to try to figure out which depth subsamples came from rasterizing the same triangle that was rasterized in the non-MSAA pass.  Then, using knowledge of the points in the sample pattern, I come up with a sample location where it&rsquo;s likely that we&rsquo;ll a color on the other side of the triangle edge.  The method I use to do this is really simple: if a subsample fails the equivalence test, add a vector from the pixel center to the sample location to a summed offset vector. Then after all subsamples are compared, average the offsets and take a single bilinear sample at that offset.  Check out the diagram below for a visual representation:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/08/offset.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/offset.png" alt="" title="Offset" /></a></p>
+
+<p>As I see it, this approach has these things going for it:</p>
+
+<ol>
+<li><p>Like with MLAA, AA no longer has anything to do with how you shade a pixel. So if your going deferred, there&rsquo;s no &ldquo;lighting the subsamples&rdquo; nonsense.  It also means you don&rsquo;t necessarily need to render your G-Buffer with MSAA, which can save a lot in terms of memory usage and bandwidth.</p></li>
+
+<li><p>Also like MLAA, AA is applied <em>after</em> tone mapping. So you don&rsquo;t have to <a href="http://www.humus.name/index.php?page=3D&amp;ID=77">tone map each subsample</a> to avoid aliasing where there&rsquo;s high contrast.</p></li>
+
+<li><p>Unlike MLAA, it&rsquo;s simple and straightforward to implement on a GPU in a pixel shader.</p></li>
+
+<li><p>Unlike MLAA, it uses sub-pixel information which helps it handle temporal changes a lot better.</p></li>
+</ol>
+
+<p>For comparison, here&rsquo;s a screenshot from my sample app (click for full size):</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/08/comparison.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/comparison.png" alt="" title="Comparison" /></a></p>
+
+<p>That particular shot shows off the weakness of both standard MSAA and my approach.  If you look at the high-contrast area whether the tank overlaps with the bright sky, you can see how standard MSAA totally fails to do anything about the edge aliasing.  This is because the MSAA resolve is done on the HDR pixel values, and tone mapping is a non-linear operation.  However in the darker areas towards the bottom MSAA does just fine.  In contrast (pun not intended), deferred MSAA holds up really well in the silhouettes. The AA quality is surprisingly pretty decent for a edge filtering-based approach, and since it&rsquo;s done after tone mapping there&rsquo;s no non-linearity to worry about. However if you look carefully down in the tank, you&rsquo;ll spot edges that don&rsquo;t get the AA treatment at all. This is because the depth values are similar enough to pass the comparison test, despite coming from different triangles.  You can see it most clearly in the grate on the front of the tank.  The sample app has a tweakable threshold value for the depth comparison, and setting it lower causes more edges to be properly distinguished. However it also starts to cause false positives in triangles nearly parallel to the camera.  The image below shows the same scene with a default threshold, and with a low threshold:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/08/threshold.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/threshold.png" alt="" title="Threshold" /></a></p>
+
+<p>Even with a low threshold, some edges are still missed since only the normal or material properties will change between two triangles and not the depth.  For those cases more information would be required, such as the scene normals or an ID buffer.  But you could probably make the case that edges with depth discontinuities are more likely to have high contrast, and the high-contrast areas are where AA makes the biggest difference.</p>
+
+<p>Aside from the quality issues, the other obvious concern with this approach is performance.  Even with depth only, an MSAA prepass isn&rsquo;t going to be cheap on a lot of hardware.  It makes more sense if the depth prepass isn&rsquo;t wasted and only used for the post process&hellip;for instance it&rsquo;s certainly possible to do downscale the MSAA depth buffer with a MAX operation and use it to pre-populate the non-MSAA depth buffer.  However it may be hard to get this to play nice with early z-cull, depending on the hardware.  You could also possibly lay out your G-Buffer for light prepass with MSAA enabled, but then you might have trouble using depth values to reconstruct position.</p>
+
+<p>You can get the sample code and binaries here: <a href="https://mynameismjp.files.wordpress.com/2016/11/dmsaa1.zip">https://mynameismjp.files.wordpress.com/2016/11/dmsaa1.zip</a>.  This one requires a D3D_FEATURE_LEVEL_11_0-capable device.</p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+[maxest]( &ldquo;maxest@gct-game.net&rdquo;) - <time datetime="2011-08-03 11:16:02">Aug 3, 2011</time></p>
+
+<p>One question: what does 4xMSAA mean? In DX9 you don&rsquo;t have access to subsamples, right? So by 4xMSAA you simply mean creating a 4x bigger 1-sample render target?
+<hr />
+####
+<a href="http://directtovideo.wordpress.com" title="smaash@yahoo.com">directtovideo</a> - <time datetime="2010-08-16 02:47:26">Aug 1, 2010</time></p>
+
+<p>This is actually quite similar actually to what I did here: <a href="http://directtovideo.wordpress.com/2009/11/13/deferred-rendering-in-frameranger/">http://directtovideo.wordpress.com/2009/11/13/deferred-rendering-in-frameranger/</a> (see the end of the post) I do this: - render the gbuffers to non-MSAA, light them and composite them and so on. - render a pass to a MSAA RGBA8 colour target. pass up depth, normal, object ID and material ID from the vertex shader. In the fragment shader, read the GBuffer depth+normals and calculate weights, and use these weights to perform a bilateral upsample of the colour buffer. - finally resolve that MSAA colour buffer with a stretchrect. As an optimisation - perform an edge detect pass on the gbuffers to lay down stencil to mask out pixels in the MSAA pass. The result is pretty nice actually, and it works on DX9. As you said, it&rsquo;s a lot nicer if you use normal and ID information too - depth doesnt give you great results. Normal is probably the most important feature.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-08-31 22:04:37">Aug 3, 2016</time></p>
+
+<p>Sorry about that, I re-uploaded the file and updated the link.
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2016-08-30 03:55:57">Aug 2, 2016</time></p>
+
+<p>links dead :(
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1269 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-08-16 01:57 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/position-from-depth-3/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Position From Depth 3: Back In The Habit</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/msaa-sample-pattern-detector/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>MSAA Sample Pattern Detector</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Adventures in Retro Development: SNES Edition">
+<meta itemprop="description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!">
+
+
+<meta itemprop="datePublished" content="2019-01-15T05:36:42&#43;00:00" />
+<meta itemprop="dateModified" content="2019-01-15T05:36:42&#43;00:00" />
+<meta itemprop="wordCount" content="4550">
+
+
+
+<meta itemprop="keywords" content="Uncategorized," />
+<meta property="og:title" content="Adventures in Retro Development: SNES Edition" />
+<meta property="og:description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/" />
+<meta property="article:published_time" content="2019-01-15T05:36:42+00:00" />
+<meta property="article:modified_time" content="2019-01-15T05:36:42+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Adventures in Retro Development: SNES Edition"/>
+<meta name="twitter:description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Adventures in Retro Development: SNES Edition</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 15, 2019</span></div>
+				<h1>Adventures in Retro Development: SNES Edition</h1>
+			</header>
+			<div class="content">
+				
+
+<p><img src="https://mynameismjp.files.wordpress.com/2019/01/waycool.png" alt="waycool" /></p>
+
+<p>When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it! I love learning about old hardware and development environments, so this was really right up my alley. However it was a bit tough getting started, so I thought I would share some of my experiences in case it helps to spare others a bit of pain.</p>
+
+<p>Just for context, I really knew very little about any of this before I dove in. I started learning programming around 2005-2006, and my first forays into graphics programming used DX9-capable hardware. This was a full two decades after the 65816 was first released, and well after the era of sprite and character-based display chips that the SNES graphics hardware was spawned from. My only prior experience in hand-writing assembly programs was a single micocontrollers class that I took in college, so I&rsquo;m hardly an expert in that domain. The point here is that if I can learn how to program this crazy machine, I&rsquo;m sure that you can too!</p>
+
+<h2 id="hardware-basics">Hardware Basics<a href="#hardware-basics" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>The SNES has a few main pieces of hardware that are relevant to the programmer:</p>
+
+<ul>
+<li><p>The main CPU, which is a clone of a <a href="https://en.wikipedia.org/wiki/WDC_65816/65802">65816</a></p></li>
+
+<li><p>128 KB of RAM, referred to as &ldquo;Work RAM&rdquo; or WRAM for short</p></li>
+
+<li><p>Anywhere from 256 KB to 4 MB of ROM data mapped directly into the CPU&rsquo;s address space, depending on the cartridge.</p></li>
+
+<li><p>The &ldquo;Picture Processing Unit&rdquo; (PPU), which is the dedicated sprite and background-drawing processor</p></li>
+
+<li><p>64 KB of VRAM, which holds tile and map data used by the PPU for drawing sprites and backgrounds. Not directly accessible to the CPU!</p></li>
+
+<li><p>A small bit of memory for storing sprite attributes used by the PPU (position, flipping, tile index, etc.),  known as Object Attribute Memory (OAM). Also not mapped to the CPU&rsquo;s address space.</p></li>
+
+<li><p>Another small bit of memory for storing the 16 color palettes used by sprite and background tiles, known as Color Generator RAM (CGRAM). Each palette contains 16 15-bit colors.</p></li>
+
+<li><p>A DMA unit that can be used to copy data between memory banks, including  VRAM/OAM/CGRAM. Using this DMA freezes the CPU (they share the same bus), so it&rsquo;s effectively synchronous.</p></li>
+
+<li><p>A custom 8-bit Sony CPU used as a sound processor, called the SPC700. This guy is hooked up to an 8-channel DSP and 64 KB of its own RAM.</p></li>
+</ul>
+
+<p>A more complete overview of the hardware can be found on the <a href="https://en.wikibooks.org/wiki/Super_NES_Programming/SNES_Specs">Super NES Programming Wiki</a>. A full dump of all of the system&rsquo;s internals can be found in the <a href="http://problemkaputt.de/fullsnes.htm">Nocash fullsnes hardware specification</a>, which is definitely a link you&rsquo;ll want to bookmark. It has a full list of the system&rsquo;s memory-mapped registers used for I/O with the custom hardware, and it also has the complete mapping of the CPU&rsquo;s address space. In my experience it has the most complete description of how the custom hardware works, which is vital for understanding the specifics of how to work with the PPU.</p>
+
+<p>If you look around, you can also find a scanned copy of the original SNES development manual out there. While it&rsquo;s fun to look at from a historical perspective, it&rsquo;s honestly not really all that useful for actual development. It doesn&rsquo;t do a very good job of explaining the more esoteric parts of the hardware, and its filled with mostly-useless &ldquo;examples&rdquo; that take the form of of large flow charts. The Nocache docs are a much better reference in my opinion, and much easier to navigate than a bloated PDF file.</p>
+
+<h2 id="the-cpu-and-its-address-space">The CPU and its Address Space<a href="#the-cpu-and-its-address-space" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>The main CPU is a variant of the 65816, which itself is essentially a 16-bit upgrade of the 6502. The 6502 <em>really</em> got around in the 70&rsquo;s and 80&rsquo;s, so you might be familar with it if you&rsquo;ve done any programming for the Atari 2600/5200, NES, Apple II or Commodore 64. If you&rsquo;ve done 6502 programming then you&rsquo;ll feel right at home, since the operations and addressing modes are largely the same. If you&rsquo;re not familiar with either of them (I wasn&rsquo;t) then don&rsquo;t worry too much, since these processors are fairly easy to understand. To get myself up to speed, I read through large parts of the <a href="https://wiki.nesdev.com/w/images/7/76/Programmanual.pdf">65816 Programming Manual</a>. I found it to be thoroughly interesting and useful, since it starts out by introducing concepts for the 6502 and then works its way up through the new additions for the 65816. So if you already know the 6502 you can skip ahead, but if you don&rsquo;t know either you can get the full package. It&rsquo;s also written in a way meant to be accessible to a newbie programmer from the 80&rsquo;s, so it&rsquo;s pretty good at explaining even the basic concepts that an experienced programmer might take for granted.</p>
+
+<p>In terms of programming 65816 assembly for the SNES, it&rsquo;s pretty straightforward. All of the normal 65816 opcodes work, so general assembly programming guides like the one I linked are almost totally applicable. Probably the most annoying part of working the 65816 is the fact that you can switch its accumulator (A) and index registers (X &amp; Y) between 8-bit and 16-bit modes by setting or clearing two bits in the status register. These not only affect the math operations that you can do on these registers, but they also affect the width of loads an stores performed with that memory. I tended to find myself having to switch to 8-bit mode fairly frequently in order to store a value to an 8-bit variable in memory, or an 8-bit I/O register. The fact that its a persistent state makes things extra confusing and error-prone, since you can&rsquo;t tell which kind of operation is being done just by looking at a piece of assembly code. It also makes it really easy to screw things up by accidentally leaving the processor in the incorrect state expected by a macro or subroutine, leading to subtle bugs. I&rsquo;ve found that some good documentation and conventions can go a long way in avoiding those issues. I feel like having explicit instructions for 8-bit and 16-bit operations would have been much easier from a programmer&rsquo;s point of view, but c&rsquo;est la vie.</p>
+
+<p>To get started with writing your program you just need to know where your WRAM is located in order to store and load from memory, and also where your ROM data is located in the address space. Working with ROM is awesome: you just read from it like normal memory, with nothing special required to access it. This might be a big shock coming from modern game development where you typically need to use OS API&rsquo;s to copy data from disk into RAM before you can actually use. Your code is also stored in ROM and usually you just execute it right from there, which lets you freely intermingle code and content.</p>
+
+<p>To see where things are placed in the address space, you can look at the <a href="http://problemkaputt.de/fullsnes.htm#snesmemorymap">memory map</a>. However the assembler you use can typically help you out here by letting you name different segments, and then specify which segment variables and data should be placed in when you declare them. One funky thing about the address space is that you&rsquo;ll see the &ldquo;system area&rdquo; (which contains the I/O registers and first 8KB of WRAM) mapped in there multiple times. This is called &ldquo;mirroring&rdquo;, and its done to let you access those things without having to constantly switch the data bank register (DBR) or use long addressing mode. The basic gist is that its faster and more flexible for the processor to access things using a 16-byte offset from the 8-bit DBR (forming a full 24-bit address), so ideally you want to work within a single 64 KB bank of memory for as long as you can. The mirroring helps with this, since you can flip through different 32 KB chunks of LoROM and still be able to access the stuff in the system area:</p>
+
+<pre><code>+------+-------------+-------------------------+
+| Bank |   Offset    | Contents                |
++----------------------------------------------+
+| 0x00 |   0x0000    | System Area             |
+|      |   0x8000    | First 32KB of LoROM     |
++----------------------------------------------+
+| 0x01 |   0x0000    | System Area             |
+|      |   0x8000    | Second 32K of LoROM     |
++----------------------------------------------+
+| 0x02 |   0x0000    | System Area             |
+|      |   0x8000    | Third 32K of LoROM      |
++----------------------------------------------+
+| 0x03 |   0x0000    | System Area             |
+|      |   0x8000    | Fourth 32K of LoROM     |
++----------------------------------------------+
+| ...  |    ...      |    ...                  |
++------+-------------+-------------------------+
+</code></pre>
+
+<p>For assembling code and linking together the ROM, I used <a href="https://cc65.github.io/doc/ca65.html">ca65</a>. ca65 is a macro assembler, which means you can define macros that are functionally similar to C/C++ macros. They can also be used to implement unrolled loops, which is handy for cases where you don&rsquo;t want to hand-write a dynamic loop for performance or convenience reasons. I&rsquo;m sure there are other assemblers out there that could do the job, but ca65 seemed to work fine for me. It&rsquo;s actually part of the cc65 package, which is a full C compiler and linker targeting the 6502 and friends. So while I&rsquo;m sure you could somehow use that to write C code that runs on the SNES, I&rsquo;m not sure of the specifics of how that would work in practice. Either way the limited register set and banked memory architecture of the 65816 doesn&rsquo;t seem to lend itself particularly well to a C compiler implementation, so I steered clear of that. Besides, assembly is what the pros used back in the day! :P</p>
+
+<h2 id="the-ppu">The PPU<a href="#the-ppu" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>The PPU is what you would consider to be the &ldquo;GPU&rdquo; of the console, at least in a very rough sense. Its whole job is to make your sprites and backgrounds show up on the screen, and that&rsquo;s really all it does. If you&rsquo;re coming from the world of modern GPU&rsquo;s (like me), some aspects of it will probably seem very foreign:</p>
+
+<ul>
+<li><p>There are no &ldquo;command buffers&rdquo; or &ldquo;commands&rdquo; really. The only way you interact with the PPU is by setting its registers via memory-mapped IO (located in the system area), and by changing the contents of VRAM/OAM/CGRAM.</p></li>
+
+<li><p>You can only interact with the PPU&rsquo;s registers and memory during VBlank, or when the screen is entirely disabled (force blank). This means that you only have about 1.4ms to update your sprite/background state every frame during gameplay.</p></li>
+
+<li><p>There&rsquo;s no frame buffer! The PPU will draw your sprites and backgrounds on-the-fly as it&rsquo;s generating each scanline. This is why you can only modify PPU state during VBlank, and also why there&rsquo;s restrictions on the number of sprites per scanline.</p></li>
+</ul>
+
+<p>Since the PPU only has a very limited set of functionality, it&rsquo;s <em>very</em> particular about the data that you feed it. You need to strictly adhere to what the PPU expects, otherwise you&rsquo;re just going to get a bunch of garbage on the screen. This can make it quite difficult to work with, especially when you&rsquo;re just starting out. The <a href="http://problemkaputt.de/fullsnes.htm#snespictureprocessingunitppu">PPU section of the Fullcash specs</a> is going to be your best friend for getting this right, since it describes everything in full detail down to each individual bit.</p>
+
+<p>PPU graphics are divided into two parts: backgrounds, and sprites. We&rsquo;ll talk about backgrounds first.</p>
+
+<h3 id="backgrounds">Backgrounds<a href="#backgrounds" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Backgrounds are essentially 2D grids of &ldquo;tiles&rdquo;  that typically cover the entire screen, where each tile is either 8x8 or 16x16 pixels in size. You&rsquo;ll also see these tiles referred to as &ldquo;characters&rdquo; in the official SNES documentation, which I suspect is a vestige of old text-mode display processors found in early PC&rsquo;s. The way it works is that you have a &ldquo;map&rdquo; stored in VRAM, which is a 2D array of integers that specify the index of the tile that you want to use for each slot of the map. The idea is that you can re-use the same tiles (often called a &ldquo;tile set&rdquo;) many times across a given map, which is critical when you consider that 256x256 worth of 4bpp tiles would consume 32 KB of VRAM! The ability to re-use tiles is aided by the fact that you can also flip the tile horizontally or vertically for each map entry, and also specify the palette to use. Careful use of flipping and palette switching could create the impression of a much larger tile set than what you can actually fit in VRAM.</p>
+
+<p>The tiles pointed to by a BG map are either 8x8 or 16x16 in size, and either 4bpp (16 color) or 2bpp (4 color) indexed color. For the 8x8 tile size, things are pretty simple in terms of how the tile index works in the map. Each tile is stored in a swizzled bit-plane format, where a single tile is all contiguous is memory. So you&rsquo;ll have 32 bytes for tile 0, then 32 bytes for tile 1, and so on. So your map just specifies the index of the tile it wants, and that&rsquo;s it. For the 16x16 BG tile size, it&rsquo;s more complicated. A 16x16 tile has to be split up into 4 8x8 sub-tiles, one for each corner. The BG map then specifies the index of the upper-left 8x8 sub-tile. The trick is that these sub-tiles can&rsquo;t be located contiguously in VRAM, which makes VRAM management rather annoying. Instead, the PPU treats the tile memory as if it were a 16x64 2D array of sub-tiles. The 16x16 meta-tile then needs to be stored so that the top two sub-tiles are on the one row of the 16x64 table, while the bottom two sub-tiles must be located on the <em>next</em> row. Effectively this means that there&rsquo;s a gap of 14 sub-tiles between the top and bottom portions of the meta-tile, which works out to be 448 bytes (224 words) . Trust me when I say that this is easy to screw up.</p>
+
+<p>Here&rsquo;s what the placement of a 16x16 tile in VRAM looks like if you were to put its top-left corner in the first tile entry in VRAM:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2019/01/vram_tiles.png" alt="vram_tiles" /></p>
+
+<p>At the bottom you can see that the bottom-left sub-tile needs to be placed 14 tiles after the previous sub-tile so that it ends up on the next row of the VRAM tile matrix. Therefore you would want to DMA it to an offset of 0x0100 words from the start of the tile table in VRAM (VRAM generally deals with memory in terms of 2-byte words).</p>
+
+<p>Each background layer, of which there are up to 4 at once depending on how you&rsquo;ve configured the PPU, will typically use a map of 32x32 BG tiles. For an 8x8 tile size this covers 256x256 screen pixels, which is more than enough to cover the entire 256x224 screen resolution. Each background layer has a 10-bit pixel offset that will nudge the whole grid of tiles by specified X and Y values, which allows for smooth scrolling. The map will wrap around in areas exposed by the BG offset, which means if you have a tiled background you can just scroll it forever. In practice most games would constantly be updating the outer edges of the BG map in order to display a level much larger than what&rsquo;s implied by a 32x32 grid of tiles. They would also scroll some of the layers at a slower rate than the &ldquo;primary&rdquo; background layer, which would approximate a parallax effect for things far off in the distance. Another background layer could also be used for a HUD and/or status bar.</p>
+
+<h3 id="sprites">Sprites<a href="#sprites" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>As we just covered, backgrounds are made up tiles that are implicitly laid out in a 2D grid. So you can&rsquo;t just specify an arbitrary screen position for any single tile, or have one tile overlap another tile. Sprites (also called &ldquo;objects&rdquo;) are different: you directly tell the PPU where to draw the tiles by writing X and Y positions into Object Attribute Memory. So instead of a 32x32 map containing just tile indices and a few attributes, you have a 128 element array containing X/Y positions, tile indices, and a few attributes. Basically sparse tiles instead of a grid. Sprites can be 8x8, 16x16, 16x32, 32x32, 32x64, or 64x64 depending on the value of the OBSEL register, with only 2 sizes available for a given frame. The sizes large than 8x8 are set up as meta-tiles in the same way that BG tiles work: subsequent rows in the meta-tile must be located 16 tiles apart in VRAM. So a 32x32 sprite would have its sub-tiles placed in VRAM as 4 rows of 4 8x8 tiles, with a gap of 12 tiles because the end of one meta-tile row and the start of the next meta-tile row. This can make it annoying to move a single sprite into VRAM, since it means that you need to do it as 4 separate DMA operations.</p>
+
+<h2 id="development-environment">Development Environment<a href="#development-environment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>To get a jump start on making a working SNES ROM, I used <a href="https://github.com/Optiroc/libSFX">libSFX</a>, which was developed by <a href="https://twitter.com/Optiroc">David Lindecrantz</a>. This library is a collection of basic tools combined with a bunch of headers for ca65 that are full of macros and defines that correspond to the particulars of the SNES. It definitely saved me a lot of time that I would have otherwise spent going back and forth between my code and the SNES specs to get the right I/O addresses and bit offsets. It also does all of the magic incantations to boot up the system in the expected state (which is something you have to do on a system with no O/S!), which is pretty helpful. On top of all of that it has a makefile template and config system that makes it pretty simple to get your code assembled and linked into the layout expected for an SNES cartridge.</p>
+
+<p>libSFX also includes a tool called SuperFamiconv, which is a command-line program that convert .PNG&rsquo;s into a binary format that can be (almost) directly consumed by the PPU. It will auto-generate a palette, carve up your image into 8x8 tiles, and munge those tiles into the 2bpp or 4bpp bitplane format used in VRAM. For backgrounds it can also attempt to automatically de-duplicate the tiles in the image to generate a tileset, and will spit out a BG map in the required binary format. By linking the outputs right into your ROM, they&rsquo;re immediately available to be DMA&rsquo;d into VRAM at runtime, which is pretty sweet. The tool is also tied into the makefile template for libSFX, essentially forming a basic content processing pipeline. However you still need to be careful about making sure that your sub-tiles end laid out correctly in VRAM, since SuperFamiconv will end up packing all of its data contiguously. One option might be to pre-assemble atlases of tiles/sprites in a PNG in a way that&rsquo;s aware of the weird &ldquo;16 columns of tiles&rdquo; setup and then copy large blocks at level transitions. For backgrounds larger than 32x32 you&rsquo;ll also need to do your own on-the-fly updating of the BG map in VRAM like I mentioned earlier. I would also imagine that for any non-trivial game you would want to use a proper tile-based map editor to assemble your levels, rather than trying to rely on SuperFamiconv to de-duplicate things for you.</p>
+
+<p>One wrinkle with libSFX is that it&rsquo;s really only set up to work on Unix-like systems. Getting something this to work on Windows would traditionally involve Cygwin, which is an experience I normally don&rsquo;t subject myself to in my free time. However for Windows 10 there&rsquo;s now an alternative called the <a href="https://docs.microsoft.com/en-us/windows/wsl/about">Windows Subsystem for Linux (WSL)</a>. This essentially allows you to install a real Linux distro and have it interact with the Windows file system and executables, with no VM&rsquo;s required! I decided that this was as good an opportunity as any to try it out, so I went ahead and installed Ubuntu from the Microsoft Store (wild!) and within minutes I was in a bash shell! From there I just ran sudo apt install gcc/g++/make, and I was ready to clone and build libSFX! I was constantly surprised by how well everything worked, especially for someone like me that has very little Linux experience. What&rsquo;s really cool is that you can invoke Linux from Windows command prompt or batch file by running &ldquo;wsl.exe&rdquo;, effectively allowing you to go in and out Linux from within your scripts. In the end I had one batch file that ran &ldquo;wsl.exe make&rdquo; to build the ROM, then another batch file that would launch snes9x with that ROM.</p>
+
+<p>In the CPU section I mentioned that the 65816 can be switched between 8 and 16-bit register sizes, and that it can be a source of much pain. libSFX has a series of &ldquo;RW&rdquo; macros that to alleviate some of that pain by tracking the current register state in preprocessor variables. This lets it try to filter out redundant size changes, and also lets you print out whichever state is currently set (or more specifically, the state that the preprocessor <em>thinks</em> is set). Unfortunately being a preprocessor that&rsquo;s part of an assembler, it can only track state as it assembles your code in top-down fashion. This means that the internal state can and will be wrong any time a branch or jump occurs, and its up to you to give it enough information to keep it from screwing up. In particular you need to strategically use RW_assume in order to inform the assembler of the expected state, and possible also deploy RW_forced as your nuclear option. In practice it kind of feels like this tracking system is more trouble than its worth, but I think I would need to use it longer to form a better opinion. Either way, just make sure that you take some time to familiarize yourself with it before diving in! Many of the helpful macros provided by libSFX will use the RW macros internally, so you&rsquo;ll need to at least play nice with it at those points in your code. Also, be aware that libSFX will set the processor to a8i16 mode before handing control off to your Main label, and also when calling your VBlank handler.</p>
+
+<h2 id="debugging">Debugging<a href="#debugging" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>While it&rsquo;s a bit of a bummer that you can&rsquo;t really run your game on real SNES hardware without jumping through some serious hoops, the upside is that emulation allows for some really cool debugging functionality. You can do a lot when the entire state of the machine is visible to you! In particular, I would recommend using <a href="https://problemkaputt.de/sns.htm">no$sns</a>, by Nocash. It allows you to&hellip;</p>
+
+<ul>
+<li>View the disassembly of the running code</li>
+<li>Set breakpoints</li>
+<li>Inspect CPU registers and memory</li>
+<li>Inspect I/O register states for the PPU/DMA/etc.</li>
+<li>Visualize tiles in VRAM</li>
+<li>Visualize the BG map</li>
+<li>Visualize sprites in OAM</li>
+<li>Visualize palettes in CGRAM</li>
+<li>Probably more things that I didn&rsquo;t get around to using!</li>
+</ul>
+
+<p>The tile visualization in particular is really helpful for making sure that you get the layout right. Just make sure that you switch the disassembly mode to the Native 65XX mode, otherwise it will look very odd!</p>
+
+<h2 id="gotchas-and-insights">Gotchas and Insights<a href="#gotchas-and-insights" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>There were definitely a few things that caused me to lose a bunch of time before I could figure out what&rsquo;s wrong. I also noticed a few ways to speed up my programming. Here they are, in no particular order:</p>
+
+<ul>
+<li><p>I mostly covered this already, but always keep track of your register sizes! This was perhaps my most common source of bugs, at least when I was first starting.</p></li>
+
+<li><p>This was also covered earlier, but make sure that your sub-tiles are in the right location in VRAM!</p></li>
+
+<li><p>Be careful not to omit the &ldquo;#&rdquo; when you want to load an immediate. There&rsquo;s no type-safety to help you if you forget it, in which case you&rsquo;ll load from that address instead.</p></li>
+
+<li><p>.proc is helpful for scoping constants and labels for a subroutine, ensuring that they don&rsquo;t clash with constants/labels from your other suboutines. There&rsquo;s also &ldquo;proc&rdquo; from libSFX, which does the same thing but also tries to ensure that the RW state is initialized appropriately. Just be aware that you may need to prefix global defines with &ldquo;::&rdquo; when you&rsquo;re inside of a .proc in order to let ca65 know that you&rsquo;re referring to something in the global scope.</p></li>
+
+<li><p>Use the direct page! It&rsquo;s easy to feel cramped with only 1 true register to work with, but working with values in the direct page is fast because the operands are smaller. So you generally want to use it for storing temporary variables that you&rsquo;re dealing with in a subroutine. Just make sure that you prefix the address with &ldquo;z:&rdquo; to make sure that ca65 emits the zero-page version of the instruction. libSFX also sets up a &ldquo;ZEROPAGE&rdquo; segment for you in the default config, which you can use for declaring variables that live in the direct page.</p></li>
+
+<li><p>Memory isn&rsquo;t slow relative to the CPU! I had to keep reminding myself of this, since I&rsquo;m so used to modern systems where a cache miss might mean thousands of cycles in latency.</p></li>
+
+<li><p>Make sure that you always clear the carry before an adc, and set the carry before a sbc! libSFX defines &ldquo;add&rdquo; and &ldquo;sub&rdquo; macros that will do this for you, so feel free to use them.</p></li>
+
+<li><p>Enable the debug variable in your makefile you have the linker output a map file that you can use to see the actual addresses of your variables and labels.</p></li>
+</ul>
+
+<h2 id="things-i-didn-t-cover">Things I Didn&rsquo;t Cover<a href="#things-i-didn-t-cover" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<ul>
+<li><p>Mode 7 - the infamous Mode 7 is very different from the &ldquo;normal&rdquo; background modes, and has plenty of its own weird quirks. Be sure to carefully read through Nocash specs if you&rsquo;re interested in using it.</p></li>
+
+<li><p>Audio - I haven&rsquo;t spent any time learning how to program the audio processor, so I would be of no help in that area. I <em>did</em> manage to get some music playing, however. An awesome co-worker made a quick looping track in <a href="http://schismtracker.org/">Schism Tracker</a>, and I was able to convert it into an SPC file using <a href="http://snes.mukunda.com/">SNESMOD</a>. I was then able to link that into my ROM, and start up the SPC program to play that music!</p></li>
+</ul>
+
+<h2 id="links">Links<a href="#links" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<ul>
+<li><a href="http://problemkaputt.de/fullsnes.htm">fullsnes - nocash SNES hardware specification</a></li>
+<li><a href="https://wiki.superfamicom.org/">Super Famicom Development Wiki</a></li>
+<li><a href="https://en.wikibooks.org/wiki/Super_NES_Programming">Super NES Programming WikiBook</a></li>
+<li><a href="http://forums.nesdev.com/viewforum.php?f=12">SNES Development Forum on nesdev.com</a></li>
+<li><a href="http://web.archive.org/web/20071111200111/http://www.geocities.com/Qwertie256/attic/snesemu/qsnesdoc.html">SNES Graphics Information</a></li>
+<li><a href="https://wiki.nesdev.com/w/images/7/76/Programmanual.pdf">65816 Assembly Programming Guide</a></li>
+<li><a href="https://github.com/Optiroc/libSFX">libSFX GitHub Repository</a></li>
+<li><a href="https://cc65.github.io/doc/ca65.html">ca65 User&rsquo;s Guide</a></li>
+<li><a href="https://cc65.github.io/doc/ld65.html">ld65 User&rsquo;s Guide</a></li>
+<li><a href="http://snes.mukunda.com/">SNESMOD</a></li>
+<li><a href="http://schismtracker.org/">Schism Tracker</a></li>
+<li><a href="https://github.com/nathancassano/snesgss">SNES Game Sound System</a></li>
+</ul>
+
+<p>Good luck, fellow retro developers!</p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+<a href="http://pharr.org/matt">matt@pharr.org</a> - <time datetime="2019-02-07 15:17:29">Feb 4, 2019</time></p>
+
+<p>Fun writeup! What did you end up getting running? Any screenshots?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2019-02-09 14:19:14">Feb 6, 2019</time></p>
+
+<p>Hey Matt! I basically had a very simple side-scrolling shooter working, where you could shoot a few infinitely-spawning enemies. It featured the main character &ldquo;Jack&rdquo; from our Lone Echo game series (I called my game &ldquo;Super Lone Echo, naturally), so I had been meaning to clear it with my company&rsquo;s owner before posting images or video. I guess I should actually do that at some point! :P
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/uncategorized">Uncategorized</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4550 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-01-14 21:36 -0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/test/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Test Blog Post</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

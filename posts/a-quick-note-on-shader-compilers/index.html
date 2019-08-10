@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="A quick note on shader compilers">
+<meta itemprop="description" content="This morning I was wrestling with a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&rsquo;d try it out with the new version of the compiler that comes with the Windows 8 SDK. I wasn&rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds!">
+
+
+<meta itemprop="datePublished" content="2012-04-14T04:56:04&#43;00:00" />
+<meta itemprop="dateModified" content="2012-04-14T04:56:04&#43;00:00" />
+<meta itemprop="wordCount" content="1045">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11," />
+<meta property="og:title" content="A quick note on shader compilers" />
+<meta property="og:description" content="This morning I was wrestling with a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&rsquo;d try it out with the new version of the compiler that comes with the Windows 8 SDK. I wasn&rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/a-quick-note-on-shader-compilers/" />
+<meta property="article:published_time" content="2012-04-14T04:56:04+00:00" />
+<meta property="article:modified_time" content="2012-04-14T04:56:04+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A quick note on shader compilers"/>
+<meta name="twitter:description" content="This morning I was wrestling with a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&rsquo;d try it out with the new version of the compiler that comes with the Windows 8 SDK. I wasn&rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds!"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>A quick note on shader compilers</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 14, 2012</span></div>
+				<h1>A quick note on shader compilers</h1>
+			</header>
+			<div class="content">
+				
+
+<p>This morning I was wrestling with  a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&rsquo;d try it out with the new version of the compiler that comes with the <a href="http://msdn.microsoft.com/en-us/windows/hardware/hh852363">Windows 8 SDK</a>. I wasn&rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds! I figured I would pass along the knowledge, in case anyone else is dealing with a similar problem.</p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://twitter.com/RCalocaO" title="RCalocaO@twitter.example.com">R Caloca (@RCalocaO)</a> - <time datetime="2012-04-30 09:51:10">Apr 1, 2012</time></p>
+
+<p>Using the Feb 2010 SDK, I&rsquo;ve found that array size directly impacts shader compile time: We had an array for bones with 1K elements, and our compile times for vertex shaders were about 30-45 seconds depending on the shader; after changing that to a one element array (to test this theory), our compile times went down to 0.2, 0.3 secs.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-14 15:32:27">Apr 6, 2012</time></p>
+
+<p>@zproxy I don&rsquo;t think I can say, although I&rsquo;ll tell you that it involved a few instances of an unrolled loop that executed for 49 iterations. @talden I was actually already compiling the shaders at O1, and it was still that slow! But thanks for the tip.
+<hr />
+####
+<a href="http://zeuxcg.wordpress.com" title="arseny.kapoulkine@gmail.com">zeuxcg</a> - <time datetime="2012-05-01 08:01:51">May 2, 2012</time></p>
+
+<p>R Caloca, you should change the array count to 2. If it&rsquo;s 1, compiler always selects the first bone so the generated assembly is incorrect; if it&rsquo;s 2, it does the proper index-based lookup, and you can upload more than 2 bones - assuming that the array is at the end of the constant buffer, of course. This does not generate any D3D Debug warnings and, as far as I&rsquo;m aware, is safe wrt different HW/drivers.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-09-16 18:42:58">Sep 0, 2012</time></p>
+
+<p>Yes, you basically just need to change the VC++ directories for your include and lib files and then you can use the newer D3D headers and libraries. For VS 2010 you can follow these directions: <a href="http://blogs.msdn.com/b/vcblog/archive/2012/03/25/10287354.aspx">http://blogs.msdn.com/b/vcblog/archive/2012/03/25/10287354.aspx</a> One thing that is different with the Win8 SDK version of D3D is that there is no D3DX anymore. So if you have any dependencies on D3DX you&rsquo;ll need to change your code.
+<hr />
+####
+<a href="http://talden.wordpress.com" title="dwrightnow@gmail.com">talden</a> - <time datetime="2012-04-13 22:43:38">Apr 5, 2012</time></p>
+
+<p>I&rsquo;ve found that with compute shaders in particular, if you drop down to O1 instead of the default O3 optimization level you will get the same instruction count with 2-10x faster compiles.
+<hr />
+####
+<a href="http://zproxy.wordpress.com/" title="dadeval@gmail.com">zproxy</a> - <time datetime="2012-04-13 22:31:55">Apr 5, 2012</time></p>
+
+<p>What was the shader about?
+<hr />
+####
+[benualdo]( &ldquo;benualdo@msn.com&rdquo;) - <time datetime="2012-09-17 04:58:18">Sep 1, 2012</time></p>
+
+<p>Thanks you for your help! I finally did it the &ldquo;GetProcAddress&rdquo; way because I was too lazy to change the vcproj. The shader now compile ~40% faster than before. Some shaders even compile twice faster (compute shaders and pixel shaders with lots of branch and nested loopts). Trivial shaders (like ZPass opaque PS) are a bit slower to compile.
+<hr />
+####
+<a href="http://djmips.wordpress.com" title="david.c.galloway@gmail.com">djmips</a> - <time datetime="2012-05-03 11:23:36">May 4, 2012</time></p>
+
+<p>Is there any chance that the new compiler generates more efficient code?
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2012-10-30 21:03:25">Oct 2, 2012</time></p>
+
+<p>MJP, is it legal to ship the d3dcompiler.dll with your game or does Microsoft forbid that. If it is forbidden, then how can you ship your game when it pops a missing .dll error if you don&rsquo;t include it? I am compiling ahead of time using VS2012 and so don&rsquo;t see any reason why the executable would require me to dynamically link with the d3dcomipler anyway. For now I&rsquo;ll just include the .dll in my .exe directory, but I feel that this is a hack. Thanks in advance.
+<hr />
+####
+[Dave Ottley]( &ldquo;the_goosemaster@hotmail.com&rdquo;) - <time datetime="2012-10-30 21:04:26">Oct 2, 2012</time></p>
+
+<p>By the way, the above post was made by Dave Ottley.
+<hr />
+####
+[benualdo]( &ldquo;benualdo@msn.com&rdquo;) - <time datetime="2012-09-15 06:48:27">Sep 6, 2012</time></p>
+
+<p>Could you use the win8 sdk compiler with your win7 application? If so, can you give more details about how you manage to do that? Did you have to compile shader using fxc.exe or compiling from code also worked? thanks!
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-09-15 13:38:29">Sep 6, 2012</time></p>
+
+<p>Yes, it&rsquo;s possible. You can build Win7 applications using the Win8 SDK, in which case you just include D3DCompiler.h and link to d3dcompiler.lib and you&rsquo;ll use the new compiler. Just make sure that you copy d3dcompiler_46.dll from the Bin folder of your SDK install directory and put it next to your executable, because it won&rsquo;t be present on Win7 machines. If you want to keep using the headers and libs from DirectX SDK and use the compiler from the Win8 SDK, it&rsquo;s a little more tricky. You can&rsquo;t just add both Include paths to your VC++ directories, otherwise VC++ won&rsquo;t know which version of the file you want to include. An alternative would be to just use LoadLibrary and GetProcAddress to call the compile functions in d3dcompiler_46.dll without using the headers or linking to it. Or if you&rsquo;re compiling your shaders ahead of time, using fxc.exe is a simple way to do it.
+<hr />
+####
+[benualdo]( &ldquo;benualdo@msn.com&rdquo;) - <time datetime="2012-09-16 10:04:54">Sep 0, 2012</time></p>
+
+<p>Greate new and thanks for your answer, I&rsquo;m fed up with slow shader compilation. I did not know that win8 is not needed to build apps using the win7 SDK. If I understand what you say all I have to do is to install the Win8SDK and include/link against the Directx11 (11.1?) that comes with it instead of DirectX SDK? And I won&rsquo;t have to change anything else in my app to make it run with the win8SDK (as I can&rsquo;t actually run a win8 on win7 anyway)?
+<hr />
+####
+[benualdo]( &ldquo;benualdo@msn.com&rdquo;) - <time datetime="2012-09-16 10:05:24">Sep 0, 2012</time></p>
+
+<p>Greate news and thanks for your answer, I’m fed up with slow shader compilation. I did not know that win8 is not needed to build apps using the win8SDK. If I understand what you say all I have to do is to install the Win8SDK and include/link against the Directx11 (11.1?) that comes with it instead of DirectX SDK? And I won’t have to change anything else in my app to make it run with the win8SDK (as I can’t actually run a win8 on win7 anyway)?
+<hr />
+####
+[benualdo]( &ldquo;benualdo@msn.com&rdquo;) - <time datetime="2012-09-16 10:06:40">Sep 0, 2012</time></p>
+
+<p>arg sorry for double post I was too excited by faster shader compilation (and cannot switch to win8 atm) :)
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1045 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-04-13 21:56 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/looking-for-a-job/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Looking for a job?</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/light-indexed-deferred-rendering/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Light Indexed Deferred Rendering</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

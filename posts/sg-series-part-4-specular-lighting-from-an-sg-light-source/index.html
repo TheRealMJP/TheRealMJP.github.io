@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="SG Series Part 4: Specular Lighting From an SG Light Source">
+<meta itemprop="description" content="This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
+
+
+<meta itemprop="datePublished" content="2016-10-10T07:09:20&#43;00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:09:20&#43;00:00" />
+<meta itemprop="wordCount" content="3929">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="SG Series Part 4: Specular Lighting From an SG Light Source" />
+<meta property="og:description" content="This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/" />
+<meta property="article:published_time" content="2016-10-10T07:09:20+00:00" />
+<meta property="article:modified_time" content="2016-10-10T07:09:20+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SG Series Part 4: Specular Lighting From an SG Light Source"/>
+<meta name="twitter:description" content="This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>SG Series Part 4: Specular Lighting From an SG Light Source</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 10, 2016</span></div>
+				<h1>SG Series Part 4: Specular Lighting From an SG Light Source</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
+
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
+
+<p>In the <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">previous article</a>, we explored a few ways to compute the contribution of an SG light source when using a diffuse BRDF. While this is already useful, it would be nice to be able work with more complex view-dependent BRDF&rsquo;s so that we can also compute a specular contribution. In this article I&rsquo;ll explain a possible approach for approximating the response of a microfacet specular BRDF when applied to an SG light, and also introduce the concept of Anisotropic Spherical Gaussians.</p>
+
+<h2 id="microfacet-specular-recap">Microfacet Specular Recap<a href="#microfacet-specular-recap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>You probably recall from the past 5 years of <a href="http://blog.selfshadow.com/publications/s2013-shading-course/hoffman/s2013_pbs_physics_math_notes.pdf">physically based rendering presentations</a>[1] that a standard microfacet BRDF takes the following structure:</p>
+
+<p>$$ f(\mathbf{i}, \mathbf{o}) = \frac{F(\mathbf{o}, \mathbf{h})\,G(\mathbf{i}, \mathbf{o}, \mathbf{h})\,D(\mathbf{h})} {4\,(\mathbf{n} \cdot \mathbf{i})\,(\mathbf{n} \cdot \mathbf{o})} $$</p>
+
+<p>Recall that <em>D</em>(h) is the <em>distribution</em> term, which tells us the percentage of active microfacets for a particular combination of view and light vectors. It&rsquo;s also commonly known as the <em>normal distribution function</em>, or &ldquo;NDF&rdquo; for short. It&rsquo;s generally parameterized on a <em>roughness</em> parameter, which essentially describes the &ldquo;bumpiness&rdquo; of the underlying microgeometry. Lower roughness values lead to sharp mirror-like reflections with a very narrow and intense specular lobe, while higher roughness values lead to more broad reflections with a wider specular lobe. Most modern games (including The Order: 1886) use the GGX (AKA Trowbridge-Reitz) distribution for this purpose.</p>
+
+<p><a href="https://www.desmos.com/calculator/hrybtwxnbi"><img src="https://mynameismjp.files.wordpress.com/2016/07/ggx_distribution.png?w=1024" alt="GGX_Distribution" /></a></p>
+
+<p><a href="https://www.desmos.com/calculator/hrybtwxnbi"><img src="https://mynameismjp.files.wordpress.com/2016/07/ggx_distribution_0_1.png?w=1024" alt="GGX_Distribution_0_1" /></a></p>
+
+<p><center><em>The top image shows a GGX distribution term with a roughness parameter of 0.5. The bottom image shows the same GGX distribution term with a roughness parameter of 0.1. For both graphs, the X axis represents the angle between the surface normal and the half vector. Click on either image for an interactive graph.</em></center></p>
+
+<p>Next we have G(i, o, h) which is referred to as the <em>geometry term</em> or the <em>masking-shadow function</em>. Eric Heitz&rsquo;s <a href="http://jcgt.org/published/0003/02/03/">paper on the masking-shadow function</a>[2] has a fantastic explanation of how these terms work and why they&rsquo;re important, so I would strongly recommend reading through it if you haven&rsquo;t already. As Eric explains, the geometry term actually accounts for two different phenomena. The first is the local occlusion of reflections by other neighboring microfacets. Depending on the angle of the incoming lighting and the bumpiness of the microsurface, a certain amount of the lighting will be occluded by the surface itself, and this term attempts to model that. The other phenomenon handled by this term is visibility of the surface from the viewer. A surface that isn&rsquo;t visible naturally can&rsquo;t reflect light towards the viewer, and so the geometry term models this masking effect using the view direction and the roughness of the microsurface.</p>
+
+<p><a href="https://www.desmos.com/calculator/w7wnltroeg"><img src="https://mynameismjp.files.wordpress.com/2016/07/ggx_visibility_0_25_0_0.png" alt="GGX_Visibility_0_25_0_0" /></a></p>
+
+<p><center><em>The Smith visibility term for GGX as a function of the angle between the surface normal and the light direction. The roughness used is 0.25, and the angle between the normal and the view direction is 0. Click on the image for an interactive graph.</em></center>center</p>
+
+<p>Finally we have F(o, h), which is the <em>Fresnel</em> term. This familiar term determines the amount of light that is reflected vs. the amount that is refracted or absorbed, which varies depending on the index of refraction for a particular interface as well as the angle of incidence. For a microfacet BRDF we compute the Fresnel term using the angle between the active microfacet direction (the half vector) and the light or view direction (it is equivalent to use either). This generally causes the reflected intensity  to increase when both the viewing direction and the light direction are grazing with respect to the surface normal. In real-time graphics Schlick&rsquo;s approximation is typically used to represent the Fresnel term, since it&rsquo;s a bit cheaper than evaluating the actual Fresnel equations. It is also common to parameterize the Fresnel term on the reflectance at zero incidence (referred to as &ldquo;F0&rdquo;) instead of directly working with an index of refraction.</p>
+
+<p><a href="https://www.desmos.com/calculator/wcwkzazku0"><img src="https://mynameismjp.files.wordpress.com/2016/07/schlick_fresnel.png" alt="Schlick_Fresnel" /></a>
+<center><em>Schlick&rsquo;s approximation of the Fresnel term as a function of the angle between the half vector and the light direction. The graph uses a value of 0.04 for F0. Click on the image for an interactive graph.</em></center></p>
+
+<h2 id="specular-from-an-sg-light">Specular From an SG Light<a href="#specular-from-an-sg-light" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Let&rsquo;s now return to our example of a Spherical Gaussian light source. In the previous article we explored how to approximate the purely diffuse contribution from such a light source, but how do we handle the specular response? If we go down this road, we ideally want to do it in a way that uses a microfacet specular model so that we can remain consistent with our lighting from punctual light sources and IBL probes. If we start out by just plugging our BRDF and SG light into the rendering equation we get this monstrosity:</p>
+
+<p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \int_{\Omega}  \frac{F(\mathbf{o}, \mathbf{h})\,G(\mathbf{i}, \mathbf{o}, \mathbf{h})\,D(\mathbf{h})G_{l}(\mathbf{i};\mathbf{\mu},\lambda,a)cos(\theta_{i})d\Omega} {4cos(\theta_{i})cos(\theta_{o})} $$</p>
+
+<p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \int_{\Omega}  \frac{F(\mathbf{o}, \mathbf{h})\,G(\mathbf{i}, \mathbf{o}, \mathbf{h})\,D(\mathbf{h})ae^{\lambda(\mathbf{\mu} \cdot \mathbf{i} - 1)}d\Omega} {4cos(\theta_{o})} $$</p>
+
+<p>Unlike diffuse we now have multiple terms inside the integral, many of which are view-dependent. This suggests that we will need to combine several aggressive optimizations in order to get anywhere close to our desired result.</p>
+
+<h3 id="the-distribution-term">The Distribution Term<a href="#the-distribution-term" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Let&rsquo;s start out by taking the distribution term on its own, since it&rsquo;s arguably the most important part of the specular BRDF. The distribution determines the overall shape and intensity of the resulting specular highlight, and has a widely-varying frequency response over the domain of possible roughness values. If we look at the graph of the GGX distribution from the earlier section, the shape does resemble a Gaussian. Unfortunately it&rsquo;s not an exact match: the GGX distribution has the characteristic narrow highlight and long  tails which we can&rsquo;t match using a single SG. We could get a closer fit by summing multiple Gaussians, but for this article we&rsquo;ll keep things simple by sticking with a single lobe. If we go back to <a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">Wang et al.</a>&rsquo;s paper[3] that we referenced earlier, we can see that they suggest a very simple fit of an SG to a Cook-Torrance distribution term:</p>
+
+<p>$$ D(\mathbf{h})= e^{-(arccos(\mathbf{h} \cdot \mathbf{n})/m)^{2}} \approx G(\mathbf{h};\mathbf{n},\frac{2}{m^2},1) $$</p>
+
+<p>If we look closely, we can see that they&rsquo;re actually fitting for the Gaussian model mentioned in the <a href="http://inst.cs.berkeley.edu/~cs294-13/fa09/lectures/cookpaper.pdf">original Cook-Torrance paper</a>[4], which is similar to the one used in the <a href="http://www.graphics.cornell.edu/~westin/pubs/TorranceSparrowJOSA1967.pdf">Torrance-Sparrow model</a>[5]. Note that this should not be confused the with Beckmann distribution that&rsquo;s also mentioned in the Cook-Torrance paper, which is actually a 2D Gaussian in the slope domain (AKA parallel plane domain). However the shape isn&rsquo;t even the biggest problem here, as the variant they&rsquo;re using isn&rsquo;t normalized. This means the peak of the Gaussian will always have a height of 1.0, rather than shrinking when the roughness increases and growing when the roughness decreases. Fortunately this is really easy to fix, since we have a simple analytical formula for computing the integral of an SG. Therefore if we set the amplitude to 1 over the integral, we end up with a normalized distribution:</p>
+
+<p>$$ D_{SG}(\mathbf{h})= G(\mathbf{h};\mathbf{n},\frac{2}{m^2}, \frac{1}{\pi m^2}) $$</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">SG</span> <span class="nf">DistributionTermSG</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="n">direction</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">roughness</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SG</span> <span class="n">distribution</span><span class="p">;</span>
+    <span class="n">distribution</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">direction</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">roughness</span> <span class="o">*</span> <span class="n">roughness</span><span class="p">;</span>
+    <span class="n">distribution</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">m2</span><span class="p">;</span>
+    <span class="n">distribution</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="p">(</span><span class="n">Pi</span> <span class="o">*</span> <span class="n">m2</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">distribution</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Let&rsquo;s take a look at a graph of our distribution term, and see how far off it is from our target:</p>
+
+<p><a href="https://www.desmos.com/calculator/yldtkvljsh"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_distribution_0_25.png" alt="SG_Distribution_0_25" /></a></p>
+
+<p><a href="https://www.desmos.com/calculator/yldtkvljsh"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_distribution_0_5.png" alt="SG_Distribution_0_5" /></a></p>
+
+<p><center><em>Top graph shows a comparison between GGX, Beckmann, normalized Gaussian, and SG distribution terms with a roughness of 0.25. The bottom shows the same comparison with  a roughness of 0.5. Click on either image for an interactive graph.</em></center></p>
+
+<p>It should come as no surprise that our SG distribution is almost an exact match for a normalized version of a Gaussian distribution. When the roughness is lower it&rsquo;s also a fairly close match for Beckmann, but for higher roughness the difference gets to be quite large. In both cases our distribution isn&rsquo;t a perfect fit for GGX, but it&rsquo;s a workable approximation.</p>
+
+<h3 id="warping-between-domains">Warping Between Domains<a href="#warping-between-domains" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>So we now have a normal distribution function in SG format, but unfortunately we&rsquo;re not quite ready to use it as-is. The problem is that we&rsquo;ve defined our distribution in the half-vector domain: the axis of the SG points in the direction of the surface normal, and we use the half-vector as our sampling direction. If we want to use an SG product to compute the result of multiplying our distribution with an SG light source, then we need to ensure that the distribution lobe is in the same domain as our light source. Another way to think about this is that center of our distribution shifts depending on viewing angle, since the half-vector also shifts as the camera moves.</p>
+
+<p>In order to make sure that our distribution lobe is in the correct domain, we need &ldquo;warp&rdquo; our distribution so that it lines up with the current BRDF slice for our viewing direction. If you&rsquo;re wondering what a BRDF slice is, it basically tells you &ldquo;if I pick a particular view direction. what is the value of my  BRDF for a given light direction?&rdquo;. So if you had a mirror BRDF, the slice would just be a single ray pointing in the direction of the view ray reflected off the surface normal. For microfacet specular BRDF&rsquo;s, you get a lobe that&rsquo;s roughly centered around the reflected view direction. Here&rsquo;s what a polar graph of a GGX BRDF slice looks like if we only consider the distribution term:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/ggx_distribution_brdf_slice.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/ggx_distribution_brdf_slice.png" alt="GGX_Distribution_BRDF_Slice" /></a></p>
+
+<p><center><em>Polar graph of the GGX distribution term from two different viewing angles. The blue line is the view direction, the green line is the surface normal, and the pink line is the reflected view direction. The top image shows the resulting slice when the viewing angle is 0 degrees, and the bottom images shows the resulting slice when the viewing angle is 45 degrees.</em></center></p>
+
+<p>Wang et al. proposed a simple spherical warp operator that would orient the distribution lobe about the reflected view direction, while also modifying the sharpness to take into account the differential area at the original center of the lobe:</p>
+
+<p>$$ \mu_{w}=2(\mathbf{o} \cdot \mu_{d})\mu_{d} - \mathbf{o} $$</p>
+
+<p>$$ \lambda_{w}=\frac{\lambda_{d}}{4|\mu_{d} \cdot \mathbf{o}|} $$</p>
+
+<p>$$ a_{w} = a_{d} $$</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">SG</span> <span class="nf">WarpDistributionSG</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">ndf</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">view</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SG</span> <span class="n">warp</span><span class="p">;</span>
+
+    <span class="n">warp</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">reflect</span><span class="p">(</span><span class="o">-</span><span class="n">view</span><span class="p">,</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Axis</span><span class="p">);</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">;</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">/=</span> <span class="p">(</span><span class="mf">4.0f</span> <span class="o">*</span> <span class="n">max</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">ndf</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">view</span><span class="p">),</span> <span class="mf">0.0001f</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">warp</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Let&rsquo;s now look at the result of that warp, and compare it to what the actual GGX distribution looks like:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_ggx_distribution_slices.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_ggx_distribution_slices.png" alt="SG_GGX_Distribution_Slices" /></a></p>
+
+<p><center><em>Result of applying a spherical warp to the SG distribution term (green) compared with the actual GGX distribution (red). The top graph shows a viewing angle of 0 degrees, and the bottom graph shows a viewing angle of 45 degrees.</em></center></p>
+
+<p>A quick look at the graph shows us that the shape is a bit off, but our warped lobe is ending up in approximately in the right spot. We&rsquo;ll revisit the lobe shape later, but for now let&rsquo;s try combining our distribution with the rest of our BRDF.</p>
+
+<h3 id="approximating-the-remaining-terms">Approximating The Remaining Terms<a href="#approximating-the-remaining-terms" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>In the previous section we figured out how to obtain an SG approximation of our distribution term, and also warp it so that it&rsquo;s in the correct domain for multiplication with our SG light source. Using our SG product operator would allow to us to represent the result of multiplying the distribution with the light source as another SG, which we could then multiply with other terms using SG operators&hellip;or at least we could if we were to represent the remaining terms as SG&rsquo;s. Unfortunately this turns out to be a problem: the geometry and Fresnel terms are nothing at all like a Gaussian, which rules out approximating them as an SG. Wang et al. sidestep this issue by making the somewhat-weak assumption that the values of these terms will be constant across the entire BRDF lobe, which allows them to pull the terms out of the integral and evaluate them only for the axis direction of the BRDF lobe. This allows the resulting BRDF to still capture some of the glancing angle effects, with similar performance cost to evaluating those terms for a punctual light source. The downside is that the error of these terms will increase as the BRDF lobe becomes wider (increasing roughness), since the value of the geometry and Fresnel terms will vary more the further they are from the lobe center. Putting it all together gives the following specular BRDF:</p>
+
+<p>$$ f_{sg}(\mathbf{i}, \mathbf{o}) = \frac{F(\mathbf{o}, \mathbf{h_{w}})\,G(\mathbf{\mu_{w}}, \mathbf{o}, \mathbf{h_{w}})\, \frac{1}{\pi m^2}e^{\lambda_{w}(\mathbf{\mu_{w}} \cdot \mathbf{i} - 1)}} {4\,(\mathbf{n} \cdot \mathbf{\mu_{w}})\,(\mathbf{n} \cdot \mathbf{o})} $$</p>
+
+<p>$$ \mathbf{h_{w}} = \frac{\mathbf{o} + \mathbf{\mu_{w}}}{||\mathbf{o} + \mathbf{\mu_{w}}||} $$</p>
+
+<p>The last thing we need to account for is the cosine term that needs to be multiplied with the BRDF inside of the hemispherical integral. Wang et al. suggest using an SG product to compute an SG representing the result of multiplying the distribution term SG and their SG approximation of a clamped cosine lobe, which can then be multiplied with the lighting lobe using an SG inner product. In order to avoid another expensive SG operation, we will instead use the same approach that we used for geometry and Fresnel terms and evaluate the cosine term using the BRDF lobe axis direction. Implementing it in shader code gives us the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="nf">GGX_V1</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">m2</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">nDotX</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="p">(</span><span class="n">nDotX</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">m2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m2</span><span class="p">)</span> <span class="o">*</span> <span class="n">nDotX</span> <span class="o">*</span> <span class="n">nDotX</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">SpecularTermSGWarp</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">light</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span>
+                          <span class="n">in</span> <span class="kt">float</span> <span class="n">roughness</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">view</span><span class="p">,</span>
+                          <span class="n">in</span> <span class="n">float3</span> <span class="n">specAlbedo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Create an SG that approximates the NDF.
+</span><span class="c1"></span>    <span class="n">SG</span> <span class="n">ndf</span> <span class="o">=</span> <span class="n">DistributionTermSG</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">roughness</span><span class="p">);</span>
+
+    <span class="c1">// Warp the distribution so that our lobe is in the same
+</span><span class="c1"></span>    <span class="c1">// domain as the lighting lobe
+</span><span class="c1"></span>    <span class="n">SG</span> <span class="n">warpedNDF</span> <span class="o">=</span> <span class="n">WarpDistributionSG</span><span class="p">(</span><span class="n">ndf</span><span class="p">,</span> <span class="n">view</span><span class="p">);</span>
+
+    <span class="c1">// Convolve the NDF with the SG light
+</span><span class="c1"></span>    <span class="n">float3</span> <span class="n">output</span> <span class="o">=</span> <span class="n">SGInnerProduct</span><span class="p">(</span><span class="n">warpedNDF</span><span class="p">,</span> <span class="n">light</span><span class="p">);</span>
+
+    <span class="c1">// Parameters needed for the visibility
+</span><span class="c1"></span>    <span class="n">float3</span> <span class="n">warpDir</span> <span class="o">=</span> <span class="n">warpedNDF</span><span class="p">.</span><span class="n">Axis</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">roughness</span> <span class="o">*</span> <span class="n">roughness</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">nDotL</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">warpDir</span><span class="p">));</span>
+    <span class="kt">float</span> <span class="n">nDotV</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">view</span><span class="p">));</span>
+    <span class="n">float3</span> <span class="n">h</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">warpedNDF</span><span class="p">.</span><span class="n">Axis</span> <span class="o">+</span> <span class="n">view</span><span class="p">);</span>
+
+    <span class="c1">// Visibility term evaluated at the center of
+</span><span class="c1"></span>    <span class="c1">// our warped BRDF lobe
+</span><span class="c1"></span>    <span class="n">output</span> <span class="o">*=</span> <span class="n">GGX_V1</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="n">nDotL</span><span class="p">)</span> <span class="o">*</span> <span class="n">GGX_V1</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="n">nDotV</span><span class="p">);</span>
+
+    <span class="c1">// Fresnel evaluated at the center of our warped BRDF lobe
+</span><span class="c1"></span>    <span class="kt">float</span> <span class="n">powTerm</span> <span class="o">=</span> <span class="n">pow</span><span class="p">((</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">warpDir</span><span class="p">,</span> <span class="n">h</span><span class="p">))),</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">output</span> <span class="o">*=</span> <span class="n">specAlbedo</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">specAlbedo</span><span class="p">)</span> <span class="o">*</span> <span class="n">powTerm</span><span class="p">;</span>
+
+    <span class="c1">// Cosine term evaluated at the center of the BRDF lobe
+</span><span class="c1"></span>    <span class="n">output</span> <span class="o">*=</span> <span class="n">nDotL</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Let&rsquo;s now (finally) take a look at what our specular approximation looks like for a scene being lit by an SG light source:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sglight_specular_sgwarp.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sglight_specular_sgwarp.png" alt="SGLight_Specular_SGWarp" /></a>
+<center><em>A scene being lit by an SG light source using our diffuse and specular approximations. The scene is using a uniform roughness of 0.128.</em></center></p>
+
+<h2 id="going-anisotropic">Going Anisotropic<a href="#going-anisotropic" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So if we look at the specular highlights in the above image, you may notice that while the highlights on the red and green walls look pretty good, the highlight on floor seems a bit off. The highlight is rather wide and rounded, and our intuition tells that a highlight viewed at a grazing angle should appear vertically stretched across the floor. To determine why the look is so off, we need to revisit our warp of the distribution term. Previously when we looked at the polar graph of the distribution I noted that the shape of the resulting lobe was a bit off, even though it was oriented in approximately the right direction to line up with the BRDF slice. To get a better idea of what&rsquo;s going on, let&rsquo;s now take a look at a 3D graph of the GGX distribution term:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/ggx_distribution_stretch.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/ggx_distribution_stretch.png" alt="GGX_Distribution_Stretch" /></a>
+<center><em>3D graph of the GGX distribution term. The left image shows the distribution when the viewing angle is very low, while the right image shows the distribution when the viewing angle is very steep.</em></center></p>
+
+<p>Looking at the left image where the angle between the view direction and  the surface normal are very low, the distribution is radially symmetrical just like an SG lobe. However as the viewing angle increases the lobe begins to stretch, looking more and more like the non-symmetrical lobe that we see in the right image. The stretching of the lobe is what causes the stretched highlights that occur when applying the BRDF, and our warped SG is unable to properly represent it since it must remain radially symmetric about its axis.</p>
+
+<p>Luckily for us, there is a better way. In 2013 Xu et al.released a paper titled <a href="http://cg.cs.tsinghua.edu.cn/people/~kun/asg/">Anisotropic Spherical Gaussians</a>[6], where they explain how they extended SG&rsquo;s to support anisotropic lobe width/sharpness. They&rsquo;re defined like this:</p>
+
+<p>$$ G(\mathbf{v};[\mu_x, \mu_y, \mu_z],[\lambda_x, \lambda_y],a) = a \cdot S(\mathbf{v},\mu_z) e^{-\lambda_x(\mathbf{v} \cdot \mu_x) - \lambda_y(\mathbf{v} \cdot \mu_y)} $$</p>
+
+<p>Instead of having a single axis direction, an ASG now has \(  \mu_x &amp;s=1 $, \(  \mu_y \), and \(  \mu_z \), which are three orthogonal vectors forming a complete basis. It&rsquo;s very similar to a tangent frame, where the normal, tangent, and bitangent together make up an orthonormal basis. With an ASG you also now have two separate sharpness parameters, \(  \lambda_x \) and \( \lambda_y \), which control the sharpness with respect to \(  \mu_x \) and \(  \mu_y \). So for example setting \(  \lambda_x \) to 16 and \( \lambda_y \) to 64 will result in stretched Gaussian lobe that&rsquo;s skinnier along the \( \lambda_y \) direction, and with its center located at \(  \mu_z \). Visualizing such an ASG on the surface of a sphere gives you this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/asg_sphere.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/asg_sphere.png?w=300" alt="ASG_Sphere" /></a>
+<center> <em>An Anisotropic Spherical Gaussian visualized on the surface of a sphere. \(  \lambda_x \) has a value of 16, and \(  \lambda_y \) has a value of 64.</em></center></p>
+
+<p>Like SG&rsquo;s, the equations lend themselves to simple HLSL implementations:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">ASG</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">Amplitude</span><span class="p">;</span>
+    <span class="n">float3</span> <span class="n">BasisZ</span><span class="p">;</span>
+    <span class="n">float3</span> <span class="n">BasisX</span><span class="p">;</span>
+    <span class="n">float3</span> <span class="n">BasisY</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">SharpnessX</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">SharpnessY</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">float3</span> <span class="nf">EvaluateASG</span><span class="p">(</span><span class="n">in</span> <span class="n">ASG</span> <span class="n">asg</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">dir</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">sTerm</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">asg</span><span class="p">.</span><span class="n">BasisZ</span><span class="p">,</span> <span class="n">dir</span><span class="p">));</span>
+    <span class="kt">float</span> <span class="n">lambdaTerm</span> <span class="o">=</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessX</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisX</span><span class="p">)</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisX</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">muTerm</span> <span class="o">=</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessY</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisY</span><span class="p">)</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisY</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">asg</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span> <span class="n">sTerm</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambdaTerm</span> <span class="o">-</span> <span class="n">muTerm</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The ASG paper provides us with formulas for two operations that we can use to improve the quality of our specular approximation for SG light sources. The first is a new warping operator that can take an NDF represented as an isotropic SG, and stretch it along the view direction to produce an ASG that better represents the actual BRDF. The other helpful forumula it provides is for convolving an ASG with an SG, which we can use to convolve a anisotropically warped NDF lobe with an SG lighting lobe. Let&rsquo;s take a look at how their improved warp looks when graphing the NDF for a large viewing angle:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/distribution_anisotropy_3d.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/distribution_anisotropy_3d.png" alt="Distribution_Anisotropy_3D" /></a>
+<center><em>The left image is a 3D graph of the distribution term when using a spherical warp. The middle image is the resulting distribution term when using an anisotropic warp. The right image is the actual GGX distribution term</em>.</center></p>
+
+<p>The anisotropic distribution looks much closer to the actual GGX NDF, since it now has the vertical stretching that we were missing. Let&rsquo;s now implement their formulas in HLSL so we can try the new warp in our test scene:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">ConvolveASG_SG</span><span class="p">(</span><span class="n">in</span> <span class="n">ASG</span> <span class="n">asg</span><span class="p">,</span> <span class="n">in</span> <span class="n">SG</span> <span class="n">sg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// The ASG paper specifes an isotropic SG as
+</span><span class="c1"></span>    <span class="c1">// exp(2 * nu * (dot(v, axis) - 1)),
+</span><span class="c1"></span>    <span class="c1">// so we must divide our SG sharpness by 2 in order
+</span><span class="c1"></span>    <span class="c1">// to get the nup parameter expected by the ASG formula
+</span><span class="c1"></span>    <span class="kt">float</span> <span class="n">nu</span> <span class="o">=</span> <span class="n">sg</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="mf">0.5f</span><span class="p">;</span>
+
+    <span class="n">ASG</span> <span class="n">convolveASG</span><span class="p">;</span>
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">BasisX</span> <span class="o">=</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisX</span><span class="p">;</span>
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">BasisY</span> <span class="o">=</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisY</span><span class="p">;</span>
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">BasisZ</span> <span class="o">=</span> <span class="n">asg</span><span class="p">.</span><span class="n">BasisZ</span><span class="p">;</span>
+
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">SharpnessX</span> <span class="o">=</span> <span class="p">(</span><span class="n">nu</span> <span class="o">*</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessX</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">nu</span> <span class="o">+</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessX</span><span class="p">);</span>
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">SharpnessY</span> <span class="o">=</span> <span class="p">(</span><span class="n">nu</span> <span class="o">*</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessY</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">nu</span> <span class="o">+</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessY</span><span class="p">);</span>
+
+    <span class="n">convolveASG</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="n">Pi</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">nu</span> <span class="o">+</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessX</span><span class="p">)</span> <span class="o">*</span>
+    <span class="p">(</span><span class="n">nu</span> <span class="o">+</span> <span class="n">asg</span><span class="p">.</span><span class="n">SharpnessY</span><span class="p">));</span>
+
+    <span class="n">float3</span> <span class="n">asgResult</span> <span class="o">=</span> <span class="n">EvaluateASG</span><span class="p">(</span><span class="n">convolveASG</span><span class="p">,</span> <span class="n">sg</span><span class="p">.</span><span class="n">Axis</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">asgResult</span> <span class="o">*</span> <span class="n">sg</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span> <span class="n">asg</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ASG</span> <span class="nf">WarpDistributionASG</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">ndf</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">view</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ASG</span> <span class="n">warp</span><span class="p">;</span>
+
+    <span class="c1">// Generate any orthonormal basis with Z pointing in the
+</span><span class="c1"></span>    <span class="c1">// direction of the reflected view vector
+</span><span class="c1"></span>    <span class="n">warp</span><span class="p">.</span><span class="n">BasisZ</span> <span class="o">=</span> <span class="n">reflect</span><span class="p">(</span><span class="o">-</span><span class="n">view</span><span class="p">,</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Axis</span><span class="p">);</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">BasisX</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">cross</span><span class="p">(</span><span class="n">ndf</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">warp</span><span class="p">.</span><span class="n">BasisZ</span><span class="p">));</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">BasisY</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">cross</span><span class="p">(</span><span class="n">warp</span><span class="p">.</span><span class="n">BasisZ</span><span class="p">,</span> <span class="n">warp</span><span class="p">.</span><span class="n">BasisX</span><span class="p">));</span>
+
+    <span class="kt">float</span> <span class="n">dotDirO</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Axis</span><span class="p">),</span> <span class="mf">0.0001f</span><span class="p">);</span>
+
+    <span class="c1">// Second derivative of the sharpness with respect to how
+</span><span class="c1"></span>    <span class="c1">// far we are from basis Axis direction
+</span><span class="c1"></span>    <span class="n">warp</span><span class="p">.</span><span class="n">SharpnessX</span> <span class="o">=</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">/</span> <span class="p">(</span><span class="mf">8.0f</span> <span class="o">*</span> <span class="n">dotDirO</span> <span class="o">*</span> <span class="n">dotDirO</span><span class="p">);</span>
+    <span class="n">warp</span><span class="p">.</span><span class="n">SharpnessY</span> <span class="o">=</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">/</span> <span class="mf">8.0f</span><span class="p">;</span>
+
+    <span class="n">warp</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="n">ndf</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">warp</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">SpecularTermASGWarp</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">light</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span>
+                           <span class="n">in</span> <span class="kt">float</span> <span class="n">roughness</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">view</span><span class="p">,</span>
+                           <span class="n">in</span> <span class="n">float3</span> <span class="n">specAlbedo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Create an SG that approximates the NDF
+</span><span class="c1"></span>    <span class="n">SG</span> <span class="n">ndf</span> <span class="o">=</span> <span class="n">DistributionTermSG</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">roughness</span><span class="p">);</span>
+
+    <span class="c1">// Apply a warpring operation that will bring the SG from
+</span><span class="c1"></span>    <span class="c1">// the half-angle domain the the the lighting domain.
+</span><span class="c1"></span>    <span class="n">ASG</span> <span class="n">warpedNDF</span> <span class="o">=</span> <span class="n">WarpDistributionASG</span><span class="p">(</span><span class="n">ndf</span><span class="p">,</span> <span class="n">view</span><span class="p">);</span>
+
+    <span class="c1">// Convolve the NDF with the light
+</span><span class="c1"></span>    <span class="n">float3</span> <span class="n">output</span> <span class="o">=</span> <span class="n">ConvolveASG_SG</span><span class="p">(</span><span class="n">warpedNDF</span><span class="p">,</span> <span class="n">light</span><span class="p">);</span>
+
+    <span class="c1">// Parameters needed for evaluating the visibility term
+</span><span class="c1"></span>    <span class="n">float3</span> <span class="n">warpDir</span> <span class="o">=</span> <span class="n">warpedNDF</span><span class="p">.</span><span class="n">BasisZ</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">roughness</span> <span class="o">*</span> <span class="n">roughness</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">nDotL</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">warpDir</span><span class="p">));</span>
+    <span class="kt">float</span> <span class="n">nDotV</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">view</span><span class="p">));</span>
+    <span class="n">float3</span> <span class="n">h</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">warpDir</span> <span class="o">+</span> <span class="n">view</span><span class="p">);</span>
+
+    <span class="c1">// Visibility term
+</span><span class="c1"></span>    <span class="n">output</span> <span class="o">*=</span> <span class="n">GGX_V1</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="n">nDotL</span><span class="p">)</span> <span class="o">*</span> <span class="n">GGX_V1</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="n">nDotV</span><span class="p">);</span>
+
+    <span class="c1">// Fresnel
+</span><span class="c1"></span>    <span class="kt">float</span> <span class="n">powTerm</span> <span class="o">=</span> <span class="n">pow</span><span class="p">((</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">warpDir</span><span class="p">,</span> <span class="n">h</span><span class="p">))),</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">output</span> <span class="o">*=</span> <span class="n">specAlbedo</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">specAlbedo</span><span class="p">)</span> <span class="o">*</span> <span class="n">powTerm</span><span class="p">;</span>
+
+    <span class="c1">// Cosine term
+</span><span class="c1"></span>    <span class="n">output</span> <span class="o">*=</span> <span class="n">nDotL</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If we swap out our old specular approximation for one that uses an anisotropic warp, our test scene now looks much better!</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sglight_asg_warp.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sglight_asg_warp.png" alt="SGLight_ASG_Warp" /></a>
+<center><em>Diffuse and specular approximations applied to an SG light source, using an anisotropic warp to approximate the NDF as an ASG.</em></center></p>
+
+<h2 id="visually-comparing-the-brdf">Visually Comparing the BRDF<a href="#visually-comparing-the-brdf" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Many of the images that I used for visually comparing the SG BRDF approximations were generated using Disney&rsquo;s <a href="https://github.com/wdas/brdf">BRDF Explorer</a>. When we were doing our initial research into SG&rsquo;s and figuring out how to implement them, BRDF Explorer was extremely valuable both for understanding the concepts and for experimenting with different variations. If you&rsquo;d like to this yourself, there&rsquo;s a very easy way to do that courtesy of <a href="https://twitter.com/pastasfuture">Nick Brancaccio</a>. Nick was kind of enough to create his own awesome <a href="https://depot.floored.com/brdf_explorer">WebGL version of BRDF Explorer</a>, and it comes pre-loaded with options for comparing an approximate SG specular BRDF with the GGX BRDF. I would recommend checking it out if you&rsquo;d like to play around with the BRDF&rsquo;s and make some pretty 3D graphs!</p>
+
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>[1] <a href="http://blog.selfshadow.com/publications/s2013-shading-course/hoffman/s2013_pbs_physics_math_notes.pdf">Background: Physics and Math of Shading (SIGGRAPH 2013 Course: Physically Based Shading in Theory and Practice)</a><br>
+[2] <a href="http://jcgt.org/published/0003/02/03/">Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs</a><br>
+[3] <a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a><br>
+[4] <a href="http://inst.cs.berkeley.edu/~cs294-13/fa09/lectures/cookpaper.pdf">A Reflectance Model for Computer Graphics</a><br>
+[5] <a href="http://www.graphics.cornell.edu/~westin/pubs/TorranceSparrowJOSA1967.pdf">Theory for Off-Specular Reflection From Roughened Surfaces</a><br>
+[6] <a href="http://cg.cs.tsinghua.edu.cn/people/~kun/asg/">Anisotropic Spherical Gaussians</a><br>
+[7] <a href="https://github.com/wdas/brdf">BRDF Explorer</a><br>
+[8] <a href="https://depot.floored.com/brdf_explorer">WebGL BRDF Explorer</a><br></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-10-17 08:29:19">Oct 1, 2016</time></p>
+
+<p>Thank you Evgenii! I added the missing link. I&rsquo;m also glad that you like the graphs, it took a while to generate all of them. :)
+<hr />
+####
+[Evgenii Golubev]( &ldquo;zalbard@gmail.com&rdquo;) - <time datetime="2016-10-17 04:01:34">Oct 1, 2016</time></p>
+
+<p>The first paragraph is missing a link. :-) Great series! I especially like the included graphs.
+<hr />
+####
+[Devsh]( &ldquo;devsh.graphicsprogramming@gmail.com&rdquo;) - <time datetime="2019-03-02 13:01:17">Mar 6, 2019</time></p>
+
+<p>Hi MJP, I&rsquo;ve noticed that we could fit more gaussians to an arbitrary function. For example I&rsquo;ve managed to match the Beckmann distribution with 3 gaussians for the roughness value of 1 <a href="https://www.desmos.com/calculator/o1lces1o1l">https://www.desmos.com/calculator/o1lces1o1l</a> My aim is to fit between 2-5 gaussians to common BRDFs and sample from environment maps pre-convolved with SG, then that way I can get a much better approximation to Importance Sampled references than the current IBL methods.
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3929 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:09 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>SG Series Part 3: Diffuse Lighting From an SG Light Source</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+</body>
+
+</html>

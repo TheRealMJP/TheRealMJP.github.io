@@ -6,9 +6,100 @@
     <description>Recent content in Tags on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Tue, 15 Jan 2019 05:36:42 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Uncategorized</title>
+      <link>https://therealmjp.github.io/tags/uncategorized/</link>
+      <pubDate>Tue, 15 Jan 2019 05:36:42 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/uncategorized/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DX12</title>
+      <link>https://therealmjp.github.io/tags/dx12/</link>
+      <pubDate>Mon, 10 Dec 2018 02:01:27 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/dx12/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Graphics</title>
+      <link>https://therealmjp.github.io/tags/graphics/</link>
+      <pubDate>Mon, 10 Dec 2018 02:01:27 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/graphics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DirectX 12</title>
+      <link>https://therealmjp.github.io/tags/directx-12/</link>
+      <pubDate>Fri, 25 Mar 2016 08:39:36 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/directx-12/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DirectX 11</title>
+      <link>https://therealmjp.github.io/tags/directx-11/</link>
+      <pubDate>Tue, 04 Feb 2014 06:58:04 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/directx-11/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Programming</title>
+      <link>https://therealmjp.github.io/tags/programming/</link>
+      <pubDate>Tue, 04 Feb 2014 06:58:04 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DirectX</title>
+      <link>https://therealmjp.github.io/tags/directx/</link>
+      <pubDate>Wed, 11 Sep 2013 07:45:40 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/directx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>the blog</title>
+      <link>https://therealmjp.github.io/tags/the-blog/</link>
+      <pubDate>Mon, 15 Oct 2012 08:00:47 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/the-blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>XNA</title>
+      <link>https://therealmjp.github.io/tags/xna/</link>
+      <pubDate>Tue, 23 Mar 2010 07:42:36 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/xna/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Xbox 360</title>
+      <link>https://therealmjp.github.io/tags/xbox-360/</link>
+      <pubDate>Thu, 31 Dec 2009 22:31:58 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/xbox-360/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

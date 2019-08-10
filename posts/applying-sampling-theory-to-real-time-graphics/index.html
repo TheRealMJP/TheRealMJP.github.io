@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Applying Sampling Theory To Real-Time Graphics">
+<meta itemprop="description" content="Previous article in the series: Signal Processing Primer
+Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
+Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling.">
+
+
+<meta itemprop="datePublished" content="2012-10-22T06:59:09&#43;00:00" />
+<meta itemprop="dateModified" content="2012-10-22T06:59:09&#43;00:00" />
+<meta itemprop="wordCount" content="4763">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="Applying Sampling Theory To Real-Time Graphics" />
+<meta property="og:description" content="Previous article in the series: Signal Processing Primer
+Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
+Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/applying-sampling-theory-to-real-time-graphics/" />
+<meta property="article:published_time" content="2012-10-22T06:59:09+00:00" />
+<meta property="article:modified_time" content="2012-10-22T06:59:09+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Applying Sampling Theory To Real-Time Graphics"/>
+<meta name="twitter:description" content="Previous article in the series: Signal Processing Primer
+Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
+Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Applying Sampling Theory To Real-Time Graphics</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 22, 2012</span></div>
+				<h1>Applying Sampling Theory To Real-Time Graphics</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>Previous article in the series: <a href="../signal-processing-primer/">Signal Processing Primer</a></em></p>
+
+<p>Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.</p>
+
+<h2 id="image-scaling">Image Scaling<a href="#image-scaling" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>The concepts of sampling theory can are most easily applicable to graphics in the form of <em>image scaling</em>. An image, or bitmap, is typically the result of sampling a color signal at discrete XY sample points (pixels) that are evenly distributed on a 2D grid. To rescale it to a different number of pixels, we need to calculate a new color value at sample points that are different from the original pixel locations. In the previous article we mentioned that this process is known as <em>resampling</em>, and is also referred to as <em>interpolation</em>. Any graphics programmer should be familiar with the <em>point</em> (also known as <em>nearest-neighbor</em>) and <em>linear</em> (also known as <em>bilinear)</em> interpolation modes supported natively in GPU’s which are used when sampling textures. In case you’re not familiar, point filtering simply picks the closest texel to the sample point and uses that value. Bilinear filtering on the other hand picks the 4 closest texels, and linearly interpolates those values in the X and Y directions based on the location of the sample point relative to the texels. It turns out that these modes are both just implementations of a reconstruction filter, with point interpolation using a box function and linear interpolation using a triangle function. If you look back at the diagrams showing reconstruction with a box function and triangle function, you can see actually see how the reconstructed signal resembles the visual result that you get when performing point and linear sampling. With the box function you end up getting a reconstructed value that’s “snapped” to the nearest original sample point, while with a triangle function you end up with straight lines connecting the sample points. If you’ve used point and linear filtering, you probably also intuitively understand that point filtering inherently results in more aliasing than linear filtering when resizing an image. For reference, here&rsquo;s an image showing the same rotated checkerboard pattern being resampled with a box filter and a triangle filter:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/point_linear_filtering.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/point_linear_filtering.png" alt="" title="Point_Linear_Filtering" /></a>
+<center><em>An image of a rotated checkerboard pattern being enlarged with a box filter (point filtering) and a triangle filter (bilinear filtering)</em></center></p>
+
+<p>Knowing what we do about aliasing and reconstruction filters, we can now put some mathematical foundation behind what we intuitively knew all along.  The box function’s frequency domain equivalent (the sinc function) is smoother and wider than the triangle function’s frequency domain equivalent (the sinc2 function), which results in significantly more postaliasing. Of course we should note even though the triangle function might be considered among the the “low end” of reconstruction filters in terms of quality, it is still attractive due to its low performance impact. Not only is the triangle function very cheap to evaluate at a given point in terms of ALU instructions, but more importantly the function evaluates to 0 for all distances greater than or equal to 1. This is important for performance, because it means that any pixels that are further than a distance of 1.0 from the resampled pixel location will not have to be considered. Ultimately this means that we only need to fetch a maximum of 4 pixels (in a 2x2 area) for linear filtering, which limits bandwidth usage and cache misses. For point filtering the situation is even better, since the box function hits zero at 0.5 (it has a width of 1.0) and thus we only need to fetch one pixel.</p>
+
+<p>Outside of realtime 3D rendering, it is common to use <em>cubic filters</em> (also known as <em>bicubic filters</em>) as a higher-quality alternative to point and linear filters when scaling images. A cubic filter is not a single filtering function, but rather a family of filters that interpolate using a 3rd-order (cubic) polynomial. The use of such functions in image processing dates back to Hsieh Hou’s paper entitled “Cubic Splines for Image Interpolation and Digital Filtering”[1] which proposed using cubic B-splines as the basis for interpolation. Cubic splines are attractive for filtering because they can be used to create functions where the 1st derivative is continuous across the entire domain range, which known as being <em>C1 continuous</em>. Being C1 continuous also implies that the function is <em>C0 continuous</em>, which means that the 0th derivative is also continuous. So in other words, the function itself will would have no visible discontinuities if you were to plot the function. Remember that there is an inverse relationship between rate of change in the spatial domain and the frequency domain, therefore a smooth function without discontinuities is desirable for reducing postaliasing. A second reason that cubic splines are attractive is that the functions can be made to be zero-valued after a certain point, much like a box or triangle function. This means the filter will have a limited width, which is optimal from a performance point of view. Typically cubic filters use functions defined along the [-2, 2] range, which is double the width of a unit triangle function. Finally, a third reason for the attractiveness of cubic filters is that they can be made to produce acceptable results when applied as a <em>seperable</em> <em>filter</em>. Seperable filters can be applied independently in two passes along the X and Y dimensions, which reduces the number of neighboring pixels that need to be considered when applying the filter and thus improves the performance.</p>
+
+<p>In 1988, Don Mitchell and Arun Netravali published a paper entitled <em>Reconstruction Filters in Computer Graphics</em>[2] which narrowed down the set of possible of cubic filtering functions into a generalized form dependent on two parameters called <em>B</em> and <em>C</em>. This family of functions produces filtering functions that are always C1 continuous, and are normalized such that area under the curve is equal to one. The general form they devised is found below:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/generalized-cubic.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/generalized-cubic.png" alt="" title="Generalized Cubic" /></a>
+<center><em>Generalized form for cubic filtering functions</em></center></p>
+
+<p>Below you can find  graphs of some of the common curves in use by popular image processing software[3], as well as the result of using them to enlarge the rotated checkerboard pattern that we used earlier:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/generalized-cubic-graphs-resized.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/generalized-cubic-graphs-resized.png" alt="" title="Generalized Cubic Graphs Resized" /></a>
+<center><em>Common cubic filtering functions using Mitchell’s generalized form for cubic filtering. From top- left going clockwise: cubic(1, 0) AKA cubic B-spline, cubic(1/3, 1/3) AKA Mitchell filter, cubic(0, 0.75) AKA Photoshop bicubic filter, and cubic(0, 0.5) AKA Catmull-Rom spline</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/cubic-filters.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/cubic-filters.png" alt="" title="Cubic Filters" /></a>
+<center><em>Cubic filters used to enlarge a rotated checkerboard pattern</em></center></p>
+
+<p>One critical point touched upon in Mitchell’s paper is that the sinc function isn’t usually desirable for image scaling, since by nature the pixel structure of an image leads to discontinuities which results in unbounded frequencies. Therefore ideal reconstruction isn’t possible, and ringing artifacts will occur due to Gibb’s phenomenon. Ringing was identified by Schrieber and Troxel[4] as being one of four negative artifacts that can occur when using cubic filters, with the other three being aliasing, <em>blurring</em> and <em>anisotropy effects</em>. Blurring is recognized as the loss of detail due to too much attenuation of higher frequencies, and is often caused by a filter kernel that is too wide. Anisotropic effects are artifacts that occur due to applying the function as a separable filter, where the resulting 2D filtering function doesn’t end up being radially symmetrical.</p>
+
+<p>Mitchell suggested that the purely frequency domain-focused techniques of filter design were insufficient for designing a filter that produces subjectively pleasing results to the human eye, and instead emphasized balancing the 4 previously-mentioned artifacts against the amount of postaliasing in order to design a high-quality filter for image scaling. He also suggested studying human perceptual response to certain artifacts in order to subjectively determine how objectionable they may be. For instance, Earl Brown[5] discovered that ringing from a single negative lobe can actually increase perceived sharpness in an image, and thus can be a desirable effect in certain scenarios. He also pointed out that ringing from multiple negative lobes, such as what you get from a sinc function, will always degrade quality. Here&rsquo;s an image of our friend Rocko enlarged with a Sinc filter, as well as an image of a checkerboard pattern enlarged with the same filter:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/ringing_multilobe.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/ringing_multilobe.png" alt="" title="Ringing_Multilobe" /></a>
+<center><em>Ringing from multiple lobes caused by enlargement with a windowed sinc filter</em></center></p>
+
+<p>Ultimately, Mitchell segmented the domain of his B and C parameters into what he called &ldquo;regions of dominant subjective behavior. In other words, he determined which values of each parameter resulted in undesirable artifacts. In his paper he included the following chart showing which artifacts were associated with certain ranges of the B and C parameters:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/mitchell_chart.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/mitchell_chart.png" alt="" title="Mitchell_Chart" /></a>
+<center><em>A chart showing the dominant areas of negative artifacts for Mitchell&rsquo;s generalized cubic function. From &ldquo;Reconstruction Filters in Computer Graphics&rdquo; [Mitchell 88]</em></center></p>
+
+<p>Based on his analysis, Mitchell determined that (1/3, 1/3) produced the highest-quality results. For that reason, it is common to refer to the resulting function as a “Mitchell filter”. The following images show the results of using non-ideal parameters to enlarge Rocko, as well as the results from using Mitchell&rsquo;s suggested parameters:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/cubic-artifacts.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/cubic-artifacts.png" alt="" title="Cubic Artifacts" /></a>
+<center><em>Undesirable artifacts caused by enlargement using cubic filtering. The top left image demonstrates anisotropy effects, the top right image demonstrates excessive blurring, and the bottom left demonstrates excessive ringing. The bottom right images uses a Mitchell filiter, representing ideal results for a cubic filter. Note that these images have all been enlarged an extra 2x with point filtering after resizing with the cubic filter, so that the artifacts are more easier to see.</em></center></p>
+
+<h2 id="texture-mapping">Texture Mapping<a href="#texture-mapping" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Real-time 3D rendering via rasterization brings about its own particular issues related to aliasing, as well as specialized solutions for dealing with them. One such issue is aliasing resulting from resampling textures at runtime in order to map them to a triangle’s 2D projection in screen space, which I’ll refer to as <em>texture aliasing</em>. If we take the case of a 2D texture mapped to a quad that is perfectly perpendicular to the camera, texture sampling essentially boils down to a classic image scaling problem: we have a texture with some width and height, the quad is scaled to cover a grid of screen pixels with a different width and height, and the image must be resampled at the pixel locations where pixel shading occurs. We already mentioned in the previous section that 3D hardware is natively capable of applying “linear” filtering with a triangle function. Such filtering is sufficient for avoiding severe aliasing artifacts when upscaling or downscaling, although for downscaling this only holds true when downscaling by a factor &lt;= 2.0. Linear filtering will also prevent aliasing when rotating an image, which is important in the context of 3D graphics since geometry will often be rotated arbitrarily relative to the camera. Like image scaling, rotation is really just a resampling problem and thus the same principles apply. The following image shows how the pixel shader sampling rate changes for a triangle as it’s scaled and rotated:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/triangle-sampling-rate.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/triangle-sampling-rate.png" alt="" title="Triangle Sampling Rate" /></a>
+<center><em>Pixel sampling rates for a triangle. Pixel shaders are executed at a grid of fixed locations in screen space (represented by the  red dots in the image), thus the sampling rate for a texture depends on the position, orientation, and projection of a given triangle. The green triangle represents the larger blue triangle after being scaled and rotated, and thus having a lower sampling rate.</em></center></p>
+
+<h2 id="mipmapping">Mipmapping<a href="#mipmapping" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>When downscaling by a factor greater than 2, linear filtering leads to aliasing artifacts due to high-frequency components of the source image leaking into the downsampled version. This manifests as temporal artifacts, where the contents of the texture appear to flicker as a triangle moves relative to the camera. This problem is commonly dealt with in image processing by widening the filter kernel so that its width is equal to the size of the downscaled pixel. So for instance if downscaling from 100x100 to 25x25, the filter kernel would be greater than or equal in width to a 4x4 square of pixels in the original image. Unfortunately widening the filter kernel isn’t usually a suitable option for realtime rendering, since the number of memory accesses increases with O(N2) as the filter width increases. Because of this a technique known as <em>mipmapping</em> is used instead. As any graphics programmer should already know, mipmaps consist of a series of <em>prefiltered</em> versions of a 2D texture that were downsampled with a kernel that’s sufficiently wide enough to prevent aliasing. Typically these downsampled versions are generated for dimensions that are powers of two, so that each successive mipmap is half the width and height of the previous mipmap. The following image from Wikipedia shows an example of typical mipmap chain for a texture:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/mipmaps.jpg"><img src="http://mynameismjp.files.wordpress.com/2012/10/mipmaps.jpg" alt="" title="Mipmaps" /></a>
+<center><em>An example of a texture with mipmaps. Each mip level is roughly half the size of the level before it. Image take from Wikipedia.</em></center></p>
+
+<p>A box function is commonly used for generating mip maps, although it’s possible to use any suitable reconstruction filter when downscaling the source image. The generation is also commonly implemented recursively, so that each mip level is generated from the mip level preceding it. This makes the process computationally cheap, since a simple linear filter can be used at each stage in order to achieve the same results as a wide box filter applied to the highest-resolution image. At runtime the pixel shader selects the appropriate mip level by calculating the <em>gradients</em> of the texture coordinate used for sampling, which it does by comparing texture coordinate used for one pixel to the texture coordinate used in the neighboring pixels of a 2x2 quad. These gradients, which are equal to the partial derivatives of the texture coordinates with respect to X and Y in screen space, are important because they tell us the relationship between a given 2D image and the rate at which we’ll sample that image in screen space. Smaller gradients mean that the sample points are close together, and thus we’re using a high sampling rate. Larger gradients result from the sample points being further apart, which we can interpret to mean that we’re using a low sampling rate. By examining these gradients we can calculate the highest-resolution mip level that would provide us with an image size less than or equal to our sampling rate. The following image shows a simple example of mip selection:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/mip_selection.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/mip_selection.png" alt="" title="Mip_Selection" /></a>
+<center><em>Using texture coordinate gradients to select a mip level for a 4x4 texture.</em></center></p>
+
+<p>In the image, the two red rectangles represent texture-mapped quads of different sizes rasterized to a 2D grid of pixels<em>.</em> For the topmost quad, the a value of 0.25 will be computed as the partial derivative for the U texture coordinate with respect to the X dimension, and the same value will be computed as the partial derivative for the V texture coordinate with respect to the Y dimension. The larger of the two gradients is then used to select the appropriate mip level based on the size of the texture. In this case, the length of the gradient will be 0.25 which means that the 0th (4x4) mip level will be selected. For the lower quad the size of the gradient is doubled, which means that the 1st mip level will be selected instead. Quality can be further improved through the use of <em>trilinear filtering,</em> which linearly interpolates between the results of bilinearly sampling the two closest mip levels based on the gradients. Doing so prevents visible seams on a surface at the points where a texture switches to the next mip level.</p>
+
+<p>One problem that we run into with mipmapping is when an image needs to be downscaled more in one dimension than in the other. This situation is referred to as <em>anisotropy</em>, due to the differing sampling rates with respect to the U and V axes of the texture. This happens all of the time in 3D rendering, particularly when a texture is mapped to a ground plane that’s nearly parallel with the view direction. In such a case the plane will be projected such that the V gradients grow more quickly than the U gradients as distance from the camera increases, which equates to the sampling rate being lower along the V axis. When the gradient is larger for one axis than the other, 3D hardware will use the larger gradient for mip selection since using the smaller gradient would result in aliasing due to undersampling. However this has the undesired effect of over-filtering along the other axis, thus producing a “blurry” result that’s missing details. To help alleviate this problem, graphics hardware supports <em>anisotropic filtering</em>. When this mode is active, the hardware will take up to a certain number of “extra” texture samples along the axis with the larger gradient. This allows the hardware to “reduce” the maximum gradient, and thus use a higher-resolution mip level. The final result is equivalent to using a rectangular reconstruction filter in 2D space as opposed to a box filter. Visually such a filter will produce results such that aliasing is prevented, while details are still perceptible. The following images demonstrate anisotropic filtering on a textured plane:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/anisotropy_1x.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/anisotropy_1x.png" alt="" title="Anisotropy_1x" /></a><a href="http://mynameismjp.files.wordpress.com/2012/10/anisotropy_16x.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/anisotropy_16x.png" alt="" title="Anisotropy_16x" /></a>
+<center><em>A textured plane without anisotropic filtering, and the same plane with 16x anistropic filtering. The light grey grid lines demonstrate the distribution of pixels, and thus the rate of pixel shading in screen space. The red lines show the U and V axes of the texture mapped to plane. Notice the lack of details in the grain of the wood on the left image, due to over-filtering of the U axis in the lower-resolution mip levels.</em></center></p>
+
+<h2 id="geometric-aliasing">Geometric Aliasing<a href="#geometric-aliasing" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>A second type of aliasing experienced in 3D rendering is known as <em>geometric aliasing</em>. When a 3D scene composed of triangles is rasterized, the <em>visibility</em> of those triangles is sampled at discrete locations typically located at the center of the screen pixels. Triangle visibility is just like any other signal in that there will be aliasing in the reconstructed signal when the sampling rate is inadequate (in this case the sampling rate is determined by the screen resolution). Unfortunately triangular data will always have discontinuities, which means the signal will never be bandlimited and thus no sampling rate can be high enough to prevent aliasing. In practice these artifacts manifest as the familiar jagged lines or “jaggies” commonly seen in games and other applications employing realtime graphics. The following image demonstrates how these aliasing artifacts occur from rasterizing a single triangle:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/geometric-aliasing.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/geometric-aliasing.png" alt="" title="Geometric Aliasing" /></a>
+<center><em>Geometric aliasing occurring from undersampling the visibility of a triangle. The green, jagged line represents the outline of the triangle seen on a where pixels appear as squares of a uniform color.</em></center></p>
+
+<p>Although we’ve already established that no sampling rate would allow us to perfectly reconstruct triangle visibility, it is possible to reduce aliasing artifacts with a process known as <em>oversampling</em>. Oversampling essentially boils down to sampling a signal at some rate higher than our intended output, and then using those samples points to reconstruct new sample points at the target sampling rate. In terms of 3D rendering this equates to rendering at some resolution higher than the output resolution, and then downscaling the resulting image to the display size. This process is known as <em>supersampling</em>, and it’s been in use in 3D graphics for a very long time. Unfortunately it’s an expensive option, since it requires not just rasterizing at a higher resolution but also shading pixels at a higher rate. Because of this, an optimized form of supersampling known as <em>multi-sample antialiasing</em> (abbreviated as MSAA) was developed specifically for combating geometric aliasing. We&rsquo;ll discuss MSAA and geometric aliasing in more detail in the following article.</p>
+
+<h2 id="shader-aliasing">Shader Aliasing<a href="#shader-aliasing" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>A third type of aliasing that’s common in modern 3D graphics is known as <em>shader aliasing</em>. Shader aliasing is similar to texture aliasing, in that occurs due to the fact that the pixel shader sampling rate is fixed in screen space. However the distinction is that shader aliasing refers to undersampling of signals that are evaluated analytically in the pixel shader using mathematical formulas, as opposed to undersampling of a texture map. The most common and noticeable case of shader aliasing results from applying per-pixel specular lighting with low roughness values (high specular exponents for Phong and Blinn-Phong). Lower roughness values result in narrower lobes, which make the specular response into a higher-frequency signal and thus more prone to undersampling. The following image contains plots of the N dot H response of a Blinn-Phong BRDF with varying roughness, demonstrating it becomes higher frequency for lower roughnesses:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/specular_frequency.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/specular_frequency.png" alt="" title="Specular_Frequency" /></a>
+<center><em>N dot H response of a Blinn-Phong BRDF with various exponents. Note how the response becomes higher-frequency for higher exponents, which correspond to lower roughness values. Image from Real-Time Rendering, 3rd Edition, A K Peters 2008</em></center></p>
+
+<p>Shader aliasing is most likely to occur when normal maps are used, since they increase the frequency of the surface normal and consequently cause the specular response to vary rapidly across a surface. HDR rendering and physically-based shading models can compound the problem even further, since they allow for extremely intense specular highlights relative to the diffuse lighting response. This category of aliasing is perhaps the most difficult to solve, and as of yet there are no silver-bullet solutions. MSAA is almost entirely ineffective, since the pixel shading rate is not increased compared to the non-MSAA. Supersampling is effective, but prohibitively expensive due to the increased shader and bandwidth costs required to shade and fill a larger render target. Emil Persson demonstrated a method of selectively supersampling the specular lighting inside the pixel shader[6], but this too can be expensive if the number of lights are high or if multiple normal maps need to be blended in order to compute the final surface normal.</p>
+
+<p>A potential solution that has been steadily gaining some ground[7][8] is to modify the specular shading function itself based on normal variation. The theory behind this is that microfacet BRDF’s naturally represent micro-level variation along a surface, with the amount of variation being based on a roughness parameter. If we increase the roughness of a material as the normal map details become relatively smaller in screen space, we use the BRDF itself to account for the undersampling of the normal map/specular lighting response. Increasing roughness decreases the frequency of the resulting reflectance, which in turn reduces the appearance of artifacts. The following image contains an example of using this technique, with an image captured with 4x shader supersampling as a reference:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_none.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_none.png" alt="" title="SpecAliasing_None" /></a>
+<a href="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_4xss.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_4xss.png" alt="" title="SpecAliasing_4xSS" /></a>
+<a href="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_clean.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/specaliasing_clean.png" alt="" title="SpecAliasing_Clean" /></a>
+<center><em>The topmost image shows an example of shader aliasing due to undersampling a high-frequency specular BRDF combined with a high-frequency normal map. The middle image shows the same scene with 4x shader supersampling applied. The bottom image shows the results of of using a variant of CLEAN mapping to limit the frequency of the specular response.</em></center></p>
+
+<p>This approach (and others like it) can be considered to be part of a broader category of antialiasing techniques known as <em>prefiltering</em>. Prefiltering amounts to applying some sort of low-pass filter to a signal before sampling it, with the goal of ensuring that the signal&rsquo;s bandwidth is less than half of the sampling rate. In a lot of cases this isn&rsquo;t practical for graphics since we don&rsquo;t have adequate information about what we&rsquo;re sampling (for instance, we don&rsquo;t know what triangle should is visible for a pixel until we sample and raterize the triangle). However in the case of specular aliasing from normal maps, the normal map contents are known ahead of time.</p>
+
+<h2 id="temporal-aliasing">Temporal Aliasing<a href="#temporal-aliasing" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So far, we have discussed graphics in terms of sampling a 2D signal. However we’re often concerned with a third dimension, which is time. Whenever we’re rendering a video stream we’re also sampling in the time domain, since the signal will completely change as time advances. Therefore we must consider sampling along this dimension as well, and how it can produce aliasing.</p>
+
+<p>In the case of video we are still using discrete samples, where each sample is a complete 2D image representing our scene at some period of time. This sampling is similar to our sampling in the spatial domain: there is some frequency of the signal we are sampling, and if we undersample that signal aliasing will occur. One classic example of a temporal aliasing is the so-called “<a href="http://en.wikipedia.org/wiki/Wagon-wheel_effect">wagon-wheel effect</a>”, which refers to the phenomenon where a rotating wheel may appear to rotate more slowly (or even backwards) when viewed in an undersampled video stream. This animated GIF from Wikipedia demonstrates the effect quite nicely:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/wagonwheeleffect.gif"><img src="http://mynameismjp.files.wordpress.com/2012/10/wagonwheeleffect.gif" alt="" title="WagonWheelEffect" /></a>
+<center><em>A demonstration of the wagon-wheel effect that occurs due to temporal aliasing. In the animation the camera is moving to the right at a constant speed, yet the shapes appear to speed up, slow down, and even switch direction. Image taken from Wikipedia.</em></center></p>
+
+<p>In games, temporal sampling artifacts usually manifest as “jerky” movements and animations.  Increases in framerate correspond to an increase in sampling rate along the time domain, which allows for better sampling of faster-moving content. This is directly analogous to the improvements that are visible from increasing output resolution: more details are visible, and less aliasing is perceptible.</p>
+
+<p>The most commonly-used anti-aliasing technique for temporal aliasing is <em>motion blur</em>. Motion blur actually refers to an effect visible in photography, which occurs due to the shutter of the camera being open for some non-zero amount of time. This produces a result quite different than what we produce in 3D rendering, where by default we get an image representing one infinitely-small period of time. To accurately simulate the effect, we could supersample in the time domain by rendering more frames than we output and applying a filter to the result. However this is prohibitively expensive just like spatial supersampling, and so approximations are used. The most common approach is to produce a per-pixel velocity buffer for the current frame, and then use that to approximate the result of oversampling with a blur that uses multiple texture samples from nearby pixels. Such an approach can be considered an example of advanced reconstruction filter that uses information about the rate of change of a signal rather than additional samples in order to reconstruct an approximation of the original sample. Under certain conditions the results can be quite plausible, however in many cases noticeable artifacts can occur due to the lack of additional sample points. Most notably these artifacts will occur where the occlusion of a surface by another surface changes during a frame, since information about the occluded surface is typically not available to the post-process shader performing the reconstruction. The following image shows three screenshots of a model rotating about the camera&rsquo;s z-axis: the model rendered with no motion blur, the model rendered with <a href="http://graphics.cs.williams.edu/papers/MotionBlurI3D12/">Morgan McGuire&rsquo;s post-process motion blur technique</a>[9] applied using 16 samples per pixel, and finally the model rendered temporal supersampling enabled using 32 samples per frame&rdquo;</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/motionblur.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/motionblur.png" alt="" title="MotionBlur" /></a>
+<center><em>A model rendered without motion blur, the same model rendered with post-process motion blur, and the same model rendered with temporal supersampling.</em></center></p>
+
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>[1] Hou, Hsei. Cubic Splines for Image Interpolation and Digital Filtering. IEEE Transactions on Acoustics, Speech, and Signal Processing. Vol. 26, Issue 6. December 1978. <br>
+[2] Mitchell, Don P. and Netravali, Arun N. <a href="http://www.cs.utexas.edu/~fussell/courses/cs384g/lectures/mitchell/Mitchell.pdf">Reconstruction Filters in Computer Graphics</a>. SIGGRAPH &lsquo;88 Proceedings of the 15th annual conference on Computer graphics and interactive techniques. <br>
+[3] <a href="http://entropymine.com/imageworsener/bicubic/">http://entropymine.com/imageworsener/bicubic/</a> <br>
+[4] Schreiber, William F. Transformation Between  Continuous  and Discrete  Representations  of Images:  A  Perceptual  Approach. IEEE Transactions on Pattern Analysis and Machine Intelligence. Volume 7, Issue 2. March 1985. <br>
+[5] Brown, Earl F. Television: The  Subjective  Effects  of Filter  Ringing  Transients. February, 1979. <br>
+[6] <a href="http://www.humus.name/index.php?page=3D&amp;ID=64">http://www.humus.name/index.php?page=3D&amp;ID=64</a> <br>
+[7] <a href="http://blog.selfshadow.com/2011/07/22/specular-showdown/">http://blog.selfshadow.com/2011/07/22/specular-showdown/</a> <br>
+[8] <a href="http://advances.realtimerendering.com/s2012/index.html">http://advances.realtimerendering.com/s2012/index.html</a> <br>
+[9] McGuire, Morgan. Hennessy, Padraic. Bukowski, Michael, and Osman, Brian. <a href="http://graphics.cs.williams.edu/papers/MotionBlurI3D12/">A Reconstruction Filter for Plausible Motion Blur</a>. I3D 2012. <br></p>
+
+<p><em>Next article in the series: <a href="../msaa-overview/">A Quick Overview of MSAA</a></em></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+[]( &ldquo;&rdquo;) - <time datetime="2013-10-13 10:55:23">Oct 0, 2013</time></p>
+
+<p>&gt; In the animation the camera is moving to the right at a constant speed Actually, that&rsquo;s not true. According to the wikipedia description of the gif, it&rsquo;s the acceleration that&rsquo;s constant, not the speed. (Which makes much more sense!)
+<hr />
+####
+<a href="http://www.racer.nl" title="ruud@racer.nl">Ruud van Gaal</a> - <time datetime="2012-10-22 07:57:51">Oct 1, 2012</time></p>
+
+<p>Interesting article; now onto learning more on frequency lowering for specular highlights, which is indeed a problem (well, I have several areas of shimmering in my graphics engine).
+<hr />
+####
+[AmazingFactory]( &ldquo;first10@btinternet.com&rdquo;) - <time datetime="2012-10-22 04:57:32">Oct 1, 2012</time></p>
+
+<p>worth mentioning that cubic b-spline interpolation results in color shift because it does not interpolate exactly also b-splines are C2 continuous (which means you can use b-spline to interpolate a heightmap and create perfectly smooth normals)
+<hr />
+####
+[Rim]( &ldquo;remigius@netforge.nl&rdquo;) - <time datetime="2012-10-24 04:09:43">Oct 3, 2012</time></p>
+
+<p>Interesting as usual. I&rsquo;ll spare you my usual puritan amateur comments ;)
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4763 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-10-21 23:59 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/msaa-overview/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>A Quick Overview of MSAA</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/signal-processing-primer/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Signal Processing Primer</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

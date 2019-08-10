@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Signal Processing Primer">
+<meta itemprop="description" content="For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of signal processing[1] and sampling theory[2]. This article will explain some of the basics of these two related field in my own words, taking a more theoretical point of view. In the following article the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing.">
+
+
+<meta itemprop="datePublished" content="2012-10-15T08:20:18&#43;00:00" />
+<meta itemprop="dateModified" content="2012-10-15T08:20:18&#43;00:00" />
+<meta itemprop="wordCount" content="4409">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="Signal Processing Primer" />
+<meta property="og:description" content="For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of signal processing[1] and sampling theory[2]. This article will explain some of the basics of these two related field in my own words, taking a more theoretical point of view. In the following article the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/signal-processing-primer/" />
+<meta property="article:published_time" content="2012-10-15T08:20:18+00:00" />
+<meta property="article:modified_time" content="2012-10-15T08:20:18+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Signal Processing Primer"/>
+<meta name="twitter:description" content="For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of signal processing[1] and sampling theory[2]. This article will explain some of the basics of these two related field in my own words, taking a more theoretical point of view. In the following article the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Signal Processing Primer</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 15, 2012</span></div>
+				<h1>Signal Processing Primer</h1>
+			</header>
+			<div class="content">
+				
+
+<p>For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of <a href="http://en.wikipedia.org/wiki/Signal_processing">signal processing</a>[1] and <a href="http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem">sampling theory</a>[2]. This article will explain some of the basics of  these two related field in my own words, taking a more theoretical point of view. In the <a href="../applying-sampling-theory-to-real-time-graphics/">following article</a> the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing. If you&rsquo;d like some further reading, I&rsquo;d recommend consulting chapter 7 of <em>Physically Based Rendering</em>[3] (available as a <a href="http://www.pbrt.org/chapters/pbrt_chapter7.pdf">free download</a>), chapter 5 of <em>Real-Time Rendering, 3rd Edition</em>[4] or <em>Principles of Digital Image Synthesis</em>[5] (which is also <a href="http://realtimerendering.com/Principles_of_Digital_Image_Synthesis_v1.0.1.pdf">freely available for download</a>)</p>
+
+<p>As always, I’m more interested in the material being correct than I am in sounding like I’m smart. So if you see anything that you feel is incorrect or have any additional insights to share, please let me know in the comments!</p>
+
+<h2 id="sampling-theory">Sampling Theory<a href="#sampling-theory" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Sampling theory deals with the process of taking some continuous <em>signal</em> that varies with one or parameters, and sampling the signal at discrete values of those parameters. If you&rsquo;re not familiar with signals and signal processing, you can think of a signal as some continuous function of any dimension that varies along its domain. To sample it, we then calculate that function&rsquo;s value at certain points along the curve. Usually the points at which we sample are evenly-spaced apart, which we call <em>uniform sampling.</em> So for instance if we had a 1D signal defined as f(x) = x^2, and we might sample it at x =0, x = 1, x = 2 x = 3, and so on. This would give us our set of discrete samples, which in this case would be 0, 1, 4, 9, and continuing on in that fashion. Here&rsquo;s an image showing our continuous function of  f(x) = x^2, and the result of discretely sampling that function at integer values of x:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/sampling.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/sampling.png" alt="" title="Sampling" /></a></p>
+
+<p><center><em>Discretely sampling a continuous function</em></center></p>
+
+<p>Working with discrete samples has a lot of advantages. For instance, it allows us to store a representation of an arbitrary signal in memory by simply storing the sampled values in an array. It also allows us to perform operations on a signal by repeatedly applying the same operation in a loop for all sample points. But what happens when we need the value of s signal at a location that we didn&rsquo;t sample at?  In such cases, we can use a process known as <em>reconstruction</em> to derive an approximation of the original continuous function. With this approximation we can then discretely sample its values at a new set of sample points, which is referred to as <em>resampling</em>. You may also see this referred to as <em>interpolation</em> in cases where local discrete values are used to compute an &ldquo;in between&rdquo; value.</p>
+
+<p>The actual process of reconstruction involves applying some sort of <em>reconstruction filter</em> to a set of discrete samples. Typically this filter is some function that is symmetrical about x=0, often with non-zero values only in a small region surrounding x=0. The following image contains a few functions commonly used as reconstruction filters:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/filters.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/filters.png" alt="" title="Filters" /></a></p>
+
+<p><center><em>Various functions used as reconstruction filters. Starting from the top left and moving clockwise: the box function, the triangle function, and the sinc function. Image from Real-Time Rendering, 3rd Edition, A K Peters 2008</em></center></p>
+
+<p>The filter is applied using a process known as <em>convolution</em>. In the case of discrete sample points, a convolution implies multiplying the sample values with an instance of the filter function translated such that it is centered about the same point, and then summing the result from all sample points. If you&rsquo;re having trouble understand what this means, take a look at the following three images which show the result of convolution with three common reconstruction filters:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/convolution_box.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/convolution_box.png" alt="" title="Convolution_Box" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/convolution_triangle.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/convolution_triangle.png" alt="" title="Convolution_Triangle" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/convolution_sinc.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/convolution_sinc.png" alt="" title="Convolution_Sinc" /></a></p>
+
+<p><center><em>Discretely-sampled signals being reconstructed with a box function, a triangle function, and a sinc function. Images from Real-Time Rendering, 3rd Edition, A K Peters 2008</em></center></p>
+
+<p>If you&rsquo;ve ever written a full-screen Gaussian blur shader, then you&rsquo;ve used convolution. Think about how you would write such a shader: you loop over nearby pixel values (sample points) in a texture, multiply each value by the Gaussian function evaluated using the distance from your output pixel, and sum the results. Evaluating a function using the distance to the sample point is equivalent to translating the filter function to the location of the sample point, although you may not have thought of it this way.</p>
+
+<p>Of the common reconstruction filters, the sinc filter is particularly interesting. This is because it is theoretically possible to use it to exactly reconstruct the original continuous signal, provided that the signal was adequately sampled. This is known as <em>ideal reconstruction.</em> To define what “adequately sampled” means for a continuous signal, we must now discuss aliasing.</p>
+
+<p>Key Takeaway Points:</p>
+
+<ul>
+<li>Continuous signals(functions) can be sampled at discrete sample points</li>
+<li>An approximation of the original continuous signal can be reconstructed by applying a filter to the discrete sample values</li>
+</ul>
+
+<h2 id="frequency-and-aliasing">Frequency and Aliasing<a href="#frequency-and-aliasing" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Signals are often described in terms of their <em>frequency</em>, which in rough terms describes how quickly a signal changes over their domain. In reality a signal is not composed of just one frequency, but can have an entire spectrum of frequencies. Mathematically a signal can be converted from its original representation (often referred to as the <em>time domain</em> or <em>spatial domain</em>, depending on the context) to its spectrum of frequencies (known as the <em>frequency domain</em>) using the <em>Fourier transform</em>. Once in the frequency domain, it can be determined if there is some maximum frequency where all frequencies above that have an intensity of zero. If such a maximum frequency exists, the signal is said to be <em>bandlimited</em>, which means we can determine the <em>bandwidth</em> of that signal.  Depending on the context, the term &ldquo;bandwidth&rdquo; can be either the <em>passband bandwidth</em> or the <em>baseband bandwidth</em>. The passband bandwidth is equal to the maximum frequency minus the minimum frequency, while the baseband bandwidth simply refers to the refers to the maximum frequency. With sampling theory we are primarily concerned with the baseband bandwidth, because it is used to determine the <em>Nyquist rate</em> of the signal. The Nyquist rate is minimum rate at which the signal should be sampled in order to prevent <em>aliasing</em> from occurring, and it is equal to 2 times the baseband bandwidth. The term “aliasing” refers the fact that a signal can become indistinguishable from a lower-frequency signal when <em>undersampled</em>. The following image demonstrates this phenomenon with two sine waves of different frequencies, where the samples would be the same for either signal:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/aliasing-sines.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/aliasing-sines.png" alt="" title="Aliasing Sines" /></a></p>
+
+<p><center><em>Aliasing of a sampled sine wave. Image from Wikipedia</em></center></p>
+
+<p>In practice, aliasing that occurs due to undersampling will result in errors in the reconstructed signal. So in other words, the signal you end up with will be different than the one you were originally sampling. For signals that are not bandlimited, there is no maximum frequency and thus there is no sampling rate that won’t result in aliasing after reconstruction.</p>
+
+<p>To better understand how and why aliasing occurs, it can be helpful to look at things in the frequency domain. Let’s start with the plot of the frequency spectrum for an arbitrary signal:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace.png" alt="" title="FrequencySpace" /></a></p>
+
+<p><center><em>Frequency spectrum of an arbitrary signal. Image from Wikipedia.</em></center></p>
+
+<p>As we can see from the plot, there is a maximum frequency located at point “B”, meaning that the signal is bandlimited and has a bandwidth equal to B. When this signal is discretely sampled, an infinite number of “copies” of the signal will appear alongside the original at various points. Here’s an image illustrating how it looks:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_aliases.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_aliases.png" alt="" title="FrequencySpace_Aliases" /></a></p>
+
+<p><center><em>Replicas of a signals frequency spectrum. Image from Wikipedia</em></center></p>
+
+<p>The location of the signal duplicates is determined by the sampling rate, which is marked as “fs” in the plot. Since these duplicates are present, we must use a filter (the reconstruction filter) to remove these duplicates and leave us with only the frequency spectrum that was within the original signal’s bandwidth (referred to as the <em>baseband</em> frequencies). The obvious solution is to use a box function in the frequency domain, since a box function implies multiplying a certain range of values by 1 and all other values by 0. So if we were to use a box function with a width of B, we would remove the duplicates while leaving the original signal intact. The following diagram shows how this might work:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_filter.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_filter.png" alt="" title="FrequencySpace_Filter" /></a></p>
+
+<p><center><em>A reconstruction filter is used to isolate the original copy of a signal&rsquo;s spectrum. Image from Wikipedia</em></center></p>
+
+<p>What’s important to keep in mind is that we typically need to apply our reconstruction filter in the spatial domain, and not in the frequency domain. This means that we need to use the spatial domain equivalent of a box function in frequency space, and it turns out that this is the previously-mentioned sinc function. By now it should make sense why the sinc function is called the ideal reconstruction filter, since it has the ability to leave certain frequency ranges untouched while completely filtering out other frequencies. For this same reason it is also common to refer to the frequency domain box function as the <em>ideal low-pass filter</em>.</p>
+
+<p>Now let’s look at what happens when we don’t sample the signal at an adequate rate. As we saw earlier, the duplicates of a signal will appear at multiples of the sampling frequency. So the higher our sampling rate the further apart they will be, while the lower our sampling rate the closer they will be. Earlier we learned that the critical sampling rate for a signal is 2B, so let’s look at the plot of a signal that’s been sampled at a rate lower than 2B:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_overlap.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_overlap.png" alt="" title="FrequencySpace_Overlap" /></a></p>
+
+<p><center><em>Inadequate sampling rate results in overlap of a signal&rsquo;s replicas. Image from Wikipedia</em></center></p>
+
+<p>Once we dip below the Nyquist rate of the signal, the duplicates begin to overlap in the frequency domain. After this happens it is no longer possible to isolate the original copy of the signal with a sinc filter, and thus we end up with aliasing. The bottom plot in the above image demonstrates what an alias of the original signal would look like. Since its frequency response is identical to that of the original signal, it is completely indistinguishable.</p>
+
+<p>Key Takeaway Points:</p>
+
+<ul>
+<li>Signals can be decomposed into a spectrum of frequencies, with the spectrum being tied to the rate of change of the signal</li>
+<li>Signals with a maximum frequency are <em>bandlimited</em></li>
+<li>A signal’s <em>Nyqust rate</em> is equal to two times its maximum frequency, and this is the minimum sampling rate required to perfectly reconstruct a signal without aliasing</li>
+<li>Signal reconstruction can be viewed as the process of removing “replicas” of a signal’s spectrum in the frequency domain</li>
+</ul>
+
+<h2 id="reconstruction-filter-design">Reconstruction Filter Design<a href="#reconstruction-filter-design" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Aliasing that results from undersampling is referred to as <em>prealiasing</em>, since it occurs before reconstruction takes place. However it is also possible for artifacts to occur due to the reconstruction process itself. For instance, imagine if we used a box function that was too wide when applying a reconstruction filter. The result would look like this:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_postaliasing.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/frequencyspace_postaliasing.png" alt="" title="FrequencySpace_Postaliasing" /></a></p>
+
+<p><center><em>A wide reconstruction filter fails to isolate the original copy of a signal&rsquo;s spectrum. Image from Wikipedia</em></center></p>
+
+<p>With such a reconstruction we would still end up with artifacts in the reconstructed signal, even though it was adequately sampled.</p>
+
+<p>As we’ve demonstrated, using the wrong size box function in the frequency domain is one way to adversely affect the quality of our reconstructed signal. However we’ve already mentioned that a variety of functions can be applied as a filter in the spatial domain, and these functions all have a frequency domain counterpart that differs from the box function that we previously discussed. With this in mind, we can reason that the choice in filter will affect how well we isolate the signal in the frequency domain, and that this will affect how much postaliasing is introduced into the reconstructed signal. Let’s look at some common filtering functions, and compare their plots with the plots of their frequency domain counterparts:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/box_sinc.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/box_sinc.png" alt="" title="Box_Sinc" /></a></p>
+
+<p><center><em>Box function -&gt; Sinc Function</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/triangle_sinc2.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/triangle_sinc2.png" alt="" title="Triangle_Sinc2" /></a></p>
+
+<p><center><em>Triangle Function -&gt; (Sinc Function)2</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/gaussian_gaussian.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/gaussian_gaussian.png" alt="" title="Gaussian_Gaussian" /></a></p>
+
+<p><center><em>Gaussian Function -&gt; Gaussian Function</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/sinc2_triangle.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/sinc2_triangle.png" alt="" title="Sinc2_Triangle" /></a></p>
+
+<p><center><em>(Sinc Function)2 -&gt; Triangle Function</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/sinc_box.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/sinc_box.png" alt="" title="Sinc_Box" /></a></p>
+
+<p><center><em>Sinc Function -&gt; Box Function</em></center></p>
+
+<p>By looking at the frequency domain counterpart of a spatial domain filter function, we can get a rough idea of how well it’s going to preserve the frequency range we’re interested in and filter out the extraneous copies of our signal’s spectrum. The field of <em>filter design</em> is primarily concerned with this process of analyzing a filter’s frequency domain spectrum, and using that to evaluate or approximate that filter’s overall performance. Looking that the spectrums plotted in the above images, we can see that the non-sinc functions will all attenuate the baseband frequencies in some way. For some functions we can also observe that the frequency domain equivalent has no maximum value above which all frequencies have a value of zero, which means that the frequency domain filter extends infinitely in both directions. This ultimately means that all of the infinite replicas of the signal’s spectrum will bleed into the reconstructed signal to some extent, which will cause aliasing.</p>
+
+<p>One general pattern that we can observe from looking at the plots of the spatial domain filter functions and their frequency domain equivalents is that there is an inverse relationship between rate of change in one representation and its counterpart. For instance, have a look at the spatial domain box function. This function has a discontinuity at some value, resulting in infinite rate of change. Consequently its frequency domain counterpart is the sinc, which extends to infinity representing the infinite rate of change inherent in the box function’s discontinuity. By the same token a sinc function in the spatial domain equates to a box function in the frequency domain since the relationship is reciprocal. The Gaussian function is a special case, where the spatial domain and frequency domain counterparts are the same function. For this reason the Gaussian function represents the exact “midpoint” between smoothly-changing functions and sharply-changing functions in the spatial and frequency domains. Another important aspect of this relationship is that by making a filtering function “wider” (which can be achieved by dividing the input distance by some value greater than 1), the resulting frequency spectrum for that function will become more “narrow”. As an example, have a look at the spectrum of a “unit” box function with width of 1.0 compared with the spectrum of a box function with width of 4.0</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/box-fft-unit.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/box-fft-unit.png" alt="" title="Box FFT Unit" /></a></p>
+
+<p><center><em>Frequency spectrum of a box function with width of 1.0</em></center></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/box-fft-4.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/box-fft-4.png" alt="" title="Box FFT 4" /></a></p>
+
+<p><center><em>Frequency spectrum of a box function with width of 4.0</em></center></p>
+
+<p>The graphs clearly show that as the filter kernel becomes wider, the magnitude of the lowest frequencies becomes higher. This is really just another manifestation of the behavior we noted earlier regarding rate of change in the spatial domain and the frequency domain, since “wider” functions will change more slowly over time and thus will have more low frequency components in its frequency spectrum.</p>
+
+<p>One difficult aspect of filter design is that we often must not just consider the filter’s frequency domain representation, but we also must consider the effect that its spatial domain representation will have on the reconstructed signal. In particular, we must be careful with filters that have negative lobes, such as the sinc filter. Such filters can produce an effect known as <em>ringing</em> when applied to sharp discontinuities, where the reconstructed signal oscillates about the signal being sampled. Take a look at the plot of a square wave being reconstructed with a sinc filter:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2012/10/gibbs_phenomenon.png"><img src="http://mynameismjp.files.wordpress.com/2012/10/gibbs_phenomenon.png" alt="" title="Gibbs_Phenomenon" /></a></p>
+
+<p><center><em>Gibbs phenomenon resulting from a square wave being reconstructed with a sinc filter</em></center></p>
+
+<p>Key Takeaway Points:</p>
+
+<ul>
+<li>Error resulting from inadequate sampling rate is known as <em>prealiasing.</em> Error introduced through poor filtering is known as <em>postaliasing</em>.</li>
+<li>A filter’s ability to limit aliasing can be estimated by observing its frequency domain representation</li>
+<li>A filter’s rate of change in the spatial domain is inversely related to its rate of change in the frequency domain</li>
+<li>A filter’s spatial domain representation can also have an effect on the quality of the reconstructed signal, with the most notable effect being ringing occurring at discontinuities.</li>
+</ul>
+
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>[1]<a href="http://en.wikipedia.org/wiki/Signal_processing">http://en.wikipedia.org/wiki/Signal_processing</a> <br>
+[2]<a href="http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem">http://en.wikipedia.org/wiki/Nyquist-Shannon_sampling_theorem</a> <br>
+[3]Pharr, Matt and Humphreys, Greg. Physically Based Rendering - From Theory to Implementation, 2nd Edition. <br>
+[4]Akenine-Möller, Tomas, Haines, Eric, and Hoffman, Naty. Real-Time Rendering, 3rd Edition <br>
+[5]Glassner, Andrew. <a href="http://www.realtimerendering.com/Principles_of_Digital_Image_Synthesis_v1.0.1.pdf">Principles of Digital Image Synthesis</a> <br></p>
+
+<p><em>Next article in the series:</em></p>
+
+<p><a href="../applying-sampling-theory-to-real-time-graphics/"><em>Applying Sampling Theory To Real-Time Graphics</em></a></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-10-15 10:24:15">Oct 1, 2012</time></p>
+
+<p>@AmazingFactory - yes you are correct, the Nyquist rate is equal to 2 times the *baseband* bandwidth, where baseband bandwidth is equal to the maximum frequency. I actually described passband bandwidth which is MaxFrequency - MinFrequency, which isn&rsquo;t what you&rsquo;re interested in for determining Nyquist rate. I updated the text to be more clear on this. Thank you for pointing that out!
+<hr />
+####
+[AmazingFactory]( &ldquo;first10@btinternet.com&rdquo;) - <time datetime="2012-10-27 07:11:59">Oct 6, 2012</time></p>
+
+<p>Aha! If the texture has a high frequency periodic pattern then you will get a moire pattern - which is an alias Also you can see why the sampling frequency must be GREATER than 2x the highest frequency Imagine sampling a 1 Hz sine wave at 2 Hz &hellip; the resulting signal could be zero (depending on the phase)
+<hr />
+####
+<a href="http://jshopf.com/blog/?p=304">Jeremy Shopf &raquo; Image Reconstruction and MSAA</a> - <time datetime="2012-11-01 17:16:54">Nov 4, 2012</time></p>
+
+<p>[&hellip;] with Reconstruction Filters for MSAA Resolve”. Even better, he had previously posted a nice sampling theory primer and introduction to MSAA which were also well done. Anti-aliasing was something that was really [&hellip;]
+<hr />
+####
+[Ryan Monroe]( &ldquo;monroe@jpl.nasa.gov&rdquo;) - <time datetime="2012-10-17 21:11:58">Oct 3, 2012</time></p>
+
+<p>@AmazingFactory, @MJP Actually, I believe that it&rsquo;s a bit more complicated than that. In an ideal scenario, you can just sample at twice the passband bandwidth, but if that passband is ill-located, you could need more bandwidth to represent it. Remember that signals alias/fold down when under-sampled. So, if you had a signal at, say, 25-75 Hz and were sampling at 100 Hz (twice the bandwidth), you&rsquo;d see the 75-&gt;50 Hz component folding back on the 25 -&gt; 50 Hz component (note the order of the first component, this is intentional). Then, the 0 -&gt; 25 Hz component would still have no signal (being outside the passband and not seeing any components) and the 25-&gt;50 component would contain the mixed-up information of the entire 50 Hz of spectral data. You would have to downconvert the signal to baseband, convert it to an analytic signal or something to be able to use that spectrum efficiently. I hope this has been descriptive! Oh the banes of posting after a glass of wine ;-)
+<hr />
+####
+<a href="http://jstroot23.bravejournal.com/entry/128165/" title="alexander_peacock@arcor.de">Alexander</a> - <time datetime="2013-06-03 13:17:59">Jun 1, 2013</time></p>
+
+<p>I&rsquo;m not sure where you are getting your information, but good topic. I needs to spend some time learning more or understanding more. Thanks for magnificent info I was looking for this info for my mission.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-05-08 12:44:48">May 3, 2013</time></p>
+
+<p>Thank you Andy, I&rsquo;m glad that you found the article useful! That was indeed a typo, thank you for pointing that out.
+<hr />
+####
+<a href="http://www.indygamedev.com" title="andy@indygamedev.com">Andy Southwell</a> - <time datetime="2013-05-08 11:34:44">May 3, 2013</time></p>
+
+<p>Fantastic article - thank you very much! So many articles on this kind of subject go totally crazy on the maths, leaving mere mortals like me behind. One really minor typo in the final &lsquo;take away points&rsquo; : &ldquo;A filter’s ability to limit aliasing can estimating by observing&rdquo;. I&rsquo;m guessing &lsquo;estimating&rsquo; should be &lsquo;estimate&rsquo;? Anyway, keep up the good work - thanks again!
+<hr />
+####
+<a href="http://lousodrome.net/blog/light/2012/10/29/series-of-articles-on-anti-aliasing/">Series of articles on anti-aliasing | Light is beautiful</a> - <time datetime="2012-10-29 02:07:49">Oct 1, 2012</time></p>
+
+<p>[&hellip;] Signal Processing Primer [&hellip;]
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-10-24 21:56:14">Oct 3, 2012</time></p>
+
+<p>Hey Rim, how&rsquo;s it going? Sorry for taking so long to reply. Texture filtering is a sampling/reconstruction process, so it definitely qualifies as a convolution! I didn&rsquo;t mention it because I talk about texture filtering more in-depth in the next article. As for the copies, usually it&rsquo;s explained as occuring due to the properties of the shah function (impulse train). Basically the fourier transform a shah function is another shah function with the inverse period. So if you think of discrete sampling as multiplying a continuous function with a shah function with period equal to your sampling rate, this would mean that you&rsquo;re convolving the frequency-domain representation of that function with a shah function with inverse period (since multiplication in the spatial/time domain is convolution in the frequency domain and vice versa). The &ldquo;inverse period&rdquo; bit is then what leads to the copies being closer together for lower sampling rates. There&rsquo;s a pretty good explanation in Physically Based Rendering if you have that, and it&rsquo;s also mentioned in Principles of Digital Image Synthesis (which is free to download). I suppose that&rsquo;s true regarding information in the frequency domain. I tend to only look at these things from a graphics POV. :P Personally all of the material I&rsquo;ve read has only brought up overshoot in the context of ringing. But if your book talks about it separately than I&rsquo;m sure it&rsquo;s a worthy topic on its own. There&rsquo;s so much I haven&rsquo;t read yet!
+<hr />
+####
+[oh]( &ldquo;oren.hazi@gmail.com&rdquo;) - <time datetime="2012-10-17 18:58:49">Oct 3, 2012</time></p>
+
+<p>When you&rsquo;re sampling data for storage in memory, you&rsquo;re not only sampling the signal at a particular instant, you&rsquo;re also discretizing it to fit into your sample slot. For example, 8-bit sampling gives you 256 &ldquo;levels&rdquo; for representing the signal value, so you won&rsquo;t be able to detect small differences in your signal amplitude as well as you could with a 16-bit sampler. If you make certain (reasonable, in some cases) assumptions about your input signal, you can treat the quantization distortion as a stochastic process and actually make useful statements about what this does to your spectrum, and how much headroom you need in various places to do whatever it was you wanted to do with your sampled signal. Not exactly &ldquo;introductory&rdquo; material, but useful when trying to answer questions like &ldquo;how many bits should my analog to digital converter have?&rdquo;
+<hr />
+####
+[Robin Green]( &ldquo;robin.green@gmail.com&rdquo;) - <time datetime="2012-10-15 08:35:42">Oct 1, 2012</time></p>
+
+<p>My favorite factoid about sampling: The trade-off between Spatial and Spectral Compactness is exactly Heisenberg&rsquo;s Uncertainty Principal.
+<hr />
+####
+[AmazingFactory]( &ldquo;first10@btinternet.com&rdquo;) - <time datetime="2012-10-15 03:59:01">Oct 1, 2012</time></p>
+
+<p>Very enjoyable reading I think Nyquist must be greater than double the highest frequency, not double the bandwidth So to sample audio up to 22khz you need a sampling frequency greater than 44 khz (eg 44.1khz) You can not &ldquo;perfectly reconstruct a signal&rdquo; (unless by chance it happened to be an ideal signal)
+<hr />
+####
+[Rim]( &ldquo;remigius@netforge.nl&rdquo;) - <time datetime="2012-10-15 04:27:54">Oct 1, 2012</time></p>
+
+<p>As it happens, I was just reading up on DSP, so I&rsquo;ll chip in. Thanks for the post at any rate, your treatise gives the more theoretical book I&rsquo;m reading some more flavour. I realize I don&rsquo;t have anything really valuable to add, just some ramblings relating your stuff to the book. &ldquo;Working with discrete samples has a lot of advantages.&rdquo; - My DSP book points out the subtlety that discrete samples are the only way to do digital signal processing in the first place. Continuous functions can&rsquo;t be represented by digital equipment. It may sound puritan, but I found it to be a valuable insight. &ldquo;If you’ve ever written a full-screen Gaussian blur shader, then you’ve used convolution.&rdquo; - Wouldn&rsquo;t linear texture filtering (non-point at any rate) already classify as convolution? It&rsquo;s a simple kernel and it&rsquo;s mostly used implicitly to be sure, but I think more folks could relate to that. &ldquo;When this signal is discretely sampled, an infinite number of “copies” of the signal will appear&hellip;&rdquo; - My book spent numerous chapters on why this occurs and I&rsquo;d still be hesitant to say whether this is an artefact from the way computers have to represent signals (periodic discrete, right?) or something more fundamental. Can you share your insight on this? &ldquo;Nyqust rate is &hellip; the minimum sampling rate required to perfectly reconstruct a signal without aliasing&rdquo; - My book makes a big point about this being the theoretical minimum. The cut-off for bandlimiting, your stopband, won&rsquo;t be perfect (it&rsquo;s always a tradeoff IIRC) so it&rsquo;s a good idea to err on the safe side, ie to use a higher rate. &ldquo;The field of filter design is primarily concerned with this process of analyzing a filter’s frequency domain spectrum, and using that to evaluate or approximate that filter’s overall performance.&rdquo; - That&rsquo;d depend on whether your signal&rsquo;s information is encoded in the frequency domain or the time/spatial domain ;) &ldquo;Such filters can produce an effect known as ringing&rdquo; - And overshoot? Two sides of the same coin, or are they as distinct as my book makes them out to be? I&rsquo;m not far into filter design yet, let alone image filtering. For now, my research focusses on toying with the FFT in all its glory. If you&rsquo;re interested in bouncing some ideas back and forth on this topic or DSP in general, please feel free to shoot me an e-mail.
+<hr />
+####
+<a href="http://twitter.com/Ethatron" title="niels@paradice-insight.us">Niels Fröhling (@Ethatron)</a> - <time datetime="2012-10-18 10:15:12">Oct 4, 2012</time></p>
+
+<p>I think it&rsquo;s worth to mention that the theory still works in the analogue sample domain, that is with sample-points of infinite precision. I expect you&rsquo;ll get to quantization in a later article (with lovely blue sky-pics that have banding even with floating-point render-targets :^D).
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2012-10-18 08:55:28">Oct 4, 2012</time></p>
+
+<p>Ryan - check out the difference between baseband and passband in the MJP posts above - it&rsquo;s always the baseband, or maximum frequency, that determines the Nyquist value. So if you are sampling a signal that is 74-75 Hz, the Nyquist is 150 Hz, not 2 Hz.
+<hr />
+####
+[Ryan Monroe]( &ldquo;monroe@jpl.nasa.gov&rdquo;) - <time datetime="2012-10-18 09:55:25">Oct 4, 2012</time></p>
+
+<p>yeah, but in that case, you *could* sample at 2 Hz. You&rsquo;d then be operating in what&rsquo;s known as (in that case) the 75th nyquist zone. You would be able to reproduce the original signal exactly by knowing which frequency band it originated from.
+<hr />
+####
+[AmazingFactory]( &ldquo;first10@btinternet.com&rdquo;) - <time datetime="2012-10-25 01:15:24">Oct 4, 2012</time></p>
+
+<p>I still can&rsquo;t see why aliasing (ghosts/clones) is relevant to computer graphics. We don&rsquo;t perform fourier transforms, so those clones are not an issue &hellip; Also we never sample light amplitudes to determine frequency textures are arrays of weights per channel/frequency (red, green or blue) So whilst you can consider a texture as &ldquo;a signal&rdquo; the frequency information is of no interest to us
+<hr />
+####
+<a href="https://nikkiestutorials.com/2015/01/07/3-audio-programming-tutorial-understanding-digital-audio/">#3 Audio Programming Tutorial: Understanding Digital Audio | Nikkies Tutorials</a> - <time datetime="2019-01-02 20:13:28">Jan 3, 2019</time></p>
+
+<p>[…] More information on sampling (written with graphics in mind, but the same concepts apply to digital audio): <a href="http://mynameismjp.wordpress.com/2012/10/15/signal-processing-primer/">http://mynameismjp.wordpress.com/2012/10/15/signal-processing-primer/</a> […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4409 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-10-15 01:20 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/applying-sampling-theory-to-real-time-graphics/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Applying Sampling Theory To Real-Time Graphics</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Upcoming Series on Signal Processing and MSAA</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>the blog on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/the-blog/</link>
+    <description>Recent content in the blog on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 15 Oct 2012 08:00:47 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/the-blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Upcoming Series on Signal Processing and MSAA</title>
+      <link>https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/</link>
+      <pubDate>Mon, 15 Oct 2012 08:00:47 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/</guid>
+      <description>Aliasing is everywhere in graphics. Almost everything we do uses discrete sampling, which means almost everything can produce a variety of aliasing artifacts. The folks in the film industry have historically taken a “no aliasing allowed” stance in their work, but in real-time graphics we’re still producing games with more sparkling and shimmering than a glitzy prom dress. If we’re going to do anything about that problem, I think it’s important that we all try to have at least a basic understanding of signal processing.</description>
+    </item>
+    
+    <item>
+      <title>Crashes on Nvidia hardware</title>
+      <link>https://therealmjp.github.io/posts/crashes-on-nvidia-hardware/</link>
+      <pubDate>Sat, 26 Mar 2011 07:23:30 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/crashes-on-nvidia-hardware/</guid>
+      <description>A few people have told me that my past two samples (Bokeh and RadiosityDX11) were crashing on Nvidia GPU&amp;rsquo;s, which I verified myself on my coworker&amp;rsquo;s GTX 470. The crash appears to be a driver bug, since it happens deep in the Nvidia runtime DLL on a worker thread and also because it works fine on AMD hardware and the REF device. This morning we managed to narrow it down to the shadow map filtering shader code (shader code can crash drivers apparently, who knew?</description>
+    </item>
+    
+    <item>
+      <title>New Series: D3D Performance and Debugging Tools Round-Up</title>
+      <link>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</link>
+      <pubDate>Mon, 15 Feb 2010 05:16:17 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</guid>
+      <description>Recently I&amp;rsquo;ve been spending a lot of time with the various performance and debugging utilities available for Direct3D, and I thought it might be useful to give a quick overview of what&amp;rsquo;s out there. I&amp;rsquo;m sure most people who do a lot of Direct3D/XNA work are aware of these tools, but probably aren&amp;rsquo;t familiar with all of the really cool things you can do with them.
+What I&amp;rsquo;m going to do is run through each tool one at a time, and share some of the common use cases and show some screenshots of features I think are neat.</description>
+    </item>
+    
+    <item>
+      <title>Name Change</title>
+      <link>https://therealmjp.github.io/posts/name-change/</link>
+      <pubDate>Sat, 06 Feb 2010 23:22:13 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/name-change/</guid>
+      <description>I got tired having an awkward mouthful of a blog name, so I decided to shorten it to something much snappier. Hence &amp;ldquo;MJP&amp;rsquo;s XNA Danger Zone&amp;rdquo; becomes simply &amp;ldquo;The Danger Zone&amp;rdquo;. I like it better already.
+Actually the main reason for the change is that I&amp;rsquo;ve been taking a break from the XNA stuff so that I can finally play around with DX11 a bit. In fact I&amp;rsquo;ve been working on a simple and flexible DX11 sample framework, so you may see a few DX11 samples from me in the future.</description>
+    </item>
+    
+    <item>
+      <title>Cleared for takeoff</title>
+      <link>https://therealmjp.github.io/posts/cleared-for-takeoff/</link>
+      <pubDate>Wed, 10 Dec 2008 21:22:13 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/cleared-for-takeoff/</guid>
+      <description>Look out interwebs, I have a new blog to call my own!
+*insert trumpet fanfare here*
+Here&amp;rsquo;s what I plan on doing with it: -integrating some of the stuff I&amp;rsquo;ve been posting on gamedev.net and xnainfo.com in one place -put up some samples/tutorials/tools/code I&amp;rsquo;ve come up with -yammer on about JumpSwitch, the Xbox 360 game I&amp;rsquo;m working on -set up a page to show some sweet pics and vids of JumpSwitch, so everyone can see how awesome it is -post links to cool and helpful stuff I find -try to somewhat serious (not likely to happen)</description>
+    </item>
+    
+  </channel>
+</rss>

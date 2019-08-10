@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="How To Fake Bokeh (And Make It Look Pretty Good)">
+<meta itemprop="description" content="Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&rsquo;ve started noticing, I can&rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&rsquo;t have bokeh, it just looks wrong. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&rsquo;t look right at all (especially if you don&rsquo;t do it in HDR).">
+
+
+<meta itemprop="datePublished" content="2011-02-28T08:18:35&#43;00:00" />
+<meta itemprop="dateModified" content="2011-02-28T08:18:35&#43;00:00" />
+<meta itemprop="wordCount" content="2353">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11,Graphics,Programming," />
+<meta property="og:title" content="How To Fake Bokeh (And Make It Look Pretty Good)" />
+<meta property="og:description" content="Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&rsquo;ve started noticing, I can&rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&rsquo;t have bokeh, it just looks wrong. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&rsquo;t look right at all (especially if you don&rsquo;t do it in HDR)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/bokeh/" />
+<meta property="article:published_time" content="2011-02-28T08:18:35+00:00" />
+<meta property="article:modified_time" content="2011-02-28T08:18:35+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How To Fake Bokeh (And Make It Look Pretty Good)"/>
+<meta name="twitter:description" content="Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&rsquo;ve started noticing, I can&rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&rsquo;t have bokeh, it just looks wrong. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&rsquo;t look right at all (especially if you don&rsquo;t do it in HDR)."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>How To Fake Bokeh (And Make It Look Pretty Good)</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Feb 28, 2011</span></div>
+				<h1>How To Fake Bokeh (And Make It Look Pretty Good)</h1>
+			</header>
+			<div class="content">
+				
+
+<p>Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&rsquo;ve started noticing, I can&rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&rsquo;t have bokeh, it just looks <em>wrong</em>. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&rsquo;t look right at all (<em>especially</em> if you don&rsquo;t do it in HDR).</p>
+
+<p>So what are our options for getting a decent bokeh look in real time? Here&rsquo;s a short (and by no means complete) list:</p>
+
+<p><strong>1. Render the scene multiple times and accumulate samples using the aperture shape</strong> - this obviously a no-go for real-time rendering.</p>
+
+<p><strong>2. Stochastic rasterization, using scatter</strong> - this becoming more feasible now that we can implement scatter in pixel or compute shaders, but requires a lot of samples to not look like crap (or maybe something like <a href="http://research.nvidia.com/publication/local-image-reconstruction-algorithm-stochastic-rendering">this</a>) and would likely have performance problems due to the non-coherent memory writes</p>
+
+<p><strong>3. Do scatter-as-gather as a post process</strong> - this is doable and could be implemented in a compute shader or even a pixel shader, but it&rsquo;s expensive since you need a huge number of samples for large CoC sizes. Plus it can be tricky to implement, since you really need to be careful about energy conservation. Gamedev user FBMachine actually implemented this approach and documented some of the issues <a href="http://www.gamedev.net/topic/563149-real-time-bokeh-high-quality-dof/">here</a>&hellip;as you can see the results can be nice but the performance isn&rsquo;t so great.</p>
+
+<p><strong>4. Render each pixel as point sprite, using the CoC-size + aperture shape</strong> - this approach initially sounds completely unrealistic, since you&rsquo;re talking about huge bandwidth usage from the blending and massive overdraw. However the guys who make 3DMark actually implemented some optimizations to make it usable for their &ldquo;Deep Sea&rdquo; demo in 3DMark11. They go into a little bit of detail in their <a href="http://www.3dmark.com/wp-content/uploads/2010/12/3DMark11_Whitepaper.pdf">white paper</a>, but the basic gist of it is that they extract pixels with a CoC above a given threshold and append the point into an append/consume buffer (basically a stack that your shaders can push onto or pull from), then render the points at point sprites to one of several render targets. The render targets are successively smaller like mip levels, and they render the larger points to smaller render targets. By doing this they help curb the massive overdraw/blending cost of large points. They also do the point extraction several times, each time from a progressively downsampled version of the input image and with a different CoC threshold. I presume they do this to avoid extracting huge amounts of points.</p>
+
+<p>The guys at Capcom also did something similar to this for the DX10 version of Lost Planet, although I&rsquo;m not too familiar with the details. There&rsquo;s some pictures + descriptions <a href="http://beautifulpixels.blogspot.com/2008/03/higher-fidelity-depth-of-field-effects.html">here</a> and <a href="http://meshula.net/wordpress/?p=124">here</a>.</p>
+
+<p><strong>5. Pick out the bright spots, render those as point sprites using the aperture shape, and do everything else with a &ldquo;traditional&rdquo; blur-based DOF technique -</strong> ideally with this approach we get the nice bokeh effects for that parts where it&rsquo;s really noticeable (the highlights), and use something cheap for everything else. Gamedev.net poster Hodgman took a crack at implementing this approach using point sprites and vertex textures, and documented his results in <a href="http://www.gamedev.net/topic/576380-real-time-lens-blur/">this thread</a>. His main problems were due to flickering + instability, since he had to downscale many times in order to render the grid of point sprites.</p>
+
+<p>For my own implementation, I decided to go for #5. I spent a lot of time staring at out-of-focus images, and decided that it really wasn&rsquo;t necessary to do a more accurate bokeh simulation for most of the image. For instance, take a look at this picture:</p>
+
+<p><img src="http://www.blogcdn.com/www.gadling.com/media/2009/02/notbokeh.jpg" alt="" />At least 90% of that image doesn&rsquo;t have a distinctive bokeh pattern, and looks very similar to either a box blur or disc blur with a wide radius. It&rsquo;s only those bright spots that really need the full bokeh treatment for it to look convincing.</p>
+
+<p>With that in mind, I came up with the following approach:</p>
+
+<ol>
+<li>Render the scene in HDR</li>
+<li>Do a full-res depth + blur generation pass where we sample the depth buffer, and write out linear depth + circle of confusion size to an R16G16_FLOAT buffer</li>
+<li>Do a full-res bokeh point extraction pass. For each pixel, compute the average brightness of the 5x5 block surrounding the pixel and compare it with the brightness of the current pixel. If the pixel brightness minus the average brightness is above a certain threshold and the CoC size is above a certain threshold, push the pixel position + color + CoC size onto an append buffer and output a value of 0.0 as the pixel color. If it doesn&rsquo;t pass the threshold, output the input color.</li>
+<li>Do a regular DOF pass. I implemented two versions: one that does a  full-res disc-based blur in two passes using 16 samples on a Poisson disc with radius == CoC size, and one that does ye olde &frac14;-res Gaussian blur (with edge bleeding reduction) and a full-screen lerp between the un-blurred and blurred version.</li>
+<li>Copy the embedded count from the append buffer to another buffer, and use the second buffer as an indirect arguments buffer for a DrawInstancedIndirect call. Basically this lets us draw however many points are in the buffer, without having to copy anything back to the CPU. The vertex shader for each point then samples the position/color/CoC size from the append buffer and passes it to the geometry shader, which expands the point into a quad with size equal to the CoC size. The pixel shader then samples from a texture containing the aperture shape, and additively blends the result into an empty render target. The render target can be either full res, or &frac14; res to save on bandwidth.</li>
+<li>Combine the results of the bokeh pass with the  results of the DOF pass by summing them together in a pixel shader.</li>
+<li>Pass the result to bloom + tone mapping, and output the image.</li>
+</ol>
+
+<p>I actually implemented everything with pixel shaders, since I find they&rsquo;re still quicker for rapid prototyping compared to compute shaders. The bokeh generation step and Guassian blurs probably would have benefited from using shared memory to avoid redundant texture samples, but not so much that penalty is huge. The disc-based blur isn&rsquo;t all that great of a fit either, since I used a very large sampling radius (usually at least 16 pixels).  For the disc blur I also did it in two passes with 16 samples each, in order to avoid some of the nasty banding artifacts that come from using a large sampling radius. This leads to some artifacts around edges, but it&rsquo;s too bad. Either way the DOF part isn&rsquo;t really important, and you could swap it out with whatever cool new technique you want. I also didn&rsquo;t end up using proper lens-based CoC-size calculations, since I found it was a pain in the ass to work with. So I reverted to a very simple linear interpolation  between &ldquo;out-of-focus&rdquo; and &ldquo;in-focus&rdquo; distances, and then multiplied the value by a tweakable maximum CoC size.</p>
+
+<p>As for the bokeh itself, it looks pretty good since it&rsquo;s using a texture and can have whatever shape you want. It&rsquo;s also pretty stable since the extraction is done at full resolution, and so you don&rsquo;t get much flickering or jumping around. I didn&rsquo;t use depth testing when rendering the bokeh sprites&hellip;I had intended on doing it, but then decided it wasn&rsquo;t really necessary. However I&rsquo;d imagine it would probably be desirable if you wanted to render really large bokeh spoints, in which case it would be trivial to implement.</p>
+
+<p>Now for some results. This is with the foreground in focus, and the background out of focus:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2011/02/initial.png"><img src="http://mynameismjp.files.wordpress.com/2011/02/initial.png" alt="" title="Initial" /></a></p>
+
+<p>The bokeh isn&rsquo;t too distinctive here since most of the image is in focus, but you can definitely see the hexagon pattern on some of the background geometry.</p>
+
+<p>This one has the whole scene out of focus, and so you can see a lot more of the bokeh effect:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2011/02/hexagon.png"><img src="http://mynameismjp.files.wordpress.com/2011/02/hexagon.png" alt="" title="Hexagon" /></a></p>
+
+<p>Now you can really see the bokeh! Here&rsquo;s another with a circle-shaped bokeh:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2011/02/octagon.png"><img src="http://mynameismjp.files.wordpress.com/2011/02/octagon.png" alt="" title="Circle" /></a></p>
+
+<p>This one is with the bokeh sprites rendered to a &frac14;-resolution texure:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2011/02/downscale.png"><img src="http://mynameismjp.files.wordpress.com/2011/02/downscale.png" alt="" title="Downscale" /></a>
+Finally, this one is with the brightness threshold set to 0. Basically this means they every out of focus pixel gets drawn as a point sprite, which I used as a sort of &ldquo;reference&rdquo; image.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2011/02/reference.png"><img src="http://mynameismjp.files.wordpress.com/2011/02/reference.png" alt="" title="Reference" /></a></p>
+
+<p>I think the earlier shots hold up pretty well in comparison! The biggest issue that I notice is that it can look a bit weird if you DOF blur radius and your bokeh radius don&rsquo;t match up. It starts to become pretty obvious if you crank up the maximum bokeh size, but still use a small radius for blurring everything else. This is because you don&rsquo;t want to be able to clearly discern what&rsquo;s &ldquo;underneath&rdquo; the bokeh sprites&hellip;you want it to pretty much look like a solid color. To help with this I added a parameter to tweak the falloff used for conserving energy as as the bokeh point sprites get larger. Basically it does a pow on the falloff, which is computed by calculating the ratio of area of a circle with radius == CoC and comparing it with the radius of a single pixel. So by setting the falloff tweak to a lower value, the points are artificially brightened and appear more opaque.</p>
+
+<p>If you want to check it out yourself, you can download the source code + binaries here: <a href="https://mynameismjp.files.wordpress.com/2011/02/bokeh3.zip">https://mynameismjp.files.wordpress.com/2011/02/bokeh3.zip</a></p>
+
+<p><em>Updated (3/27/2011): Changed the shadow filtering shader code so that it doesn&rsquo;t cause crashes on Nvidia hardware</em></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://ozlael.egloos.com">ozlael</a> - <time datetime="2011-03-01 06:51:03">Mar 2, 2011</time></p>
+
+<p>Always thank you for useful article.
+<hr />
+####
+[Hodgman]( &ldquo;bigmrpoo@yahoo.com&rdquo;) - <time datetime="2011-03-19 01:12:28">Mar 6, 2011</time></p>
+
+<p>Glad to see my post has helped someone! Thanks for sharing your implementation of the effect too :D
+<hr />
+####
+[Louis Castricato]( &ldquo;ljcrobotic@yahoo.com&rdquo;) - <time datetime="2011-04-26 19:54:30">Apr 2, 2011</time></p>
+
+<p>SlimDX? :P
+<hr />
+####
+[Michael]( &ldquo;jayben71@gmail.com&rdquo;) - <time datetime="2011-03-14 05:39:03">Mar 1, 2011</time></p>
+
+<p>This is great and a very interesting technique, other methods do not have much over this visually (for games) . Also, the app is crashing in windows 7 32-bit 480GTS and works fine with ATI HD5830
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/2011/04/19/bokeh-ii-the-sequel/">Bokeh II: The Sequel &laquo; The Danger Zone</a> - <time datetime="2011-04-19 22:59:42">Apr 2, 2011</time></p>
+
+<p>[&hellip;] I finished the bokeh sample, there were a few remaining issues that I wanted to tackle before I was ready to call it [&hellip;]
+<hr />
+####
+[Styves]( &ldquo;luv-bunneh@hotmail.com&rdquo;) - <time datetime="2011-03-31 03:13:58">Mar 4, 2011</time></p>
+
+<p>Glad to see a good explanation on it. Looks great. :) Any chance at getting info on how to go about implementing this in a DX10 environment? The StructuredBuffer stuff&rsquo;s got me confused. It would be really useful. :D
+<hr />
+####
+[default_ex]( &ldquo;default_ex@live.com&rdquo;) - <time datetime="2011-03-07 22:59:32">Mar 1, 2011</time></p>
+
+<p>Should take a look at research.tri-ace.com, specifically the later half of the slides from their SO4 post processing slides. One of the things they go into is a Bokeh effect that comes pretty close to a cinematic camera. What I really liked about tri-ace approach is that it doesn&rsquo;t require running a gaussian blur pass, just linear down scaling, which your likely already doing for HDR.
+<hr />
+####
+[Gregory]( &ldquo;gpakosz@yahoo.fr&rdquo;) - <time datetime="2011-03-06 06:41:46">Mar 0, 2011</time></p>
+
+<p>Alright, thank you for answering I have to confess I didn&rsquo;t check the source code before asking as I sadly don&rsquo;t own a DX11 GPU. Looks like it&rsquo;s time to fix this. Thank you for your time and article.
+<hr />
+####
+[Gregory]( &ldquo;gpakosz@yahoo.fr&rdquo;) - <time datetime="2011-03-05 05:47:40">Mar 6, 2011</time></p>
+
+<p>is dx11 really a must for this sample? or is it just your sample framework that requires dx11 in any case?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2011-03-05 11:13:37">Mar 6, 2011</time></p>
+
+<p>AppendStructuredBuffer&rsquo;s (and pixel shader UAV&rsquo;s in general) require a FEATURE_LEVEL_11 device, so yeah it&rsquo;s actually required.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2011-03-07 23:22:30">Mar 1, 2011</time></p>
+
+<p>The Tri-ace guys did plenty of blurring&hellip;they just did the blurring at multiple mip levels so that they could cheaply approximate wide blur kernels without a ton of texture samples.
+<hr />
+####
+<a href="http://www.facebook.com/profile.php?id=625125791" title="jenius00@yahoo.com">Corey Smith</a> - <time datetime="2012-03-29 18:19:42">Mar 4, 2012</time></p>
+
+<p>Thank you for putting this together! Good looking real time bokeh is something I have been curious about but I had no place to start and I&rsquo;m not working with a strong background. It&rsquo;s nice to have jumping off point without trying to discern where the important details lie wading through very involved rendering techniques that reach far beyond my knowledge. Will I ever touch this information again? Who knows if I&rsquo;ll find time to actually investigate it, let alone try and apply it. But I appreciate you putting it together! Very interesting.
+<hr />
+####
+<a href="http://bartwronski.com/2014/04/07/bokeh-depth-of-field-going-insane-part-1/">Bokeh depth of field &#8211; going insane! part 1 | Bart Wronski</a> - <time datetime="2014-04-07 16:44:07">Apr 1, 2014</time></p>
+
+<p>[…] 2. Probably best for “any” shape of bokeh – smart modern DirectX 11 / OpenGL idea of extracting “significant” bokeh sprites by Matt Pettineo. [2] […]
+<hr />
+####
+<a href="http://seo" title="2578Bosack@gmail.com">seo</a> - <time datetime="2012-01-31 09:31:12">Jan 2, 2012</time></p>
+
+<p>Hi there would you mind stating which blog platform you&rsquo;re working with? I&rsquo;m looking to start my own blog soon but I&rsquo;m having a tough time deciding between BlogEngine/Wordpress/B2evolution and Drupal. The reason I ask is because your design seems different then most blogs and I&rsquo;m looking for something unique. P.S Apologies for being off-topic but I had to ask!
+<hr />
+####
+[Andrew Butts]( &ldquo;andrewbutts@andru.net&rdquo;) - <time datetime="2011-09-05 14:00:03">Sep 1, 2011</time></p>
+
+<p>Superduper article&hellip; add vignetting :-)
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2012-08-31 18:31:46">Aug 5, 2012</time></p>
+
+<p>YOU DONT KNOW WTF BOKEH IS
+<hr />
+####
+<a href="http://lousodrome.net/blog/light/2012/01/17/draft-on-depth-of-field-resources/">Draft on depth of field resources | Light is beautiful</a> - <time datetime="2012-01-17 00:22:07">Jan 2, 2012</time></p>
+
+<p>[&hellip;] Matt Pettineo also discussed a few approaches to fake bokeh [&hellip;]
+<hr />
+####
+[Jason Yu]( &ldquo;chunwahyu@hotmail.com&rdquo;) - <time datetime="2014-05-17 05:54:06">May 6, 2014</time></p>
+
+<p>Is the source code still available, I would like to have a look
+<hr />
+####
+<a href="https://kosmonautblog.wordpress.com/2017/03/17/shaders-pt2/">Shaders PT2 | kosmonaut games</a> - <time datetime="2017-03-17 07:32:05">Mar 5, 2017</time></p>
+
+<p>[…] didn’t use any templates for this, but I have stumbled upon this implementation by MJPhttps://mynameismjp.wordpress.com/2011/02/28/bokeh/It uses a stock blur for most parts of the image and only applies the bokeh effect on extracted […]
+<hr />
+####
+<a href="http://luluathena.com/?p=2279">各种Depth of Field &laquo; Babylon Garden</a> - <time datetime="2018-04-26 07:20:28">Apr 4, 2018</time></p>
+
+<p>[…] sprite，其他部分就是普通的模糊处理[14]。这篇博客里有详细的介绍和代码提供，效果也是不错的，GPU […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2353 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-02-28 00:18 -0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/crashes-on-nvidia-hardware/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Crashes on Nvidia hardware</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/radiosity-dx11-style/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Radiosity, DX11 Style</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

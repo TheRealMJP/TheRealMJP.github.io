@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="D3D Performance and Debugging Tools Round-Up: PIX">
+<meta itemprop="description" content="So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent.">
+
+
+<meta itemprop="datePublished" content="2010-02-15T05:17:18&#43;00:00" />
+<meta itemprop="dateModified" content="2010-02-15T05:17:18&#43;00:00" />
+<meta itemprop="wordCount" content="1268">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11,Programming,XNA," />
+<meta property="og:title" content="D3D Performance and Debugging Tools Round-Up: PIX" />
+<meta property="og:description" content="So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/" />
+<meta property="article:published_time" content="2010-02-15T05:17:18+00:00" />
+<meta property="article:modified_time" content="2010-02-15T05:17:18+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="D3D Performance and Debugging Tools Round-Up: PIX"/>
+<meta name="twitter:description" content="So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>D3D Performance and Debugging Tools Round-Up: PIX</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Feb 15, 2010</span></div>
+				<h1>D3D Performance and Debugging Tools Round-Up: PIX</h1>
+			</header>
+			<div class="content">
+				
+
+<p>So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud.  This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360.  Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent. For instance it can easily tell you how many DrawIndexedPrimitives calls you&rsquo;re making, but it can&rsquo;t tell you whether the GPU is bound by texture bandwidth. For that reason I find that PIX is much more useful for debugging as opposed to performance investigations. However it can be useful when your performance is held up by API calls (since it can tell you where you&rsquo;re making them in a frame, and how many) and in Vista/Win7 it has access to GPU timing information that cam tell you how much time per frame the GPU is working, idle, or waiting for resources.  Another nice thing about PIX is that it now has full support for D3D11 as of the new February 2010 SDK, which unfortunately isn&rsquo;t the case for NVPerfHUD.</p>
+
+<p>If you&rsquo;re an XNA programmer I&rsquo;d recommend checking out my in-depth <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/pix-with-xna-tutorial/">PIX With XNA article</a>, especially if you&rsquo;re new to D3D in general. For rest of you, here&rsquo;s a summary of what I think are the most useful things you can do with PIX:</p>
+
+<p><strong>1. View the results of a Draw call</strong></p>
+
+<p>With everyone and their mother using a deferred renderer these days, more often than not what&rsquo;s displayed on the screen is the result of several passes.  This means that when things go wrong, it&rsquo;s hard to guess the problem since it could have occurred in multiple places.  Fortunately PIX can help us by letting us pick any singular Draw call and see exactly what was drawn to the screen.  All you have to do s capture a frame, find the Draw call in the Event view, and then click on the &ldquo;Render&rdquo; tab in the Details view.  Here&rsquo;s a screenshot I took showing what was drawn to the normal-specular buffer during the G-Buffer pass of my <a href="http://mynameismjp.wordpress.com/2010/01/10/inferred-rendering/">Inferred Rendering Sample</a>:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewdraw1.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewdraw1.png" alt="" title="PIXViewDraw" /></a></p>
+
+<p><strong>2.  View device state at any point in frame</strong></p>
+
+<p>Ever have a problem where something wasn&rsquo;t drawing, and it turned out you left alpha-testing enabled or something silly like that? I know it&rsquo;s happened to me. If it happens again, you can help diagnose the problem by using PIX to view the state of your device at the time of a Draw call (or at any other point in the frame, for that matter).  To do it you capture a frame, find the Draw call or other Event you&rsquo;re interested in, and then find the device in your Objects view (filtering by Type can help). Then you just right-click on the device, click &ldquo;View Device&rdquo;, and have a look at the tab that appears in the Details view.  It looks something like this:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixdevstate.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixdevstate.png" alt="" title="PIXDevState" /></a></p>
+
+<p><strong>3. View mesh data for a draw call</strong></p>
+
+<p>Doing this lets you see what your vertex data looks like before and after your vertex shader (also before and after your geometry shader, if you&rsquo;re using D3D10 or D3D11). Just capture a frame, click on the Draw event, and click on the Mesh tab in the Details view.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewmesh.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewmesh.png" alt="" title="PIXViewMesh" /></a></p>
+
+<p><strong>4. Debug shaders</strong></p>
+
+<p>I don&rsquo;t I need to mention why this is useful. With PIX you can step through both the compiled assembly and HLSL code for your shader.  The easiest way to start debugging is to view the pixel history of a pixel by right-clicking on it in the Render tab, and then click on the links displayed for a Draw event.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixdebugshader.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixdebugshader.png" alt="" title="PIXDebugShader" /></a></p>
+
+<p><strong>5. View textures, render targets, buffers, depth/stencil surfaces, and vertex declarations</strong></p>
+
+<p>You can view the contents of all of these things just by finding them in the Objects view and right-clicking. Like everything else in PIX, what&rsquo;s displayed will reflect the current state of the object based on the event you&rsquo;ve selected in the Event view.  For vertex buffers you&rsquo;ll also need to specify the  vertex format using an HLSL-like syntax, which is really easy to do.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewbuffer.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewbuffer.png" alt="" title="PIXViewBuffer" /></a></p>
+
+<p><strong>6. View a CPU/GPU timing graph (Vista/Win7 only)</strong></p>
+
+<p>If you select the &ldquo;Statistics for each frame&rdquo; option when starting your experiment, one of the things you&rsquo;ll get is a timeline showing your CPU and GPU work for the frames captured.  This let&rsquo;s you easily view whether the GPU is idling or hard at work (which makes it simple to determine if you&rsquo;re CPU or GPU-bound). It also can show you where GPU work is done in relation to a frame being submitted by the CPU, so you can tell if the CPU is working one or more frames ahead of the GPU.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixtiminggraph.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixtiminggraph.png" alt="" title="PIXTimingGraph" /></a></p>
+
+<p><strong>7. Record performance counter values for a frame, and show them on a HUD</strong></p>
+
+<p>PIX has a number of counters available that let you keep track of things like the number of Draw calls or the number of SetTexture calls in a frame.  When you create a new experiment and you select the &ldquo;Statistics for each frame&rdquo; option, it will let you pick from a selection countersets provided by PIX.  To see which counters are included in a counterset or to make your own, click the &ldquo;More Options&rdquo; button, click the &ldquo;Set Counters&rdquo; action, and then click on &ldquo;Customize&rdquo;.  In this dialog you can pick through all of the D3D counters provided by PIX, or add in any of the standard Windows Performance Counters installed on your system. Also note that vendor&ndash;specific tools like NVPerkKit will install plugins for PIX that let you add in hardware-specific counters.</p>
+
+<p>If you enable the HUD for your experiment, you&rsquo;ll get something that looks like this when running your app:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixhud.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixhud.png?w=1024" alt="" title="PIXHUD" /></a></p>
+
+<p>Either way once you close your app and you&rsquo;re viewing the experiment results, the Events view will display the value of all active counters for each frame.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixevents.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixevents.png?w=1024" alt="" title="PIXEvents" /></a></p>
+
+<p><strong>Useful Tips:</strong></p>
+
+<ol>
+<li><p>If you&rsquo;re going to debug shaders and you don&rsquo;t to have to step through the assembly, make sure you compile them with the DEBUG flag. This embeds debugging info in the compiled bytecode, including a path to the HLSL source code file. You&rsquo;ll also want to disable optimization if possible, otherwise you&rsquo;ll find that the compiler usually aggressively reorders your code.  XNA users: the Effect processor will enable the DEBUG flag when you perform Debug builds, and it will attempt to disable optimizations. If you&rsquo;re using a vs_2_0 or ps_2_0 shader it&rsquo;s possible that disabling optimizations  will cause you to go over the instruction limit, in which case the processor will re-enable optimizations.</p></li>
+
+<li><p>Add markers to your app! PIX has a <a href="http://msdn.microsoft.com/en-us/library/ee417071%28VS.85%29.aspx">small list of functions</a> that lets you mark off portions of a frame, which causes PIX to collapse all of the events that occurred in the marked area.  So for instance you could add a marker for &ldquo;G-Buffer Pass&rdquo;, which lets you easily find draw calls made to build your G-Buffer.  If you&rsquo;re using XNA my sample includes a handy &ldquo;PIXHelper&rdquo; class that has pinvokes declared for those functions, as well as extension methods for SpriteMatch and Model.</p></li>
+
+<li><p>Use the &ldquo;D&rdquo; buttons in the Events view to quickly iterate through your Draw calls</p></li>
+
+<li><p>If you want to use the HUD and you&rsquo;re using D3D9, make sure you Present with the implicit swap chain created with the device</p></li>
+
+<li><p>With D3D9 disable multisampling if you&rsquo;re going to capture a frame. PIX doesn&rsquo;t like it.</p></li>
+</ol>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://www.sgtconker.com/2010/02/tools-and-fools/">Tools And Fools &laquo; Sgt. Conker</a> - <time datetime="2010-02-15 11:15:53">Feb 1, 2010</time></p>
+
+<p>[&hellip;] Start with PIX. [&hellip;]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1268 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-02-14 21:17 -0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>D3D Performance and Debugging Tools Round-Up: PerfHUD</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>New Series: D3D Performance and Debugging Tools Round-Up</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

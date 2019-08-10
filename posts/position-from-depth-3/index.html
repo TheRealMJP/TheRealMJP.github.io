@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Position From Depth 3: Back In The Habit">
+<meta itemprop="description" content="A friend of mine once told me that you could use &ldquo;back in the habit&rdquo; as the subtitle for any movie sequel. I think it works.
+So a lot of people still have trouble with reconstructing position from depth thing, judging by the emails I get and also the threads I see in the gamedev forums made by people who read my earlier blog posts. Can&rsquo;t say I blame them&hellip;it&rsquo;s pretty tricky, and easy to screw up.">
+
+
+<meta itemprop="datePublished" content="2010-09-06T07:11:52&#43;00:00" />
+<meta itemprop="dateModified" content="2010-09-06T07:11:52&#43;00:00" />
+<meta itemprop="wordCount" content="4021">
+
+
+
+<meta itemprop="keywords" content="Graphics,Programming," />
+<meta property="og:title" content="Position From Depth 3: Back In The Habit" />
+<meta property="og:description" content="A friend of mine once told me that you could use &ldquo;back in the habit&rdquo; as the subtitle for any movie sequel. I think it works.
+So a lot of people still have trouble with reconstructing position from depth thing, judging by the emails I get and also the threads I see in the gamedev forums made by people who read my earlier blog posts. Can&rsquo;t say I blame them&hellip;it&rsquo;s pretty tricky, and easy to screw up." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/position-from-depth-3/" />
+<meta property="article:published_time" content="2010-09-06T07:11:52+00:00" />
+<meta property="article:modified_time" content="2010-09-06T07:11:52+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Position From Depth 3: Back In The Habit"/>
+<meta name="twitter:description" content="A friend of mine once told me that you could use &ldquo;back in the habit&rdquo; as the subtitle for any movie sequel. I think it works.
+So a lot of people still have trouble with reconstructing position from depth thing, judging by the emails I get and also the threads I see in the gamedev forums made by people who read my earlier blog posts. Can&rsquo;t say I blame them&hellip;it&rsquo;s pretty tricky, and easy to screw up."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Position From Depth 3: Back In The Habit</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Sep 6, 2010</span></div>
+				<h1>Position From Depth 3: Back In The Habit</h1>
+			</header>
+			<div class="content">
+				
+
+<p>A friend of mine once told me that you could use &ldquo;back in the habit&rdquo; as the subtitle for any movie sequel. I think it works.</p>
+
+<p>So a lot of people still have trouble with <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">reconstructing position from depth</a> thing, judging by the emails I get and also the threads I see in the gamedev forums made by people who read my earlier blog posts.  Can&rsquo;t say I blame them&hellip;it&rsquo;s pretty tricky, and easy to screw up.  So I&rsquo;m going to take it again from the beginning and try to explain some of the actual math behind the code, in hopes that a more generalized approach will help people get through the little quirks they&rsquo;ll have to deal with in their own implementations. And I&rsquo;ll throw some shader code in there too for good measure.  Oh and I should mention that I&rsquo;m going to do everything with a left-handed coordinate system, but it shouldn&rsquo;t be hard to convert to right-handed.</p>
+
+<p>Let&rsquo;s start with the basics of a perspective projection. For every pixel on the screen there&rsquo;s a  direction vector associated with it.  You can figure out this direction vector by using the screen-space XY position of the pixel to lerp between the positions of the frustum corners, subtracting the camera position, and normalizing (you don&rsquo;t have to subtract the camera position if you&rsquo;re doing this in view space, since the camera position is 0). If geometry is rasterized at that pixel position, that means the surface at that pixel lies somewhere along that vector. The distance along that vector will vary depending on how far that geometry is from the camera, but the direction is always the same.  This should sound familiar to anyone who&rsquo;s written a ray tracer before, because it&rsquo;s the exact concept used for primary rays: for a pixel on the near or far clip plane, get the direction from the camera to that pixel and check for intersections.  What this ultimately means is that if we have the screen space pixel position and the camera position, we can figure out the position of the triangle surface if have the distance from the camera to the surface.  Here&rsquo;s an artfully-crafted diagram showing how this works:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/09/view-ray.png"><img src="http://mynameismjp.files.wordpress.com/2010/09/view-ray.png?w=300" alt="" title="View Ray" /></a>With this is mind, you might be thinking that if we stored the distance from the camera to the triangle surface in a G-Buffer pass then it would be really easy to reconstruct position from it.  And you&rsquo;d be totally right.  The basic steps go like this:</p>
+
+<ol>
+<li>In the pixel shader of the G-Buffer pass, calculate the distance from the camera to the surface being shaded  and write it out to the depth texture</li>
+<li>In the vertex shader of the light pass, calculate the direction vector from the camera position to the vertex (we&rsquo;ll call it the view ray).</li>
+<li>In the pixel shader, normalize the view ray vector</li>
+<li>Sample the depth texture to get the distance from the camera to the G-Buffer surface</li>
+<li>Multiply the sampled distance with the view ray</li>
+<li>Add the camera position</li>
+</ol>
+
+<p>This is simple, cheap, and works in both view space and world space.  In view space it&rsquo;s a little cheaper and easier because the camera position is (0,0,0), so you can simplify the math.  Plus the view ray is just the normalized view space position of the pixel.  For a full-screen quad, you can get the view space position of the quad vertices either by directly mapping the verts to frustum corners, or by applying the inverse of your projection matrix.  Then from there you can go back to world space if you want by applying the inverse of your view matrix (the camera world matrix).  Here&rsquo;s what the code might look like for doing it in world space (since people seem to like sticking to world space, despite the advantages of view space):</p>
+
+<pre><code>// G-Buffer vertex shader
+// Calculate view space position of the vertex and pass it to the pixel shader
+output.PositionVS = mul(input.PositionOS, WorldViewMatrix).xyz;
+
+// G-Buffer pixel shader
+// Calculate the length of the view space position to get the distance from camera-&gt;surface
+output.Distance.x = length(input.PositionVS);
+
+// Light vertex shader
+#if PointLight || SpotLight
+    // Calculate the world space position for a light volume
+    float3 positionWS = mul(input.PositionOS, WorldMatrix);
+#elif DirectionalLight
+    // Calculate the world space position for a full-screen quad (assume input vertex coordinates are in [-1,1] post-projection space)
+    float3 positionWS = mul(input.PositionOS, InvViewProjMatrix);
+#endif
+
+// Calculate the view ray
+output.ViewRay = positionWS - CameraPositionWS;
+
+// Light Pixel shader
+// Normalize the view ray, and apply the original distance to reconstruct position
+float3 viewRay = normalize(input.ViewRay);
+float viewDistance = DistanceTexture.Sample(PointSampler, texCoord);
+float3 positionWS = CameraPositionWS + viewRay * viewDistance;
+</code></pre>
+
+<p>Like I said it&rsquo;s piece of cake, and I suspect that for a lot of people it&rsquo;s efficient enough. But we&rsquo;re not done yet, since we can still optimize things further if we stick to view space. We also want  may want to use a hardware depth buffer as opposed to manually storing a distance value.  So let&rsquo;s dig deeper.  Here&rsquo;s a diagram showing another way of looking at the problem:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/09/view-space-geo.png"><img src="http://mynameismjp.files.wordpress.com/2010/09/view-space-geo.png?w=300" alt="" title="View Space Geo" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/09/view-space-quad.png">
+</a>This time instead of using a normalized direction vector for the view ray, we extrapolate the ray all the way back until it intersects with the far clip plane.  When we do this, it means that the position at the end of the view ray is at a known depth relative to the camera position and the direction the camera is looking (the depth is the far clip plane distance).  In view space it means that the view ray has a Z component equal to the far clip plane.  Since the Z component is a known value we no longer need to normalize the view ray vector.  Instead we can multiply by a value that scales along the camera&rsquo;s z-axis to get the final reconstructed position.  In the case where Z = FarClipDistance, we want to scale by a ratio of the original surface depth relative to the far clip plane.  In other words, the surface&rsquo;s view space Z divided by the far clip distance.  In code it looks like this:</p>
+
+<pre><code>// G-Buffer vertex shader
+// Calculate view space position of the vertex and pass it to the pixel shader
+output.PositionVS = mul(input.PositionOS, WorldViewMatrix).xyz;
+
+// G-Buffer pixel shader
+// Divide view space Z by the far clip distance
+output.Depth.x = input.PositionVS.z / FarClipDistance;
+
+// Light vertex shader
+#if PointLight || SpotLight
+    // Calculate the view space vertex position
+    output.PositionVS = mul(input.PositionOS, WorldViewMatrix);
+#elif DirectionalLight
+    // Calculate the view space vertex position (you can also just directly map the vertex to a frustum corner
+    // to avoid the transform)
+    output.PositionVS = mul(input.PositionOS, InvProjMatrix);
+#endif
+
+// Light Pixel shader
+#if PointLight || SpotLight
+    // Extrapolate the view space position to the  far clip plane
+    float3 viewRay = float3(input.PositionVS.xy * (FarClipDistance / input.PositionVS.z), FarClipDistance);
+#elif DirectionalLight
+    // For a directional light, the vertices were already on the far clip plane so we don't need to extrapolate
+    float3 viewRay = input.PositionVS.xyz;
+#endif
+
+// Sample the depth and scale the view ray to reconstruct view space position
+float normalizedDepth = DepthTexture.Sample(PointSampler, texCoord).x;
+float3 positionVS = viewRay * normalizedDepth;
+</code></pre>
+
+<p>As you can see this is a bit cheaper, especially for the full-screen quad case.  One thing to be aware of is that since with this we store normalized depth, it&rsquo;s always in the range [0,1].  This means you can store it in a normalized integer format (such as DXGI_FORMAT_R16_UNORM) without having to do any rescaling after you sample it.  A floating point format will obviously handle it just fine as well.</p>
+
+<p>Now let&rsquo;s say we want to sample a hardware depth buffer instead of writing out our own depth or distance value to the G-Buffer.  This makes sense in a lot of cases, since you&rsquo;re already using the memory and bandwidth to fill the depth buffer so you might as well make use of it.  A hardware depth buffer will store the post-projection Z value divided by the post-projection W value, where W is equal to the view-space Z component of the surface position (for more information see <a href="http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html">this</a>).  This makes the value initially unsuitable for our needs, but fortunately it&rsquo;s possible to recover the view-space Z from this using the parameters of the perspective projection.  Once we do that, we can convert it to a normalized depth value if we want and proceed normally.  However this is unnecessary.  Instead of extrapolating the view ray to the far clip plane, if we instead clamp it to the plane at Z = 1 we can then scale it by the view space Z without having to manipulate it first.  Here&rsquo;s the code:</p>
+
+<pre><code>// Light vertex shader
+#if PointLight || SpotLight
+    // Calculate the view space vertex position
+    output.PositionVS = mul(input.PositionOS, WorldViewMatrix);
+#elif DirectionalLight
+    // For a directional light we can clamp in the vertex shader, since we only interpolate in the XY direction
+    float3 positionVS = mul(input.PositionOS, InvProjMatrix);
+    output.ViewRay = float3(positionVS.xy / positionVS.z, 1.0f);
+#endif
+
+// Light Pixel shader
+#if PointLight || SpotLight
+    // Clamp the view space position to the plane at Z = 1
+    float3 viewRay = float3(input.PositionVS.xy / input.PositionVS.z, 1.0f);
+#elif DirectionalLight
+    // For a directional light we already clamped in the vertex shader
+    float3 viewRay = input.ViewRay.xyz;
+#endif
+
+// Calculate our projection constants (you should of course do this in the app code, I'm just showing how to do it)
+ProjectionA = FarClipDistance / (FarClipDistance - NearClipDistance);
+ProjectionB = (-FarClipDistance * NearClipDistance) / (FarClipDistance - NearClipDistance);
+
+// Sample the depth and convert to linear view space Z (assume it gets sampled as
+// a floating point value of the range [0,1])
+float depth = DepthTexture.Sample(PointSampler, texCoord).x;
+float linearDepth = ProjectionB / (depth - ProjectionA);
+float3 positionVS = viewRay * linearDepth;
+</code></pre>
+
+<p>It&rsquo;s also possible to use a hardware depth buffer with the first method, if you want to work in an arbitrary coordinate space.  The trick is to project the view ray onto the camera&rsquo;s z axis (AKA the camera&rsquo;s forward vector or lookAt vector), and use that to figure out a proper scaling value.  The light pixel shader goes something like this:</p>
+
+<pre><code>// Normalize the view ray
+float3 viewRay = normalize(input.ViewRay);
+
+// Sample the depth buffer and convert it to linear depth
+float depth = DepthTexture.Sample(PointSampler, texCoord).x;
+float linearDepth = ProjectionB / (depth - ProjectionA);
+
+// Project the view ray onto the camera's z-axis
+float viewZDist = dot(EyeZAxis, viewRay);
+
+// Scale the view ray by the ratio of the linear z value to the projected view ray
+float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
+</code></pre>
+
+<p>Alright, so I think that&rsquo;s about it!  If anything is unclear or if I made any mistakes, go ahead and let me know.  For an actual working sample showing some of these techniques, you can have a look at the sample for my <a href="http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/">article on depth precision</a>.</p>
+
+<p><em>02/23/1985 - Fixed typo in view space volume reconstruction</em></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://skytiger.wordpress.com" title="corbin@skymo.com">skytiger</a> - <time datetime="2010-11-30 13:12:34">Nov 2, 2010</time></p>
+
+<p>and another: &ndash; Vertex Shader &ndash; Output.Ptrick = Pproj.xyw; &ndash; Pixel Shader &ndash; float4x4 matProj; // standard projection matrix static const float2 Clever = 1.0 / matProj._11_22; Ptrick.xy /= Ptrick.z; Ptrick.xy *= Clever * LinearZ; Ptrick.z = LinearZ;
+<hr />
+####
+<a href="http://www.kreationsedge.com" title="rosborne255@yahoo.com">richard osborne</a> - <time datetime="2010-10-04 13:24:47">Oct 1, 2010</time></p>
+
+<p>Ah, now that makes perfect sense. I&rsquo;ve been sticking with DirectX 9 primarily. I&rsquo;ll have to look into playing around with DirectX 11
+<hr />
+####
+<a href="http://skytiger.wordpress.com" title="corbin@skymo.com">skytiger</a> - <time datetime="2010-11-30 12:47:55">Nov 2, 2010</time></p>
+
+<p>Here is another approach, using VPOS: // Effect Parameters float4x4 matProj; // standard projection matrix float2 fTargetSize; // rendertarget pixel dimensions // Can calculate this on CPU side static const float3x3 matVPosToView = float3x3( 2.0 / fTargetSize.x / matProj._11, 0, 0 , 0, -2.0 / fTargetSize.y / matProj._22, 0 , -1.0 / matProj._11, 1.0 / matProj._22, 1 );//float3x3 // Usage in Pixel Shader: struct PixIn { float2 vpos : VPOS; };//struct float3 Pview; Pview.xy = mul(float3(Input.vpos, 1), matVPosToView).xy; Pview.xy *= LinearZ; Pview.z = LinearZ;
+<hr />
+####
+<a href="http://gpubound.wordpress.com/2011/01/30/when-position-from-depth-goes-bad/">When Position-From-Depth Goes Bad &laquo; gpubound</a> - <time datetime="2011-01-30 11:27:26">Jan 0, 2011</time></p>
+
+<p>[&hellip;] 0 If you’ve ever had to reconstruct position from depth, you’ve probably come across one of these methods where you send an interpolated view-ray from the vertex shader down to the pixel shader, where you [&hellip;]
+<hr />
+####
+[Me]( &ldquo;egea.hernando@gmail.com&rdquo;) - <time datetime="2011-01-08 13:20:02">Jan 6, 2011</time></p>
+
+<p>Thank you very much indeed!! I got deferred lighting working perfectly thanks to your article. I save the normals and linear depth in a 32 BIT FLOAT and I reconstruct thee ViewSpace coordinates from it. I&rsquo;m new in GLSL so it took me some hits of my head against the wall. I like the idea of the deferred lighting for dynamic lights, pretty simple. There are a lot of subtleties, but here come my GLSL shaders: <a href="http://pastebin.com/XmXGx2rz">http://pastebin.com/XmXGx2rz</a> And a screenshot: <a href="http://img824.imageshack.us/i/pantallazovg.png/">http://img824.imageshack.us/i/pantallazovg.png/</a>
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/2011/01/08/position-from-depth-glsl-style/">Position From Depth, GLSL Style &laquo; The Danger Zone</a> - <time datetime="2011-01-08 17:47:49">Jan 6, 2011</time></p>
+
+<p>[&hellip;] his GLSL implementation of a deferred point light shader, which makes use of one of the methods I previously posted for reconstructing position from depth. So I figured I’d post it here, for all of you [&hellip;]
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-12-17 16:39:05">Dec 5, 2010</time></p>
+
+<p>No, that&rsquo;s correct. You want your linear view-space Z value divided by the distance to your far clipping plane.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-10-04 13:19:58">Oct 1, 2010</time></p>
+
+<p>Hi Richard, I&rsquo;ve been using D3D11 lately, and that lets you natively access a depth buffer without any vendor hacks through shader resource views and typeless formats. I do actually use that technique in the &ldquo;attack of the depth buffer&rdquo; sample. If you&rsquo;re using the D3D9 vendor hacks (INTZ and friends) the math in the shader code ends up being exactly the same, since those also give you the depth as a [0,1] floating point value.
+<hr />
+####
+<a href="http://ryangogame.blogspot.com/" title="quantumryan@gmail.com">quantumryan</a> - <time datetime="2010-11-22 08:46:49">Nov 1, 2010</time></p>
+
+<p>I just wanted to say thank you. Although this wasn&rsquo;t exactly what I was looking for, you&rsquo;re figures gave me the ah-ha moment I needed. I wrote a two color depth shader and I dump a stream of images of my 3D scene. I wrote python script to convert pixel data into camera local position data. My trig was all right, but I was using the actual computed depth instead of the projected image depth (the far). Doh! Awesome stuff. I&rsquo;m following your blog now. Keep it up please!
+<hr />
+####
+<a href="http://www.kreationsedge.com" title="rosborne255@yahoo.com">richard osborne</a> - <time datetime="2010-10-04 12:51:05">Oct 1, 2010</time></p>
+
+<p>Hey MJP- just curious how are you getting access to the hardware depth buffer? Are you using driver hacks to access it (for instance, with nvidia cards I thought we had to use a depth texture)? Cant recall if you code sample included with &ldquo;Attack of the Depth Buffer&rdquo; included this
+<hr />
+####
+[Tiago Costa]( &ldquo;tiago.costav@gmail.com&rdquo;) - <time datetime="2010-09-11 12:19:18">Sep 6, 2010</time></p>
+
+<p>I calculate the corners following a website that you posted a link to: float Hfar = 2 * tan(fov / 2) * zFar; float Wfar = Hfar * ratio; D3DXVECTOR3 farCenter = mPosition + mLook * zFar; D3DXVECTOR3 farTopLeft = farCenter + (mUp * Hfar/2) - (mRight * Wfar/2); D3DXVECTOR3 farTopRight = farCenter + (mUp * Hfar/2) + (mRight * Wfar/2); D3DXVECTOR3 farDownLeft = farCenter - (mUp * Hfar/2) - (mRight * Wfar/2); D3DXVECTOR3 farDownRight = farCenter - (mUp * Hfar/2) + (mRight * Wfar/2); Can I use this frustum corners to reconstruct pixel position in view-space or world-space?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-09-12 11:37:19">Sep 0, 2010</time></p>
+
+<p>Hey Tiago, Like I said in the post the frustum corners are only useful if you want to save a little bit of vertex calculation for a full screen quad. You can get the same results just by using the inverse of your projection matrix, which is easier and less error-prone. And since you have only 4 verts per quad, the extra cost is negligable.
+<hr />
+####
+[Tiago Costa]( &ldquo;tiago.costav@gmail.com&rdquo;) - <time datetime="2010-09-12 13:44:27">Sep 0, 2010</time></p>
+
+<p>I know that the extra cost in negligible, but as my game engine is GPU bound Im trying to move some calculations to the CPU&hellip;
+<hr />
+####
+[Tiago Costa]( &ldquo;tiago.costav@gmail.com&rdquo;) - <time datetime="2010-09-11 08:49:30">Sep 6, 2010</time></p>
+
+<p>Thank you for at least trying to help people that like me have found that reconstruct the pixel position from depth can be really hard&hellip; I&rsquo;m already able to reconstruct the pixel position following your hold posts but the results arent completely correct&hellip; Right now I&rsquo;m doing a major update in my game engine, and once I finish it I will re-implement pixel position reconstruction following this post and maybe it will work correctly this time :D
+<hr />
+####
+[empiricu]( &ldquo;&rdquo;) - <time datetime="2011-01-02 11:51:15">Jan 0, 2011</time></p>
+
+<p>I don´t know why the next code not work; vertex_position.z is the z in view-space. float3 eye; IN.coord.x = ( IN.coord.x * 2.0 ) / screeWidth - 1.0; IN.coord.y = ( IN.coord.y * 2.0 ) / screenHeight - 1.0; eye.x = IN.coord.x * ( WFarClip / 2.0 ); eye.y = -IN.coord.y * ( HFarClip / 2.0 ); eye.z = Far; eye = normalize(eye); // normalize viewray // vertex_position.xyz = a * eye.xyz; // a = vertex_position.z / eye.z vertex_position.x = ( vertex_position.z / eye.z ) * eye.x; vertex_position.y = ( vertex_position.z / eye.z ) * eye.y;
+<hr />
+####
+[kaos]( &ldquo;&rdquo;) - <time datetime="2010-12-17 16:30:48">Dec 5, 2010</time></p>
+
+<p>output.PositionVS = mul(input.PositionOS, WorldViewMatrix).xyz; output.Depth.x = input.PositionVS.z / FarClipDistance; WorldViewMatrix not is WorldViewProjectionMatrix so I think input.PositionVS.z / FarClipDistance not is correct.
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2012-05-30 03:59:44">May 3, 2012</time></p>
+
+<p>Multiply your result with the inverse view matrix.
+<hr />
+####
+[lipsryme]( &ldquo;&rdquo;) - <time datetime="2012-02-24 16:43:51">Feb 5, 2012</time></p>
+
+<p>Hi, I&rsquo;ve stored my depth in linear view space using viewpos.z / farClip and retrieving viewspace position with the viewRay * Depth but my point lights still move around with the camera and appear/vanish when I get closer/farther away. Normals are in view space. Works flawless when I use z/w depth but I can&rsquo;t get it to work with linear view space depth. Any suggestions ?
+<hr />
+####
+[Pretender]( &ldquo;&rdquo;) - <time datetime="2011-12-15 11:50:27">Dec 4, 2011</time></p>
+
+<p>Hi I&rsquo;m in trouble with fullscreen quads worldpos reconstruct. My quad&rsquo;s vertices are in [{-1,-1};{1,1}] and when I transform this position with the invViewProj, the result is wrong. What&rsquo;s the problem? What is the input position&rsquo;s z coordinate? Thanks
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2011-12-15 12:06:46">Dec 4, 2011</time></p>
+
+<p>Z and W should both be 1.0 for a fullscreen quad.
+<hr />
+####
+[EO]( &ldquo;dominicstreeter@hotmail.com&rdquo;) - <time datetime="2014-04-20 18:29:48">Apr 0, 2014</time></p>
+
+<p>Thank you for your depth tutorials they are a great starting point but I am still working through them, one of the weirdest things is how many different linearisation algorithms I have seen just for openGL: <a href="http://www.geeks3d.com/20091216/geexlab-how-to-visualize-the-depth-buffer-in-glsl/">http://www.geeks3d.com/20091216/geexlab-how-to-visualize-the-depth-buffer-in-glsl/</a> That one worked for me and by extrapolation from your second from last code snippet: projectionMatrixNFLinearScalar.set((far + near) / (far - near), (2 * near) / (far - near)); - gave me: float linearDepth = projNFLinearScalarB / (projNFLinearScalarA - depth); I have no idea why working solution differs so much from the others I have seen, projections and notation being identical&hellip; I am for now baffled.
+<hr />
+####
+<a href="http://gravatar.com/ttw6741" title="ttw6741@rit.edu">Tyler Wozniak</a> - <time datetime="2014-04-07 06:00:40">Apr 1, 2014</time></p>
+
+<p>So I&rsquo;m currently working on a deferred rendering engine in D (you can find it at <a href="https://github.com/Circular-Studios/Dash">https://github.com/Circular-Studios/Dash</a>, but that&rsquo;s not that important). I&rsquo;m trying to rebuild the Z position using the technique you described in your second-last code sample, with the hardware depth buffer and the two projection constants. However, I was getting a final viewspace position that I had to invert in order to properly calculate the eye-direction for my specular component. So I went to the website you linked here <a href="http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html">http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html</a> to check the origin of the projection constants, and solving for Z in the equation there, it seems like the final depth formula should be ProjectionB / ( ProjectionA - depth ), rather than the way you wrote it. Am I missing something here? Switching the two values gave specular highlights that seem correct for me, so it seems like it worked, but I want to make sure I&rsquo;m understanding correctly. Also, thanks for the great tutorials!
+<hr />
+####
+<a href="http://celelej.com/performance-update-1/">Performance update with tutorial - Celelej Game Engine</a> - <time datetime="2015-02-16 06:45:58">Feb 1, 2015</time></p>
+
+<p>[…] so why don’t peek data from it? Here is very good tutorial how reconstruct position from it: link. When talking about GBuffer itself, I must also say something about normal vectors storage. As I […]
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2014-04-08 13:18:56">Apr 2, 2014</time></p>
+
+<p>Hi Tyler, I&rsquo;m pretty sure the issue here is just LH vs RH conventions for OpenGL and DX. By convention, in DirectX you usually have your view space coordinate system setup such that Z+ is in front of the camera, whereas in OpenGL most people will set up their projection such that Z- is in front of the camera. Consequently in the projection matrix there&rsquo;s an extra negative for the OpenGL case to make sure that the result ends up being positive, which is why the depth equation is slightly different if you write it out in terms of ProjectionA and ProjectionB. If you don&rsquo;t want to make assumptions about your coordinate system inside your shader code, you should be able to do things directly in terms of your actual projection matrix instead of using the A and B constants: linearZ = Projection._43 / (zw - Projection._33) assuming that you&rsquo;re using a row-major projection matrix.
+<hr />
+####
+<a href="http://philliphamlyn.wordpress.com/2014/04/08/linear-surface-features-on-dynamic-terrain/">Linear Surface Features on Dynamic Terrain | Phillip Hamlyn</a> - <time datetime="2014-04-08 11:45:53">Apr 2, 2014</time></p>
+
+<p>[…] already been drawn. The maths of this method are covered in the excellent series of articles by MJP – Position From Depth. The basic method […]
+<hr />
+####
+[EO]( &ldquo;dominicstreeter@hotmail.com&rdquo;) - <time datetime="2014-04-21 07:44:08">Apr 1, 2014</time></p>
+
+<p>So my solution was this : projectionMatrixNFLinearScalar.set((2 * near) / (far - near), (far + near) / (far - near)); x = 0.000266702, y = 1.0002667 Projection matrix looks like this (near 2 far 15000): 0.95209867 0.0 0.0 0.0 0.0 1.428148 -0.0 0.0 0.0 0.0 -1.0002667 -4.0005336 0.0 0.0 -1.0 0.0 Literal extrapolation of values from projection based on Projection._43 / (zw – Projection._33): projectionMatrixNFLinearScalar.set((projectionMatrix.m32+2*near)*-1, projectionMatrix.m22*-1); The above works as a quick fix, but my first solution yields a marginally different first value. Here is the code used to create the projection: public static void createProjection(Matrix4f projectionMatrix, float fov, float aspect, float znear, float zfar) { float scale = (float) Math.tan((Math.toRadians(fov)) * 0.5f) * znear; float r = aspect * scale; float l = -r; float t = scale; float b = -t; projectionMatrix.m00 = 2 * znear / (r-l); projectionMatrix.m01 = 0; projectionMatrix.m02 = 0; projectionMatrix.m03 = 0; projectionMatrix.m10 = 0; projectionMatrix.m11 = 2 * znear / (t-b); projectionMatrix.m12 = 0; projectionMatrix.m13 = 0; projectionMatrix.m20 = (r + l) / (r-l); projectionMatrix.m21 = (t+b)/(t-b); projectionMatrix.m22 = -(zfar + znear) / (zfar-znear); projectionMatrix.m23 = -1; projectionMatrix.m30 = 0; projectionMatrix.m31 = 0; projectionMatrix.m32 = -2 * zfar * znear / (zfar - znear); projectionMatrix.m33 = 0; } Shader: float linearDepth = projNFLinearScalarA / (projNFLinearScalarB - depth); This has me questioning the legitimacy of my projection matrix, projection works perfectly and I can solve linear depth but I am afraid I may hit further issues down the line trying to solve world space using methods you have shown. Note that I am using right handed notation in openGL, can anyone qualify any flaw in the code above? Thanks, EO
+<hr />
+####
+<a href="http://roar11.com/2015/07/screen-space-glossy-reflections/">Screen Space Glossy Reflections | Roar11.com</a> - <time datetime="2015-08-20 07:19:48">Aug 4, 2015</time></p>
+
+<p>[…] [6] Matt Pettineo.  <a href="https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/</a> […]
+<hr />
+####
+<a href="http://www.faceyoutub.com/game-development/opengl-calculating-shadowmap-coordinates-for-cubemap-in-shading-pass.html">opengl &#8211; Calculating shadowmap coordinates for cubemap in shading pass? | Asking</a> - <time datetime="2015-10-10 14:35:10">Oct 6, 2015</time></p>
+
+<p>[…] use a cube map for shadows you need to recreate the world position of the pixel you are rendering and from that get the normal that points at that world position from […]
+<hr />
+####
+<a href="http://ukr-news.ml/2018/08/%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%be%d0%b4-learn-opengl-%d1%83%d1%80%d0%be%d0%ba-5-10-screen-space-ambient-occlusion">[Перевод] Learn OpenGL. Урок 5.10 – Screen Space Ambient Occlusion - Новини дня</a> - <time datetime="2018-08-27 01:55:34">Aug 1, 2018</time></p>
+
+<p>[…] магии, что описано, например, у Matt Pettineo в блоге. Это, конечно, требующий бОльших затрат на расчеты […]
+<hr />
+####
+<a href="https://nbertoa.wordpress.com/2017/01/21/how-can-i-find-the-pixel-space-coordinates-of-a-3d-point-part-3-the-depth-buffer/">How can I find the pixel space coordinates of a 3D point &#8211; Part 3 &#8211; The Depth Buffer &#8211; Nicolas Bertoa</a> - <time datetime="2017-01-21 13:51:01">Jan 6, 2017</time></p>
+
+<p>[…] position from depth in deferred shading techniques (Matt Pettineo explains this in detail in this article). Here you have an hlsl code to get Zv from […]
+<hr />
+####
+<a href="https://nbertoa.wordpress.com/2016/10/28/directx-12-engine-updates-demo/">DirectX 12 Engine- Updates + Demo &#8211; Nicolas Bertoa</a> - <time datetime="2016-10-28 01:26:16">Oct 5, 2016</time></p>
+
+<p>[…] I was creating an additional geometry buffer to store depth in view space. I followed an article to reuse the already existent depth stencil buffer […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4021 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-09-06 00:11 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/d3d11-features/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Conservative Depth Output (and Other Lesser-Known D3D11 Features)</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/deferred-msaa/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Deferred MSAA</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

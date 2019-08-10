@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DirectX 12 on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/directx-12/</link>
+    <description>Recent content in DirectX 12 on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 25 Mar 2016 08:39:36 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/directx-12/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Bindless Texturing for Deferred Rendering and Decals</title>
+      <link>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</link>
+      <pubDate>Fri, 25 Mar 2016 08:39:36 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</guid>
+      <description>https://github.com/TheRealMJP/DeferredTexturing
+https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
+To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
+    </item>
+    
+  </channel>
+</rss>

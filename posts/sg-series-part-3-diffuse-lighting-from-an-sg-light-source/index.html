@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="SG Series Part 3: Diffuse Lighting From an SG Light Source">
+<meta itemprop="description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
+
+
+<meta itemprop="datePublished" content="2016-10-10T07:08:51&#43;00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:08:51&#43;00:00" />
+<meta itemprop="wordCount" content="2297">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source" />
+<meta property="og:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/" />
+<meta property="article:published_time" content="2016-10-10T07:08:51+00:00" />
+<meta property="article:modified_time" content="2016-10-10T07:08:51+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source"/>
+<meta name="twitter:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>SG Series Part 3: Diffuse Lighting From an SG Light Source</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 10, 2016</span></div>
+				<h1>SG Series Part 3: Diffuse Lighting From an SG Light Source</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
+
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
+
+<h2 id="a-big-gaussian-in-the-sky">A Big Gaussian In The Sky<a href="#a-big-gaussian-in-the-sky" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In the <a href="https://mynameismjp.wordpress.com/2016/10/09/sg-series-part-2-spherical-gaussians-101/">previous post</a> we covered a few of the universal properties of SG&rsquo;s. Now that we have a few tools on our utility belt, let&rsquo;s discuss an example of how we can actually use those properties to our advantage in a rendering scenario. Let&rsquo;s say we have a surface point <strong>x</strong> being lit by a light source <strong>L</strong>, with the light source being represented by an SG named <strong>GL</strong>. Recall from the previous article that the equation for computing the outgoing radiance towards the eye for a surface with a Lambertian diffuse BRDF looks like the following:</p>
+
+<p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} L_{i}(\mathbf{i}, \mathbf{x})cos(\theta_{i})d\Omega $$</p>
+
+<p>For punctual light sources that are essentially a scaled delta function, computing this is as easy as N dot L. But we&rsquo;re in trouble if we have an area light source, since we typically don&rsquo;t have a closed form solution to the integral. But let&rsquo;s suppose that we have some strange Gaussian light source, whose angular falloff can be exactly represented by an SG (normally area light sources are considered  to have uniform emission over their surface, but let&rsquo;s imagine we have case where the emission is non-uniform). If we can treat the light as an SG, then we can start to consider some of the handy Gaussian tools that we laid out earlier. In particular the inner product starts to seem really useful: it gives us the result of integrating the product of two SG&rsquo;s, which is basically what we&rsquo;re trying to accomplish in our diffuse lighting equation. The big catch is that we&rsquo;re not integrating the product of two SG&rsquo;s, we&rsquo;re instead integrating the product of an SG with a clamped cosine lobe. Obviously a Gaussian lobe has a different shape compared to a clamped cosine lobe, but perhaps if we squint our eyes from a distance you could substitute one for another. This approach was taken by <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2009/12/sg.pdf">Wang et al.</a>[1], who suggested fitting a cosine lobe to a single SG with <strong>λ</strong>=2.133 and <strong>a</strong>=1.17. If we follow in their footsteps, the diffuse calculation is straightforward:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">SG</span> <span class="nf">CosineLobeSG</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="n">direction</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SG</span> <span class="n">cosineLobe</span><span class="p">;</span>
+    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">direction</span><span class="p">;</span>
+    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="mf">2.133f</span><span class="p">;</span>
+    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="mf">1.17f</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">cosineLobe</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SG</span> <span class="n">cosineLobe</span> <span class="o">=</span> <span class="n">CosineLobeSG</span><span class="p">(</span><span class="n">normal</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">SGInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">cosineLobe</span><span class="p">),</span> <span class="mf">0.0f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">SGDiffuseInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="error-analysis">Error Analysis<a href="#error-analysis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Not too bad, eh? Of course it&rsquo;s worth taking a closer look at our cosine lobe approximation, since that&rsquo;s definitely going to introduce some error. Perhaps the best way to do this is to look at the graphs of a real cosine lobe and our SG approximation side-by-side:</p>
+
+<p><a href="https://www.desmos.com/calculator/pecunlgzhe"><img src="https://mynameismjp.files.wordpress.com/2016/09/sg_cosine_approximation_alt.png" alt="sg_cosine_approximation_alt" /></a>
+<center><em>Comparison of a clamped cosine cosine lobe (red) with an SG approximation (blue)</em></center></p>
+
+<p>Just from looking at the graph it&rsquo;s fairly obvious that an SG isn&rsquo;t necessarily a great fit for a cosine lobe. First of all, the amplitude actually goes above 1, which might seem a bit weird at first glance. However it&rsquo;s necessary to ensure that the area under the curve remains somewhat consistent with the cosine lobe, since there would otherwise be a loss of energy. The other weirdness stems from the fact that an SG never actually hits 0 anywhere on the sphere, hence the long &ldquo;tail&rdquo; on the graph of the SG. This essentially means that if the SG were integrated against a punctual light source, the lighting would &ldquo;wrap&rdquo; around the sphere past the point where N dot L is equal to 0. The situation actually isn&rsquo;t all that different from an SH representation of a cosine lobe, which also extends past π/2:</p>
+
+<p><a href="https://www.desmos.com/calculator/dbxrgxb95k"><img src="https://mynameismjp.files.wordpress.com/2016/09/sh_sg_cosine_approximation.png" alt="sh_sg_cosine_approximation" /></a>
+<center><em>L1 (green) and L2 (purple) SH approximation of a clamped cosine lobe compared with an SG approximation (blue) and the actual clamped cosine (red).</em></center></p>
+
+<p>In the SH case the approximation actually goes negative, which is arguably worse than the long tail of the SG approximation. The L1 approximation is particularly bad in this regard. If at this point you&rsquo;re trying to imagine what these approximations look like on a sphere, let me save you the trouble by providing an image:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/07/sg_sh_cosine_sphere.png"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_sh_cosine_sphere.png" alt="SG_SH_Cosine_Sphere" /></a>
+<center><em>From left to right: actual clamped cosine lobe, SG cosine approximation, L2 SH cosine approximation</em></center></p>
+
+<p>Now that we&rsquo;ve finished analyzing the approximation of a cosine lobe, we need to take a look at the actual results of computing diffuse lighting from an SG light source. Let&rsquo;s start off by graphing the results of computing irradiance using an SG inner product, and compare it against what we get by using brute-force numerical integration to compute the result of multiplying the SG with an actual clamped cosine (<em>not</em> the approximate SG cosine lobe that we use for the inner product):</p>
+
+<p><a href="https://www.desmos.com/calculator/mxpq29ybam"><img src="https://mynameismjp.files.wordpress.com/2016/09/sglight_irradiance_graph.png" alt="sglight_irradiance_graph" /></a>
+<center><em>The resulting irradiance from an SG light source (with sharpness of 4.0) as a function of the angle between the light source and the surface normal. The red graph is the result of using numerical integration to compute the integral of the SG light source multiplied with a clamped cosine, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG.</em></center></p>
+
+<p>As you might expect, the inner product approximation has some error when compared with the &ldquo;ground truth&rdquo; provided by numerical integration. It&rsquo;s worth pointing out that this error is purely a consequence of approximating the clamped cosine lobe as an SG: the inner product provides the exact result of the integral, and thus shouldn&rsquo;t introduce any error on its own. Despite this error, the resulting irradiance isn&rsquo;t hugely far off from our ground truth. The biggest difference is for the angles facing away from the light, where the SG inner product version has a stronger tail. Visualizing the resulting diffuse on a sphere gives us the following:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse.png"><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse.png" alt="SGLight_Diffuse" /></a>
+<center><em>The left sphere shows the resulting diffuse lighting from an SG light source with a sharpness of 4.0, where the irradiance was computed using monte carlo importance sampling. The right sphere shows the resulting diffuse lighting from computing irradiance using an SG inner product with an approximation of a cosine lobe.</em></center></p>
+
+<h2 id="a-cheaper-approximation">A Cheaper Approximation<a href="#a-cheaper-approximation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>As an alternative to representing the cosine lobe with an SG and computing the inner product, we can consider a cheaper approximation. One advantage of working with SG&rsquo;s is that each lobe is always symmetrical about its axis, which is also where its value is the highest. We also discussed earlier how we can compute the integral of an SG over the sphere, which gives us its total energy. This suggests that if we want to be frugal with our shader cycles, we can pull terms out of the integral over the sphere/hemisphere and only evaluate them for the SG axis direction. This obviously introduces error, but that error may be acceptable if the term we pull out is relatively &ldquo;smooth&rdquo;. If we apply this approximation to computing irradiance and diffuse lighting, we get this:</p>
+
+<p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} G_{L}(\mathbf{i};\mathbf{\mu},\lambda,a)cos(\theta_{i})d\Omega $$</p>
+
+<p>$$ L_{o}(\mathbf{o}, \mathbf{x}) \approx cos(\theta_{\mu}) \frac{C_{diffuse}}{\pi} \int_{\Omega} G_{L}(\mathbf{i};\mathbf{\mu},\lambda,a)d\Omega $$</p>
+
+<p>Translating to HLSL, we get the following functions:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIrradiancePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">cosineTerm</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">));</span>
+    <span class="k">return</span> <span class="n">cosineTerm</span> <span class="o">*</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">)</span> <span class="o">/</span>
+    <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">SGDiffusePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">SGIrradiancePunctual</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If we overlay the graph of our super-cheap irradiance approximation on the graph we were looking at earlier, we get this:</p>
+
+<p><a href="https://www.desmos.com/calculator/mfsufusbqk"><img src="https://mynameismjp.files.wordpress.com/2016/09/sglight_irradiance_approximation2.png" alt="sglight_irradiance_approximation" /></a>
+<center><em>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The green graph was computed by pulling the cosine term out of the integral, and multiplying it with the result of integrating the SG light about the sphere.</em></center></p>
+
+<p>The result shouldn&rsquo;t be a surprise: it&rsquo;s just a scaled version of the standard clamped cosine.It&rsquo;s pretty obvious just by looking that this particular optimization will introduce quite a bit of error, particularly where theta is greater than π/2. But it is cheap, since we&rsquo;ve effectively turned an SG into a point light. This is makes it a useful tool for cases where we may want to approximate the convolution of an SG light source with a BRDF or some other function that isn&rsquo;t easily represented as an SG.</p>
+
+<h2 id="a-more-accurate-approximation">A More Accurate Approximation<a href="#a-more-accurate-approximation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So it&rsquo;s nice to have a cheap option, but what if we want more accuracy than our inner product approximation? Fortunately for us, <a href="http://www.selfshadow.com/">Stephen Hill</a> was able to formulate another alternative approximation that directly fits a curve to the integral of a cosine lobe with an SG. His implementation is actually formulated for a normalized SG (where the integral about the sphere is equal to 1.0), but we can easily account for this by computing the integral and scaling the result by that value:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIrradianceFitted</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">muDotN</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">);</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">lambda</span> <span class="o">=</span> <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">c0</span> <span class="o">=</span> <span class="mf">0.36f</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">c1</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0f</span> <span class="o">*</span> <span class="n">c0</span><span class="p">);</span>
+
+    <span class="kt">float</span> <span class="n">eml</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambda</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">em2l</span> <span class="o">=</span> <span class="n">eml</span> <span class="o">*</span> <span class="n">eml</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">rl</span> <span class="o">=</span> <span class="n">rcp</span><span class="p">(</span><span class="n">lambda</span><span class="p">);</span>
+
+    <span class="kt">float</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">+</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">em2l</span> <span class="o">-</span> <span class="n">rl</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="p">(</span><span class="n">eml</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">)</span> <span class="o">*</span> <span class="n">rl</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">;</span>
+
+    <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">scale</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">x0</span> <span class="o">=</span> <span class="n">c0</span> <span class="o">*</span> <span class="n">muDotN</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">x</span><span class="p">;</span>
+
+    <span class="kt">float</span> <span class="n">n</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span><span class="p">;</span>
+
+    <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">muDotN</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">x1</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">x</span><span class="p">;</span>
+
+    <span class="kt">float</span> <span class="n">result</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bias</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">result</span> <span class="o">*</span> <span class="n">ApproximateSGIntegral</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The result is very close to the ground truth, which is very cool considering that it might actually be cheaper than our inner product approximation!</p>
+
+<p><a href="https://www.desmos.com/calculator/ke219swxv3"><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_irradiance_fitted.png" alt="SGLight_Irradiance_Fitted" /></a>
+<center><em>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The orange graph was computed using Stephen Hill&rsquo;s fitted curve approximation.</em></center></p>
+
+<p>If we once again visualize the result on the sphere and compare with our previous results, we get the following:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse_fitted.png" alt="SGLight_Diffuse_Fitted" />
+<center><em>The left sphere shows the resulting diffuse lighting from an SG light source with a sharpness of 4.0, where the irradiance was computed using an SG inner product with an approximation of a cosine lobe. The middle sphere shows the resulting diffuse lighting from computing irradiance using monte carlo importance sampling. The right sphere shows the resulting diffuse lighting from Stephen Hill&rsquo;s fitted approximation.</em></center></p>
+
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>[1] <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2009/12/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a></p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>###
+[Stefan Dyulgerov]( &ldquo;stefan.dyulgerov@gmail.com&rdquo;) - <time datetime="2017-10-09 07:08:04">Oct 1, 2017</time></p>
+
+<p>Hey, great article and nicely explained. 1. Can you update the links to the wang paper, since john snyders web site is reworked 2. Can you point a link to the SGIrradianceFitted, since the selfshadow is also updated.
+<hr />
+###
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2017-10-09 14:38:29">Oct 1, 2017</time></p>
+
+<p>Hi Stefan, I updated the link to Wang et al.&rsquo;s paper. Thank you for pointing that out! As for Stephen Hill&rsquo;s fitted SG irradiance approximation, the link that I currently have in there just points to his home page, which is still the same. He hasn&rsquo;t formally published his approximation anywhere, so I don&rsquo;t have anything else to link to at the moment.
+<hr />
+###
+<a href="http://wumpfblog.wordpress.com" title="r_andreas2@web.de">Wumpf</a> - <time datetime="2016-10-13 00:24:24">Oct 4, 2016</time></p>
+
+<p>In the second code listening &ldquo;SGDiffusePunctual&rdquo; should call &ldquo;SGIrradiancePunctual&rdquo; not &ldquo;ApproximateSGIrradiance&rdquo;, right? :) Great article series! :)
+<hr />
+###
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-10-13 09:46:50">Oct 4, 2016</time></p>
+
+<p>Yes, that&rsquo;s right. I had renamed that function in the original source code, and neglected to properly update the code embedded in the article. Thank you for pointing that out, and also for the kind words. :)
+<hr />
+###
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-10-10 23:00:15">Oct 1, 2016</time></p>
+
+<p>Hi Matt, I definitely see how that could be confusing, now that you&rsquo;ve pointed it out. I changed the text a bit to explicitly state that the graph represents the numerical integration of the SG light multiplied with the clamped cosine, so hopefully it will be a bit more clear for other readers. Either way I really appreciate the feedback! I should also thank you for writing such an amazing book, and making the complete source code available for reference! Without it I&rsquo;m not sure if I would have gotten my own little path tracer working in the demo. :)
+<hr />
+###
+<a href="http://pharr.org/matt" title="matt.pharr@gmail.com">Matt Pharr</a> - <time datetime="2016-10-10 14:39:11">Oct 1, 2016</time></p>
+
+<p>(Great series!) I was initially confused by your graph comparing numerical integration with the SG inner product&ndash;&ldquo;shouldn&rsquo;t numerical integration give the same result, since the inner product is exact and in closed form?&rdquo; I asked myself; it wasn&rsquo;t clear that you were comparing the integration of two different functions. I eventually figured out that you were numerically integrating the SG light model with the actual clamped cosine and comparing that to the inner product of the SG light and the SG clamped cosine (I think!); it might be nice to clarify the text/caption about that part of it. (On to part 4!)
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2297 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:08 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>SG Series Part 4: Specular Lighting From an SG Light Source</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>SG Series Part 2: Spherical Gaussians 101</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+</body>
+
+</html>

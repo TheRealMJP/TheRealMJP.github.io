@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Breaking Down Barriers - Part 1: What&#39;s a Barrier?">
+<meta itemprop="description" content="This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&rsquo;ve done any amount of D3D12 or Vulkan programming, then you&rsquo;ve probably spent a good bit of that time grappling with barriers.">
+
+
+<meta itemprop="datePublished" content="2018-03-06T09:21:34&#43;00:00" />
+<meta itemprop="dateModified" content="2018-03-06T09:21:34&#43;00:00" />
+<meta itemprop="wordCount" content="4138">
+
+
+
+<meta itemprop="keywords" content="Graphics,DX12," />
+<meta property="og:title" content="Breaking Down Barriers - Part 1: What&#39;s a Barrier?" />
+<meta property="og:description" content="This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&rsquo;ve done any amount of D3D12 or Vulkan programming, then you&rsquo;ve probably spent a good bit of that time grappling with barriers." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/" />
+<meta property="article:published_time" content="2018-03-06T09:21:34+00:00" />
+<meta property="article:modified_time" content="2018-03-06T09:21:34+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Breaking Down Barriers - Part 1: What&#39;s a Barrier?"/>
+<meta name="twitter:description" content="This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&rsquo;ve done any amount of D3D12 or Vulkan programming, then you&rsquo;ve probably spent a good bit of that time grappling with barriers."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Breaking Down Barriers - Part 1: What&#39;s a Barrier?</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Mar 6, 2018</span></div>
+				<h1>Breaking Down Barriers - Part 1: What&#39;s a Barrier?</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
+
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
+
+<p>If you&rsquo;ve done any amount of D3D12 or Vulkan programming, then you&rsquo;ve probably spent a good bit of that time grappling with barriers. They can be pretty tricky to get right: the validation layers seem to be always pointing out new issues whenever you change some rendering code, or when a new version of the validation layer comes in through Windows Update. And on top of that the IHV&rsquo;s keep telling you that you need to be really careful and how you use barriers if you want GPU performance to meet or exceed what you get from D3D11, which is an additional challenge on top of simply achieving artifact-free results.</p>
+
+<p>So what gives? Why the heck do we even need barriers in the first place, and why do things go so wrong if we misuse them? If you&rsquo;ve done significant console programming or are already familiar with the lower-level details of modern GPU&rsquo;s, then you probably know the answer to these questions, in which case this article isn&rsquo;t really for you. But if you don&rsquo;t have the benefit of that experience, then I&rsquo;m going to do my best to give you a better understanding of what&rsquo;s going on behind the scenes when you issue a barrier.</p>
+
+<h2 id="a-high-barrier-to-entry">A High Barrier To Entry<a href="#a-high-barrier-to-entry" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Like almost everything else in programming and computers, the term &ldquo;barrier&rdquo; is already a bit overloaded. In some contexts, a &ldquo;<a href="https://en.wikipedia.org/wiki/Barrier_(computer_science)">barrier</a>&rdquo; is a <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization point</a> where a bunch of threads all have to stop once they reach a particular point in the code that they&rsquo;re running. In this case you can think of the barrier as an immovable wall: the threads are all running, but stop dead in their tracks when they &ldquo;hit&rdquo; the barrier:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="nf">ThreadFunction</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">DoStuff</span><span class="p">();</span>
+
+    <span class="c1">// Wait for all threads to hit the barrier
+</span><span class="c1"></span>    <span class="n">barrier</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+
+    <span class="c1">// We now know that all threads called DoStuff()
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>This sort of thing is helpful when you want to know when a bunch of threads have all finished executing their tasks (the &ldquo;join&rdquo; in the <a href="https://en.wikipedia.org/wiki/Fork%E2%80%93join_model">fork-join model</a>), or when you have threads that need to read other&rsquo;s results. As a programmer you can implement a thread barrier by &ldquo;spinning&rdquo; (looping until a conditions met) on a variable updated via atomic operations, or by using <a href="http://cs.umw.edu/~finlayson/class/fall14/cpsc425/notes/07-conditions.html">semaphores and condition variables</a> when you want your threads to go to sleep while they&rsquo;re waiting.</p>
+
+<p>In other contexts the term &ldquo;barrier&rdquo; will refer to a <a href="https://en.wikipedia.org/wiki/Memory_barrier">memory barrier</a> (also known as a &ldquo;fence&rdquo;), particularly if you&rsquo;ve somehow fallen down the rabbit hole of <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ee418650.aspx">lock-free programming</a>. In these scenarios you&rsquo;re usually dealing with reordering of memory operations that&rsquo;s done by the compiler and/or the processor itself, which can really throw a wrench in the works when you have multiple processors communicating through shared memory. Memory barriers help you out by letting you force memory operations to complete either before or after the barrier , effectively keeping them on one &ldquo;side&rdquo; of the fence. In C++ you can insert these into your code using platform-specific macros like <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684208(v=vs.85).aspx">MemoryBarrier</a> in the Windows API, or through the cross-platform <a href="http://en.cppreference.com/w/cpp/atomic/atomic_thread_fence">std::atomic_thread_fence</a>. A common use case might look like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp">    <span class="c1">// DataIsReady and Data are written to
+</span><span class="c1"></span>    <span class="c1">// by a different thread
+</span><span class="c1"></span>    <span class="k">if</span><span class="p">(</span><span class="n">DataIsReady</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="c1">// Make sure that reading Data happens
+</span><span class="c1"></span>    <span class="c1">// *after* reading from DataIsReady
+</span><span class="c1"></span>    <span class="n">MemoryBarrier</span><span class="p">();</span>
+
+    <span class="n">DoSomething</span><span class="p">(</span><span class="n">Data</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>These two meanings of the term &ldquo;barrier&rdquo; have different specifics, but they also have something in common: they&rsquo;re mostly used when one thing is producing a result and another thing needs to read that result. Another way of saying that is that one task has a <strong>dependency</strong> on a different task. Dependencies happen all of the time when writing code: you might have one line of code that adds two numbers to compute an offset, and the very next line of code will use that offset to read from an array. However you often don&rsquo;t need to really be aware of this, because the compiler can <strong>track</strong> those dependencies for you and make sure that it produces code to give you the right results. Manually inserting barriers usually doesn&rsquo;t come in until you do things in a way that the compiler can&rsquo;t see how the data is going to be written to and read from at compile-time. This commonly happens due to multiple threads accessing the same data, but it can also happen in other weird cases (like when another piece of hardware writes to memory). Either way, using the appropriate barrier will make sure that the results will be <strong>visible</strong> to dependent steps, ensuring that they don&rsquo;t end up reading the wrong data.</p>
+
+<p>Since compilers can&rsquo;t handle dependencies for you automatically when you&rsquo;re doing multithreaded CPU programming, you&rsquo;ll often spend a lot of time figuring how to express and resolve dependencies between your multithreaded tasks. In these situations it&rsquo;s common to build a <a href="https://en.wikipedia.org/wiki/Dependency_graph">dependency graph</a> indicating which tasks depend on the results of other tasks. That graph can help you decide what order to execute your tasks, and when you need to stick a sync point (barrier) between two tasks (or groups of tasks) so that the earlier task completely finishes before the second task starts executing. You&rsquo;ll often see these graphs drawn out as a tree-like diagram, like in this easy-to-understand example from <a href="https://software.intel.com/en-us/node/517349">Intel&rsquo;s documentation for Thread Building Blocks</a>:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/01/tbb_dependency_graph.jpg" alt="TBB_Dependency_Graph" /></p>
+
+<p>Even if you&rsquo;ve never done task-oriented multithreaded programming, this diagram makes the concept of dependencies pretty clear: you can&rsquo;t put the peanut better on the bread before you&rsquo;ve gotten the bread! At a high level this determines the order of your tasks (bread before peanut butter), but it also subtly implies something that would be obvious to you if you were doing this in real life: you can&rsquo;t start applying your peanut butter until you&rsquo;ve gotten out your slices of bread from the cabinet. If you were doing this in real life by yourself, you wouldn&rsquo;t even think about this. There&rsquo;s only 1 of you, so you would just go through each step one at a time. But we were originally discussing  this in the context of multithreading, which means that we&rsquo;re talking about trying to run different tasks on different cores in parallel. Without properly waiting you could end up with the peanut butter task running at the same time as the bread step, and that&rsquo;s obviously not good!</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/01/overlapped_tasks.png" alt="Overlapped_Tasks" /></p>
+
+<p>To avoid these kinds of issues, task schedulers like TBB give you mechanisms that force a task (or group of tasks) to wait until a prior task (or group of tasks) completely finishes executing. Like I mentioned earlier, you could call this mechanism a barrier, or a sync point:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/01/overlapped_tasks_fixed.png" alt="Overlapped_Tasks_Fixed" /></p>
+
+<p>This sort of thing is pretty easy to implement on modern PC CPU&rsquo;s, since you have a lot of flexibility as well as some powerful tools at your disposal: atomic operations, synchronization primitives, OS-supplied condition variables, and so on.</p>
+
+<h2 id="back-to-gpu-land">Back To GPU Land<a href="#back-to-gpu-land" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So we&rsquo;ve covered the basics of what a barrier is, but I still haven&rsquo;t explained why we have them in API&rsquo;s designed for talking to the GPU. After all, issuing Draw and Dispatch calls isn&rsquo;t really the same as scheduling a bunch of parallel tasks to execute on separate cores, right? I mean, if you look at a D3D11 program&rsquo;s sequence of API calls it looks pretty damn serial:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/01/renderdoc_d3d11.png" alt="Renderdoc_D3D11" /></p>
+
+<p>If you&rsquo;re used to dealing with GPU&rsquo;s through an API like this, you&rsquo;d be forgiven for thinking that the GPU just goes through each command one at a time, in the order you submit them. And while this may have been true a long time ago, the reality is actually quite a bit more complicated on modern GPU&rsquo;s. To show you what I&rsquo;m talking about, let&rsquo;s take a look at what my <a href="https://github.com/TheRealMJP/DeferredTexturing">Deferred Texturing sample</a> looks like when I take a capture with AMD&rsquo;s awesome profiling tool, <a href="https://gpuopen.com/gaming-product/radeon-gpu-profiler-rgp/">Radeon GPU Profiler</a>:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/01/rgp_bindlessdeferred.png"><img src="https://mynameismjp.files.wordpress.com/2018/01/rgp_bindlessdeferred.png" alt="RGP_BindlessDeferred" /></a></p>
+
+<p>This snippet is showing just a portion of a frame, specifically the part where all of the scene geometry is rasterized into the G-Buffer. The left-hand side shows the draw call, while the blue bars to the right show when the draw call actually starts and stops executing. And what do you know, there&rsquo;s a whole lot of overlapping going on there! You can see the same thing shown a bit differently if you fire up <a href="https://blogs.msdn.microsoft.com/pix/download/">PIX for Windows</a>:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/01/pix_timeline.png"><img src="https://mynameismjp.files.wordpress.com/2018/01/pix_timeline.png" alt="PIX_Timeline" /></a></p>
+
+<p>This is a snippet from PIX&rsquo;s timeline view, which is also showing the execution time for the same sequence of draw calls (this time captured on my GTX 1070, whereas the earlier RGP capture was done on my significantly less beefy RX 460). You can see the same pattern: the draws start executing roughly in submission order, but they overlap all over the place. In some cases, draws will start and finish before an earlier draw completes!</p>
+
+<p>If you know even a little bit about GPU&rsquo;s this shouldn&rsquo;t be <em>completely</em> surprising. After all, everyone knows that a GPU is mostly made up of hundreds or thousands of what the IHV&rsquo;s like to call &ldquo;<strong>shader cores</strong>&rdquo;, and those shader cores all work together to solve &ldquo;embarrassingly parallel&rdquo; problems. These days the bulk of work done to process a draw (and pretty much all of the work done to process a dispatch) is performed on these guys, which run the shader programs compiled from our HLSL/GLSL/MetalSL code. Surely it makes sense to have the shader cores process the several thousand vertices from a single draw call in parallel, and to do the same with the thousands or millions of pixels that result from rasterizing the triangles. But does it really make sense to let multiple draw calls or dispatches bleed over into one another so that your actual high-level commands are also executing in parallel?</p>
+
+<p>The correct answer is, &ldquo;yes, absolutely!&rdquo; In fact, hardware designers have put in quite a bit of effort over the years to make sure that their GPU&rsquo;s can do this even if there are some state changes in between the draws. Desktop GPU&rsquo;s have even engineered their ROP&rsquo;s (the units that are responsible for taking the output of a pixel shader and actually writing it to memory) so that they can <a href="https://fgiesen.wordpress.com/2011/07/12/a-trip-through-the-graphics-pipeline-2011-part-9/">resolve blending operations even if the pixel shaders didn&rsquo;t finish in draw order</a>! Doing it this way helps avoid having idle shader cores, which in turn gives you better throughput. Don&rsquo;t worry if this doesn&rsquo;t completely make sense right now, as I&rsquo;m going to walk through some examples in a future post that explain why this is the case. But for now, just take my word for it that allowing draws and dispatches to overlap generally leads to higher throughput.</p>
+
+<p>If a GPU&rsquo;s threads from a draw/dispatch can overlap with other, that means that the GPU needs a way to <em>prevent</em> that from happening in cases where there&rsquo;s a data dependency between two tasks. When this happens, it makes sense do what we do on a CPU, and insert something roughly similar to a thread barrier in order to let us know when a group of threads have all finished their work. In practice GPU&rsquo;s tend to do this in a very coarse manner, such as waiting for all outstanding compute shader threads to finish before starting up the next dispatch. This can be called a &ldquo;flush&rdquo;, or a &ldquo;wait for idle&rdquo;, since the GPU will wait for all threads to &ldquo;drain&rdquo; before moving on. But we&rsquo;ll get into that in more detail in the next article.</p>
+
+<h2 id="caches-are-hard">Caches are Hard<a href="#caches-are-hard" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Hopefully by now it&rsquo;s clear that there&rsquo;s at least one reason for barriers on GPU&rsquo;s: to keep shader threads from overlapping when there&rsquo;s a data dependency. This is really the same scenario with the peanut butter and the bread that we laid out earlier when talking about CPU threads, except with the core count cranked up to the thousands. But unfortunately things get a bit more complicated when we&rsquo;re talking about GPU&rsquo;s as opposed to CPU&rsquo;s.</p>
+
+<p>Let&rsquo;s say that you start up a group of threads running on a PC CPU that write a bunch of data to individual buffers, insert a thread barrier to wait until those threads are finished, and then kick off a second group of threads that reads the output data of the first group of threads. As long as you make sure that you have the right memory/compiler barriers in place to ensure that the second tasks&rsquo;s read operations don&rsquo;t happen too early (and often you get this by default from using OS synchronization primitives or atomic operations), you don&rsquo;t need to care about getting correct results in the presence of a cache hierarchy.  This is because the caches on an x86 core (usually each core has its own individual L1 cache, with a shared L2 and possibly L3 cache) are <a href="https://en.wikipedia.org/wiki/Cache_coherence">coherent</a>, which means that they stay &ldquo;up to date&rdquo; with each other as they access different memory addresses. The details of how they achieve this miraculous feat are <a href="https://fgiesen.wordpress.com/2014/07/07/cache-coherency/">quite complicated</a>, but as programmers we&rsquo;re usually allowed to remain blissfully ignorant of the internal gymnastics being performed by the hardware.</p>
+
+<p>Things are not so simple for the poor folks that write drivers for a GPU. For various reasons, some of them dating back to their legacy as devices that weren&rsquo;t used for general-purpose computing like they are now, GPU&rsquo;s tend to have a bunch of caches that aren&rsquo;t always organized into a strict hierarchy. The details aren&rsquo;t always public, but AMD tends to have quite a bit of public information available about their GPU&rsquo;s that we can learn from. Here&rsquo;s a diagram from slide 50 of <a href="http://32ipi028l5q82yhj72224m8j.wpengine.netdna-cdn.com/wp-content/uploads/2016/03/GDC_2016_D3D12_Right_On_Queue_final.pdf">this presentation</a>:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/01/amd_caches.png"><img src="https://mynameismjp.files.wordpress.com/2018/01/amd_caches.png" alt="AMD_Caches" /></a></p>
+
+<p>This looks quite different from a CPU&rsquo;s cache hiearchy! We have two things with L1 that go through L2 the way that you expect they would, but then there&rsquo;s color and depth caches that bypass L2 and go right to memory! And there&rsquo;s a DMA engine that doesn&rsquo;t go through cache at all! The diagram here is also a bit misleading, since in reality there&rsquo;s an L1 texture cache on every compute unit (CU), and there can be dozens of compute units on the larger video cards. There&rsquo;s also multiple instruction caches and scalar data L1&rsquo;s, with one of these shared between up to 4 CU&rsquo;s. There&rsquo;s lots of details in <a href="https://www.amd.com/Documents/GCN_Architecture_whitepaper.pdf">this GCN whitepaper</a>, which explains how the various caches work, and also how direct memory writes from shaders (AKA writes to UAV&rsquo;s) go through their local L1 and <em>eventually</em> propagate to L2.</p>
+
+<p>As a consequence of having all of these caches without a strict hierarchy, the caches can sometimes get out of sync with each other. As the GCN whitepaper describes, the L1 caches on the shader units aren&rsquo;t coherent with each other until the writes reach L2. This means that if one dispatch writes to a buffer and another reads from it, the CU L1 cache may need to be <strong>flushed</strong> in between those dispatches to make sure that all of the writes at least made it to L2 (a cache flush refers to the operation of taking modified/dirty cache lines and writing them out to the next cache level, or actual memory if applied to the last cache level). And as <a href="http://32ipi028l5q82yhj72224m8j.wpengine.netdna-cdn.com/wp-content/uploads/2016/03/GDC_2016_D3D12_Right_On_Queue_final.pdf">slide 52</a> describes, it&rsquo;s even worse when a texture goes from being used as a render target to being used as a readable texture. For that case the writes to the render target could be sitting in the color buffer L1 cache that&rsquo;s attached to the ROP&rsquo;s, which means that cache has to be flushed in addition to flushing the other L1&rsquo;s and L2 cache. (note that AMD&rsquo;s new <a href="https://radeon.com/_downloads/vega-whitepaper-11.6.17.pdf">Vega architecture</a> has more unified cache hierarchy where the ROP&rsquo;s are also clients of the L2).</p>
+
+<p>One cool thing about AMD hardware is that their tools actually show you when this happens! Here&rsquo;s a snippet from an RGP capture showing the caches being flushed (and shader threads being synchronized!) on my RX 460 after large dispatch finishes writing to a texture:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/01/rgp_cacheflush.png" alt="RGP_CacheFlush" /></p>
+
+<p>Now the point of this isn&rsquo;t just to explain how caches are hard and complicated, but to illustrate another way in which GPU&rsquo;s require barriers. Ensuring that your threads don&rsquo;t overlap isn&rsquo;t sufficient for resolving read-after-write dependencies when you also have multiple caches that can have stale data in them. You&rsquo;ve also got to invalidate or flush those caches to make the results visible to subsequent tasks that need to read the data.</p>
+
+<h2 id="squeezing-out-more-bandwidth">Squeezing Out More Bandwidth<a href="#squeezing-out-more-bandwidth" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>GPU&rsquo;s have gotten more and more focused on compute as time goes on, but they&rsquo;re still heavily optimized for rasterizing triangles into a grid of pixels. Doing this job means that the ROP&rsquo;s can end up having touch a <em>ton</em> of memory every frame. Games now have to render at up to 4k resolutions, which works out to 8294400 pixels if you write every one with no overdraw. Multiply that by 8 bytes per-pixel for 16-bit floating point texture formats, or maybe up to 30 or 40 bytes per-pixel for fat G-Buffers, and you&rsquo;re looking at a lot bandwidth consumption just to touch all of that memory once (and typically many texels will be touched more than once)! It only gets worse if you add MSAA into the mix, which will double or quadruple the memory and bandwidth requirements in the naive case.</p>
+
+<p>To help keep that bandwidth usage from becoming a bottleneck, GPU designers have put quite a bit of effort into building lossless compression techniques into their hardware. Typically this sort of thing is implemented as part of the ROP&rsquo;s, and is therefore used when writing to render targets and depth buffers. There&rsquo;s been a lot of specific techniques used over the years, and the exact details haven&rsquo;t been made available to the public. However <a href="https://gpuopen.com/dcc-overview/">AMD</a> and <a href="https://www.anandtech.com/show/10325/the-nvidia-geforce-gtx-1080-and-1070-founders-edition-review/8">Nvidia</a> have provided at least a bit of information about their particular implementations of delta color compression in their latest architectures. The basic gist of both techniques is that they aim to exploit the similarity in neighboring pixels in order to avoid storing a unique value for every texel of the render target. Instead, the hardware recognizes patterns in blocks of pixels, and stores each pixel&rsquo;s difference (or delta) from an anchor value. Nvidia&rsquo;s block modes give them anywhere from 2:1 to 8:1 compression ratios, which potentially results in huge bandwidth savings!</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/01/nvidia_dcc.png"><img src="https://mynameismjp.files.wordpress.com/2018/01/nvidia_dcc.png" alt="Nvidia_DCC" /></a></p>
+
+<p>So what exactly does this have to do with barriers? The problem with these fancy compression modes is that while the ROP&rsquo;s may understand how to deal with the compressed data, the same is not necessarily true when shaders need to randomly-access the data through their texture units. This means that depending on the hardware and how the texture is used, a decompression step might be necessary before the texture contents are readable by a dependent task (or writable through a means other than ROP&rsquo;s). Once again, this is something that falls under the umbrella of &ldquo;barriers&rdquo; when we&rsquo;re talking about GPU&rsquo;s and the new explicit API&rsquo;s for talking to them.</p>
+
+<h2 id="but-what-about-d3d">But What About D3D?<a href="#but-what-about-d3d" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>After reading through my ramblings about thread synchronization, cache coherency, and GPU compression, you hopefully have at least a very basic grasp of 3 potential reasons that typical GPU&rsquo;s require barriers to do normal things that we expect of them. But if you look at the actual barrier API&rsquo;s in <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn899226(v=vs.85).aspx">D3D12</a> or <a href="https://gpuopen.com/vulkan-barriers-explained/">Vulkan</a>, you&rsquo;ll probably notice that they don&rsquo;t really seem to directly correspond with what we just talked about. After all, it&rsquo;s not like there&rsquo;s a &ldquo;WaitForDispatchedThreadsToFinish&rdquo; or &ldquo;FlushTextureCaches&rdquo; function on ID3D12GraphicsCommandList. And if you think about it, it makes sense that they don&rsquo;t do this. The fact that most GPU&rsquo;s have lots of shader cores where tasks can overlap is a pretty specific implementation detail, and you could say the same about GPU&rsquo;s that have weird incoherent cache hierarchies. Even for an explicit API like D3D12 it wouldn&rsquo;t make sense to leak that kind of detail across its abstraction, since it&rsquo;s totally possible that one day D3D12 could be used to talk to a GPU that doesn&rsquo;t behave the way that I just described (it may have already happened!).</p>
+
+<p>When you think of things from that perspective, it starts to make sense that D3D12/Vulkan barriers are more high-level, and instead are mostly aimed at describing the flow of data from one pipeline stage to another. Another way to describe them is to say that the barriers tell the driver about changes in the <em>visibility</em> of data with regards to various tasks and/or functional units, which as we pointed out earlier is really the essence of barriers. So in D3D12 you don&rsquo;t say &ldquo;make sure that this draw call finishes before this other dispatch reads it&rdquo;, you say &ldquo;this texture is transitioning from a &lsquo;render target&rsquo; state to a &lsquo;shader readable&rsquo; state so that a shader program can read from it&rdquo;. Essentially you&rsquo;re giving the driver a bit of information about the past and future life of a resource, which may be necessary for making decisions about which caches to flush and whether or not to decompress a texture. Thread synchronization is then implied by the state transition rather than explicit dependencies between draws or dispatches, which isn&rsquo;t a perfect system but it gets the job done.</p>
+
+<p>If you&rsquo;re wondering why we didn&rsquo;t need to manually issue barriers in D3D11, the answer to that question is &ldquo;because the driver did it for us!&rdquo;. Remember how earlier I said that a compiler can analyze your code to determine dependencies, and generate the appropriate assembly automatically? This is basically what drivers do in D3D11, except they&rsquo;re doing it at runtime! The driver needs to look at all the resources that you bind as inputs and outputs, figure out when there&rsquo;s visibility changes (for instance, going from a render target to a shader input), and insert the necessary sync points, cache flushes, and decompression steps. While it&rsquo;s nice that you automatically get correct results, it&rsquo;s also bad for a few reasons:</p>
+
+<ul>
+<li>Automatically tracking resources and draw/dispatch calls is expensive, which is not great when you want to squeeze your rendering code into a few milliseconds per frame.</li>
+<li>It&rsquo;s really bad for generating command buffers in parallel. If you can set a texture as a render target in one thread and then bind it as an input in another thread, the driver can&rsquo;t figure out the full resource lifetime without somehow serializing the results of the two threads.</li>
+<li>It relies on an explicit resource binding model, where the context always knows the full set of inputs and outputs for every draw or dispatch. This can prevent you from doing awesome things with bindless resource access.</li>
+<li>In some cases the driver might issue unnecessary barriers due to not having knowledge of how the shaders access their data. For example, two dispatches that increment the same atomic counter won&rsquo;t necessarily need a barrier between them, even though they access the same resource.</li>
+</ul>
+
+<p>The thinking behind D3D12 and Vulkan is that you can eliminate those disadvantages by having the app provide the driver with the necessary visibility changes. This keeps the driver simpler, and lets the app figure out the barriers in any manner that it wants. If your rendering setup is fairly fixed, you can just hard-code your barriers and have essentially 0 CPU cost. Or you can setup your engine to <a href="https://www.ea.com/frostbite/news/framegraph-extensible-rendering-architecture-in-frostbite">build its own dependency graph</a>, and <a href="https://www.gdcvault.com/play/1024656/Advanced-Graphics-Tech-Moving-to">use that to determine which barriers you&rsquo;ll need</a>.</p>
+
+<h2 id="next-up">Next Up<a href="#next-up" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In the <a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">next article</a>, I&rsquo;m going to dive a bit deeper into the topic of thread-level synchronization and how it&rsquo;s typically implemented on GPU&rsquo;s. Stay tuned!</p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+[Rim]( &ldquo;remigius@netforge.nl&rdquo;) - <time datetime="2018-03-06 21:56:13">Mar 2, 2018</time></p>
+
+<p>Things sure changed since the good ol&rsquo; XNA days :) Looks like a very interesting read, thanks for the write-up!
+<hr />
+####
+[Baggers]( &ldquo;techsnuffle@gmail.com&rdquo;) - <time datetime="2018-04-03 22:51:27">Apr 2, 2018</time></p>
+
+<p>Fantastic writeup, thanks for making these
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/04/01/breaking-down-barriers-part-2-synchronizing-gpu-threads/">Breaking Down Barriers &#8211; Part 2: Synchronizing GPU Threads &#8211; The Danger Zone</a> - <time datetime="2018-04-01 22:29:22">Apr 0, 2018</time></p>
+
+<p>[…] to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need […]
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/06/17/breaking-down-barriers-part-3-multiple-command-processors/">Breaking Down Barriers &#8211; Part 3: Multiple Command Processors &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:45:33">Mar 2, 2019</time></p>
+
+<p>[…] Part 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and Preemption […]
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2019-03-21 07:08:33">Mar 4, 2019</time></p>
+
+<p>This is so nice. I am learning a lot from your articles :-)
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4138 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-03-06 01:21 -0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Breaking Down Barriers - Part 2: Synchronizing GPU Threads</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>SG Series Part 6: Step Into The Baking Lab</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

@@ -3,6 +3,17 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://therealmjp.github.io/publications/</loc>
+    <lastmod>2019-08-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/</loc>
+    <lastmod>2019-08-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://therealmjp.github.io/about/</loc>
     <lastmod>2019-07-20T00:00:00+00:00</lastmod>
   </url>
@@ -19,14 +30,469 @@
   </url>
   
   <url>
-    <loc>https://therealmjp.github.io/</loc>
-    <lastmod>2019-07-20T00:00:00+00:00</lastmod>
-    <priority>0</priority>
+    <loc>https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/</loc>
+    <lastmod>2019-01-15T05:36:42+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/tags/</loc>
+    <lastmod>2019-01-15T05:36:42+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/uncategorized/</loc>
+    <lastmod>2019-01-15T05:36:42+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</loc>
+    <lastmod>2018-12-10T02:01:27+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/dx12/</loc>
+    <lastmod>2018-12-10T02:01:27+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/graphics/</loc>
+    <lastmod>2018-12-10T02:01:27+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</loc>
+    <lastmod>2018-09-09T00:48:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</loc>
+    <lastmod>2018-07-04T00:57:43+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</loc>
+    <lastmod>2018-06-18T02:14:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</loc>
+    <lastmod>2018-04-02T06:29:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</loc>
+    <lastmod>2018-03-06T09:21:34+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/</loc>
+    <lastmod>2016-10-10T07:13:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/</loc>
+    <lastmod>2016-10-10T07:12:13+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/</loc>
+    <lastmod>2016-10-10T07:09:20+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/</loc>
+    <lastmod>2016-10-10T07:08:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/</loc>
+    <lastmod>2016-10-10T07:08:02+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/</loc>
+    <lastmod>2016-10-10T07:05:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/new-blog-series-lightmap-baking-and-spherical-gaussians/</loc>
+    <lastmod>2016-10-10T07:05:10+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</loc>
+    <lastmod>2016-03-25T08:39:36+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/directx-12/</loc>
+    <lastmod>2016-03-25T08:39:36+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/update-for-my-shadow-sample-update/</loc>
+    <lastmod>2016-01-25T00:24:56+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/programmable-sample-points/</loc>
+    <lastmod>2015-09-14T03:31:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/siggraph-2015/</loc>
+    <lastmod>2015-08-17T05:17:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/mitsuba-quick-start-guide/</loc>
+    <lastmod>2015-04-04T20:36:44+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/some-special-thanks/</loc>
+    <lastmod>2015-03-23T08:35:45+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/shadow-sample-update/</loc>
+    <lastmod>2015-02-18T18:00:06+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/come-see-me-talk-at-gdc-2014/</loc>
+    <lastmod>2014-03-12T06:49:11+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/directx-11/</loc>
+    <lastmod>2014-02-04T06:58:04+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/programming/</loc>
+    <lastmod>2014-02-04T06:58:04+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/weighted-blended-oit/</loc>
+    <lastmod>2014-02-04T06:58:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sample-framework-updates/</loc>
+    <lastmod>2013-09-17T05:54:02+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/shadow-maps/</loc>
+    <lastmod>2013-09-11T07:45:40+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/directx/</loc>
+    <lastmod>2013-09-11T07:45:40+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</loc>
+    <lastmod>2013-09-07T06:21:28+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/siggraph-follow-up/</loc>
+    <lastmod>2013-07-29T06:15:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/what-ive-been-working-on/</loc>
+    <lastmod>2013-06-12T07:48:45+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/hlsl-udl/</loc>
+    <lastmod>2012-11-05T07:09:39+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/msaa-resolve-filters/</loc>
+    <lastmod>2012-10-29T07:33:31+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/msaa-overview/</loc>
+    <lastmod>2012-10-25T07:03:27+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/applying-sampling-theory-to-real-time-graphics/</loc>
+    <lastmod>2012-10-22T06:59:09+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/signal-processing-primer/</loc>
+    <lastmod>2012-10-15T08:20:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/</loc>
+    <lastmod>2012-10-15T08:00:47+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/the-blog/</loc>
+    <lastmod>2012-10-15T08:00:47+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/opengl-insights/</loc>
+    <lastmod>2012-08-06T04:50:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/looking-for-a-job/</loc>
+    <lastmod>2012-04-28T22:55:10+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/a-quick-note-on-shader-compilers/</loc>
+    <lastmod>2012-04-14T04:56:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/light-indexed-deferred-rendering/</loc>
+    <lastmod>2012-04-01T02:53:53+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/things-that-need-to-die/</loc>
+    <lastmod>2011-12-06T09:54:34+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/profiling-in-dx11-with-queries/</loc>
+    <lastmod>2011-10-13T08:59:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/average-luminance-compute-shader/</loc>
+    <lastmod>2011-08-10T09:31:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/i-am-officially-a-published-author/</loc>
+    <lastmod>2011-08-05T06:04:11+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/lens-flares/</loc>
+    <lastmod>2011-06-10T06:57:41+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</loc>
+    <lastmod>2011-04-20T06:59:20+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/crashes-on-nvidia-hardware/</loc>
+    <lastmod>2011-03-26T07:23:30+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/bokeh/</loc>
+    <lastmod>2011-02-28T08:18:35+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/radiosity-dx11-style/</loc>
+    <lastmod>2011-01-31T08:08:09+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/position-from-depth-glsl-style/</loc>
+    <lastmod>2011-01-09T01:47:45+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/d3d11-features/</loc>
+    <lastmod>2010-11-15T02:24:48+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/position-from-depth-3/</loc>
+    <lastmod>2010-09-06T07:11:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/deferred-msaa/</loc>
+    <lastmod>2010-08-16T08:57:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/msaa-sample-pattern-detector/</loc>
+    <lastmod>2010-07-07T08:42:23+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/</loc>
+    <lastmod>2010-04-30T08:47:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</loc>
+    <lastmod>2010-03-23T07:42:36+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/xna/</loc>
+    <lastmod>2010-03-23T07:42:36+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</loc>
+    <lastmod>2010-03-07T05:42:44+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</loc>
+    <lastmod>2010-02-15T05:17:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</loc>
+    <lastmod>2010-02-15T05:16:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/name-change/</loc>
+    <lastmod>2010-02-06T23:22:13+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/inferred-rendering/</loc>
+    <lastmod>2010-01-10T17:30:10+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</loc>
+    <lastmod>2009-12-31T22:31:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/xbox-360/</loc>
+    <lastmod>2009-12-31T22:31:58+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/more-post-processing-tricks-lens-flare/</loc>
+    <lastmod>2009-12-15T08:53:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/two-samples/</loc>
+    <lastmod>2009-12-06T04:22:29+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/pix-with-xna/</loc>
+    <lastmod>2009-10-16T15:49:13+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</loc>
+    <lastmod>2009-06-17T16:36:06+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</loc>
+    <lastmod>2009-05-20T16:28:39+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</loc>
+    <lastmod>2009-05-05T20:09:33+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/undo-and-redo-take-2/</loc>
+    <lastmod>2009-04-30T19:37:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</loc>
+    <lastmod>2009-03-27T19:21:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</loc>
+    <lastmod>2009-03-10T19:06:31+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/snippet-content-project/</loc>
+    <lastmod>2009-02-19T21:36:05+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</loc>
+    <lastmod>2009-02-18T04:22:32+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/profiling-events/</loc>
+    <lastmod>2009-01-23T17:31:19+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</loc>
+    <lastmod>2009-01-20T01:24:19+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</loc>
+    <lastmod>2009-01-19T19:51:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/fun-with-compiled-content/</loc>
+    <lastmod>2009-01-18T21:36:14+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/book-recommendation-real-time-collision-detection/</loc>
+    <lastmod>2009-01-17T23:27:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/undo-and-redo/</loc>
+    <lastmod>2008-12-19T19:05:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</loc>
+    <lastmod>2008-12-12T17:00:59+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/oldies/</loc>
+    <lastmod>2008-12-12T16:39:21+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/cleared-for-takeoff/</loc>
+    <lastmod>2008-12-10T21:22:13+00:00</lastmod>
   </url>
   
 </urlset>

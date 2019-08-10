@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s">
+<meta itemprop="description" content="This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
+
+
+<meta itemprop="datePublished" content="2016-10-10T07:12:13&#43;00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:12:13&#43;00:00" />
+<meta itemprop="wordCount" content="4928">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s" />
+<meta property="og:description" content="This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/" />
+<meta property="article:published_time" content="2016-10-10T07:12:13+00:00" />
+<meta property="article:modified_time" content="2016-10-10T07:12:13+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s"/>
+<meta name="twitter:description" content="This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 10, 2016</span></div>
+				<h1>SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
+
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
+
+<p>In the two previous articles I showed workable approaches for approximating the diffuse and specular result from a Spherical Gaussian light source. On its own these techniques might seem a bit silly, since it&rsquo;s not immediately obvious why the heck it would be useful to light a scene with an SG light source. But then you might remember that these articles started off by discussing methods for storing pre-computed radiance or irradiance in lightmaps or probe grids, which is a subject we&rsquo;ll finally return to.</p>
+
+<h2 id="finding-the-perfect-fit">Finding The Perfect Fit<a href="#finding-the-perfect-fit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>A common process in mathematics (particularly statistics) is to take a set of data points and attempt to figure out some sort of analytical curve that can represent the data. This process is known as <a href="https://en.wikipedia.org/wiki/Curve_fitting">curve fitting</a>[1], since the goal is to find a curve that is a good fit for the data points. There&rsquo;s various reasons to do this (such as <a href="https://en.wikipedia.org/wiki/Regression_analysis">regression analysis</a>[2]), but I find it can helpful to think of it as a form of lossy compression: a few hundred data points might require kilobytes of data, but if you can approximate that data with a curve the coefficients might only need a few bytes of storage. Here&rsquo;s a simple example from Wikipedia:</p>
+
+<p><a href="https://commons.wikimedia.org/wiki/File:Curve_fitting.svg"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Curve_fitting.svg" alt="" /></a></p>
+
+<p><em>Fitting various polynomials to data generated by a sine wave. Red is first degree, green is second degree, orange is third degree, blue is forth degree.
+By Krishnavedala (Own work) [CC0], via Wikimedia Commons</em></p>
+
+<p>In the image there&rsquo;s a bunch of black dots, which represent a set of data points that we want to fit. In this case the data points come from a sine wave, but in practice the data could take any form. The various colored curves represents attempts at fitting the data using polynomials of varying degrees:</p>
+
+<p>$$ y = c_0 + c_1 \cdot x $$</p>
+
+<p>$$ y = c_0 + c_1 \cdot x + c_2 \cdot x^2 $$</p>
+
+<p>$$ y = c_0 + c_1 \cdot x + c_2 \cdot x^2  + c_3 \cdot x^3 $$</p>
+
+<p>$$ y = c_0 + c_1 \cdot x + c_2 \cdot x^2  + c_3 \cdot x^3 + c_4 \cdot x^4 $$</p>
+
+<p>By looking at graphs and the forms of the polynomials it should be obvious that higher degrees allow for more complex curves, but require more coefficients. More coefficients means more data to store, and may also mean that the fitting process is more difficult and/or more expensive. One of the most common techniques used for fitting is <a href="https://en.wikipedia.org/wiki/Least_squares">least squares</a>[3], which works by minimizing the sum of all differences between the fit curve and the original data.</p>
+
+<p>The other observation we can make it that the resulting fit is essentially a linear combination of basis functions, where the basis functions are \( x \), \( x^2 \), \( x^3 \), and so on. There are many other basis functions we could use here instead of polynomials, such as our old friend the Gaussian! Just like polynomials, a sum of Gaussians can represent more complex functions with a handful of coefficients. As an example, let&rsquo;s take a set of data points and use least squares to fit varying numbers of Gaussians:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/gaussian_fit.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/gaussian_fit.png" alt="Gaussian_Fit" /></a>
+<center><em>Fitting Gaussians to a data set using least squares. The left graph shows a fit with a single Gaussian, the middle graph shows a fit with two Gaussians, and the right graph shows a fit with three Gaussians.</em></center></p>
+
+<p>For this example I used <a href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html">curve_fit</a>[4] from the scipy optimization library, which uses a non-linear least squares algorithm. Notice how as I added more Gaussians, the resulting sum became a better approximation of the raw data.</p>
+
+<h2 id="fitting-on-a-sphere">Fitting On a Sphere<a href="#fitting-on-a-sphere" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So far we&rsquo;ve been fitting 1D data sets, but the techniques we&rsquo;re using also work in multiple dimensions. So for instance, let&rsquo;s say we had a bunch of scattered samples in random directions on a sphere defined by a 2D spherical coordinate system. And let&rsquo;s say that these samples represent something like&hellip;oh I don&rsquo;t know&hellip;the amount of incoming lighting along an infinitesimally narrow ray oriented in that direction.  If we take all of these data points and throw some least squares at it, we can end up with a series of N Spherical Gaussians whose sum can serve as an approximation for radiance in any direction on the sphere! We just need our fitting algorithm to spit out the axis, amplitude, and sharpness of each Gaussian, or if we want can fix one of more of the SG parameters ahead of time and only fit the remaining parameters. It should be immediately obvious why this is useful, since a set of SG coefficients can be stored very compactly compared to a gigantic set of radiance samples. Of course if we only use a few Gaussians the resulting approximation will probably lose details from the original radiance function, but this is no different from spherical harmonics or other common techniques for storing approximate representations of radiance or irradiance. Let&rsquo;s take a look at what a fit actually looks like using an HDR environment map as input data:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2016/08/sgfit_comparison_ls_alt.png" alt="SGFit_Comparison_LS_Alt" />
+<center><em>Approximating radiance on a sphere using a sum of Spherical Gaussians. The left image shows the original source radiance function taken from an HDR environment map. The middle image shows a least squares fit of 12 SG&rsquo;s, and right image shows a fit of 24 SG&rsquo;s.</em></center></p>
+
+<p>These images were generated <a href="https://twitter.com/YuriyODonnell">Yuriy O&rsquo;Donnell</a>&rsquo;s <a href="https://github.com/kayru/Probulator">Probulator</a>[5], which is an excellent tool for comparing various ways of approximating radiance and irradiance on a sphere. One important thing to note here is that the  fit was only performed on the amplitude of the SG&rsquo;s: the axis and sharpness are pre-determined based on the number of SG&rsquo;s. Probulator generates the lobe axis directions using <a href="http://blog.marmakoide.org/?p=1">Vogel&rsquo;s method</a>[6], but any technique for distributing points on a sphere would also work. Fitting only the lobe amplitude significantly simplifies the solve, since there are less parameters to optimize. Solving for a single parameter also allows us to use <a href="https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)">linear least squares</a>[7], while fitting all of the parameters would require use of complex and expensive <a href="https://en.wikipedia.org/wiki/Non-linear_least_squares">non-linear least squares</a>[8] algorithms. Solving for less parameters also decreases the storage costs, since only the amplitudes need to be stored per-probe while the directions and sharpness can be global constants. Either way it&rsquo;s good to keep in mind when examining the results. In particular it helps explain why the white lobe in the middle image doesn&rsquo;t quite line up with the bright windows in the source environment. Aside from that, the results are probably what you would expect: doubling the number of lobes increases the possible complexity and sharpness of the resulting approximation, which in this case allows it to provide a better representation of some of the high-frequency details in the source image.</p>
+
+<h2 id="going-negative">Going Negative<a href="#going-negative" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>One odd thing you might notice in the SG approximation is the overly dark areas towards the bottom-right of the sphere. They look somewhat similar to the darkening that can show up in SH approximations, which happens due to negative coefficients being used for the SH polynomials. It turns out that something very similar is happening with our SG fit: the least squares optimizations is returning negative coefficients for some of our lobes in an attempt to minimize the error of the resulting fit.If you&rsquo;re having trouble understanding why this would happen, let&rsquo;s go back to 1D for a quick example. For the last 1D example I cheated a bit: the data we were fitting our Gaussians to was actually just some random noise applied to the sum of 3 Gaussians. This is why our Gaussian fit so closely resembled the source data. This time, we&rsquo;ll fitting some lobes to a more complex data set:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/ls_negative_fit_data.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/ls_negative_fit_data.png" alt="LS_Negative_Fit_Data" /></a>
+<center><em>A data set with a discontinuity near 0, making it more difficult to fit curves to.</em></center></p>
+
+<p>This time the data has a bunch of values near the center that have a value of zero. With such a data set it&rsquo;s now less obvious how a sum of Gaussians could approximate the values. If we throw least squares at the problem and have it fit two lobes, we get the following:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/ls_negative_fit.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/ls_negative_fit.png" alt="LS_Negative_Fit" /></a>
+<center><em>The result of using least squares to fit 2 Gaussian lobes to the above data set. The left graph shows the first lobe (red), the middle graph shows the second lobe (green), and the right graph shows the sum of the two lobes (blue) overlaid onto the original data set.</em></center></p>
+
+<p>This time around the optimization resulted in a positive amplitude for the first lobe, but a <em>negative</em> amplitude for the second lobe. Looking at the sum overlaid onto to the data makes it clear why this happened: the positive lobe takes care of the all of the positive data points to the left and right, while the negative lobe brings the sum closer to zero in the middle of the graph. Upon closer inspection the negative actually causes the approximation to dip <em>below</em> zero into the negatives. We can assume that having this dip results in lower overall error for the approximation, since that&rsquo;s how least squares works.</p>
+
+<p>In practice, having negative coefficients and negative values from our approximation can be undesirable. In fact when approximating radiance or irradiance negative values really just don&rsquo;t make sense, since they&rsquo;re physically impossible. In our experience we also found that the visual result of lighting a scene with negative lobes can be quite displeasing, since it tends to look very unnatural to have surfaces that are completely dark. Perhaps you remember this image from the first article showing what L2 SH looks like with a bright area light in the environment:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/09/sh_ringing_comparison.png"><img src="https://mynameismjp.files.wordpress.com/2016/09/sh_ringing_comparison.png" alt="sh_ringing_comparison" /></a>
+<center><em>A sphere with a Lambertian diffuse BRDF being lit by a lighting environment with a strong area light source. The left image shows the ground-truth result of using monte-carlo integration. The middle image shows the result of projecting radiance onto L2 SH, and then computing irradiance. The right image shows the result of applying a windowing function to the L2 SH coefficients before computing irradiance.</em></center></p>
+
+<p>We found that character faces in particular tended to look really bad when our SH light probes had strong negative lobes, and this turned out to be one of our motivations for investigating alternative approximations. We also ran into some trouble when attempting to compress signed floating point values in BC6H textures: some compressors didn&rsquo;t even support compressing to that format, and those that did had noticeably worse quality.</p>
+
+<p>With that in mind, it would be nice to constrain a least squares solver in such a way that it only gave us positive coefficients. Fortunately for us such a technique exists, and it&rsquo;s known as <a href="https://en.wikipedia.org/wiki/Non-negative_least_squares">non-negative least squares</a>[9] (or NNLS for short). If we use that technique for fitting SG&rsquo;s to our original radiance function instead of standard least squares, we get this result instead:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sgfit_comparison_nnls_alt.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sgfit_comparison_nnls_alt.png" alt="SGFit_Comparison_NNLS_Alt" /></a>
+<center><em>Fitting SG&rsquo;s to a radiance function using a non-negative least squares solver. The left image shows the original source radiance function taken from an HDR environment map. The middle image shows an NNLS fit of 12 SG&rsquo;s, and right image shows a fit of 24 SG&rsquo;s.</em></center></p>
+
+<p>This time we don&rsquo;t have the dark areas in the bottom right, since the fit only uses positive lobes. But unfortunately there&rsquo;s no free lunch here,  since the resulting approximation is also a bit &ldquo;blurrier&rdquo; compared to the normal least squares fit.</p>
+
+<h2 id="comparing-irradiance">Comparing Irradiance<a href="#comparing-irradiance" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Now that we&rsquo;ve covered how to generate an SG approximation of radiance from source data, we can take a look at how well it stacks up against other options for a simple use case. Probably the most obvious application is computing irradiance from the radiance approximation, which can be directly used to compute standard Lambertian diffuse lighting. The following images were captured using Probulator, and they show the Stanford Bunny being lit using a few common techniques for approximating irradiance:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/probe_basis_comparison_pisa.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/probe_basis_comparison_pisa.png?w=589" alt="Probe_Basis_Comparison_Pisa" /></a>
+<center><em>A bunny model being lit by various irradiance approximations generated from the &ldquo;Pisa&rdquo; HDR environment map</em></center></p>
+
+<p>With the exception of Valve&rsquo;s Ambient Cube, all of the approximations hold up very well when compared with the ground truth. The non-negative least squares fit is just a bit more washed out than the least squares fit, but both seem to produce perfectly acceptable results. The SH result is also very good, with no noticeable ringing artifacts. However this particular environment is a somewhat easier case, as the range of intensities isn&rsquo;t as large as you might find in some realistic lighting scenarios. For a more extreme case, let&rsquo;s now look at a comparison using the &ldquo;Ennis&rdquo; environment map:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/probe_basis_comparison.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/probe_basis_comparison.png?w=587" alt="Probe_Basis_Comparison" /></a>
+<center><em>A bunny model being lit by various irradiance approximations generated from the &ldquo;Ennis&rdquo; HDR environment map</em></center></p>
+
+<p>This time there&rsquo;s a much more noticeable difference between the various techniques. This is because the source environment map has a very bright window to the left, which effectively serves as a large area light source. With this particular environment the SG results start to compare pretty favorably to the SH or ambient cube approximations. The results from L2 SH have severe ringing artifacts, which manifests as areas that are either too dark or too bright on the side of the bunny facing to the right. Meanwhile , the windowed version of L2 SH blurs the lighting too much, making it appear as if the environment is more uniform than it really is. The ambient cube probe doesn&rsquo;t suffer from ringing, but it does have problems with the bright lighting from the left bleeding onto the top and side of the bunny. Looking at the least squares solve for 12 SG&rsquo;s, the result is pretty nice but there is a bit of ringing evident on the upper-right side of the bunny model. This ringing isn&rsquo;t present in the non-negative least squares solve, since all of the coefficients end up being positive.</p>
+
+<p>As I mentioned earlier, these Probulator comparisons use fixed lobe directions and sharpness. Consequently we only need to store amplitude, meaning that the storage cost of the 12 SG lobes is equivalent to 12 sets of floating-point RGB coefficients (36 floats total). L2 SH requires 9 sets of RGB coefficients, which adds up to 27 floats. The ambient cube requires only 6 sets of RGB coefficents, which is half that of the SG solve. So for this particular comparison the SG representation of radiance requires the most storage, however this highlights one of the nice points using SG as your basis: you can solve for any number of lobes you&rsquo;d like, allowing you to choose easily trade off quality vs. storage and performance cost. Valve&rsquo;s ambient cube is only defined for 6 lobes, and that number can&rsquo;t be increased since the lobes must remain orthogonal to each other.</p>
+
+<h2 id="fitting-on-a-hemisphere">Fitting on a Hemisphere<a href="#fitting-on-a-hemisphere" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>For full lighting probes where the sampling surface can have any orientation, storing the radiance or irradiance on a sphere makes perfect sense. However it makes less sense if we would like to store baked lighting in 2D textures where all of the sample points lie on the surface of a mesh. For that case storing data for a full sphere is wasteful, since half of the data will point &ldquo;into&rdquo; the surface and therefore won&rsquo;t be useful. With SG&rsquo;s this is fairly trivial to correct: we can just choose to solve for lobes that only lie on the upper hemisphere surrounding the surface&rsquo;s normal direction.</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_probe_vs_hemisphere1.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_probe_vs_hemisphere1.png" alt="SG_Probe_vs_Hemisphere" /></a>
+<center><em>The left side shows a configuration where 9 SG lobes are distributed about a sphere, forming a full spherical probe. The right side shows 5 SG lobes located on a hemisphere surrounding the normal of a surface (the blue arrow). </em></center></p>
+
+<p>To fully generate the compact radiance representation for an entire 2D lightmap, we need to gather radiance samples at every texel location, and then perform a solve to fit the samples to a set of SG lobes. It&rsquo;s really no different from the spherical probe case we used as a testbed in Probulator, except now we&rsquo;re generating many probes. The other main differences is that for lightmap generating the appropriate radiance requires sampling a full 3D scene, as opposed to using an environment map as we did with Probulator. This sort of problem is best solved with a ray tracer, using an algorithm such as path tracing to compute the incoming radiance for a particular ray. The following image shows a visualization of  what the lightmap result looks like for a simple scene:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_debug_visualizer.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_debug_visualizer.png" alt="SG_Debug_Visualizer" /></a>
+<center><em>Hemispherical radiance probes generated at the texel locations of a 2D lightmap applied to a simple scene. Each probe uses 9 SG lobes oriented about the surface normal of the underlying geometry.</em></center></p>
+
+<h2 id="specular">Specular<a href="#specular" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In the previous article we covered techniques that can be used to compute a specular term from SG light sources. If we apply them to a set of lobes that approximate the incoming radiance, then we can compute an approximation of the full environment specular response. For small lobe counts this is only going to be practical for materials with a relatively high roughness. This is because our SG approximation of the incoming radiance won&rsquo;t be able to capture high-frequency details from the environment, and it would it be very obvious if those details were missing from the reflections on smooth surfaces. However for rougher surfaces where the BRDF itself starts to act as a low-pass filter, an SG approximation won&rsquo;t have as much noticeable error. As an example, here&rsquo;s what SG specular looks like for a test scene with a GGX roughness value of 0.25:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/bakinglab_indirectspecular_comparison.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/bakinglab_indirectspecular_comparison.png" alt="BakingLab_IndirectSpecular_Comparison" /></a>
+<center><em>Comparison of indirect specular approximation for a test scene with a GGX roughness of 0.25. The top-left image is a path-traced rendering of the final scene with full indirect and direct lighting. The top-right image shows the indirect environment specular term from SG9 lightmaps, with the exposure increased by 8x. The bottom left image shows the indirect specular term from L2 SH. The bottom right image shows the indirect specular term from a path-traced render of the scene.</em></center></p>
+
+<p>Compared to the ground truth, the SG approximation does pretty well in some places and not-so-well in others. In general it captures a lot of the overall specular response, but suffers from some of the higher-frequency detail being absent in the probes. This results in certain areas looking a bit &ldquo;washed-out&rdquo;, such as the right-most wall of the scene. You can also see that the reflections of the cylinder, sphere, and torus are not properly represented in the SG version for the same reason. On the positive side, lightmap samples are pretty dense in terms of their spatial distribution. They&rsquo;re far more dense than what you typically achieve with sparse cubemap probes placed throughout the scene, which typically suffer from all kinds of occlusion and parallax artifacts. The SG specular also compares pretty favorably to the L2 SH result (despite having the same storage cost), which looks even more washed-out than the SG result. The SH implementation used a 3D lookup texture to store pre-computed SH coefficients, and you can see some interpolation artifacts from this method if you look at the far wall perpendicular to the camera.</p>
+
+<h2 id="implementation-in-the-order-1886">Implementation in The Order: 1886<a href="#implementation-in-the-order-1886" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In the first part of our <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pptx">presentation</a>[10] at last year&rsquo;s <a href="http://blog.selfshadow.com/publications/s2015-shading-course/">Physically Based Shading Course</a>[11], Dave covered some of these details and also shared some information about how we implemented SG lighting probes into The Order: 1886. Much of the implementation was very similar to what I&rsquo;ve described in this series of articles: we stored 5-12 SG lobes (the count was chosen per-level chunk) in our 2D lightmaps with fixed axis directions and sharpnesses, and we evaluated diffuse and specular lighting using the approximations that I outlined earlier. For dynamic meshes, we baked uniform 3D grids of spherical probes containing 9 SG lobes that were stored in 3D textures. The grids were defined by OBB&rsquo;s that were hand-placed in the scene by our lighting artists, along with density parameters. In both cases we made use of hardware texture filtering to interpolate between neighboring probes before computing per-pixel lighting.</p>
+
+<p>Much of our implementation closely followed the work of <a href="http://renpr.org/project/sg_ssdf.htm">Wang</a>[12] and <a href="http://cg.cs.tsinghua.edu.cn/people/~kun/asg/">Xu</a>[13], at least in terms of the techniques used for approximating diffuse and specular lighting from a set of SG lobes. Where our work diverged quite a bit was in the choice to use fixed lobe directions and sharpness values. Both Wang and Xu generated their set of SG lobes by performing a solve on a single environment map, which produced the necessary axis, sharpness, and amplitude parameters. In our case, we always knew that we were going need many probes in order to maintain high-fidelity pre-computed lighting for our scenes. At the time (early 2014) we were already employing 2D lightmaps containing L1 H-basis hemispherical probes (4 coefficients) and 3D grids containing L2 spherical harmonics probes. Both could be quite dense in spatial terms, which allowed capturing important shadowing detail.</p>
+
+<p>To make SG&rsquo;s work with for these requirements, we had to carefully consider our available trade-offs. After getting a simple test-bed up and running where we could bake 2D lightmaps for a scene, it became quickly apparent that varying the axis directions per-texel wasn&rsquo;t necessarily the best choice for us. Aside from the obvious issue of requiring more storage space and making the solve more complex and expensive, we also ran into issues resulting from interpolating the axis direction over a surface. The problem is most readily apparent at shadow boundaries: one texel might have visibility of a bright light source which causes a lobe to point in that direction, while its neighboring pixel might have no visibility and thus could end up with a lobe pointing in a completely different direction. The axis would then interpolate between the two directions for pixels between the two texels, which can cause noticeable specular shifting. This isn&rsquo;t necessarily an unsolvable problem (the <a href="http://www.cs.columbia.edu/cg/normalmap/">Frequency Domain Normal Map Filtering paper</a>[14] extended their EM solver with a term that attempts to align neighboring lobes for coherency), but considering our time and memory constraints it made sense to just sidestep the problem altogether. Ultimately we ended up using fixed lobe directions, using the UV tangent frame as the local coordinate space for lightmap probes. Tangent space is natural for this purpose since it&rsquo;s Z axis is the surface normal of the mesh, and also because it tends to be continuous over a mesh (you&rsquo;ll have discontinuities wherever you have UV seams, but artists tend to hide those as best they can anyway). For the 3D probe grids, the directions were in world space for simplicity.</p>
+
+<p>After deciding to fix the lobe directions, we also ultimately decided to go with a fixed sharpness value as well. This of course has the same obvious benefits as fixing the axis direction (less storage, simpler solve), which were definitely appealing. However another motivating factor came from the way were doing our solve. Or rather, our lack of a proper solve. Our early testbed performed all lightmap baking on the CPU, which allowed us to easily integrate packages like <a href="http://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a>[15] so that we could use a battle-tested least squares solver. However our actual production baking farm at Ready at Dawn uses a Cuda baker that leverages Nvidia&rsquo;s OptiX library to perform arbitrary ray tracing on a cluster of GPU&rsquo;s.While Cuda does have optimization libraries that could have achieved what we wanted, we faced a bigger problem: memory. Our baker worked by baking many sample points in parallel on the GPU, with a kernel program that would generate and trace the many rays required for monte carlo integration. When we previously used SH and H-basis this approach worked well: both SH and H-basis are built upon orthogonal basis functions, which allows for continuous integration by projecting each sample onto those basis functions. Gathering thousands of samples per-texel is feasible with this setup, since those samples don&rsquo;t need to be explicitly stored in memory. Instead, each new sample is projected onto the in-progress result for the texel and then discarded. This is not the case when performing a solve: the solver needs access to <em>all</em> of the samples, which means keeping them all around in memory. This is a big problem when you have many texels in flight simultaneously, and only a limited amount of GPU memory. Like the intepolation issue it&rsquo;s probably not unsolveable, but we really looking for a less risky approach that would be more of a drop-in replacement for the SH integration.</p>
+
+<p>Ultimately we ended up saying &rdquo;screw it&rdquo;, and projected on the SG lobes as they formed an orthogonal basis (even though they didn&rsquo;t). Since the basis functions weren&rsquo;t orthogonal the results ended up rather blurry compared to a least squares solve, which muddied some of the detail in the source environment for a probe. Here&rsquo;s a comparison to show you what I mean:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_radiance_solve_comparison.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_radiance_solve_comparison.png" alt="SG_Radiance_Solve_Comparison" /></a>
+<center><em>A comparison of different techniques for computing a set of SG lobes that approximate the radiance from an environment map</em></center></p>
+
+<p>Of the three techniques presented here, the naive projection is the worst at capturing the details from the source map and also the blurriest. As we saw earlier the least squares solve is the best at capturing sharp changes, but achieves this by over-darkening certain areas. NNLS is the &ldquo;just right&rdquo; fit for this particular case, doing a better job of capturing details compared to the projection but without using any negative lobes.</p>
+
+<p>Before we switched to baking SG probes for our grids and lightmaps, we had a fairly standard system for applying pre-convolved cubemap probes that were hand-placed throughout our scenes. Previously these were our only source of environment specular lighting, but once we had SG&rsquo;s working we began to to use the SG specular approximation to compute environment specular directly from lightmaps and probe grids. Obviously our low number of SG&rsquo;s was not sufficient for accurately approximating environment specular for smooth and mirror-like surfaces, so our cubemap system remained relevent. We ended up coming up with a simple scheme to choose between cubemap and lightmap specular per-pixel based on the surface roughness, with a small zone in between where we would blend between the two specular sources. The following images taken from our SIGGRAPH slides use a color-coding to showing the specular source chosen for each pixel from one of our scenes:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_cubemap_transition_00.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_cubemap_transition_00.png" alt="SG_Cubemap_Transition_00" /></a></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/sg_cubemap_transition_01.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_cubemap_transition_01.png" alt="SG_Cubemap_Transition_01" /></a></p>
+
+<p><center><em>The top image shows a scene from The Order: 1886. The bottom image shows the same scene with a color coding applied to show the environment specular source for each pixel.</em></center></p>
+
+<p>To finish off, here&rsquo;s some more comparison images taken from our SIGGRAPH slides:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_00.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_00.png" alt="TheOrder_SGComparison_00" /></a></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_01.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_01.png" alt="TheOrder_SGComparison_01" /></a></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_02.png"><img src="https://mynameismjp.files.wordpress.com/2016/08/theorder_sgcomparison_02.png" alt="TheOrder_SGComparison_02" /></a></p>
+
+<p><center><em>Several comparison images from The Order: 1886 showing scenes with and without environment specular from SG lightmaps</em></center></p>
+
+<h2 id="future-work">Future Work<a href="#future-work" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>We were quite happy with the improvements that come from the SG baking pipeline we introduced for The Order, but we also feel like we&rsquo;ve barely scratched the surface. Our decision to use fixed lobe directions and sharpness values was probably the right one, but it also limits what we can do. When you take SG&rsquo;s and compare them to a fixed set of basis functions like SH, perhaps the biggest advantage is the fact that you can use an arbitrary combination of lobes to represent a mix of high and low-frequency features. So for instance you can represent a sun and a sky by having one wide lobe with the sky color, and one very narrow and bright lobe oriented towards the sun. We gave up that flexibility when we decided to go with our simpler ad-hoc projection, and it&rsquo;s something we&rsquo;d like to explore further in the future. But until then we can at least enjoy the benefits of having a representation that allows for an environment specular approximation and also avoids ringing artifacts when approximating diffuse lighting.</p>
+
+<p>Aside from the solve, I also think it would be worth taking the time to investigate better approximations for the specular BRDF. In particular I would like to try using something better than just evaluating the cosine, Fresnel, and shadow-masking terms at the center of the warped BRDF lobe. The assumption that those terms are constant over the lobe break down the most when the roughness is high, and in our case we&rsquo;re only ever using SG specular for rough materials! Therefore I think it would be worth the effort to come up with a more accurate representation of those terms.</p>
+
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>[1] <a href="https://en.wikipedia.org/wiki/Curve_fitting">Curve fitting</a><br>
+[2] <a href="https://en.wikipedia.org/wiki/Regression_analysis">Regression analysis</a><br>
+[3] <a href="https://en.wikipedia.org/wiki/Least_squares">Least squares</a><br>
+[4] <a href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html#scipy-optimize-curve-fit">scipy.optimize.curve_fit</a><br>
+[5] <a href="https://github.com/kayru/Probulator">Probulator</a><br>
+[6] <a href="http://blog.marmakoide.org/?p=1">Spreading points on a disc and on a sphere</a><br>
+[7] <a href="https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)">Linear least squares</a><br>
+[8] <a href="https://en.wikipedia.org/wiki/Non-linear_least_squares">Non-linear least squares</a><br>
+[9] <a href="https://en.wikipedia.org/wiki/Non-negative_least_squares">Non-negative least squares</a><br>
+[10] <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pptx">Advanced Lighting R&amp;D at Ready At Dawn Studios</a><br>
+[11] <a href="http://blog.selfshadow.com/publications/s2015-shading-course/">SIGGRAPH 2015 Course: Physically Based Shading in Theory and Practice</a><br>
+[12] <a href="http://renpr.org/project/sg_ssdf.htm">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a><br>
+[13] <a href="http://cg.cs.tsinghua.edu.cn/people/~kun/asg/">Anisotropic Spherical Gaussians</a><br>
+[14] <a href="http://www.cs.columbia.edu/cg/normalmap/">Frequency Domain Normal Map Filtering</a><br>
+[15] <a href="http://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a><br></p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+[Titouchose]( &ldquo;titouchose@yahoo.fr&rdquo;) - <time datetime="2018-02-01 10:03:18">Feb 4, 2018</time></p>
+
+<p>This is so clearly explained that a simple lighting artist like me can finally understand how SH and SG works. thank you!
+<hr />
+####
+[VisorZ]( &ldquo;s.pietschmann@campus.tu-berlin.de&rdquo;) - <time datetime="2017-01-29 13:37:59">Jan 0, 2017</time></p>
+
+<p>Thank you very much for the time you&rsquo;ve put into your explanations. They are a consistent and easy to understand introduction to the usefulness of SHs and SGs.
+<hr />
+####
+<a href="http://tomgroveblog.wordpress.com" title="tomkelgrove@yahoo.co.uk">tomgroveblog</a> - <time datetime="2016-10-20 03:54:05">Oct 4, 2016</time></p>
+
+<p>Excellent series, thanks for posting!
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4928 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:12 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>SG Series Part 6: Step Into The Baking Lab</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>SG Series Part 4: Specular Lighting From an SG Light Source</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+</body>
+
+</html>

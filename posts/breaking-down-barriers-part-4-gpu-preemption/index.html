@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Breaking Down Barriers - Part 4: GPU Preemption">
+<meta itemprop="description" content="This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption">
+
+
+<meta itemprop="datePublished" content="2018-07-04T00:57:43&#43;00:00" />
+<meta itemprop="dateModified" content="2018-07-04T00:57:43&#43;00:00" />
+<meta itemprop="wordCount" content="2983">
+
+
+
+<meta itemprop="keywords" content="Graphics,DX12," />
+<meta property="og:title" content="Breaking Down Barriers - Part 4: GPU Preemption" />
+<meta property="og:description" content="This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/" />
+<meta property="article:published_time" content="2018-07-04T00:57:43+00:00" />
+<meta property="article:modified_time" content="2018-07-04T00:57:43+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Breaking Down Barriers - Part 4: GPU Preemption"/>
+<meta name="twitter:description" content="This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Breaking Down Barriers - Part 4: GPU Preemption</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 4, 2018</span></div>
+				<h1>Breaking Down Barriers - Part 4: GPU Preemption</h1>
+			</header>
+			<div class="content">
+				
+
+
+
+
+
+  
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+<p><em>This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
+
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
+
+<p>Welcome back! For the past <a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">two</a> <a href="../breaking-down-barriers-part-3-multiple-command-processors/">articles</a> we&rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU. Up until now, we&rsquo;ve really only been discussing things in terms of how a single application would use a GPU. This keeps things relatively simple, but in reality there&rsquo;s almost never just one application that has an entire GPU to itself. Instead, the OS arbitrates multiple applications that all utilize the GPU as a shared resource, just like it does for other shared resources like the CPU or system memory. Doing it this way can make things more complex for the GPU and its driver, but it&rsquo;s really important for enabling responsive multi-tasking between multiple applications that rely on the GPU for rendering (which is something that you even <a href="https://youtu.be/0jfx5gVintE?t=84">see on consoles</a> these days!). It&rsquo;s also critical if the OS itself relies on the GPU for rendering elements and compositing them together, which is something that Windows has done ever since the introduction of the <a href="https://docs.microsoft.com/en-us/windows/desktop/dwm/dwm-overview">Desktop Window Manager</a> (DWM) with Windows Vista. In this article I&rsquo;m going to talk a bit about the implications that multi-tasking can have on a GPU, and how that can potentially tie back into  multiple command processors.</p>
+
+<h2 id="fighting-over-a-gpu">Fighting Over a GPU<a href="#fighting-over-a-gpu" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>As I was saying earlier, in 2018 it&rsquo;s no longer a safe assumption that only a single application will be using the GPU at a given point in time. There are web browsers or other productivity applications that might be using Direct2D to render UI elements. There might be streaming or voice chat applications that need to use the GPU to encode video and audio. Or there might be a VR composition service that needs <a href="https://developer3.oculus.com/blog/asynchronous-timewarp-on-oculus-rift/">always present to the headset at 90Hz</a>, even if the VR application itself is failing to render at that framerate. Serving multiple applications is probably doable for the older MJP-3000 and its single command processor, at least as long as no single application is submitting a significant amount of work at any given time. It&rsquo;s pretty reasonable to expect that a little logic in the OS or driver could work for this: the driver could maintain a queue (or multiple queues) in software, and each application could submit their command buffers to this software queue. Then whenever the GPU is idle, the driver can pick a command buffer from its queue and submit it to the GPU where it can actually get executed. So 3 apps might share the GPU like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/multi_app.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/multi_app.png" alt="multi_app" /></a></p>
+
+<p>Here we have two timelines: one showing what&rsquo;s enqueued in the driver (on the bottom), and one showing what&rsquo;s currently executing on the GPU (top). So the red app submits a command buffer which executes for a while, then the GPU goes idle again. Then the green app submits another command buffer which executes for longer, and eventually the blue app submits a final command buffer that completes very quickly. In this scenario our setup works fine: everybody is able to use the GPU when they need it, which means that the latency for any app&rsquo;s submission is roughly equal to the time it takes to complete the work on the GPU. On the flip side of things, it&rsquo;s not hard to imagine a scenario where things don&rsquo;t work out so nicely:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/multi_app_contested3.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/multi_app_contested3.png" alt="multi_app_contested" /></a></p>
+
+<p>This time, the red app decided to really hog the GPU for a while. This caused the submission from the green app to sit in the driver&rsquo;s queue for a long time, severely increasing the latency from submission to completion. In fact it waited so long that the blue app submitted while the green app was still waiting, causing the driver&rsquo;s queue to have two submissions queued at the same time. The latency is particularly unfortunate for the blue app, whose submission had barely any work and completed very quickly once it actually had a chance to run. It would be <em>really</em> unfortunate if the blue app was something critical, like the operating system&rsquo;s composition engine, or a browser that the user is currently interacting with.</p>
+
+<p>To properly accommodate high-priority applications using the GPU, what we really want is some form of <strong><a href="https://en.wikipedia.org/wiki/Preemption_(computing)">preemption</a></strong>. We essentially want to be able to interrupt an app&rsquo;s workload that&rsquo;s being executed by the GPU, so that we can sneak in the high-priority work without having to wait for the GPU to go idle. With the older architecture of the MJP-3000, the GPU can only be working on one command buffer at a time, and the command processor always executes that entire command buffer to completion. Therefore the easiest way to do this would be to have the OS or driver try to split an app&rsquo;s submission into multiple smaller command buffers. This would effectively give the driver finer granularity to work with in its submission queue, and could potentially allow a high-priority submission to get in earlier:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/multi_app_preemption.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/multi_app_preemption.png" alt="multi_app_preemption" /></a></p>
+
+<p>This time the driver has split up the red app&rsquo;s workload into 5 command buffers, and the green app&rsquo;s workload into 4 command buffers. Having more command buffers means that the driver&rsquo;s queue is much deeper than before: at worst it now has 7 pending submissions simultaneously queued. However this also gives the driver more opportunities to switch to a higher-priority submission. This time around the blue submission is treated as high priority, which causes the driver to immediately move it to the top of the submission queue, which also displaces the other submissions. Thanks to the smaller command buffer size, the blue submission only needs to sit in the queue for a little bit before it has a chance to run on the GPU. This reduces the latency compared to the earlier case, where each app just submitted a single combined command buffer.</p>
+
+<p>With the setup I just described, we effectively have <strong>command buffer-level preemption</strong>_._ This means that our preemption granularity is tied to our command buffer granularity, and the preemption latency of a high-priority task is tied to the length of execution of any single command buffer. That last part might make you want to ask, &ldquo;how can the OS or driver know how long a particular command buffer will take?&rdquo;. And of course the short answer is that &ldquo;it can&rsquo;t&rdquo;. Even a command buffer with a single command can potentially take a very long time to completely execute through the entire pipeline, since that one command might be &ldquo;dispatch 5 billion threads&rdquo;. Or it might be &ldquo;dispatch 1024 threads of a really long shader program that takes 10 milliseconds to finish&rdquo;. This leaves the driver with an impossible task, since the best it can do is use heuristics in an attempt to chop up an app&rsquo;s command stream into bite-sized chunks.</p>
+
+<p>The other problem with this approach is that it can potentially lead to lower throughput even when no preemption occurs. For instance, imagine if a GPU needed to completely flush at the end of every command buffer. In that case, splitting things up into lots of small command buffers would lead to lots of otherwise unnecessary sync points where multiple draws or dispatches can&rsquo;t overlap with each other. Another issue to consider is how to handle GPU state that can be set by the command buffer. The fictional MJP series of GPU doesn&rsquo;t really have much state to speak of, since it only handles compute shaders. But on a real GPU that supports a full D3D/GL/Vulkan rasterization pipeline there&rsquo;s all kinds of state that&rsquo;s modifed by individual commands. These include things like the viewport transform, bound render targets, depth buffer states, and the currently-bound shader programs for each stage. If the hardware is not capable of saving and restoring these states when switching command buffers, it may fall to the the driver to generate additional commands for restoring the expected rendering state. This can potentially add both GPU <em>and</em> CPU overhead for each command buffer switch, adding a further complication to the decision regarding how finely to chop up command buffers.</p>
+
+<h2 id="having-the-hardware-help-us-out">Having the Hardware Help Us Out<a href="#having-the-hardware-help-us-out" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>If we really want to avoid latency for high-priority jobs, we&rsquo;ll have to do better than a driver-managed command buffer queue in software. Fortunately, there&rsquo;s a few possible ways that we could do better with some changes to the GPU hardware. Probably the most obvious option would be to modify the command processor so that it can support switching to a different command buffer before its current stream has finished. If it were able to do this in between individual commands, then we would call this <strong>command-level preemption</strong>. This sounds nice in theory, but depending on the specifics of the GPU it can get a bit complicated. You&rsquo;d have to be careful to ensure that any of your synchronization commands will continue to work if preemption occurs between the dispatch and the following wait/flush command. On top of that, you would still have the same issues regarding saving and restoring GPU state when preemption occurs. Even if you get this working, your preemption latency is still going to depend on the maximum length of a wait/flush command, which in turn is going to be dictated by the maximum length of a single Draw or Dispatch. This means that if your high-priority command buffer gets submitted right as the GPU is cranking through an expensive full-screen pass (for instance, the tiled lighting compute shader in a deferred renderer), the high-priority submission might end up waiting a while before it can run.</p>
+
+<p>Alternatively, another option to improve preemption latency would be to leverage the multiple command processors on a GPU like the newer MJP-4000. With multiple command processors, an app with heavy GPU workloads could hog one of the command processors all it wants, and a high-priority app could use one of the free command processors to sneak in some work without the other app even noticing.  To do this effectively, we just need to tweak the rules that the thread queues will utilize for sharing the shader cores:</p>
+
+<ul>
+<li><p>If only one queue has pending threads and there are any empty shader cores, the queue will fill up those cores with work until there are no cores left</p></li>
+
+<li><p>If both queues have work to do and there are empty cores, those cores are split up based on the priority of the submissions being processed. If one queue has high-priority work and the other doesn&rsquo;t, then the threads from the high-priority dispatch fill up as many shader cores as they can, with any remaining cores going to the threads from the other queue. If both queues have work with the same priority, then the cores are split evenly and assigned threads from both thread queues (if there’s an odd number of cores available, the top queue gets the extra core)</p></li>
+
+<li><p>Threads always run to completion once assigned to a shader core, which means pending threads can’t interrupt them</p></li>
+</ul>
+
+<p>Let&rsquo;s now take a look at how this would work out in practice. In the following example, app A will launch 80 threads of shader A (red), which take about 100 cycles for each thread to finish. About 250 cycles into this process, app B will submit a high-priority command buffer that will dispatch 16 threads of shader B (green), which also take about 100 cycles to complete:</p>
+
+
+<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/06.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/06.png" alt="6th" />
+				    </div>
+			      <figcaption>
+		          <p>6th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/06.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/07.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/07.png" alt="7th" />
+				    </div>
+			      <figcaption>
+		          <p>7th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/07.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/08.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/08.png" alt="8th" />
+				    </div>
+			      <figcaption>
+		          <p>8th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/multi_queue_preempt/08.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>Thanks to the additional command processor and thread queue, the high-priority dispatch is able to enqueue its threads immediately in the second thread queue. This allows the threads to start executing about 200 cycles earlier than if it had to wait for dispatch A to completely finish, which demonstrates that we&rsquo;ve successfully reduced latency for the high-priority task. Unfortunately dispatch B still had to spend about 50 cycles enqueued before its threads start executing on the shader cores, since the hardware has no ability preempt threads that have already started running. Therefore we can consider this to be <strong>thread-level preemption</strong>, since the granularity is equivalent to the length of a thread&rsquo;s execution. However it&rsquo;s important to note that since our fictional GPU has many shader cores (just like real GPU&rsquo;s, which can have thousands), in some cases there&rsquo;s no need for preemption at all. For instance, imagine if dispatch A and dispatch B both had 8 threads: in that case both dispatches could perfectly overlap with each other, essentially allowing ideal latency for the high-priority job without affecting the latency of the low-priority job. Therefore we would probably want to illustrate the CPU/GPU timeline like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/multi_app_multi_queue1.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/multi_app_multi_queue1.png" alt="multi_app_multi_queue" /></a></p>
+
+<p>While it&rsquo;s obvious how this could be useful for the case of an app like the Oculus compositor that needs to run its own high-priority job, it could also be useful within the context of a single app that wants to use the GPU for things other than graphics. Let&rsquo;s say that a game wants to run some physics calculations on the GPU during its simulation update phase while the GPU is simultaneously running rendering commands from the previous frame. It wouldn&rsquo;t be so great if the physics system had to wait around for a frame or so to get its results back from the GPU, and so it would make sense to submit a high-priority job to the extra command processor so that it can execute quickly.</p>
+
+<p>With support for thread-level preemption, the only time our high-priority dispatch would get stuck waiting would be if the all of the shader cores were running threads that took a <em>very</em> long time to complete. If we wanted to avoid waiting in that case as well, we would need to essentially suspend threads that are already in-flight in order to allow high-priority threads to run without waiting for existing threads to finish executing. This would be considered <strong>instruction-level preemption</strong>, since our granularity would be at the level of a single instruction that executes on the shader core. This sort of preemption is very common on CPU&rsquo;s, which are often capable of <a href="https://en.wikipedia.org/wiki/Context_switch">switching contexts</a> in the middle of an instruction stream. On GPU&rsquo;s a full context switch can be more impractical, since they typically work with large groups of threads that collectively require hundreds or thousands of registers!</p>
+
+<h2 id="next-up">Next Up<a href="#next-up" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In <a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5</a>, I&rsquo;m going wrap up our discussion of multiple command processors and preemption by discussing some real-world GPU&rsquo;s from Intel, AMD and Nvidia. I&rsquo;m also going to give an overview of how D3D12 exposes command buffer submission, and also explain how Windows lets you view the low-level queuing and execution of command buffers via ETW and GPUView. See you then!</p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2018-07-04 12:06:29">Jul 3, 2018</time></p>
+
+<p>Thank you for pointing that out Andy, I goofed on that one! I re-worked the images to use 80 threads instead of 96, and now things work out the way they should. :) And yeah, what you&rsquo;re saying is pretty much the exact reason I started writing these articles. Working with consoles is fantastic for learning all of these low-level details, but unfortunately that knowledge is locked away behind NDA&rsquo;s. And then would I would look at the D3D12 API&rsquo;s and programming guides for barriers, and wonder how how anybody without console experience would know *why* you need those barriers in the first place. I would have loved to use the PS4 GPU (or one of its PC cousins) as an actual real-world case study for the scenarios I bring up, but I don&rsquo;t want to run afoul of NDA&rsquo;s. So for now I&rsquo;m sticking to my made-up GPU, and pointing to things explicitly mentioned in publicly-available documents.
+<hr />
+####
+[anon]( &ldquo;notarealmailaddress@asyoucanseeclear.ly&rdquo;) - <time datetime="2018-07-04 15:31:49">Jul 3, 2018</time></p>
+
+<p>AMD has released the GCN and Vega Whitepapers which you linked to in earlier posts but there also is the Register Reference Guide for SI, the linux amdgpu kernel driver and two Open Source Vulkan implementations (radv, xgl+pal). They contain all the information that you need to explain sufficiently how the hardware works IMO.
+<hr />
+####
+[Andy Robbins]( &ldquo;raicuandi@gmail.com&rdquo;) - <time datetime="2018-07-04 03:39:29">Jul 3, 2018</time></p>
+
+<p>Really great tutorial on how these things work. Looking back it&rsquo;s hard to understand how this works purely from transition (data) barriers, since they don&rsquo;t really make execution barriers explicit. For me it only became clear what&rsquo;s going on after reading PS4 docs, but if those aren&rsquo;t an option to someone, this series of posts is the next best thing. Spotted a mistake: the interactive demo loses 16 threads from Dispatch A at the same time 16 threads from Dispatch B get to execute. The total duration should be ~700 cycles not ~600.
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/03/06/breaking-down-barriers-part-1-whats-a-barrier/">Breaking Down Barriers &#8211; Part 1: What&#8217;s a Barrier? &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:44:31">Mar 2, 2019</time></p>
+
+<p>[…] a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and […]
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/04/01/breaking-down-barriers-part-2-synchronizing-gpu-threads/">Breaking Down Barriers &#8211; Part 2: Synchronizing GPU Threads &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:44:59">Mar 2, 2019</time></p>
+
+<p>[…] a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and […]
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/06/17/breaking-down-barriers-part-3-multiple-command-processors/">Breaking Down Barriers &#8211; Part 3: Multiple Command Processors &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:45:37">Mar 2, 2019</time></p>
+
+<p>[…] a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2983 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-07-03 17:57 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Breaking Down Barriers – Part 5: Back To The Real World</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Breaking Down Barriers - Part 3: Multiple Command Processors</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

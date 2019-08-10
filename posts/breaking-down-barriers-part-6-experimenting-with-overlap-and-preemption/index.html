@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption">
+<meta itemprop="description" content="This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.">
+
+
+<meta itemprop="datePublished" content="2018-12-10T02:01:27&#43;00:00" />
+<meta itemprop="dateModified" content="2018-12-10T02:01:27&#43;00:00" />
+<meta itemprop="wordCount" content="4400">
+
+
+
+<meta itemprop="keywords" content="Graphics,DX12," />
+<meta property="og:title" content="Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption" />
+<meta property="og:description" content="This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/" />
+<meta property="article:published_time" content="2018-12-10T02:01:27+00:00" />
+<meta property="article:modified_time" content="2018-12-10T02:01:27+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption"/>
+<meta name="twitter:description" content="This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 10, 2018</span></div>
+				<h1>Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
+
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
+
+<p>In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput. We then spent some time looking at the support for preemption and multiple queues in actual desktop video cards, and also exploring how they end up getting exposed via DX12 and the Windows 10 driver stack. To help tie everything together, I&rsquo;m now going to show some results that I gathered from running a <a href="https://github.com/TheRealMJP/OverlappedExecution">test DX12 application</a> on a GPU from each of the major desktop IHV&rsquo;s. Before I begin, I&rsquo;d like to urge anyone reading this to take the results with a grain of salt. My test application gathers its timings in a rather unorthodox manner (which I&rsquo;ll explain shortly), and so I can&rsquo;t guarantee their accuracy with 100% certainty. It&rsquo;s also very possible that some of the results here could change with future hardware or driver revisions, so please consider the full context when examining the data.</p>
+
+<h2 id="the-test-app">The Test App<a href="#the-test-app" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Before I wrote these articles, I decided that it would be fun and educational to examine how different GPU&rsquo;s respond to the explicit synchronization and multi-queue functionality offered by DX12. Unfortunately, I found it was rather difficult to do this in practice. The IHV&rsquo;s have some vendor-specific tools for gathering timing data from an offline capture, but they&rsquo;re not really set up to easily show you the degree to which different workloads were overlapping on the GPU. <a href="https://blogs.msdn.microsoft.com/pix/2017/01/17/introducing-pix-on-windows-beta/">PIX for Windows</a> has the ability to show overlapping draws or dispatches in its timeline view, but at the time it also wasn&rsquo;t available yet. It also doesn&rsquo;t currently show overlapping work from compute queues, and it can only show you timing during an offline analysis process. (AMD now has a really awesome <a href="https://gpuopen.com/gaming-product/radeon-gpu-profiler-rgp/">GPU profiler</a> that only shows you overlapping work on the GPU, but also shows you what the GPU is doing in response to barriers! Unfortunately I wrote the test app and blog post back in January of 2017, and RGP didn&rsquo;t come out until July of that year).</p>
+
+<p>After getting frustrated at my available options, I decided to try my hand at building my own timing system. D3D12 does have a built-in mechanism for tracking GPU execution timings via <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn903946(v=vs.85).aspx">timestamp queries</a>, which are useful for getting very coarse-grained timing data (for instance, overall GPU frame time, or the time required to complete all opaque draw calls). However they&rsquo;re pretty useless when it comes to determining thread-level parallelism on the GPU. This is because it&rsquo;s not specified how timestamps behave with regards to barriers and synchronization. The documentation says nothing about whether a timestamp should wait for all previous draws/dispatches to complete, or whether they should be affected by transition barriers. This means you wrap a draw call with timestamps, you don&rsquo;t know if the second timestamp will record as soon as the command processor kicks of the draw or if it will record after the draw call is finished. In practice I&rsquo;ve seen varying behavior from different vendors: in some cases a timestamp would cause a sync point, in others it wouldn&rsquo;t. This all lead me to my &ldquo;screw it, I&rsquo;ll build my own timers&rdquo; moment.</p>
+
+<p>Fortunately, making my own shader timer wasn&rsquo;t too difficult&hellip;or at least for my use case, which was a toy application where I was willing to bend the rules a bit. Really all I needed was for a shader to write to some bit of CPU-accessible memory at the start and end of the program, and I could have the CPU monitor that memory and record the timestamp. To do this I needed to use a custom heap that had the exact properties that I wanted:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">D3D12_HEAP_DESC</span> <span class="n">heapDesc</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">SizeInBytes</span> <span class="o">=</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Flags</span> <span class="o">=</span> <span class="n">D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Alignment</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CPUPageProperty</span> <span class="o">=</span> <span class="n">D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CreationNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">MemoryPoolPreference</span> <span class="o">=</span> <span class="n">D3D12_MEMORY_POOL_L0</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">D3D12_HEAP_TYPE_CUSTOM</span><span class="p">;</span>
+<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">VisibleNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">DXCall</span><span class="p">(</span><span class="n">DX12</span><span class="o">::</span><span class="n">Device</span><span class="o">-&gt;</span><span class="n">CreateHeap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heapDesc</span><span class="p">,</span> <span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">workload</span><span class="p">.</span><span class="n">ReadbackHeap</span><span class="p">)));</span>
+</code></pre></div>
+<p>The important bits here are  the CPUPageProperty, and the MemoryPoolPreference. Setting the page property to WRITE_COMBINE ensures that the memory is uncached from the CPU point of view, which is important since the GPU will be writing to that memory and not a CPU core. Using MEMORY_POOL_L0 also ensures that the heap will live in system memory (as opposed to device memory on the video card), which means that the CPU can access it. It also makes it more likely that the heap will be uncached from the point of view of the GPU. If the GPU writes to an internal cache instead of directly to memory, it&rsquo;s likely that the CPU wouldn&rsquo;t see the write until the cache line was evicted. In the end this hopefully gives us coherent, but slow communication between the GPU and CPU.</p>
+
+<p>The other key component of making this work was figuring out a way have the first thread write its value to the &ldquo;start&rdquo; buffer, and having the last thread write its value to the &ldquo;end&rdquo; buffer. The API doesn&rsquo;t make any guarantees about the order in which threads are executed for a dispatch or draw call, so I didn&rsquo;t want to rely on SV_DispatchThreadID or SV_Position to determine the first or last invocation. Instead, I used atomics on a global counter buffer to figure out an ordered index for each thread:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">uint</span> <span class="n">prevValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">CounterBuffer</span><span class="p">.</span><span class="n">InterlockedAdd</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">prevValue</span><span class="p">);</span>
+<span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ShaderStartBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
+
+<span class="c1">// Do actual shader workload
+</span><span class="c1"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">NumWorkloadElements</span><span class="p">)</span>
+    <span class="n">ShaderEndBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
+</code></pre></div>
+<p>I wrote the frame number in the start/end buffers so that they would be monotonically increasing counters, thus avoiding the need to clear them frame.</p>
+
+<p>The general process for timing a single frame&rsquo;s workload goes like this:</p>
+
+<ul>
+<li>Issue a command to clear the CounterBuffer to 0 using ClearUnorderedAccessViewUint</li>
+<li>Issue draw/dispatch command</li>
+<li>Draw UI to the back buffer</li>
+<li>Tell the direct queue to wait on a fence that we&rsquo;ll use to tell the GPU to wait for our signal before starting the GPU work from our commands</li>
+<li>Submit command list on the direct queue</li>
+<li>Present</li>
+<li>(Next frame)</li>
+<li>Wait for the last present to finish using a swap chain waitable object (this lines up the CPU thread with the end of VSYNC)</li>
+<li>Signal the fence that lets the GPU start the work that was submitted last frame</li>
+<li>Loop and check the value of the start buffer, and record the time when it changes</li>
+<li>Loop and check the value of the end buffer, and record the time when it changes</li>
+<li>Issue commands for the next frame</li>
+</ul>
+
+<p>The good news is that it worked! After implementing and testing, the resulting timing values seemed plausible and also roughly matched the values measured by timestamp queries (I also checked against PIX later on once it was available, and it confirmed my results). From there, I added a simple framework for adding a series of dispatch and draw calls on both the DIRECT and COMPUTE queues. I also added some settings that allow the user to enable/disable workloads, configure the amount of threads launched per workload as well as the amount of per-thread work performed, and also specify dependencies that end up getting expressed as transition barriers. Here&rsquo;s what the UI ends up looking like:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/testapp_overview1.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/testapp_overview1.png" alt="testapp_overview" /></a></p>
+
+<p>Under the per-workload settings, the &ldquo;Num Groups&rdquo; slider controls how many threads are launched per workload, in increments of 1024. For compute workloads this just controls the dispatch size, while for graphics workloads it adjusts the viewport size to indirectly specify the number of pixel shader invocations. The &ldquo;Num Iterations&rdquo; slider specifies the inner loop count inside of the shader program. The loop body simulates an actual workload by computing some perlin noise using an input and output buffer.</p>
+
+<p>Over by the application settings window, there&rsquo;s a few global settings available. VSYNC can be enabled or disabled, and a slider lets you zoom in on the timeline. The &ldquo;Use Split Barriers&rdquo; setting will cause the app to use split transition barriers instead of standard transition barriers to resolve dependencies. The &ldquo;begin&rdquo; barrier is issued immediately after issuing the draw/dispatch that&rsquo;s being depended on, and the &ldquo;end&rdquo; barrier is issued just before the draw/dispatch that has the dependency (if split barriers are disabled, the single transition barrier is issued immediately before the draw/dispatch with the dependency). There&rsquo;s also a setting to toggle a <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn903835(v=vs.85).aspx">stable power state</a> to get consistent GPU clocks, as well as a setting the causes compute queue workloads to be submitted on a queue that was created with <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn986723(v=vs.85).aspx">D3D12_COMMAND_QUEUE_PRIORITY_HIGH</a>.</p>
+
+<h2 id="results">Results<a href="#results" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>I tested my app on the 4 GPU&rsquo;s that I have available on my home PC: and Nvidia Titan V (Volta), an Nvidia GTX 1070 (Pascal), an AMD RX 460 (Polaris, GCN Gen 4), and the Intel HD Graphics 530 that&rsquo;s integrated into my Core i7 6700K CPU (Gen9, Skylake). I also tested on a GTX 980 in my work PC. For each GPU I adjusted the number of threads launched per workgroup to attempt to account for differences in the number of execution units on each GPU. All Nvidia GPU&rsquo;s used 8k threads per workgroup, the RX 460 used 4k, and the Intel GPU used 2k. These are the scenarios that I used for testing:</p>
+
+<ul>
+<li><strong>Default</strong> - default settings for the app. All workloads enabled, with dependencies between sequential workloads on the same queue. This shows how well DIRECT/COMPUTE submissions can overlap with separate dependency chains.</li>
+<li><strong>No Barriers</strong> - all barriers are disabled, which shows how well workloads from the same queue can overlap</li>
+<li><strong>Three Dispatches</strong> - three dispatches are submitted on the DIRECT queue, with the third dispatch depending on the first dispatch. The second dispatch is longer than the first dispatch, which shows sync granularity from barriers.</li>
+<li><strong>Three Dispatches, Split Barrier</strong> - same as the above, except a split barrier is used. This can show whether the driver/GPU can use take advantage of split barriers to increase workload overlap for this particular case.</li>
+<li><strong>High-Priority Compute</strong> - same as Default, except that the compute queue workloads are submitted on a high-priority COMPUTE queue.</li>
+</ul>
+
+<h3 id="default">Default<a href="#default" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx980_default.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx980_default.png?w=1024" alt="gtx980_default" /></a>
+<center><em>Nvidia GTX 980</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0000_default.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0000_default.png" alt="gtx1070_0000_default" /></a>
+<center><em>Nvidia GTX 1070</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/11/titanv_default.png"><img src="https://mynameismjp.files.wordpress.com/2018/11/titanv_default.png" alt="titanv_default" /></a>
+<center><em>Nvidia Titan V</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/hd530_0000_default.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/hd530_0000_default.png" alt="hd530_0000_default" /></a>
+<center><em>Intel HD 530</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/rx460_0000_default.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/rx460_0000_default.png" alt="rx460_0000_default" /></a>
+<center><em>AMD RX 460</em></center></p>
+
+<p>In all cases here we see what we would expect from having barriers between each workload: none of the individuals draws/dispatches overlap with other draws/dispatches on the same queue. However we get very different behavior in terms of how each GPU handles simultaneous submissions on both the COMPUTE and DIRECT queue. The 980 appears to serialize the work from the two queues, completely executing the COMPUTE submission before the DIRECT submission. Meanwhile the 1070 has some overlap, but with curiously large gaps between the dispatches on the COMPUTE queue. We also see that workloads with overlap end up taking longer, suggesting that overlapping dispatches or draws are competing for shared resources. The Titan V shows similar results to the 1070, albeit with some smaller gaps. Intel&rsquo;s GPU also serializes the two submissions, which we would expect based on the lack of a COMPUTE queue being exposed in GPUView. Finally we have the RX 460, which seems to be capable of completely overlapping both submissions with no weird gaps. This is definitely what we expect based on AMD&rsquo;s marketing material and developer advice regarding &ldquo;async compute&rdquo;.</p>
+
+<p>One thing to note from these results is that the Nvidia and AMD GPU&rsquo;s all have a noticeable gap following the graphics workload, which is performing a draw to a render target. This suggests that render target barrier results in more post-shader work than a dispatch, perhaps due to ROP and cache activity.</p>
+
+<h3 id="no-barriers">No Barriers<a href="#no-barriers" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx980_nobarriers.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx980_nobarriers.png" alt="gtx980_nobarriers" /></a>
+<center><em>Nvidia GTX 980</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0001_nobarriers.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0001_nobarriers.png" alt="gtx1070_0001_nobarriers" /></a>
+<center><em>Nvidia GTX 1070</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/11/titanv_nobarriers.png"><img src="https://mynameismjp.files.wordpress.com/2018/11/titanv_nobarriers.png" alt="titanv_nobarriers" /></a>
+<center><em>Nvidia Titan V</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/hd530_0001_nobarriers.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/hd530_0001_nobarriers.png" alt="hd530_0001_nobarriers" /></a>
+<center><em>Intel HD 530</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/rx460_0001_nobarriers.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/rx460_0001_nobarriers.png" alt="rx460_0001_nobarriers" /></a>
+<center><em>AMD RX 460</em></center></p>
+
+<p>The 980 and 1070 GPU&rsquo;s show similar behavior in this case: the first 3 dispatches on each queue overlap with each other very well, but the dispatches on the GRAPHICS queue refuse to overlap with the draw call in the graphics workload. This is unfortunate, because it suggests a cost for switching between compute and graphics operations. I tried many situations on both GPU&rsquo;s, and ultimately I was never able to get a dispatch and a draw to overlap on the GRAPHICS queue. Multiple draws overlap each other just fine (as you would expect), but there seems to always be an implicit sync point when switching from compute to graphics (or vice versa). The Titan V manages better overlap for the 3 first 3 dispatches on the compute and graphics queues, but still has the same issue where the draw won&rsquo;t overlap with any dispatches. Intel shows similar behavior in this test, with the dispatches overlapping some but no overlap between draws and dispatches. Meanwhile, AMD maintains its title as the &ldquo;King of Overlapping&rdquo; by showing no visible sync points whatsoever. Also of note is that the total execution time for AMD went from ~2.5ms to ~1.5ms by removing all of the barriers!</p>
+
+<h3 id="three-dispatches">Three Dispatches<a href="#three-dispatches" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx980_threedispatches.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx980_threedispatches.png" alt="gtx980_threedispatches" /></a>
+<center><em>Nvidia GTX 980</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0002_threedispatches.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0002_threedispatches.png" alt="gtx1070_0002_threedispatches" /></a>
+<center><em>Nvidia GTX 1070</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/11/titanv_threedispatches.png"><img src="https://mynameismjp.files.wordpress.com/2018/11/titanv_threedispatches.png" alt="titanv_threedispatches" /></a>
+<center><em>Nvidia Titan V</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/hd530_0002_threedispatches.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/hd530_0002_threedispatches.png" alt="hd530_0002_threedispatches" /></a>
+<center><em>Intel HD 530</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/rx460_0002_threedispatches.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/rx460_0002_threedispatches.png" alt="rx460_0002_threedispatches" /></a>
+<center><em>AMD RX 460</em></center></p>
+
+<p>This time, the test results are very similar for all of our GPU&rsquo;s: inserting a transition barrier on the result of dispatch A right before dispatch C causes C to wait for dispatch B to complete execution. This suggests that write-&gt;read barrier is implemented using a full pipeline flush on all 3 vendors.</p>
+
+<h3 id="three-dispatches-split-barrier">Three Dispatches, Split Barrier<a href="#three-dispatches-split-barrier" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx980_threedispatchessplit.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx980_threedispatchessplit.png" alt="gtx980_threedispatchessplit" /></a>
+<center><em>Nvidia GTX 980</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0003_threedispatchessplit.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0003_threedispatchessplit.png" alt="gtx1070_0003_threedispatchessplit" /></a>
+<center><em>Nvidia GTX 1070</em></center></p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/titanv_threedispatchessplit.png" alt="titanv_threedispatchessplit" />
+<center><em>Nvidia Titan V</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/hd530_0003_threedispatchessplit.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/hd530_0003_threedispatchessplit.png" alt="hd530_0003_threedispatchessplit" /></a>
+<center><em>Intel HD 530</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/rx460_0003_threedispatchessplit.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/rx460_0003_threedispatchessplit.png" alt="rx460_0003_threedispatchessplit" /></a>
+<center><em>AMD RX 460</em></center></p>
+
+<p>This time we have a split barrier surrounding the second dispatch. So we dispatch workload A, issue the start of a transition barrier, dispatch workload B, then end the transition barrier. Ideally this would allow A to overlap with B and B to overlap with C, but with no overlap between A and C. Unfortunately this doesn&rsquo;t seem to happen on any of the hardware that I tested. On Nvidia and Intel the split barrier doesn&rsquo;t seem to make any difference at all, giving the same behavior as issuing a non-split barrier following dispatch B. AMD is the only one that shows any change, but it looks like they just put a full sync point where the start of the transition barrier is issued (right after dispatch A). UPDATE 12/9/2018: as of driver version 18.12.1.1, my 460 now shows the exact same behavior for split barriers as it does for a standard transition barrier. So it looks like now the driver syncs on the &ldquo;end&rdquo; of the split barrier instead of at the &ldquo;begin&rdquo;.</p>
+
+<h3 id="high-priority-compute">High-Priority Compute<a href="#high-priority-compute" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx980_hiprioritycompute.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx980_hiprioritycompute.png" alt="gtx980_hiprioritycompute" /></a>
+<center><em>Nvidia GTX 980</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0004_hiprioritycompute.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/gtx1070_0004_hiprioritycompute.png" alt="gtx1070_0004_hiprioritycompute" /></a>
+<center><em>Nvidia GTX 1070</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2018/11/titanv_hiprioritycompute.png"><img src="https://mynameismjp.files.wordpress.com/2018/11/titanv_hiprioritycompute.png" alt="titanv_hiprioritycompute" /></a>
+<center><em>Nvidia Titan V</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/hd530_0004_hiprioritycompute.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/hd530_0004_hiprioritycompute.png" alt="hd530_0004_hiprioritycompute" /></a>
+<center><em>Intel HD 530</em></center></p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/02/rx460_0004_hiprioritycompute.png"><img src="https://mynameismjp.files.wordpress.com/2017/02/rx460_0004_hiprioritycompute.png" alt="rx460_0004_hiprioritycompute" /></a>
+<center><em>AMD RX 460</em></center></p>
+
+<p>Using the PRIORITY_HIGH flag on the compute queue doesn&rsquo;t seem to make much of a difference on AMD and Nvidia. On Intel however it causes the COMPUTE submission to get executed before the DIRECT submissions, indicating that it affects the order in which submissions get serialized. This makes sense given what we know about this flag, which only influences the OS scheduler in cases where the OS is serializing submissions from multiple software queues so that they can be consumed by a single hardware queue.</p>
+
+<p>I put the test app on <a href="https://github.com/TheRealMJP/OverlappedExecution">GitHub</a>, so feel free to play around it or fork for your own experiments!</p>
+
+<p>UPDATE 12/15/2018: I just ran the overlap tests on my Nvidia RTX 2080, and the results are very similar to what I was getting from the GTX 1070 and Titan V.</p>
+
+<h2 id="preemption-analysis">Preemption Analysis<a href="#preemption-analysis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>To wrap things up, I also wanted to include a quick analysis of preemption support for the GPU&rsquo;s I have available to me. Analyzing preemption is naturally tricky: it mostly comes into play when multiple applications are using the GPU simultaneously, and the exact behavior can vary depending on what those applications are doing with the GPU, and also how &ldquo;important&rdquo; they are in the eyes of the OS. These issues lead me to set up a set of very simple experiments where I could observe the preemption behavior using both tools as well as my own eyes. The basic setup worked like this:</p>
+
+<ul>
+<li><p>First, I would start up a modified version of <a href="https://github.com/TheRealMJP/DeferredTexturing">DX12 Deferred Texturing demo</a>, and disable VSYNC so that it would run un-throttled. This would saturate the GPU with a constant load, with no gaps between submissions. This gives us a chance to observe whether DWM (the desktop composition engine in Windows) can preempt in order to re-composite and present to the display.</p></li>
+
+<li><p>Next, I would put on my Oculus Rift headset, which would cause the &ldquo;Oculus Home&rdquo; app to start submitting 3D rendering commands to the GPU (it runs on Unreal Engine). These submissions would compete with the deferred texturing demo for GPU time, showing how the OS and GPU handle scheduling in the case of two applications performing rendering commands.</p></li>
+
+<li><p>Putting on the headset means that the Oculus compositor service starts up, which is what actually presents frames to the headset. This service can make high-priority submissions to the GPU, which is intended to allow the compositor to continue presenting frames at 90 Hz even if the source VR application is failing to do so (this is very important for maintaining smooth updates from head movements). Thus we can also observe how the GPU handles preemption for a very specialized, high-priority scenario.</p></li>
+</ul>
+
+<p>First, we&rsquo;re going to look at how things worked on my primary GPU at the time I ran these experiments, which was an Nvidia GTX 1070. Here&rsquo;s what the GPUView capture looked like when running Oculus Home at the same time as my unmodified, un-throttled deferred texturing app:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/nv_normal.png" alt="NV_Normal" />
+<center><em>GTX 1070 - Baseline Scenario</em></center></p>
+
+<p>This is what I call the &ldquo;baseline&rdquo; scenario, where I haven&rsquo;t done anything to really screw with preemption. We can see here that the submissions from Oculus Home and BindlessDeferred.exe actually end up on separate hardware queues, with one called &ldquo;3D&rdquo; and one called &ldquo;Graphics_1&rdquo;. The deferred texturing app is cruising along, generally taking anywhere from 5 to 10 milliseconds to complete a frame. Meanwhile Oculus Home is is taking about 12 milliseconds to complete, which is causing the Oculus service to drop into what they call <a href="https://developer.oculus.com/blog/asynchronous-spacewarp/">Asynchronous Spacewarp</a> (or ASW for short). When ASW kicks in the VR app is throttled to 45 Hz, but the Oculus compositor continues to present frames at 90Hz using interpolation techniques to generate the &ldquo;in between&rdquo; frames. In other words my GPU doesn&rsquo;t have enough resources to keep both apps running at 90Hz, but the Oculus compositor is successfully using preemption to ensure that the headset is staying responsive to user input. In this particular case it looks like the Oculus service is submitting its commands to a compute queue, labeled &ldquo;Compute_0&rdquo;.</p>
+
+<p>So how about DWM? If we expand that image a bit, we can see the CPU side of DWM&rsquo;s submissions down below:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/nv_normal_dwm.png" alt="NV_Normal_DWM" />
+<center><em>GTX 1070 - Baseline Scenario (with DWM)</em></center></p>
+
+<p>So we can see DWM submitting a command buffer, which ends up sitting enqueued for quite some time before it ends up actually executing on the 3D hardware queue. It looks like DWM commands end up getting submitting on a normal graphics/DIRECT queue as opposed to a compute queue, and it also looks like that process is getting bullied out of using the GPU as often as it would like. I was running this on a 144 Hz monitor, and here we see DWM flipping at a rate of around 72 Hz.</p>
+
+<p>For my next scenario I wanted to really turn up the heat to stress the system and see how everything responded. To do this, I modified the deferred texturing demo to over-submit its draw calls by a constant factor. This caused the GPU frame time to increase to about 100 milliseconds, making preemption crucial for maintaining anything resembling responsiveness. Here&rsquo;s the GPUView capture:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/nv_manydraws.png" alt="NV_ManyDraws" />
+<center><em>GTX 1070 - Many Draws Scenario</em></center></p>
+
+<p>Despite our best efforts at hogging the GPU, preemption and multiple queues seem to be working they way you&rsquo;d expect in this scenario. The Oculus Home application is still failing to run at 90Hz due to sharing the GPU, but the Oculus compositor is ticking regularly every 11ms or so. This is all good news, but let&rsquo;s see what happens if we try a different approach:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/nv_bigdispatch.png" alt="NV_BigDispatch" />
+<center><em>GTX 1070 - Big Dispatch Scenario</em></center></p>
+
+<p>This time, I modified BindlessDeferred to launch way more threads than it actually needed to when executing the deferred shading dispatch. This caused the frame time to balloon to about 100ms, and from the capture we can see that it took the Oculus Home app down with it. Even worse, the Oculus compositor app also seems to be unable to get the GPU to complete its small amount of work. The compositor submissions seem to be scheduled on the GPU&rsquo;s compute queue, however it sits there for nearly 100ms before completing. This suggests that our &ldquo;Big Dispatch&rdquo; is hogging the entire GPU, and the other submissions are unable to preempt this dispatch while its threads are executing. We see similar results in my final test scenario, which uses a normal-sized dispatch but artificially increases the execution time of a single thread by looping in the shader program:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/nv_slowshader.png" alt="NV_SlowShader" />
+<center><em>GTX 1070 - Slow Shader Scenario</em></center></p>
+
+<p>Once again everyone suffers in this scenario, and I can tell you first-hand that you do _not_ want to put on a VR headset under these kinds of conditions.</p>
+
+<p>To finish things off, let&rsquo;s take a look at how the same scenarios played out on my AMD RX 460. Here&rsquo;s the baseline capture:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/amd_normal.png" alt="AMD_Normal" />
+<center><em>AMD RX 460 - Baseline Scenario</em></center></p>
+
+<p>The AMD captures are a little harder to parse, since the D3D11 and D3D12 submissions end up on the same hardware queue (named &ldquo;3D&rdquo; here). This also suggests that this hardware may be worse at allowing Oculus Home and BindlessDeferred to share the GPU, since they&rsquo;re pretty much taking turns on the graphics queue instead of executing concurrently. However, we do see something rather interesting here if we look at the submissions from the Oculus compositor. The compositor work is executing on a hardware queue named &ldquo;High Priority Compute&rdquo;, which suggests that it&rsquo;s perhaps making use of the &ldquo;Quick Response Queue&rdquo; functionality mentioned in AMD&rsquo;s marketing material. Let&rsquo;s see how things shake out in our &ldquo;Many Draws&rdquo; scenario:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/amd_manydraws.png" alt="AMD_ManyDraws" />
+<center><em>AMD RX 460 - Many Draws Scenario</em></center></p>
+
+<p>As we feared, the AMD GPU holds up worse (compared to the Nvidia GPU) when it comes to letting the Oculus Home app (darker purple) share the GPU. BindlessDeferred (lighter purple) is taking over 100ms per-frame to complete, and it appears that Home needs to wait for the (single) command buffer submission to completely finish before it can start executing. The Oculus compositor, on the other hand, is executing <em>very</em> regularly. The compute submission comes in every 11ms, and consistently takes about 1.8ms to finish. In other words: Home is nowhere near making 90Hz, but the compositor is making sure that a new time-warped frame comes in every 11.1ms. This allowed things to remain comfortable when I put on the headset&hellip;provided I didn&rsquo;t rotate my head to the sides very quickly. Next, let&rsquo;s look at the &ldquo;Big Dispatch&rdquo; scenario:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/amd_bigdispatch.png" alt="AMD_BigDispatch" />
+<center><em>AMD RX 460 - Big Dispatch Scenario</em></center></p>
+
+<p>As expected, the frame rate of Oculus Home (purple) remains very bad in this scenario. The submission from BindlessDeferred (light green) continues to hog the single graphics queue, forcing Home to wait 100ms or so before it gets a turn. On the bright side, AMD&rsquo;s High Priority Compute queue continues to deliver the goods! Despite the massive number of compute threads swarming the GPU from the big dispatch, the compositor&rsquo;s submission continues to run at a steady rate of 90 Hz. Very impressive! But will it hold up in the final &ldquo;Slow Shader&rdquo; scenario? Let&rsquo;s find out!</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2018/11/amd_slowshader.png" alt="AMD_SlowShader" />
+<center><em>AMD RX 460 - Slow Shader Scenario</em></center></p>
+
+<p>Indeed, AMD&rsquo;s high-priority compute keeps working even in the case where very slow shader programs are running on the GPU. The only noticeable difference is that the compositor submission now takes about 2.4ms to complete, but other than that things look good. Ultimately it looks like Nvidia and AMD hardware do a better job in different scenarios, so I don&rsquo;t think we could say that one is inherently &ldquo;better&rdquo; than the other. In the future I&rsquo;m sure we&rsquo;ll see new innovations from both IHV&rsquo;s in this area, so I wouldn&rsquo;t get too hung up on these specific results.</p>
+
+<h2 id="end-of-pipe">End of Pipe<a href="#end-of-pipe" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>That&rsquo;s it for the series! Thank you to anyone who stuck around through the whole thing, which has now spanned 9 months! I learned quite a bit myself while doing research for these articles, so I&rsquo;m glad that I kept it going. But I think for my next post I&rsquo;m going to do a shorter write up that doesn&rsquo;t take me two years to finish. :)</p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+[]( &ldquo;&rdquo;) - <time datetime="2018-12-11 09:34:08">Dec 2, 2018</time></p>
+
+<p>Really good article, as always! I think there&rsquo;s a small typo in &ldquo;but no overlap between A and B. &ldquo;, should be C instead of B?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2018-12-11 21:29:06">Dec 2, 2018</time></p>
+
+<p>Indeed, that was a typo! Thank you for pointing that out.
+<hr />
+####
+<a href="http://" title="raicuandi@gmail.com">Andy Robbins</a> - <time datetime="2018-12-10 19:35:53">Dec 1, 2018</time></p>
+
+<p>Excellent series!
+<hr />
+####
+[]( &ldquo;&rdquo;) - <time datetime="2018-12-14 21:12:02">Dec 5, 2018</time></p>
+
+<p>very helpful to me, thank you!
+<hr />
+####
+[SONG]( &ldquo;yqsong.hong@gmail.com&rdquo;) - <time datetime="2019-04-05 07:55:19">Apr 5, 2019</time></p>
+
+<p>Great articles. I&rsquo;ve learned a lot about how GPU works in parallel.
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/03/06/breaking-down-barriers-part-1-whats-a-barrier/">Breaking Down Barriers &#8211; Part 1: What&#8217;s a Barrier? &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:44:35">Mar 2, 2019</time></p>
+
+<p>[…] Part 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and Preemption […]
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/04/01/breaking-down-barriers-part-2-synchronizing-gpu-threads/">Breaking Down Barriers &#8211; Part 2: Synchronizing GPU Threads &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:45:03">Mar 2, 2019</time></p>
+
+<p>[…] Part 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and Preemption […]
+<hr />
+####
+[Bryan]( &ldquo;Bryan.Corell@disruptivegames.com&rdquo;) - <time datetime="2019-04-11 12:01:14">Apr 4, 2019</time></p>
+
+<p>Great series! Very in depth and would love to see more :)
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4400 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-12-09 18:01 -0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Adventures in Retro Development: SNES Edition</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Breaking Down Barriers – Part 5: Back To The Real World</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

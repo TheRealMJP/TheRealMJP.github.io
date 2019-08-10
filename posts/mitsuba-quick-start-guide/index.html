@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Mitsuba Quick-Start Guide">
+<meta itemprop="description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation.">
+
+
+<meta itemprop="datePublished" content="2015-04-04T20:36:44&#43;00:00" />
+<meta itemprop="dateModified" content="2015-04-04T20:36:44&#43;00:00" />
+<meta itemprop="wordCount" content="3687">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="Mitsuba Quick-Start Guide" />
+<meta property="og:description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/mitsuba-quick-start-guide/" />
+<meta property="article:published_time" content="2015-04-04T20:36:44+00:00" />
+<meta property="article:modified_time" content="2015-04-04T20:36:44+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mitsuba Quick-Start Guide"/>
+<meta name="twitter:description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Mitsuba Quick-Start Guide</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 4, 2015</span></div>
+				<h1>Mitsuba Quick-Start Guide</h1>
+			</header>
+			<div class="content">
+				
+
+<p>Angelo Pesce&rsquo;s <a href="http://c0de517e.blogspot.ca/2015/03/being-more-wrong-parallax-corrected.html">recent blog post</a> brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation. On Twitter I advocated writing your own path tracer for such purposes, primarily because doing so can be an extremely educational experience. However not everyone has time to write their own path tracer, and then populate with all of the required functionality. And even if you do have the time, it&rsquo;s helpful to have a &ldquo;ground truth for your ground truth&rdquo;, so that you can make sure that you&rsquo;re not making any subtle mistakes (which is quite easy to do with a path tracer!). To help in both of these situations, it&rsquo;s really handy to have a battle-tested renderer at your disposal. For me, that renderer is <a href="https://www.mitsuba-renderer.org/">Mitsuba</a>.</p>
+
+<p>Mitsuba is a free, open source (GPL), physically based renderer that implements a variety of material and volumetric scattering models, and also implements some of the latest and greatest integration techniques (bidirectional path tracing, photon mapping, metropolis light transport, etc.). Since it&rsquo;s primarily an academic research project, it doesn&rsquo;t have all of the functionality and user-friendliness that you might get out of a production renderer like Arnold. That said, it can certainly handle many  (if not all) of the cases that you would want to verify for real-time rendering, and any programmer shouldn&rsquo;t have too much trouble figuring out the interface and file formats once he or she spends some time reading the documentation. It also features a plugin system for integrating new functionality, which could potentially be useful if you wanted to try out a custom material model but still make use of Mitsuba&rsquo;s ray-tracing/sampling/integration framework.</p>
+
+<p>To help get people up and running quickly, I&rsquo;ve come up with a &ldquo;quick-start&rdquo; guide that can show you the basics of setting up a simple scene and viewing it with the Mitsuba renderer. It&rsquo;s primarily aimed at fellow real-time graphics engineers who have never used Mitsuba before, so if you belong in that category then hopefully you&rsquo;ll find it helpful! The guide will walk you through how to import a scene from .obj format into Mitsuba&rsquo;s internal format, and then directly manipulate Mitsuba&rsquo;s XML format to modify the scene properties. Editing XML by hand is obviously not an experience that makes anyone jump for joy, but I think it&rsquo;s a decent way to familiarize yourself with their format. Once you&rsquo;re familiar with how Mitsuba works, you can always write your own exporter that converts from your own format.</p>
+
+<h3 id="1-getting-mitsuba">1. Getting Mitsuba<a href="#1-getting-mitsuba" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>The latest version of Mitsuba is available on <a href="https://www.mitsuba-renderer.org/download.html">this page</a>. If you&rsquo;re running a 64-bit version of Windows like me, then you can go ahead and grab the 64-bit version which contains pre-compiled binaries. There are also Mac and Linux versions if either of those is your platform of choice, however I will be using the Windows version for this guide.</p>
+
+<p>Once you&rsquo;ve downloaded the zip file, go ahead and extract it to a folder of your choice. Inside of the folder you should have mtsgui.exe, which is the simple GUI version of the renderer that we&rsquo;ll be using for this guide. There&rsquo;s also a command-line version called mitsuba.exe, should you ever have a need for that.</p>
+
+<p>While you&rsquo;re on the Mitsuba website, I would also recommend downloading the <a href="https://www.mitsuba-renderer.org/docs.html">PDF documentation</a> into the same folder where you extracted Mitsuba. The docs contain the full specification for Mitsuba&rsquo;s XML file format, general usage information, and documentation for the plugin API.</p>
+
+<h3 id="2-importing-a-simple-scene">2. Importing a Simple Scene<a href="#2-importing-a-simple-scene" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Now that we have Mitsuba, we can get to work on importing a simple scene into Mitsuba&rsquo;s format so that we can render it. The GUI front-end is capable of importing scenes from both COLLADA (*.dae) and Wavefront OBJ (*.obj) file formats, and for this guide we&rsquo;re going to import a very simple scene from an OBJ file that was authored in Maya. If you&rsquo;d like to follow along on your own, then you can grab the &ldquo;TestScene.obj&rdquo; file from the zip file that I&rsquo;ve uploaded here: <a href="https://mynameismjp.files.wordpress.com/2015/04/testscene.zip">https://mynameismjp.files.wordpress.com/2015/04/testscene.zip</a>. Our scene looks like this in Maya:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/03/scene_maya.png"><img src="https://mynameismjp.files.wordpress.com/2015/03/scene_maya.png" alt="Scene_Maya" /></a></p>
+
+<p>As you can see, it&rsquo;s a very simple scene composed of a few primitive shapes arranged in a box-like setup. To keep things really simple with the export/import process, all of the meshes have their default shader assigned to them.</p>
+
+<p>To import the scene into Mitsuba, we can now run mtsgui.exe and select File-&gt;Import from the menu bar.  This will give you the following dialog:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/03/importer_dialog.png"><img src="https://mynameismjp.files.wordpress.com/2015/03/importer_dialog.png" alt="Importer_Dialog" /></a></p>
+
+<p>Go ahead and click the top-left button to browse for the .obj file that you&rsquo;d like to import. Once you&rsquo;ve done this, it will automatically fill in paths for the target directory and target file that will contain the Mitsuba scene definition. Feel free to change those if you&rsquo;d like to create the files elsewhere. There&rsquo;s also an option that specifies whether you&rsquo;d like any material colors and textures as being in sRGB or linear color space.</p>
+
+<p>Once you hit &ldquo;OK&rdquo; to import the scene, you should now see our scene being rendered in the viewport:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/03/initial_preview.png"><img src="https://mynameismjp.files.wordpress.com/2015/03/initial_preview.png" alt="Initial_Preview" /></a></p>
+
+<p>What you&rsquo;re seeing right now is the <em>OpenGL realtime preview</em>. The preview uses the GPU to render your scene with VPL approximations for GI, so that it can give you a rough idea of what your scene will look like once it&rsquo;s actually rendered. Whenever you first open a scene you will get the preview mode, and you&rsquo;ll also revert back to the preview mode whenever you move the camera.</p>
+
+<p>Speaking of the camera, it uses a basic &ldquo;arcball&rdquo; system that&rsquo;s pretty similar to what Maya uses. Hold the left mouse button and drag the pointer to rotate the camera around the focus point, hold the middle mouse button to pan the camera left/right/up/down, and hold the right mouse button to move the camera along its local Z axis (you can also use the mouse wheel for this).</p>
+
+<h3 id="3-configuring-and-rendering">3. Configuring and Rendering<a href="#3-configuring-and-rendering" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Now that we have our scene imported, let&rsquo;s try doing an actual render. First, click the button in the toolbar with the gear icon. It should bring up the following dialog, which lets you configure your rendering settings:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/03/pt_settings.png"><img src="https://mynameismjp.files.wordpress.com/2015/03/pt_settings.png" alt="PT_Settings" /></a></p>
+
+<p>That first setting specifies which integrator that you want to use for rendering. If you&rsquo;re not familiar with the terminology being used here, an&rdquo;integrator&rdquo; is basically the overall rendering technique used for computing how much light is reflected back towards the camera for every pixel. If you&rsquo;re not sure which technique to use, the path tracer is a good default choice. It makes use of unbiased monte carlo techniques to compute diffuse and specular reflectance from both direct and indirect light sources, which essentially means that if you increase the number of samples it will always converge on the &ldquo;correct&rdquo; result. The main downside is that it can generate noisy results for scenes where a majority of surfaces don&rsquo;t have direct visibility of emissive light sources, since the paths are always traced starting at the camera. The bidirectional path tracer aims to improve on this by also tracing additional paths starting from the light sources. The regular path tracer also won&rsquo;t handle volumetrics, and so you will need to switch to the volumetric path tracer if you every want to experiment with that.</p>
+
+<p>For a path tracer, the primary quality setting is the &ldquo;Samples per pixel&rdquo; option. This dictates how many samples to take for every pixel in the output image, and so you can effectively think of it as the amount of supersampling. Increasing it will reduce aliasing from the primary rays, and also reduce the variance in the results of computing reflectance off of the surfaces. Using more samples will of course increase the rendering time as well, so use it carefully. The &ldquo;Sampler&rdquo; option dictates the strategy used for generating the random samples that are used for monte carlo integration, which can also have a pretty large effect on the resulting variance. I would suggest reading through _Physically Based Rendering_ if you&rsquo;d like to learn more about the various strategies, but if you&rsquo;re not sure then the &ldquo;low discrepancy sampler&rdquo; is a good default choice. Another important option is the &ldquo;maximum depth&rdquo; setting, which essentially lets you limit the renderer to using a fixed number of bounces. Setting it to 1 only gives you emissive surfaces and lights (light -&gt; camera), setting it to 2 gives you emissive + direct lighting on all surfaces (light -&gt; surface -&gt; camera), setting it to 3 gives you emissive + direct lighting + 1 bounce of indirect lighting (light -&gt; surface -&gt; surface -&gt; camera), and so on. The default value of -1 essentially causes the renderer to keep picking paths until it hits a light source,  or the transmittance back to the camera is below a particular threshold.</p>
+
+<p>Once you&rsquo;ve configured everything the way I did in the picture above, go and hit OK to close the dialog. After than, press the big green &ldquo;play&rdquo; button in the toolbar to start the renderer. Once it starts, you&rsquo;ll see an interactive view of the renderer completing the image one tile at a time. If you have a decent CPU it shouldn&rsquo;t take more than 10-15 seconds to finish, at which point you should see this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/03/initial_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/03/initial_pt.png" alt="Initial_PT" /></a></p>
+
+<p>Congratulations, you now have a path-traced rendering of the scene!</p>
+
+<h3 id="4-the-scene-file-format">4. The Scene File Format<a href="#4-the-scene-file-format" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Now that we have a basic scene rendering, it&rsquo;s time to dig into the XML file for the scene and start customizing it. Go head and open up &ldquo;TestScene.xml&rdquo; in your favorite text editor, and have a look around. It should look like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/initial_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/initial_xml.png" alt="Initial_XML" /></a></p>
+
+<p>If you scroll around a bit, you&rsquo;ll see declarations for various elements of the scene. Probably what you&rsquo;ll notice first is a bunch of &ldquo;shape&rdquo; declarations: these are the various meshes that make up the scene. Since we imported from .obj, Mitsuba automatically generated a binary file called &ldquo;TestScene.serialized&rdquo; from our .obj file containing the actual vertex and index data for our meshes, which is then referenced by the shapes. Mitsuba can also directly reference .obj or .ply files in a shape, which is convenient if you don&rsquo;t want to go through Mitsuba&rsquo;s import process. It also supports hair meshes, heightfields from an image file, and various primitive shapes (sphere, box, cylinder, rectangle, and disk). Note that shapes support transform properties as well as transform hierarchies, which you can use to position your meshes within the scene as you see fit. See section 8.1 of the documentation for a full description of all of the shape types, and their various properties.</p>
+
+<p>For each shape,  you can see a &ldquo;bsdf&rdquo; property that specifies the BSDF type to use for shading the mesh. Currently all of the shapes are specifying that they should use the &ldquo;diffuse&rdquo; BSDF type, and that the BSDF should use default parameters. You might also notice there&rsquo;s a separate bsdf declaration towards the top of the file, with an ID of &ldquo;initialShadingGroup_material&rdquo;. This comes from the default shader that Maya applies to all meshes, which is also reflected in the .mtl file that was generated along with the .obj file. This BSDF is not actually being used by any of the shapes in the scene, since they all are currently specifying that they just want the default &ldquo;diffuse&rdquo; BSDF. In the next section I&rsquo;ll go over how we can create and modify materials, and then assign them to meshes.</p>
+
+<p>If you scroll way down to the bottom, you&rsquo;ll see the camera and sensor properties, which looks like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/initial_camera_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/initial_camera_xml.png" alt="Initial_Camera_XML" /></a></p>
+
+<p>You should immediately recognize some of your standard camera properties, such as the clip planes and FOV. Here you can also see an example of a transform property, which is using the &ldquo;lookAt&rdquo; method for specifying the transform. Mitsuba also supports specifying transforms as translation + rotation + scale, or directly specifying the transformation matrix. See section 6.1.6 of the documentation for more details.</p>
+
+<p>If you decide to manually update any of the properties in the scene, you can tell the GUI to re-load the scene from disk by clicking the button with blue, circular arrow on it in the toolbar. Just be aware that if you save the file from the GUI app, it may overwrite some of your changes. So if you decide to set up a nice camera position in the XML file, make sure that you don&rsquo;t move the camera in the app and then save over it!</p>
+
+<h3 id="5-specifying-materials">5. Specifying Materials<a href="#5-specifying-materials" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Now let&rsquo;s assign some materials to our meshes, so that we can start making our scene look interesting. As we saw previously, any particular shape can specify which BSDF model it should use as well as various properties of that BSDF. Currently, all of our meshes are using the &ldquo;diffuse&rdquo; BSDF, which implements a simple Lambertian diffuse model. There are many BSDF types available in Mitsuba, which you can read about in section 8.2 of the documentation. To start off, we&rsquo;re going to use the &ldquo;roughplastic&rdquo; model for a few of our meshes. This model gives you a classic diffuse + specular combination, where the diffuse is Lambertian the specular can use one of several microfacet models. It&rsquo;s a good default choice for non-metals, and thus can work well for a wide variety of opaque materials. Let&rsquo;s go down to about line 36 of our scene file, and make the following changes:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/materialchanges_xml1.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/materialchanges_xml1.png" alt="MaterialChanges_XML" /></a></p>
+
+<p>As you can see, we&rsquo;ve added BSDF properties for 4 of our meshes. They&rsquo;re all configured to use the &ldquo;roughplastic&rdquo; BSDF with a GGX distribution, a roughness of 0.1, and an IOR of 1.49. Unfortunately Mitsuba does not support specifying the F0 reflectance value for specular, and so we must specify the interior and exterior IOR instead (exterior IOR defaults to &ldquo;air&rdquo;, and so we can leave it at its default value). You can also see that I specified diffuse reflectance values for each shape, with a different color for each. For this I used the &ldquo;srgb&rdquo; property, which specifies that the color is in sRGB color space. You can also use the &ldquo;rgb&rdquo; property to specify linear values, or the &ldquo;spectrum&rdquo; property for spectral rendering.</p>
+
+<p>After making these changes, go ahead click the &ldquo;reload&rdquo; button in Mitsuba followed by the &ldquo;start&rdquo; button to re-render the image. We should now get the following result:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/material_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/material_pt.png" alt="Material_PT" /></a></p>
+
+<p>Nice! Our results are noisier on the right side due to specular reflections from the sun, but we can now clearly see indirect specular in addition to indirect diffuse.</p>
+
+<p>To simplify setting up materials and other properties, Mitsuba supports using references instead directly specifying shape properties. To see how that works, let&rsquo;s delete the &ldquo;initialShadingGroup_material&rdquo; BSDF declaration at line 11 and replace it with a new that that we will reference into the cylinder and torus meshes:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/materialchanges2_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/materialchanges2_xml.png" alt="MaterialChanges2_XML" /></a></p>
+
+<p>If you look closely, you&rsquo;ll see that for this new material I&rsquo;m also using a texture for the diffuse reflectance. When setting the &ldquo;texture&rdquo; property to the &ldquo;bitmap&rdquo; type, you can tell Mitsuba to load an image file off disk. Note that Mitsuba also supports a few built-in procedural textures that you can use, such as checkerboard and a grid. See section 8.3 for more details.</p>
+
+<p>After refreshing, our render should now look like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/material2_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/material2_pt.png" alt="Material2_PT" /></a></p>
+
+<p>To finish up with materials, let&rsquo;s assign a more interesting material to the sphere in the back:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/materialchanges3_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/materialchanges3_xml.png" alt="MaterialChanges3_XML" /></a></p>
+
+<p>If we now re-render with a sample count of 256 to reduce the variance, we get this result:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/material3_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/material3_pt.png" alt="Material3_PT" /></a></p>
+
+<h3 id="6-adding-emitters">6. Adding Emitters<a href="#6-adding-emitters" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>Up until this point, we&rsquo;ve been using Mitsuba&rsquo;s default lighting environment for rendering. Mitsuba supports a variety of emitters that mostly fall into one of 3 categories: punctual lights, area lights, or environment emitters. Punctual lights are your typical point, spot, and directional lights that are considered to have an infinitesimally small area. Area lights are arbitrary meshes that uniformly emit light from their surface, and therefore must be used with a corresponding &ldquo;shape&rdquo; property. Environment emitters are infinitely distant sources that surround the entire scene, and can either use an HDR environment map, a procedural sun and sky model, or a constant value. For a full listing of all emitter types and their properties, consult section 8.8 of the documentation.</p>
+
+<p>Now, let&rsquo;s try adding an area light to our scene. Like I mentioned earlier, an area light emitter needs to be parented to a &ldquo;shape&rdquo; property that determines the actual 3D representation of the light source. While this shape could be an arbitrary triangle mesh if you&rsquo;d like, it&rsquo;s a lot easier to just use Mitsuba&rsquo;s built-in primitive types instead. For our light source, we&rsquo;ll use the &ldquo;sphere&rdquo; shape type so that we get a spherical area light source:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/arealight_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/arealight_xml.png" alt="AreaLight_XML" /></a></p>
+
+<p>After refreshing, our scene now looks like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/arealight_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/arealight_pt.png" alt="AreaLight_PT" /></a></p>
+
+<p>Notice how the sky and sun are now gone, since we now have an emitter defined in the scene. To replace the sky, let&rsquo;s now try adding our own environment emitter that uses an environment map:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/envmap_xml.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/envmap_xml.png" alt="EnvMap_XML" /></a></p>
+
+<p>The &ldquo;uffizi.exr&rdquo; file used here is an HDR light probe from <a href="http://gl.ict.usc.edu/Data/HighResProbes/">USC&rsquo;s high-resolution image probe gallery</a>. Note that this emitter does not support cubemaps, and instead expects a 2D image that uses equirectangular mapping. Here&rsquo;s what it looks like rendered with the path tracer, using a higher sample count of 256 samples per pixel:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2015/04/envmap_pt.png"><img src="https://mynameismjp.files.wordpress.com/2015/04/envmap_pt.png" alt="EnvMap_PT" /></a></p>
+
+<h3 id="7-further-reading">7. Further Reading<a href="#7-further-reading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>At this point, you should hopefully understand the basics of how to use Mitsuba, and how to set up scenes in its XML file format. There&rsquo;s obviously quite a bit of functionality that I didn&rsquo;t cover, which you can read about in the documentation. If you&rsquo;d like to know more about how Mitsuba works, I would very strongly recommend reading through <em><a href="http://www.pbrt.org/">Physically Based Rendering</a></em>. Mitsuba is heavily based on pbrt (which is the open-source renderer described in the book), and the book does a fantastic job of explaining all of the relevant concepts. It&rsquo;s also a must-have resource if you&rsquo;d like to write your own path tracer, which is something that I would highly recommend to anybody working in real-time graphics.</p>
+
+<p>Oh and just in case you missed it, here&rsquo;s the link to the zip file containing the example Mitsuba scene: <a href="https://mynameismjp.files.wordpress.com/2015/04/testscene.zip">https://mynameismjp.files.wordpress.com/2015/04/testscene.zip</a></p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://www.coolgames.jecool.net/gi-ground-truth-for-comparison/">GI ground truth for comparison | How to play cool games</a> - <time datetime="2015-05-05 06:55:47">May 2, 2015</time></p>
+
+<p>[…] I’ve tried Mitsuba, as per MJP’s advice, but I really can’t get into it. It’s good, but the XML is ridiculously obtuse and […]
+<hr />
+####
+<a href="http://seblagarde.wordpress.com" title="lagardese@hotmail.fr">seblagarde</a> - <time datetime="2015-04-04 15:42:58">Apr 6, 2015</time></p>
+
+<p>hey, Good to see Mitsuba spreading accros game industry. We use it for frostbite too to compare our in-engine ground thruth with ground thruth :) On thing you Forgot to mention is the tone mapper. For the sake of good comparison we bypass our tone mapper in frostbite and export a screenshot in exr to compare with a exr shot produce by Mitsuba without tone mapping. Only way to have reliable result. So i think you should introduce the image postprocess control of Mitsuba too.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2015-04-06 09:57:50">Apr 1, 2015</time></p>
+
+<p>Hi Sébastien, I agree, that&rsquo;s a good topic to touch on in the tutorial. Here at RAD we also do comparisons with EXR screenshots, so that we can remove tone mapping from the mix. @Nico: I actually don&rsquo;t have a lot of experience with LuxRender, so I wouldn&rsquo;t be a great person to ask about that! I will definitely have to spend some time with it at some point.
+<hr />
+####
+<a href="http://ngaloppo.wordpress.com/" title="nico@crossbar.net">Nico</a> - <time datetime="2015-04-06 08:20:59">Apr 1, 2015</time></p>
+
+<p>Is there any advantage of using Mitsuba vs. LuxRender? (<a href="http://www.luxrender.net/en_GB/index">http://www.luxrender.net/en_GB/index</a>)
+<hr />
+####
+<a href="https://twitter.com/wumpf" title="r_andreas2@web.de">Wumpf</a> - <time datetime="2015-05-15 14:54:38">May 5, 2015</time></p>
+
+<p>Just wanted to thank you for this great introduction/tutorial! :) It helped me a lot to get started with groundtruth renderings for my realtime global illumination experiments :)
+<hr />
+####
+<a href="http://nbertoa.wordpress.com" title="nicolas.bertoa@outlook.com">Nicolas Bertoa</a> - <time datetime="2017-03-29 07:55:28">Mar 3, 2017</time></p>
+
+<p>Thanks for this article, Matt. You said: &ldquo;It’s also a must-have resource if you’d like to write your own path tracer, which is something that I would highly recommend to anybody working in real-time graphics.&rdquo; Some time ago I had the same doubt about going offline or not. Why do you think doing that will help in real-time graphics?
+<hr />
+####
+<a href="http://agraphicsguy.wordpress.com" title="jerrycao_1985@icloud.com">AGraphicsGuy</a> - <time datetime="2015-12-06 20:09:26">Dec 0, 2015</time></p>
+
+<p>There is an alternative by using Blender with mitsuba, which will be much simpler than the above procedure. I&rsquo;m not sure if it exposes full features in mitsuba, it works pretty cool to me.
+<hr />
+####
+<a href="http://www.fa2.de" title="atg@fa2.de">Theo Gottwald</a> - <time datetime="2016-01-13 02:13:46">Jan 3, 2016</time></p>
+
+<p>To make Mitsuba really render specular, it needs to be compiled with a setting of spectrum(something)=30 However this specular version is nowhere to download.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2017-03-29 13:15:16">Mar 3, 2017</time></p>
+
+<p>Hi Nicolas, I think that writing a path tracer gives you a better perspective on BRDF&rsquo;s and the rendering equation, since you take a more unified approach to solving the rendering equation. In real-time we end up having to do so many specialized paths for things like point lights, area lights, environment specular, etc., since we have such strict limitations on what we can do in a single frame. Meanwhile in a path tracer you&rsquo;re free to to do arbitrary queries on your scene via ray tracing, which lets you focus on integrating to solve the rendering equation. So instead of using approximation X or for one light source and technique Y for handling your environment specular, you just use ray tracing to get radiance and use the same BRDF for everything. Having that flexibility and simplicity also makes it much easier (IMO) to explore things like refraction, and volumetric scattering. This is all my own opinion based on my personal experiences, so your mileage may vary. If nothing else, knowing how a path tracer works will give you valuable knowledge for understanding how offline renderers work, or for writing an offline baking tool that you use for a real-time engine. Monte Carlo integration (which is used heavily in path tracing) is also an invaluable tool to have on your belt for almost any rendering scenario, both real-time and offline.
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3687 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2015-04-04 13:36 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/siggraph-2015/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>SIGGRAPH Follow-Up: 2015 Edition</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/some-special-thanks/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Some Special Thanks</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

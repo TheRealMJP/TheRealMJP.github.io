@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads">
+<meta itemprop="description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption">
+
+
+<meta itemprop="datePublished" content="2018-04-02T06:29:17&#43;00:00" />
+<meta itemprop="dateModified" content="2018-04-02T06:29:17&#43;00:00" />
+<meta itemprop="wordCount" content="3863">
+
+
+
+<meta itemprop="keywords" content="Graphics,DX12," />
+<meta property="og:title" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads" />
+<meta property="og:description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/" />
+<meta property="article:published_time" content="2018-04-02T06:29:17+00:00" />
+<meta property="article:modified_time" content="2018-04-02T06:29:17+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads"/>
+<meta name="twitter:description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Breaking Down Barriers - Part 2: Synchronizing GPU Threads</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 2, 2018</span></div>
+				<h1>Breaking Down Barriers - Part 2: Synchronizing GPU Threads</h1>
+			</header>
+			<div class="content">
+				
+
+
+
+
+
+  
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="/js/load-photoswipe.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+<p><em>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
+
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
+
+<p>Welcome to part 2 of the series! In the <a href="../breaking-down-barriers-part-1-whats-a-barrier/">previous article</a>, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU. One such use case that I brought up was to ensure that the many threads kicked off by a Draw or Dispatch call don&rsquo;t overlap with previous Draw/Dispatch&rsquo;s threads when there&rsquo;s some kind of dependency between the two calls. In this article I&rsquo;m going to dive into the specifics of how GPU&rsquo;s handle this kind of synchronization, and also discuss the high-level performance implications of these approaches.</p>
+
+<h2 id="programming-the-mjp-3000">Programming the MJP-3000<a href="#programming-the-mjp-3000" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>To explain the basics of GPU thread synchronization, I&rsquo;m going to walk through some examples using a completely fictional architecture: the MJP-3000. This made-up GPU is much simpler than real graphics hardware, which will (hopefully) make it easier to demonstrate high-level concepts without getting lost in the weeds. I also don&rsquo;t want to give the impression that what I describe is <em>exactly</em> how real GPU&rsquo;s do things, especially since many of those details aren&rsquo;t publicly available. However the commands and behavior are still loosely based on real-world GPU&rsquo;s, since otherwise the example wouldn&rsquo;t be very useful!</p>
+
+<p>With the prologue out of the way, let&rsquo;s have a look at the amazing feat of engineering that is the MJP-3000:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/gpu-overview1.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/gpu-overview1.png" alt="gpu-overview" /></a></p>
+
+<p>The interesting parts here are the <strong><a href="https://fgiesen.wordpress.com/2011/07/02/a-trip-through-the-graphics-pipeline-2011-part-2/">command processor</a></strong> on the left, and the <strong>shader cores</strong> in the middle. The command processor is the brains of the operation, and its job is to read commands (the green blocks) from a <strong>command buffer</strong> and coordinate the <strong>shader cores</strong>. The command processor reads commands one at time from the command buffer, always in the exact order they&rsquo;re submitted. When the command processor encounters the appropriate commands, it can add a group of threads to the <strong>thread queue</strong> immediately to the right of the command processor. The 16 shader cores pull threads from this queue in a first-in first-out (FIFO) scheme, after which the shader program for that thread is actually executed on the shader core. The cores are all identical, and completely independent of each other. This means that together they can simultaneously run 16 threads of the same shader program, or they can each run a thread from a completely different program. The shader cores can also read or write to arbitrary locations in device memory, which is on the right. Since the cores are independent and can all access memory, you can think of the array like a 16-core CPU. The major difference is that unlike a CPU they can&rsquo;t tell themselves what to do, since they instead rely on the command processor to enqueue work for them. The <strong>Current Cycle Count</strong> in the top-left corner shows how many GPU cycles have executed for a particular example, which will help us keep track of how long it took for a particular example to complete execution.</p>
+
+<p>For some reason, the designers of the MJP-3000 decided that their hardware could only run compute shaders. I suppose they felt that it would make things a lot simpler to only focus on the one shader stage that doesn&rsquo;t rely on a complicated rasterization pipeline. Because of that, the command processor only has 1 command that actually kicks off threads to run on the shader cores: <strong>DISPATCH</strong>. The DISPATCH command specifies two things: how many threads need to run, and what shader program should be executed. When a DISPATCH command is encountered by the command processor, the threads from that dispatch are immediately placed in the thread queue, where they are grabbed by waiting shader cores. Since there are 16 cores, only 16 threads can be executing at any given time. Any threads that aren&rsquo;t running on the shader cores stay in the thread queue until a core finishes a different thread and pulls the waiting thread out of the queue. The command processor can parse a DISPATCH command and enqueue its threads in 1 cycle, and the shader cores can dequeue a thread from the thread queue in 1 cycle.</p>
+
+<h2 id="dispatches-and-flushes">Dispatches and Flushes<a href="#dispatches-and-flushes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Let&rsquo;s now try a simple example where we dispatch 32 threads that each write something to a separate element of  a buffer located in device memory. This dispatch will run shader program &ldquo;A&rdquo;, which takes 100 cycles to complete. So with 16 cores we would expect the whole dispatch to take around 200 cycles from start to end. Let&rsquo;s go through the steps:</p>
+
+
+<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/single_dispatch/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/single_dispatch/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/single_dispatch/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>In the first step, the command processor encounters a DISPATCH command in the command buffer that requests 32 threads of program A. 1 cycle later, the command processor has enqueued the 32 requested threads in the thread queue. 1 cycle after that, the 16 shader cores have each picked up a thread of program A and have started executing them. Meanwhile, 16 threads are left in the queue. 100 cycles later the first batch of threads have completed, and their result is in memory. 1 cycle after that we&rsquo;re at the 103 cycle count, and the second batch of 16 threads are pulled from the now-empty queue to start executing on the shader cores. Finally after a total of 203 cycles, the threads are all finished and their results are in memory.</p>
+
+<p>Now that we understand the basics of how this GPU works, let&rsquo;s introduce some synchronization. As we already know from the previous article, synchronization implies that we&rsquo;re going to somehow wait for all of our threads to hit a certain point before continuing. On a GPU where you&rsquo;re constantly spinning up lots of new threads, this actually translates into something more like &ldquo;wait for all of the threads from one group to finish before the threads from a second group start executing&rdquo;. The common case where we&rsquo;ll need to do this is where one dispatch needs to read the results that were written out by another dispatch. So for instance, say we run 24 threads of program A that collectively write their results to 24 elements of a buffer. After program A completes that we want to run 24 threads of program B, which will then read those 24 elements from the original output buffer and use them to compute new results written into a different buffer. If we were to try to do this by simply putting two DISPATCH commands in our command buffer, it would go something like this (program A is red, and program B is green):</p>
+
+
+
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/dispatch_overlap/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>Take a look at the the third step: since dispatch A wasn&rsquo;t a multiple of 16, the bottom 8 shader cores pulled from dispatch B to keep the cores from going idle. This caused the two dispatches to <em>overlap</em>, meaning that the end of dispatch A was still executing while the start of dispatch B was simultaneously executing. This is actually really bad for our case, because we now have a race condition: the threads of dispatch B might read from dispatch A&rsquo;s output buffer before the threads of dispatch A have finished! Without knowing the specifics of which memory is accessed by programs A and B and how exactly the threads execute on the GPU, we have no choice but to insert a sync point between the two dispatches. This sync point will need to cause the command processor to wait until all threads of dispatch A run to completion before processing dispatch B. So let&rsquo;s now introduce a FLUSH command that will do exactly that: when the command processor hits the flush, it waits for all shader cores to become idle before processing any further commands. The term &ldquo;flush&rdquo; is common for this sort of operation because it implies that it will &ldquo;flush out&rdquo; all pending work that&rsquo;s waiting to execute. Let&rsquo;s now try the same scenario again, this time using a flush to synchronize:</p>
+
+
+
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/06.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/06.png" alt="6th" />
+				    </div>
+			      <figcaption>
+		          <p>6th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/06.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/07.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/07.png" alt="7th" />
+				    </div>
+			      <figcaption>
+		          <p>7th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_between_dispatches/07.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>Notice how the command processor hits the FLUSH command, and then stops reading commands until dispatch A is completely finished and the thread queue is empty. This ensures that dispatch B never overlaps with dispatch A, which means it will be safe for any thread in dispatch B to access any result that that was output by dispatch A. This is pretty much exactly what I was talking about in part 1 when I mentioned the need for barriers to prevent dependent Draw/Dispatch calls from overlapping. In fact, you can usually expect something like a FLUSH to happen on current GPU&rsquo;s if you issued dispatch A, issued a barrier to transition the output buffer from a write state to a read state, and then issued dispatch B (it&rsquo;s also similar to what you would get in response to issuing a D3D12_RESOURCE_UAV_BARRIER in D3D12, since that also implies waiting for all pending writes to finish). Hopefully this example makes it even more clear as to why a barrier is necessary for this sort of data dependency, and why results could be wrong if the barrier is omitted.</p>
+
+<p>It&rsquo;s also very important to note that in this case the flush/barrier was not free from a performance point of view: our total processing time for both dispatches went from 304 cycles to 406 cycles. That&rsquo;s a 25% increase! The reason for this should be intuitive: with the flush between dispatches, we now have more idle shader cores during the tail end of both dispatches. In fact the increase in processing time is exactly the same as the increase in the amount of idle time: without the flush we had about 0% idle cores over both dispatches, but <em>with</em> the flush our cores were idle about 25% of the time on average. This leads us to a simple conclusion: <strong>the performance cost of a flush is directly tied to the decrease in utilization</strong>. This ultimately means that the relative cost of introducing a thread synchronization barrier will vary depending on the number of threads, how long those threads execute, and how well the threads can fully saturate the available shader cores. We can confirm this with a simple thought experiment: imagine we ran dispatch A and dispatch B with 40 threads each instead of 24. The process would go almost exactly as it did before, except both dispatches would have another &ldquo;phase&rdquo; of 100 cycles where all 16 cores were in-use. Without our barrier the whole process would take about (40 + 40) / 16 = 500 cycles, while with the barrier it would take about 600 cycles. Therefore the relative cost of the barrier is about 16.5% as opposed to the 25% cost when our thread counts were lower.</p>
+
+<p>The other way to look at this is that <strong>removing an unnecessary flush can result in a performance increase that&rsquo;s relative to the amount of idle shader cores</strong>. So if we&rsquo;re syncing between two dispatches and they have no dependency between them, it&rsquo;s most likely a good idea to remove the barrier and let them overlap with each other. For larger dispatches (in terms of thread count) that can saturate the GPU on their own there won&rsquo;t be much benefit, since there won&rsquo;t be much idle time to exploit. However for very small dispatches the difference can be significant. This time let&rsquo;s imagine that dispatch A and B both have 8 threads each. With a flush in between the total time will be about 200 cycles, but with no flush they can perfectly overlap and finish in only 100 cycles! Or as another example, imagine we had another completely independent workload of 8 threads that we&rsquo;ll call dispatch C (and color its threads blue). If we were to overlap it with dispatch A, we could essentially get it for &ldquo;free&rdquo; by utilizing the idle cores:</p>
+
+
+
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>If you squint a bit and look at our GPU as if it were a CPU executing instructions instead of a GPU executing commands, then this kind of overlapping of work could be considered a kind of <a href="https://en.wikipedia.org/wiki/Instruction-level_parallelism"><strong>Instruction Level Parallelism</strong></a>. In this case the parallel operations are being explicitly specified in our command stream, making it somewhat similar to how <a href="https://en.wikipedia.org/wiki/Very_long_instruction_word">VLIW</a> architectures work.</p>
+
+<h2 id="waits-and-labels">Waits and Labels<a href="#waits-and-labels" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In the previous example, we were able to basically hide dispatch C in the idle time left by the barrier between dispatch A and dispatch B. But what if dispatch C was very complicated, and took much longer than 100 cycles to complete? Let&rsquo;s re-do the example, except this time dispatch C will execute for 400 cycles instead of 100:</p>
+
+
+
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/06.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/06.png" alt="6th" />
+				    </div>
+			      <figcaption>
+		          <p>6th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/flush_with_overlap_long/06.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>Things didn&rsquo;t go as well this time around. We still got a bit of overlap between A and C, but that was immediately followed by 300 cycles where half of our shader cores were idle. This happened because our FLUSH command ends up waiting for dispatch C to finish, since the flush works by waiting for the thread queue to become completely empty. We could re-arrange things so that dispatch C gets kicked off <em>after</em> the flush, but this is not ideal either because there would still be a bit of idle time during the tail end of dispatch A, and also a long period of half-idle cores when dispatch C is running.</p>
+
+<p>Lucky for us, there&rsquo;s a new driver update for the MJP-3000 that should be able to help us out. MJP xPerience 3D Nocturnal<strong>™</strong> Driver v5.444.198754 adds support for two new commands that can be parsed and executed by the command processor. The first one is called SIGNAL_POST_SHADER, and the other is called WAIT_SIGNAL. The first command is pretty fancy: it tells the command processor to write a signal value to an address in memory (often called a <em>fence</em> or <em>label</em>) once all shaders have completed. The cool part is that it&rsquo;s a &ldquo;deferred&rdquo; write: the write is actually performed by the thread queue once it determines that all previously-queued threads have run to completion. This allows the command processor to move on to other commands while previous dispatches are still executing. The other command, WAIT_SIGNAL, tells the command processor to stall and wait for a memory address to be signaled. This can be used in conjunction with SIGNAL_POST_SHADER to wait for a particular dispatch to complete, but with the added bonus that the command processor can kick off more work in between those steps. To help visualize this process, let&rsquo;s update the GPU diagram with a new component:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2017/01/label-overview.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/label-overview.png" alt="label-overview" /></a></p>
+
+<p>Once a SIGNAL_POST_SHADER command is executed, any pending labels will show up as a colored block in a new area under the thread queue. The number on the block shows the current status of the label: &ldquo;0&rdquo; means it hasn&rsquo;t been signaled yet, and &ldquo;1&rdquo; means that it&rsquo;s in the signaled state and any dependent waits will be released.</p>
+
+<p>Let&rsquo;s now try out our new commands with the previous example:</p>
+
+
+
+
+<div class="gallery caption-position-bottom caption-effect-None hover-effect-slideup hover-transition" itemscope itemtype="http://schema.org/ImageGallery">
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/00.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/00.png" alt="0th" />
+				    </div>
+			      <figcaption>
+		          <p>0th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/00.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/01.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/01.png" alt="1st" />
+				    </div>
+			      <figcaption>
+		          <p>1st</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/01.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/02.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/02.png" alt="2nd" />
+				    </div>
+			      <figcaption>
+		          <p>2nd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/02.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/03.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/03.png" alt="3rd" />
+				    </div>
+			      <figcaption>
+		          <p>3rd</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/03.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/04.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/04.png" alt="4th" />
+				    </div>
+			      <figcaption>
+		          <p>4th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/04.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/05.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/05.png" alt="5th" />
+				    </div>
+			      <figcaption>
+		          <p>5th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/05.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/06.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/06.png" alt="6th" />
+				    </div>
+			      <figcaption>
+		          <p>6th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/06.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/07.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/07.png" alt="7th" />
+				    </div>
+			      <figcaption>
+		          <p>7th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/07.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/08.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/08.png" alt="8th" />
+				    </div>
+			      <figcaption>
+		          <p>8th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/08.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+				<div class="box">
+				  <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+				    <div class="img" style="background-image: url('https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/09.png');" >
+				      <img itemprop="thumbnail" src="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/09.png" alt="9th" />
+				    </div>
+			      <figcaption>
+		          <p>9th</p>
+			      </figcaption>
+				    <a href="https://therealmjp.github.io/images/converted/barriers/split_barrier_overlap/09.png" itemprop="contentUrl"></a>
+				  </figure>
+				</div>
+</div>
+
+
+<p>Very nice! By removing the long stall on dispatch C, we&rsquo;ve effectively eliminated all of the idle time and kept the GPU busy for the entire duration of the 3 dispatches. As a result we&rsquo;ve increased our overall throughput: previously the process took about 700 cycles, but now it&rsquo;s down to about 500 cycles. Unfortunately this is still more time than it took to complete when we only had dispatch A and B to worry about, which means the <em>latency</em> for the A-&gt;B job increased by about 100 cycles. But at the same time the latency for dispatch C is is lower than it would be if it weren&rsquo;t overlapped, since it would otherwise need to wait for either A or B to finish before it could start processing.</p>
+
+<p>If the MJP-3000 were being programmed via D3D12 or Vulkan, then this signal/wait behavior is probably what you would hope to see when issuing a <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn899226(v=vs.85).aspx#split_barriers">split barrier</a> (vkCmdSetEvent + vkCmdWaitEvents in Vulkan-ese). Split barriers let you effectively specify 2 different points in a resource&rsquo;s lifetime: the point where you&rsquo;re done using it in its current state (read, write, etc.), and the point where you actually need the resource to be in its new state. By doing this and issuing some work between the begin and end of the barrier, the driver (potentially) has enough information to know that it can overlap the in-between work while it&rsquo;s waiting for the pre-barrier work to finish. So for the example I outlined above, the D3D12 commands might go something like this:</p>
+
+<ul>
+<li>Issue Dispatch A which writes to Buffer A</li>
+<li>Begin Transition Buffer A from writable -&gt; readable</li>
+<li>Issue Dispatch C which writes to Buffer C</li>
+<li>End Transition Buffer A from writable -&gt; readable</li>
+<li>Issue Dispatch B which writes to Buffer B</li>
+</ul>
+
+<p>For real-world GPU&rsquo;s the benefits of split barriers can possibly be even greater than the sync point removal that I demonstrated with my imaginary GPU. As I mentioned in part 1, barriers on GPU&rsquo;s are also responsible for handing things like cache flushes and decompression steps. These things increase the relative cost of a barrier past the simple &ldquo;idle shader core tax&rdquo; that we saw on our imaginary GPU, which gives us even more incentive to try to overlap the barrier with with some non-dependent work. However, the ability to overlap barrier operations with Draws and Dispatches is totally dependent on the specifics of the GPU architecture.</p>
+
+<p>Before we wrap up, I&rsquo;d like to point out that our GPU is still rather limited in terms of how it can overlap different dispatches, even with the new label/wait functionality that we just added. You can only do so much when the command processor is completely tied up every time that you need to wait for a previous dispatch to finish, which really starts to hurt you if you have more complex dependency chains. Later on in part 3 we&rsquo;ll revisit this topic, and look at at how some hardware changes can help us get around these limitations.</p>
+
+<h2 id="next-up">Next Up<a href="#next-up" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>In <a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3</a>, I&rsquo;m going to discuss why explicit API&rsquo;s expose multiple queues for submitting command buffers. I&rsquo;ll also show how multiple queues could work on the fictional GPU architecture we&rsquo;ve been using as an example, and discuss some implementations in real-world GPU&rsquo;s.</p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>####
+[IRYOKU]( &ldquo;jorge@iryoku.com&rdquo;) - <time datetime="2018-04-13 05:40:38">Apr 5, 2018</time></p>
+
+<p>This was an amazing article, thanks for sharing!
+<hr />
+####
+[Baggers]( &ldquo;techsnuffle@gmail.com&rdquo;) - <time datetime="2018-04-04 00:35:44">Apr 3, 2018</time></p>
+
+<p>Once again awesome articles, I can tell I&rsquo;m going to be referring to these for years :) A few tiny niggles - missing link between two shader cores. Row 1 column 3 (0 indexed) - &ldquo;group of treads&rdquo; in first paragraph after first mjp-3000 diagram - &ldquo;dispatch B might read from dispatch B’s output buffer before the threads of dispatch A have finished!&rdquo; should that be &ldquo;might read from dispatch A’s output&rdquo;?
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2018-04-04 14:05:10">Apr 3, 2018</time></p>
+
+<p>Thank you for the kind words, and for pointing out those issues! I&rsquo;ve fixed the two typos, and I&rsquo;ll fix the image one I&rsquo;m on my home PC.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2018-04-03 18:48:55">Apr 2, 2018</time></p>
+
+<p>Most GPU&rsquo;s will actually have multiple threads &ldquo;sharing&rdquo; a shader core. The hardware scheduler will cycle through those threads at a relatively fast rate compared to CPU&rsquo;s, which allows the hardware to hide the latency of memory operations. The basic idea is that if one thread stalls waiting for memory, the hardware can switch to another thread that can (hopefully) get some work done. The main difference from CPU&rsquo;s is that there&rsquo;s usually a finite limit of how many threads can be committed to a shader core, which is commonly referred to as &ldquo;occupancy&rdquo;. When a CPU switches threads, the current context is saved off to memory, which is usually backed by a very generous cache hierarchy. GPU threads however have *tons* of registers that live in very large register files, and very small caches. This usually makes it impractical to save off those registers to memory for a context switch, especially at the rate at which GPU&rsquo;s switch threads. So instead most GPU&rsquo;s will statically partition a core&rsquo;s register file among all threads currently running on that core, with the number of registers being dependent on the complexity of the shader program being run. So if the core has 256 registers and the program needs 64 registers, then you can have a max 4 of threads committed to a core at any given time. This is why shader authors often try to optimize for register usage, since less registers means higher occupancy and more ability for the hardware to hide latency. This is a good slide deck that covers some of these details: <a href="http://bps10.idav.ucdavis.edu/talks/03-fatahalian_gpuArchTeraflop_BPS_SIGGRAPH2010.pdf">http://bps10.idav.ucdavis.edu/talks/03-fatahalian_gpuArchTeraflop_BPS_SIGGRAPH2010.pdf</a> It also talks about how GPU&rsquo;s actually use SIMD for their shader cores, which is something that I left out of my made-up GPU in order to keep things simpler. But the fact that GPU threads are always executed on SIMD units in groups of 32 or 64 also has a bearing on register usage and occupancy, since it effectively means that your register count can actually be 32x or 64x larger! So for instance if you take AMD&rsquo;s GCN architecture, each CU on the GPU has 4 SIMD units, and each SIMD has a register file with 256 registers. AMD works with &ldquo;wavefronts&rdquo; of 64 threads, which means that each SIMD has 64x256 32-bit registers (64KB). If you take the PS4&rsquo;s GPU with 18 CU&rsquo;s, that adds up to 4.5 MB of registers!
+<hr />
+####
+[Rim]( &ldquo;remigius@netforge.nl&rdquo;) - <time datetime="2018-04-10 10:42:49">Apr 2, 2018</time></p>
+
+<p>Another very nice read indeed. I recently followed a course on the computational complexity of scheduling algorithms and this got me wondering, isn&rsquo;t optimizing your command submission and locking schedule really difficult (as in NP-hard) for anything but trivial scenarios? There&rsquo;ll probably be heuristics that are good enough in practice, but I&rsquo;m curious what you think, if you care to comment of course.
+<hr />
+####
+<a href="http://nikitablack.github.io/" title="nikita_chernyi@mail.ru">nikitablack</a> - <time datetime="2018-04-03 01:10:22">Apr 2, 2018</time></p>
+
+<p>The article is amazing. Thank you for sharing the knowledge in accessible manner. You told that in your amazing MJP-3000 GPU you have 16 cores and hence 16 threads. Does that holds for real-world GPUs that one core can spawn only one thread (on PC we can span infinite number of threads even on a single core).
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/06/17/breaking-down-barriers-part-3-multiple-command-processors/">Breaking Down Barriers &#8211; Part 3: Multiple Command Processors &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:45:35">Mar 2, 2019</time></p>
+
+<p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The […]
+<hr />
+####
+<a href="https://mynameismjp.wordpress.com/2018/03/06/breaking-down-barriers-part-1-whats-a-barrier/">Breaking Down Barriers &#8211; Part 1: What&#8217;s a Barrier? &#8211; The Danger Zone</a> - <time datetime="2019-03-05 13:44:28">Mar 2, 2019</time></p>
+
+<p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3863 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-04-01 23:29 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Breaking Down Barriers - Part 3: Multiple Command Processors</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Breaking Down Barriers - Part 1: What&#39;s a Barrier?</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>

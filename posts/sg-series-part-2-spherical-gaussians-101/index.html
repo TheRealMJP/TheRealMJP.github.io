@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="SG Series Part 2: Spherical Gaussians 101">
+<meta itemprop="description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
+
+
+<meta itemprop="datePublished" content="2016-10-10T07:08:02&#43;00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:08:02&#43;00:00" />
+<meta itemprop="wordCount" content="1847">
+
+
+
+<meta itemprop="keywords" content="Graphics," />
+<meta property="og:title" content="SG Series Part 2: Spherical Gaussians 101" />
+<meta property="og:description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/" />
+<meta property="article:published_time" content="2016-10-10T07:08:02+00:00" />
+<meta property="article:modified_time" content="2016-10-10T07:08:02+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SG Series Part 2: Spherical Gaussians 101"/>
+<meta name="twitter:description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>SG Series Part 2: Spherical Gaussians 101</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 10, 2016</span></div>
+				<h1>SG Series Part 2: Spherical Gaussians 101</h1>
+			</header>
+			<div class="content">
+				
+
+<p><em>This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
+
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
+
+<p>In the <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">previous article</a>, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location. In this article, I&rsquo;m going cover the basics of Spherical Gaussians, which are a type of spherical radial basis function (SRBF for short). The concepts introduced here will serve as the core set of tools for working with Spherical Gaussians, and in later articles I&rsquo;ll demonstrate how you can use those tools to form an alternative for approximating incoming radiance in pre-computed lightmaps or probes.</p>
+
+<p>I should point out that this article is still going to be somewhat high-level, in that it won&rsquo;t provide full derivations and background details for all formulas and operations. However it is my hope that the material here will be sufficient to gain a basic understanding of SG&rsquo;s, and also use them in practical scenarios.</p>
+
+<h2 id="what-s-a-spherical-gaussian">What&rsquo;s a Spherical Gaussian?<a href="#what-s-a-spherical-gaussian" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>A Spherical Gaussian, or &ldquo;SG&rdquo; for short, is essentially a <a href="https://en.wikipedia.org/wiki/Gaussian_function">Gaussian function</a>[1] that&rsquo;s defined on the surface of a sphere. If you&rsquo;re reading this, then you&rsquo;re probably already familar with how a Gaussian function works in 1D: you compute the distance from the center of the Gaussian, and use this distance as part of a base-e exponential. This produces the characteristic &ldquo;hump&rdquo; that you see when you graph it:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/06/gaussian_1d.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/gaussian_1d.png?w=300" alt="Gaussian_1D" /></a>
+<center><em>A Gaussian in 1D centered at x=0, with a height of 3</em></center></p>
+
+<p>You&rsquo;re probably also familiar with how it looks in 2D, since it&rsquo;s very commonly used in image processing as a filter kernel. It ends up looking like what you would get if you took the above graph and revolved it around its axis</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/06/gaussian_2d.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/gaussian_2d.png" alt="Gaussian_2D" /></a>
+<center><em>A Gaussian filter applied to a 2D image of a white dot, showing that the impulse response is effectively a Gaussian function in 2D</em></center></p>
+
+<p>A Spherical Gaussian still works the same way, except that it now lives on the surface of a sphere instead of on a line or a flat plane. If you&rsquo;re having trouble visualizing that, imagine if you took the above image and wrapped it around a sphere like wrapping paper. It ends up looking like this:</p>
+
+<p><a href="https://mynameismjp.files.wordpress.com/2016/06/sg_sphere.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/sg_sphere.png?w=300" alt="SG_Sphere" /></a>
+<center><em>A Spherical Gaussian visualized on the surface of a sphere</em></center></p>
+
+<p>Since an SG is defined on a sphere rather than a line or plane, it&rsquo;s parameterized differently than a normal Gaussian. A 1D Gaussian function always has the following form:</p>
+
+<p>$$ ae^{\frac{-(x - b)^{2}}{2c^{2}}} $$</p>
+
+<p>The part that we need to change in order to define the function on a sphere is the &ldquo;(x - b)&ldquo; term. This part of the function essentially makes the Gaussian a function of the cartesian distance between a given point and the center of the Gaussian, which can be trivially extended into 2D using the standard distance formula. To make this work on a sphere, we must instead make our Gaussian a function of the angle between two unit direction vectors. In practice we do this by making an SG a function of the <em>cosine</em> of the angle between two vectors, which can be efficiently computed using a dot product like so:</p>
+
+<p>$$ G(\mathbf{v};\mathbf{\mu},\lambda,a) = ae^{\lambda(\mathbf{\mu} \cdot \mathbf{v} - 1)} $$</p>
+
+<p>Just like a normal Gaussian, we have a few parameters that control the shape and location of the resulting lobe. First we have μ, which is the <em>axis</em>, or _direction_ of the lobe. It effectively controls where the lobe is located on the sphere, and always points towards the exact center of the lobe. Next we have λ, which is the <em>sharpness</em> of the lobe. As this value increases, the lobe will get &ldquo;skinnier&rdquo;, meaning that the result will fall off more quickly as you get further from the lobe axis. Finally we have <em>a</em>, which is the <em>amplitude</em> or <em>intensity</em> of the lobe. If you were to look at a <a href="https://www.desmos.com/calculator/rvtqpze0g7">polar graph of an SG</a>, it would correspond to the height of the lobe at its peak. The amplitude can be a scalar value, or for graphics applications we may choose to make it an RGB triplet in order to support varying intensities for different color channels. This all lends itself to a simple HLSL code definition:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">SG</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">Amplitude</span><span class="p">;</span>
+    <span class="n">float3</span> <span class="n">Axis</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">Sharpness</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Evaluating an SG is also easily expressible in HLSL. All we need is a normalized direction vector representing the point on the sphere where we&rsquo;d like to compute the value of the SG:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">EvaluateSG</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">sg</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">dir</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">cosAngle</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="n">sg</span><span class="p">.</span><span class="n">Axis</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">sg</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">sg</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="p">(</span><span class="n">cosAngle</span> <span class="o">-</span> <span class="mf">1.0f</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="why-spherical-gaussians">Why Spherical Gaussians?<a href="#why-spherical-gaussians" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Now that we know what a Spherical Gaussian is, what&rsquo;s so useful about them anyway? One pontential benefit is that they&rsquo;re fairly intuitive: it&rsquo;s not terribly hard to understand how the 3 parameters work, and how each parameter affects the resulting lobe. The other main draw is that they inherit a lot of useful properties of &ldquo;regular&rdquo; Gaussians, which makes them useful for graphics and other related applications. These properties have been explored and utilized in several research papers that were primarily aimed at achieving pre-computed radiance transfer (PRT) with both diffuse and specular material response. In particular,  the paper entitled &ldquo;<a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a>[2]&rdquo; by Wang et al. was our main inspiration for pursuing SG&rsquo;s at RAD.</p>
+
+<h2 id="products">Products<a href="#products" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>So what are these useful Gaussian properties that we can exploit? For starters, taking the product of 2 Gaussians functions produces another Gaussian. For an SG, this is equivalent to visiting every point on the sphere, evaluating 2 different SG&rsquo;s, and multiplying the two results. Since it&rsquo;s an operation that takes 2 SG&rsquo;s and produces another SG, it is sometimes referred to as a &ldquo;vector&rdquo; product. It&rsquo;s defined as the following:</p>
+
+<p>$$ G_{1}(\mathbf{v})G_{2}(\mathbf{v}) = G(\mathbf{v};\frac{\mu_{m}}{||\mu_{m}||},a_{1}a_{2}e^{\lambda_{m}(||\mu_{m}|| - 1)}) $$</p>
+
+<p>$$ \lambda_{m} = \lambda_{1} + \lambda_{2} $$</p>
+
+<p>$$ \mu_{m} = \frac{\lambda_{1}\mu_{1} + \lambda_{2}\mu_{2}}{\lambda_{1} + \lambda_{2}} $$</p>
+
+<p>In HLSL code, it looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">SG</span> <span class="nf">SGProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">SG</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">um</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="n">x</span><span class="p">.</span><span class="n">Axis</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">Axis</span><span class="p">)</span> <span class="o">/</span>
+    <span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">umLength</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">um</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">lm</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+
+    <span class="n">SG</span> <span class="n">res</span><span class="p">;</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">um</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0f</span> <span class="o">/</span> <span class="n">umLength</span><span class="p">);</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="n">lm</span> <span class="o">*</span> <span class="n">umLength</span><span class="p">;</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span>
+    <span class="n">exp</span><span class="p">(</span><span class="n">lm</span> <span class="o">*</span> <span class="p">(</span><span class="n">umLength</span> <span class="o">-</span> <span class="mf">1.0f</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="integrals">Integrals<a href="#integrals" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>Gaussians have another really nice property in that their integrals have a closed-form solution, which is known as the <a href="https://en.wikipedia.org/wiki/Error_function">error function</a>[3]. The property also extends to SG&rsquo;s, where we can compute the integral of an SG over the entire sphere:</p>
+
+<p>$$ \int_{\Omega} G(\mathbf{v})d\mathbf{v} = 2\pi\frac{a}{\lambda}(1 - e^{-2\lambda}) $$</p>
+
+<p>Computing an integral will essentially tell us the total &ldquo;energy&rdquo; of an SG, which can be useful for lighting calculations. It can also be useful for <em>normalizing</em> an SG, which produces an SG that integrates to 1. Such a normalized SG is suitable for representing a probability distribution, such as an NDF. In fact, a normalized SG is actually equivalent to a <a href="https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">von Mises-Fisher distribution</a>[4] in 3D!</p>
+
+<p>An SG integral is actually very cheap to compute&hellip;or at least it would be if we removed the exponential term. It turns out that the \( (1 - e^{-2\lambda}) \) term actually approaches 1 very quickly as the SG&rsquo;s sharpness increases, which means we can potentially drop it with little error as long as we know that the sharpness is high enough. Here&rsquo;s what a graph of \( (1 - e^{-2\lambda}) \) looks like for increasing sharpness:</p>
+
+<p><a href="https://www.desmos.com/calculator/qqfeojmknn"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_integral_expterm.png?w=300" alt="SG_Integral_ExpTerm" /></a>
+<center><em>A graph of the exponential term in computing the integral of an SG over a sphere, which approaches 1 as the sharpness increases. The X-axis is sharpness, and the Y-axis is the value of \( (1 - e^{-2\lambda}) \).</em></center></p>
+
+<p>This all lends itself naturally to HLSL implementations for accurate and approximate versions of an SG integral:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIntegral</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">sg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">expTerm</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0f</span> <span class="o">*</span> <span class="n">sg</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">sg</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">/</span> <span class="n">sg</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">)</span> <span class="o">*</span> <span class="n">expTerm</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">float3</span> <span class="nf">ApproximateSGIntegral</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">sg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">sg</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">/</span> <span class="n">sg</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="inner-product">Inner Product<a href="#inner-product" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>If we were to use our SG integral formula to compute the integral of the product of two SG&rsquo;s, we can compute what&rsquo;s known as the <em>inner product</em>, or _dot product_ of those SG&rsquo;s. The operation is usually defined like this:</p>
+
+<p>$$ \int_{\Omega} G_{1}(\mathbf{v}) G_{2}(\mathbf{v}) d\mathbf{v} = \frac{4 \pi a_{0} a_{1}}{e^{\lambda_{m}}} \frac{sinh(||\mu_{m}||)}{||\mu_{m}||} $$</p>
+
+<p>However we can avoid numerical precision issues by using an alternate arrangement:</p>
+
+<p>$$ \int_{\Omega} G_{1}(\mathbf{v}) G_{2}(\mathbf{v}) d\mathbf{v} = 2 \pi a_{0} a_{1}\frac{e^{||\mu_{m}|| - \lambda_{m}} - e^{-||\mu_{m}|| - \lambda_{m}}}{||\mu_{m}||} $$</p>
+
+<p>&hellip;which looks like this in HLSL:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">SG</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">umLength</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="n">x</span><span class="p">.</span><span class="n">Axis</span> <span class="o">+</span>
+    <span class="n">y</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">Axis</span><span class="p">);</span>
+    <span class="n">float3</span> <span class="n">expo</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">umLength</span> <span class="o">-</span> <span class="n">x</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">-</span> <span class="n">y</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">)</span> <span class="o">*</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">other</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0f</span> <span class="o">*</span> <span class="n">umLength</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">2.0f</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="n">expo</span> <span class="o">*</span> <span class="n">other</span><span class="p">)</span> <span class="o">/</span> <span class="n">umLength</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="treshold">Treshold<a href="#treshold" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>SG&rsquo;s have what&rsquo;s known as &ldquo;compact-ε&rdquo; support, which means that it&rsquo;s possible to determine an angle θ such that all points within θ radians of the SG&rsquo;s axis will have a value greater than ε. This property is potentially more useful if we flip it around so that we calculate a sharpness λ that results in a given θ for a particular value of ε:</p>
+
+<p>$$ ae^{\lambda(cos\theta - 1)} = \epsilon $$
+$$ \lambda = \frac{ln(\epsilon) - ln(a)}{cos\theta - 1} $$</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="nf">SGSharpnessFromThreshold</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">amplitude</span><span class="p">,</span>
+                               <span class="n">in</span> <span class="kt">float</span> <span class="n">epsilon</span><span class="p">,</span>
+                               <span class="n">in</span> <span class="kt">float</span> <span class="n">cosTheta</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">amplitude</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">cosTheta</span> <span class="o">-</span> <span class="mf">1.0f</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="rotation">Rotation<a href="#rotation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>One last operation I&rsquo;ll discuss is rotation. Rotating an SG is trivial: all you need to do is apply your rotation transform to the SG&rsquo;s axis vector and you have a rotated SG! You can apply the transform using a matrix, a quaternion, or any other means you might have for rotating a vector. This is a welcome change from SH, which requires a very complex transform once you go above L1.</p>
+
+<p>[1] <a href="https://en.wikipedia.org/wiki/Gaussian_function">Gaussian Function</a><br>
+[2] <a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a><br>
+[3] <a href="https://en.wikipedia.org/wiki/Error_function">Error Function</a><br>
+[4] <a href="https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">von-Mises Fisher Distribtion</a><br></p>
+
+<hr />
+
+<h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>###
+<a href="http://gravatar.com/mriegger" title="mikeriegger@gmail.com">Mike R.</a> - <time datetime="2017-11-13 23:30:48">Nov 1, 2017</time></p>
+
+<p>Just wanted say thanks for the awesome explanations, you make everything so clear and easy to understand.
+<hr />
+###
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-10-12 21:55:16">Oct 3, 2016</time></p>
+
+<p>Yes indeed, that was an error on my part. Thank you for pointing that out!
+<hr />
+###
+[ChenA]( &ldquo;chena.invalid@gmail.com&rdquo;) - <time datetime="2016-10-11 08:04:42">Oct 2, 2016</time></p>
+
+<p>\( G_{1}(\mathbf{v})G_{2}(\mathbf{v}) = G(\mathbf{v};\frac{\mu_{m}}{||\mu_{m}||},a_{1}a_{2}e^{\lambda_{m}(||\mu_{m}|| - 1)}) \) is it lost the sharpness λm∥pm∥? and <code>SG SGProduct(in SG x, in SG y) { float3 um = (x.Sharpness * x.Axis + y.Sharpness + y.Axis) / (x.Sharpness + y.Sharpness);</code> is this should be: <code>float3 um = (x.Sharpness * x.Axis + y.Sharpness * y.Axis) / (x.Sharpness + y.Sharpness);</code>
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1847 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:08 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>SG Series Part 3: Diffuse Lighting From an SG Light Source</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>SG Series Part 1: A Brief (and Incomplete) History of Baked Lighting Representations</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+</body>
+
+</html>

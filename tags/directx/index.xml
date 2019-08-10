@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DirectX on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/directx/</link>
+    <description>Recent content in DirectX on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 11 Sep 2013 07:45:40 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/directx/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A Sampling of Shadow Techniques</title>
+      <link>https://therealmjp.github.io/posts/shadow-maps/</link>
+      <pubDate>Wed, 11 Sep 2013 07:45:40 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/shadow-maps/</guid>
+      <description>A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&amp;rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison.</description>
+    </item>
+    
+    <item>
+      <title>DX11.2 Tiled Resources</title>
+      <link>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</link>
+      <pubDate>Sat, 07 Sep 2013 06:21:28 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</guid>
+      <description>Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&amp;rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
+ TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
+    </item>
+    
+    <item>
+      <title>HLSL User Defined Language for Notepad&#43;&#43;</title>
+      <link>https://therealmjp.github.io/posts/hlsl-udl/</link>
+      <pubDate>Mon, 05 Nov 2012 07:09:39 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/hlsl-udl/</guid>
+      <description>When it comes to writing shaders, Notepad++ is currently my editor of choice. The most recent release of Notepad++ added version 2.0 of their User Defined Language (UDL) system, which adds quite a few improvements. I&amp;rsquo;ve been using an HLSL UDL file that I downloaded from somewhere else for a while now, and I decided to upgrade it to the 2.0 format and also make it work better for SM5.</description>
+    </item>
+    
+    <item>
+      <title>A quick note on shader compilers</title>
+      <link>https://therealmjp.github.io/posts/a-quick-note-on-shader-compilers/</link>
+      <pubDate>Sat, 14 Apr 2012 04:56:04 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/a-quick-note-on-shader-compilers/</guid>
+      <description>This morning I was wrestling with a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&amp;rsquo;d try it out with the new version of the compiler that comes with the Windows 8 SDK. I wasn&amp;rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds!</description>
+    </item>
+    
+    <item>
+      <title>GPU Profiling in DX11 with Queries</title>
+      <link>https://therealmjp.github.io/posts/profiling-in-dx11-with-queries/</link>
+      <pubDate>Thu, 13 Oct 2011 08:59:37 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/profiling-in-dx11-with-queries/</guid>
+      <description>For profiling GPU performance on the PC, there aren&amp;rsquo;t too many options. AMD&amp;rsquo;s GPU PerfStudio and Nvidia&amp;rsquo;s Parallel Nsight can be pretty handy due to their ability to query hardware performance counters and display the data, but they only work on each vendor&amp;rsquo;s respective hardware. You also might want to integrate some GPU performance numbers into your own internal profiling systems, in which case those tools aren&amp;rsquo;t going to be of much use.</description>
+    </item>
+    
+    <item>
+      <title>Average luminance calculation using a compute shader</title>
+      <link>https://therealmjp.github.io/posts/average-luminance-compute-shader/</link>
+      <pubDate>Wed, 10 Aug 2011 09:31:03 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/average-luminance-compute-shader/</guid>
+      <description>A common part of most HDR rendering pipelines is some form of average luminance calculation. Typically it&amp;rsquo;s used to implement Reinhard&amp;rsquo;s method of image calibration, which is to map the geometric mean of luminance (log average) to some &amp;ldquo;key value&amp;rdquo;. This, combined with some time-based adaptation, allows for a reasonable approximation of auto-exposure or human eye adaptation.
+In the old days of DX9, the average luminance calculation was usually done repeatedly downscaling a luminance texture as if generating mipmaps.</description>
+    </item>
+    
+    <item>
+      <title>I am officially a published author</title>
+      <link>https://therealmjp.github.io/posts/i-am-officially-a-published-author/</link>
+      <pubDate>Fri, 05 Aug 2011 06:04:11 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/i-am-officially-a-published-author/</guid>
+      <description>I recently collaborated with fellow DX MVP&amp;rsquo;s Jason Zink and Jack Hoxley to write a D3D11-focused book entitled Practical Rendering and Computation with Direct3D 11, which just came up for sale on Amazon today. I wrote the HLSL and Deferred Rendering chapters in particular. All of the code samples are up on the Hieroglyph 3 CodePlex site, if you want to get an idea of the content. Or you can just take my word for it that it&amp;rsquo;s awesome.</description>
+    </item>
+    
+    <item>
+      <title>Bokeh II: The Sequel</title>
+      <link>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</link>
+      <pubDate>Wed, 20 Apr 2011 06:59:20 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</guid>
+      <description>After I finished the bokeh sample, there were a few remaining issues that I wanted to tackle before I was ready to call it &amp;ldquo;totally awesome&amp;rdquo; and move on with my life.
+Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at &amp;frac14; resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
+    </item>
+    
+    <item>
+      <title>How To Fake Bokeh (And Make It Look Pretty Good)</title>
+      <link>https://therealmjp.github.io/posts/bokeh/</link>
+      <pubDate>Mon, 28 Feb 2011 08:18:35 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/bokeh/</guid>
+      <description>Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&amp;rsquo;ve started noticing, I can&amp;rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&amp;rsquo;t have bokeh, it just looks wrong. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&amp;rsquo;t look right at all (especially if you don&amp;rsquo;t do it in HDR).</description>
+    </item>
+    
+    <item>
+      <title>Radiosity, DX11 Style</title>
+      <link>https://therealmjp.github.io/posts/radiosity-dx11-style/</link>
+      <pubDate>Mon, 31 Jan 2011 08:08:09 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/radiosity-dx11-style/</guid>
+      <description>Radiosity isn&amp;rsquo;t exactly new. According to Wikipedia it&amp;rsquo;s been used for rendering since the early 80&amp;rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point.</description>
+    </item>
+    
+    <item>
+      <title>Conservative Depth Output (and Other Lesser-Known D3D11 Features)</title>
+      <link>https://therealmjp.github.io/posts/d3d11-features/</link>
+      <pubDate>Mon, 15 Nov 2010 02:24:48 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/d3d11-features/</guid>
+      <description>D3D11 came with a whole bunch of new big-ticket features that received plenty of attention and publicity. Things like tessellation, compute shaders, and multithreaded command submission have the subject of many presentations, discussion, and sample apps. However D3D11 also came with a few other features that allow more &amp;ldquo;traditional&amp;rdquo; rendering approaches to benefit from the increased programmability of graphics hardware. Unfortunately most of them have gone relatively unnoticed, which isn&amp;rsquo;t surprising when you consider that most of them have little or no documentation, (much like some of the cool stuff that came in D3D10.</description>
+    </item>
+    
+    <item>
+      <title>Deferred MSAA</title>
+      <link>https://therealmjp.github.io/posts/deferred-msaa/</link>
+      <pubDate>Mon, 16 Aug 2010 08:57:37 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-msaa/</guid>
+      <description>A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&amp;rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&amp;rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.</description>
+    </item>
+    
+    <item>
+      <title>MSAA Sample Pattern Detector</title>
+      <link>https://therealmjp.github.io/posts/msaa-sample-pattern-detector/</link>
+      <pubDate>Wed, 07 Jul 2010 08:42:23 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/msaa-sample-pattern-detector/</guid>
+      <description>Recently I&amp;rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&amp;rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&amp;rsquo;m still stuck on a 10-level GPU so that wasn&amp;rsquo;t an option.</description>
+    </item>
+    
+    <item>
+      <title>A Closer Look At Tone Mapping</title>
+      <link>https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/</link>
+      <pubDate>Fri, 30 Apr 2010 08:47:17 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/</guid>
+      <description>A few months ago my coworker showed me some slides from a presentation by tri-Ace regarding their game &amp;ldquo;Star Ocean 4&amp;rdquo;. The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors.</description>
+    </item>
+    
+    <item>
+      <title>Attack of the depth buffer</title>
+      <link>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</link>
+      <pubDate>Tue, 23 Mar 2010 07:42:36 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</guid>
+      <description>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel. This can be a powerful performance optimization, since the alternative is to output position into a &amp;ldquo;fat&amp;rdquo; floating-point buffer.</description>
+    </item>
+    
+    <item>
+      <title>D3D Performance and Debugging Tools Round-Up: PerfHUD</title>
+      <link>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</link>
+      <pubDate>Sun, 07 Mar 2010 05:42:44 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</guid>
+      <description>Officially, Nvidia&amp;rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&amp;rsquo;s. Unofficially, it&amp;rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&amp;rsquo;s a performance issue on the PC. Here&amp;rsquo;s some of the things I like to do with it (warning, it&amp;rsquo;s a long list!</description>
+    </item>
+    
+    <item>
+      <title>D3D Performance and Debugging Tools Round-Up: PIX</title>
+      <link>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</link>
+      <pubDate>Mon, 15 Feb 2010 05:17:18 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</guid>
+      <description>So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&amp;rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent.</description>
+    </item>
+    
+    <item>
+      <title>New Series: D3D Performance and Debugging Tools Round-Up</title>
+      <link>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</link>
+      <pubDate>Mon, 15 Feb 2010 05:16:17 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</guid>
+      <description>Recently I&amp;rsquo;ve been spending a lot of time with the various performance and debugging utilities available for Direct3D, and I thought it might be useful to give a quick overview of what&amp;rsquo;s out there. I&amp;rsquo;m sure most people who do a lot of Direct3D/XNA work are aware of these tools, but probably aren&amp;rsquo;t familiar with all of the really cool things you can do with them.
+What I&amp;rsquo;m going to do is run through each tool one at a time, and share some of the common use cases and show some screenshots of features I think are neat.</description>
+    </item>
+    
+    <item>
+      <title>Inferred Rendering</title>
+      <link>https://therealmjp.github.io/posts/inferred-rendering/</link>
+      <pubDate>Sun, 10 Jan 2010 17:30:10 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/inferred-rendering/</guid>
+      <description>So like I said in my last post, I&amp;rsquo;ve been doing some research into Inferred Rendering. If you&amp;rsquo;re not familiar with the technique, Scott Kircher has the original paper and presentation materials hosted on his website. The main topic of the paper is what they call &amp;ldquo;Discontinuity Sensitive Filtering&amp;rdquo;, or &amp;ldquo;DSF&amp;rdquo; for short. Basically it&amp;rsquo;s standard 2x2 bilinear filtering, except in addition to sampling the texture you&amp;rsquo;re interested in you also sample what they call a a &amp;ldquo;DSF buffer&amp;rdquo; containing depth, an instance ID (semi-unique for each instance rendering on-screen), and a normal ID (a semi-unique value identifying areas where the normals are continuous).</description>
+    </item>
+    
+    <item>
+      <title>Correcting XNA&#39;s Gamma Correction</title>
+      <link>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</link>
+      <pubDate>Thu, 31 Dec 2009 22:31:58 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</guid>
+      <description>One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
+Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.</description>
+    </item>
+    
+    <item>
+      <title>Two Samples For The Price Of One</title>
+      <link>https://therealmjp.github.io/posts/two-samples/</link>
+      <pubDate>Sun, 06 Dec 2009 04:22:29 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/two-samples/</guid>
+      <description>Today I have two XNA samples fresh out of the oven: a Motion Blur Sample, and Depth Of Field Sample. I figure all of the kids these days wanna add fancy post-processing tricks to their games, right? The motion blur sample shows you how to do camera motion blur using a depth buffer, or full object motion blur using a velocity buffer. The depth of field sample shows you how to do a standard blur-based DOF, a slightly-smarter blur-based DOF that doesn&amp;rsquo;t blur across edges, and the somewhat more physically accurate disc blur approach.</description>
+    </item>
+    
+    <item>
+      <title>New Tutorial: Using PIX With XNA</title>
+      <link>https://therealmjp.github.io/posts/pix-with-xna/</link>
+      <pubDate>Fri, 16 Oct 2009 15:49:13 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/pix-with-xna/</guid>
+      <description>Ladies and gentlemen, I present you with the most epic of tutorials: Using PIX With XNA. This 37-page monster teaches PIX for the XNA programmer, and includes an in-depth explanation of the XNA/D3D9 relationship as well as 6 excercises that show you the how to solve common problems (full source code and XNA 3.1 projects included). I sure hope somebody finds this thing useful&amp;hellip;it took me forever to write this thing.</description>
+    </item>
+    
+    <item>
+      <title>Scintillating Snippets: Storing Normals Using Spherical Coordinates</title>
+      <link>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</link>
+      <pubDate>Wed, 17 Jun 2009 16:36:06 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</guid>
+      <description>Update: n00body posted this link in the comments, which is way more in-depth than my post. Check it out!
+If you&amp;rsquo;ve ever implemented a deferred renderer, you know that one of the important points is keeping your G-Buffer small enough as to be reasonable in terms of bandwidth and your number of render targets. Thanks to that constant struggle between good and evil, people have come up with some reasonable clever approaches towards packing necessary attributes in your G-Buffer.</description>
+    </item>
+    
+    <item>
+      <title>Reconstructing Position From Depth, Continued</title>
+      <link>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</link>
+      <pubDate>Tue, 05 May 2009 20:09:33 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</guid>
+      <description>Picking up where I left off here&amp;hellip;
+As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &amp;ldquo;camera world matrix&amp;rdquo;, which is a matrix representing the camera&amp;rsquo;s position and orientation in world-space.</description>
+    </item>
+    
+    <item>
+      <title>There&#39;s More Than One Way To Defer A Renderer</title>
+      <link>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</link>
+      <pubDate>Fri, 27 Mar 2009 19:21:49 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</guid>
+      <description>While the idea of deferred shading/deferred rendering isn&amp;rsquo;t quite as hot as it was year or two ago (OMG, Killzone 2 uses deferred rendering!), it&amp;rsquo;s still a cool idea that gets discussed rather often. People generally tend to be attracted to way a &amp;ldquo;pure&amp;rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene. However as anyone who&amp;rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.</description>
+    </item>
+    
+    <item>
+      <title>Scintillating Snippets: Reconstructing Position From Depth</title>
+      <link>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</link>
+      <pubDate>Tue, 10 Mar 2009 19:06:31 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</guid>
+      <description>There are times I wish I&amp;rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&amp;rsquo;s that I still get about it. Wouldn&amp;rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&amp;rsquo;re right, it would be!
+First things first: what am I talking about? I&amp;rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.</description>
+    </item>
+    
+    <item>
+      <title>Deferred Cascaded Shadow Maps</title>
+      <link>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</link>
+      <pubDate>Wed, 18 Feb 2009 04:22:32 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</guid>
+      <description>For my next sample I was planning on extending my deferred shadow maps sample to implement cascaded shadow maps. I got an email asking about how to make the sample look decent with large viewing distances which is exactly the problem CSM&amp;rsquo;s solve. So I decided to bump up my plans a little early and get the code up and running. It&amp;rsquo;ll be a while before I get the write-up finished, but until then feel free to play around with code (PC and 360 projects included).</description>
+    </item>
+    
+    <item>
+      <title>Deferred Shadow Maps Sample</title>
+      <link>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</link>
+      <pubDate>Tue, 20 Jan 2009 01:24:19 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
+      <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
+ Comments: sam - Feb 4, 2009
+This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+    </item>
+    
+    <item>
+      <title>Teach Your Effects A New Trick</title>
+      <link>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</link>
+      <pubDate>Mon, 19 Jan 2009 19:51:51 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</guid>
+      <description>The Effects Framework is a pretty damn awesome tool. However I&amp;rsquo;m afraid that&amp;rsquo;s not totally obvious to a lot of newbies, who either just don&amp;rsquo;t what it can do or haven&amp;rsquo;t been exposed to some of the situations where Effect&amp;rsquo;s can really come in handy.
+One neat thing Effect&amp;rsquo;s can do that isn&amp;rsquo;t obvious from the documentation or samples is auto-generate variants of shaders for you based on the value of uniform parameters.</description>
+    </item>
+    
+  </channel>
+</rss>

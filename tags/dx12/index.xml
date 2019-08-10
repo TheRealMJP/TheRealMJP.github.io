@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DX12 on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/dx12/</link>
+    <description>Recent content in DX12 on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Dec 2018 02:01:27 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/dx12/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</link>
+      <pubDate>Mon, 10 Dec 2018 02:01:27 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</guid>
+      <description>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
+    </item>
+    
+    <item>
+      <title>Breaking Down Barriers – Part 5: Back To The Real World</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</link>
+      <pubDate>Sun, 09 Sep 2018 00:48:18 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</guid>
+      <description>This is Part 5 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
+    </item>
+    
+    <item>
+      <title>Breaking Down Barriers - Part 4: GPU Preemption</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</link>
+      <pubDate>Wed, 04 Jul 2018 00:57:43 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</guid>
+      <description>This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU.</description>
+    </item>
+    
+    <item>
+      <title>Breaking Down Barriers - Part 3: Multiple Command Processors</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</link>
+      <pubDate>Mon, 18 Jun 2018 02:14:52 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</guid>
+      <description>This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</description>
+    </item>
+    
+    <item>
+      <title>Breaking Down Barriers - Part 2: Synchronizing GPU Threads</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</link>
+      <pubDate>Mon, 02 Apr 2018 06:29:17 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</guid>
+      <description>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU.</description>
+    </item>
+    
+    <item>
+      <title>Breaking Down Barriers - Part 1: What&#39;s a Barrier?</title>
+      <link>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</link>
+      <pubDate>Tue, 06 Mar 2018 09:21:34 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</guid>
+      <description>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
+    </item>
+    
+  </channel>
+</rss>

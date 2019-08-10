@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Xbox 360 on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/xbox-360/</link>
+    <description>Recent content in Xbox 360 on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 31 Dec 2009 22:31:58 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/xbox-360/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Correcting XNA&#39;s Gamma Correction</title>
+      <link>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</link>
+      <pubDate>Thu, 31 Dec 2009 22:31:58 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</guid>
+      <description>One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
+Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.</description>
+    </item>
+    
+    <item>
+      <title>What&#39;s good on the menu, waiter?</title>
+      <link>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</link>
+      <pubDate>Wed, 20 May 2009 16:28:39 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</guid>
+      <description>I remember reading someone say on gamedev.net that at some point everyone tries to write their own UI system, and usually gets it wrong. Apparently he&amp;rsquo;s right (or at least about the first part), because I&amp;rsquo;ve gone ahead and written a menu/UI system. While it initially started out as part of the engine/framework I&amp;rsquo;ve been working on for my game, as I worked on it I decided it might be better off if I decoupled it from the rest of the engine components and made it a standalone library/editor package so that other people could make use of it.</description>
+    </item>
+    
+    <item>
+      <title>There&#39;s More Than One Way To Defer A Renderer</title>
+      <link>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</link>
+      <pubDate>Fri, 27 Mar 2009 19:21:49 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</guid>
+      <description>While the idea of deferred shading/deferred rendering isn&amp;rsquo;t quite as hot as it was year or two ago (OMG, Killzone 2 uses deferred rendering!), it&amp;rsquo;s still a cool idea that gets discussed rather often. People generally tend to be attracted to way a &amp;ldquo;pure&amp;rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene. However as anyone who&amp;rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.</description>
+    </item>
+    
+    <item>
+      <title>Deferred Cascaded Shadow Maps</title>
+      <link>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</link>
+      <pubDate>Wed, 18 Feb 2009 04:22:32 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</guid>
+      <description>For my next sample I was planning on extending my deferred shadow maps sample to implement cascaded shadow maps. I got an email asking about how to make the sample look decent with large viewing distances which is exactly the problem CSM&amp;rsquo;s solve. So I decided to bump up my plans a little early and get the code up and running. It&amp;rsquo;ll be a while before I get the write-up finished, but until then feel free to play around with code (PC and 360 projects included).</description>
+    </item>
+    
+    <item>
+      <title>Profiling Events vs. Virtual Functions On The 360</title>
+      <link>https://therealmjp.github.io/posts/profiling-events/</link>
+      <pubDate>Fri, 23 Jan 2009 17:31:19 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/profiling-events/</guid>
+      <description>Over the past week or so I&amp;rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible. One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something. I narrowed it down to two options:
+ notify owners via the ICollisionOwner interface I was using  OR</description>
+    </item>
+    
+    <item>
+      <title>Deferred Shadow Maps Sample</title>
+      <link>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</link>
+      <pubDate>Tue, 20 Jan 2009 01:24:19 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
+      <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
+ Comments: sam - Feb 4, 2009
+This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+    </item>
+    
+    <item>
+      <title>LogLuv Encoding for HDR</title>
+      <link>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</link>
+      <pubDate>Fri, 12 Dec 2008 17:00:59 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</guid>
+      <description>Okay so this marks the third time I&amp;rsquo;ve posted this blog entry somewhere. What can I say&amp;hellip;I like it! I also think it&amp;rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&amp;rsquo;m hoping some people will stumble upon it.
+Designing an effective and performant HDR implementation for my game&amp;rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.</description>
+    </item>
+    
+  </channel>
+</rss>

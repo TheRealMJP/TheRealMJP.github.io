@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="A Closer Look At Tone Mapping">
+<meta itemprop="description" content="A few months ago my coworker showed me some slides from a presentation by tri-Ace regarding their game &ldquo;Star Ocean 4&rdquo;. The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors.">
+
+
+<meta itemprop="datePublished" content="2010-04-30T08:47:17&#43;00:00" />
+<meta itemprop="dateModified" content="2010-04-30T08:47:17&#43;00:00" />
+<meta itemprop="wordCount" content="3385">
+
+
+
+<meta itemprop="keywords" content="DirectX,DirectX 11,Programming," />
+<meta property="og:title" content="A Closer Look At Tone Mapping" />
+<meta property="og:description" content="A few months ago my coworker showed me some slides from a presentation by tri-Ace regarding their game &ldquo;Star Ocean 4&rdquo;. The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/" />
+<meta property="article:published_time" content="2010-04-30T08:47:17+00:00" />
+<meta property="article:modified_time" content="2010-04-30T08:47:17+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A Closer Look At Tone Mapping"/>
+<meta name="twitter:description" content="A few months ago my coworker showed me some slides from a presentation by tri-Ace regarding their game &ldquo;Star Ocean 4&rdquo;. The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>A Closer Look At Tone Mapping</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.568c54a56780af2a70c45272522247710b69dbfc080b315211fb98381e3796f8.css" integrity="sha256-VoxUpWeArypwxFJyUiJHcQtp2/wICzFSEfuYOB43lvg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About Me</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About Me</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 30, 2010</span></div>
+				<h1>A Closer Look At Tone Mapping</h1>
+			</header>
+			<div class="content">
+				
+
+<p>A few months ago my coworker showed me some slides from a <a href="http://research.tri-ace.com/Data/SO4_flexible_shader_managment_and_postprocessing.ppt">presentation</a> by tri-Ace regarding their game &ldquo;Star Ocean 4&rdquo;.  The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors. This not only produced some really nice results (the screenshots in the slides speak for themselves), but it fit very nicely into their &ldquo;virtual camera&rdquo; approach towards post processing.  While I was intrigued by their approach, it wasn&rsquo;t until I read through <a href="http://johnhable.com/">John Hable</a>&rsquo;s recent <a href="http://www.gdcvault.com/play/1012459/Uncharted_2__HDR_Lighting">presentation</a> on gamma and HDR lighting that I decided to start doing my own research.  His presentation gave an overview of Uncharted 2&rsquo;s approach to tone mapping, which (like Star Ocean 4) eschews Reinhard&rsquo;s operator in favor of mimicking a filmic response curve. Once again the images in the slides speak for themselves, and they intrigued me enough to make me dig deeper.</p>
+
+<p>Like always, I started off by making a test application that would let me try out different approaches and observe their results. Initially my app started out with approach taken by pretty much <a href="http://developer.download.nvidia.com/SDK/10.5/direct3d/samples.html#HDRRendering">every</a> <a href="http://msdn.microsoft.com/en-us/library/ee417769%28VS.85%29.aspx">other</a> <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/xna-hdr/">HDR sample</a> out there: render a model and a skybox to a floating-point texture, calculate the log luminance of the scene and repeatedly downsample to determine a single log-average luminance value, and then use that value in Reinhard&rsquo;s tone mapping equations to scale pixel values down to the visible range (if you&rsquo;re not familar, this &ldquo;standard&rdquo; approach is outlined in detail <a href="http://wiki.gamedev.net/index.php/D3DBook:High-Dynamic_Range_Rendering">here</a>). At this point I thought I would just copy over Hable&rsquo;s equations and I would have something nice&hellip;but after some ugly results I realized I needed to take a step back and rethink the process a bit. After some experimentation and  a bit of reading through <a href="http://www.amazon.com/High-Dynamic-Range-Imaging-Acquisition/dp/0125852630">High Dynamic Range Imaging</a>, I started to think of the whole process in terms of a more generalized approach:</p>
+
+<p>1. Run a (simplified) light transport simulation, and determine the amount of incoming light energy for each pixel. This is done by rendering all objects in the scene, and determining the energy reflected off an object&rsquo;s surface towards the camera/eye. Ideally for this step we would use radiometric units (radiance/irradiance) to represent light intensity and we would also maintain the distribution of that energy across the entire visible spectrum, but to actually make this feasible on graphics hardware we run the simulation for 3 discrete wavelengths (red, green, and blue).  In my app, this step is performed by rendering a single mesh and sampling an HDR environment map to determine the amount of light reflected off the surface.  For a background the environment is sampled directly by a skybox.</p>
+
+<p>2. Scale the incoming light to determine the amount that would hit the film/sensor/retina. This step is referred to as &ldquo;calibration.&ldquo;  One possible way to implement this stuff is to model a camera, where the total amount of light that hits the film is affected by the focal length of the lens, the aperture size(f-number), and the shutter speed. Together they can be manipulated to scale range of incoming light intensities such that the important parts of the scene are neither under-exposed nor over-exposed. In my app I kept things simple, and exposed three different methods for calibration:</p>
+
+<ul>
+<li><p>Manual exposure: a slider lets you choose values between -10 to 10. The HDR pixel value is then scaled by 2^exposure.</p></li>
+
+<li><p>Geometric mean of luminance: this is pretty much the exact approach outlined in Reinhard&rsquo;s paper, where the geometric mean (log average) of scene luminance is calculated and used to scale the luminance of each pixel. With this approach a &ldquo;key value&rdquo; is user-controlled, and is meant to be chosen based on whether the scene is &ldquo;high-key&rdquo; (bright, low contrast) or &ldquo;low-key&rdquo; (dark, high contrast).</p></li>
+
+<li><p>Geometric mean, auto key value: Same as above, except that the  key value is automatically chosen using Equation 10 from <a href="http://wiki.gamedev.net/index.php/D3DBook:High-Dynamic_Range_Rendering">this page</a>.</p></li>
+</ul>
+
+<p>To calculate the geometric mean, I simply calculate the log of luminance and write the results to a 1024x1024 texture. I then call GenerateMips to automatically generate the full mip-map chain. At that point I can apply exp() to the last mip level to get a full log-average of the scene. One extra trick I added to my app was a slider that let you choose the mip level that would be sampled when scaling the pixel intensities. Doing this allows you to essentially use local averages rather than a global average, which lets you have different exposure values for different parts of the image.  In my app, there&rsquo;s a display below the tone curve that shows the average luminance value being used for each part of the image.</p>
+
+<p>3. Map calibrated light intensities to display values by applying a tone curve to either RGB values or luminance values. This curve can have a significant impact on not only which details are visible in the final image, but also the overall visual characteristics. Because of this I find it difficult selecting the right curve for a particular scene&hellip;in some cases you can pretty objectively determine that one curve is better than another at making details visible, but at the same time some curves will subjectively look better to my eyes due to their resulting  levels of contrast and saturation.  My app offers a variety of curves to choose from, including:</p>
+
+<ul>
+<li>Linear</li>
+<li>Logarithmic</li>
+<li>Exponential</li>
+<li><a href="http://www.mpi-inf.mpg.de/resources/tmo/logmap/logmap.pdf">Drago&rsquo;s Adaptive Logarithmic</a></li>
+<li><a href="http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf">Reinhard</a> (Equation 3)</li>
+<li><a href="http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf">Modified Reinhard</a> (Equation 4)</li>
+<li>Filmic (Haarm-Pieter Duiker&rsquo;s curve, using the ALU-only version from Hable&rsquo;s presentation)</li>
+<li>Uncharted 2 (customizable filmic curve)</li>
+</ul>
+
+<p>Now for the exciting part: pictures! For this first set of shots, I used an an HDR environment map taken from the Ennis House. I liked this map because it gave a great test case for detail preservation: a mostly-dark room, with an extremely bright window through which a landscape is visible. For reference, this is what the shot looks like with no exposure or tone mapping applied:</p>
+
+<p><img src="https://mynameismjp.files.wordpress.com/2010/04/ennis-manual.png" alt="" /></p>
+
+<p>Here&rsquo;s what the shot looks like for each tone mapping curve, with &ldquo;auto-exposure&rdquo; applied using a global geometric mean:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-2.png?w=300" alt="" /></a><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-5.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-5.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-6.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-6.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-7.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-7.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-8.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-8.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-1.png?w=300" alt="" /></a></p>
+
+<p>Both Drago and Reinhard look pretty decent in this case, while with filmic you pretty much lose everything in the darks and in the brights. The Uncharted 2 curve doesn&rsquo;t have such a strong toe so the blacks aren&rsquo;t crushed, and the contrast is a bit better than in Reinhard. But you do lose the coloring in the sky with both filmic curves, since those curves are applied to the RGB channels which means color ratios aren&rsquo;t preserved like they are when you tone map luminance.  However I think the sky looks rather unnatural in Drago and Reinhard, despite the colors being preserved.</p>
+
+<p>For this next set, I sampled the 9th mip level which essentially gives you a 2x2 grid of local luminance averages. This essentially applies a higher exposure to the left portion of the image, and lower exposure to the right portion.</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-5.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-5.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-6.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-6.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-7.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-7.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-8.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-8.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-auto-mip-1.png?w=300" alt="" /></a></p>
+
+<p>Using local averages works pretty well for the filmic techniques. Areas that used to be underexposed or overexposed now clearly show more detail, and the overall the image has a nice level of contrast and saturation. Reinhard and Drago, on the other hand, look more washed-put than they did previously.</p>
+
+<p>Here&rsquo;s some other assorted screenshots I took using other environment maps, and with bloom enabled:</p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/ennis-misc-2-1.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/grace-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/grace-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/grace-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/grace-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/grace-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/grace-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/grace-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/grace-1.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/doge-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/doge-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/doge-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/doge-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/doge-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/doge-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/doge-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/doge-1.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/glacier-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/glacier-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/glacier-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/glacier-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/glacier-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/glacier-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/glacier-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/glacier-1.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/pisa-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/pisa-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/pisa-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/pisa-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/pisa-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/pisa-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/pisa-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/pisa-1.png?w=300" alt="" /></a></p>
+
+<p><a href="http://mynameismjp.files.wordpress.com/2010/04/uffizi-2.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/uffizi-2.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/uffizi-3.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/uffizi-3.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/uffizi-4.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/uffizi-4.png?w=300" alt="" /></a> <a href="http://mynameismjp.files.wordpress.com/2010/04/uffizi-1.png"><img src="http://mynameismjp.files.wordpress.com/2010/04/uffizi-1.png?w=300" alt="" /></a></p>
+
+<p>Overall I like the look of the filmic curves. It might just be that I watch too many movies and I&rsquo;m used to that kind of look, but I just think the image looks more natural. I&rsquo;m sure plenty of people would disagree with me though, especially since Reinhard and Drago are much better at preserving details across a wide range of intensities.</p>
+
+<p>If you&rsquo;d like to play around with the app itself, I&rsquo;ve uploaded the code, content, binaries, and VS2010 project here:</p>
+
+<p><a href="http://cid-538e432ea49f5bde.skydrive.live.com/self.aspx/Public/Samples%20And%20Tutorials/DX11/ToneMapping.part01.rar">ToneMapping.part01.rar</a>
+<a href="http://cid-538e432ea49f5bde.skydrive.live.com/self.aspx/Public/Samples%20And%20Tutorials/DX11/ToneMapping.part02.rar">ToneMapping.part02.rar</a>
+<a href="http://cid-538e432ea49f5bde.skydrive.live.com/self.aspx/Public/Samples%20And%20Tutorials/DX11/ToneMapping.part03.rar">ToneMapping.part03.rar</a></p>
+
+<p>Sorry about it being in 3 parts&hellip;together they total 174MB and SkyDrive has a 50MB limit per file. If you&rsquo;re wondering why the app is so big, it&rsquo;s because I ran the HDR environment maps through ATI&rsquo;s CubeMapGen to generate some really nice mipmaps (it does proper angular extent filtering so that there&rsquo;s no seams in lower mip levels) and that app can only save HDR cube maps in uncompressed floating point formats. But on the upside they have really nice mips&hellip;in fact I use a low mip level for faking diffuse lighting on the mesh.</p>
+
+<hr />
+
+<h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>####
+<a href="http://www.realtimerendering.com">Naty Hoffman</a> - <time datetime="2010-04-30 07:43:19">Apr 5, 2010</time></p>
+
+<p>For games, the goal is not academic &ldquo;tone mapping&rdquo; (preserve as much detail as possible) but rather &ldquo;image rendition&rdquo;; to get an output image that evokes a similar or creatively enhanced perceptual response as the original scene would in an observer, for the salient details. For film &ldquo;salient details&rdquo; and &ldquo;similar&rdquo; are in the eyes of the cinematographer; &ldquo;creatively enhanced&rdquo; is defined by the cinematographer and director. In games these roles are played by the lighting artist and art director. The S-shaped tone curve of film stock has been carefully engineered over almost two centuries (!) to achieve this result (in combination with appropriate lighting); games could do far worse than to model their image rendition on film.
+<hr />
+####
+<a href="http://filmicgames.com">John Hable</a> - <time datetime="2010-05-03 21:00:41">May 1, 2010</time></p>
+
+<p>Nice post! I like the trick of multiplying by the 2x2 mipmap level. For your Reinhard, I assume you are converting RGB to HSL, applying Reinhard to luminance, and converting back to RGB. It&rsquo;s great to see a good discussion about tonemapping. My take is that I don&rsquo;t care which one you use as long as you have a good reason for doing it.
+<hr />
+####
+<a href="http://xnainfo.com">Rim</a> - <time datetime="2010-05-03 22:41:38">May 1, 2010</time></p>
+
+<p>&gt; However I think the sky looks rather unnatural in Drago &gt; and Reinhard, despite the colors being preserved. It&rsquo;s all subjective of course, but I actually do like the effect. The sky colors aren&rsquo;t that pronounced when you naturally focus on the statue, but when &lsquo;looking out the window&rsquo; seeing the colorful sky gives a sense of depth filmic seems to lack. Overall though I do like the crisp look of filmic better. I&rsquo;d wish I&rsquo;d have something useful to contribute technically, but alas I only have my opinion to share :)
+<hr />
+####
+[Brad Roepstorff]( &ldquo;tostador@gmail.com&rdquo;) - <time datetime="2010-05-01 20:20:52">May 6, 2010</time></p>
+
+<p>Just worked on this very thing a few weeks back. Yeah, the differences between these curves (at least for games) can be subtle and very scene dependent. And the &ldquo;quality&rdquo; is definitely subjective. And it&rsquo;s kind of a wash if you apply some form of artist-driven color correction to the image after the HDR tone mapping (e.g. <a href="http://http.developer.nvidia.com/GPUGems/gpugems_ch22.html">http://http.developer.nvidia.com/GPUGems/gpugems_ch22.html</a>). We were left kind of scratching our heads which was the best, so in the end we just went with whatever was fastest (a cheap polynomial approximation to Hable&rsquo;s filmic curve), and let the artists tweak saturation and contrast manually via photoshop color curves.
+<hr />
+####
+[-]( &ldquo;&rdquo;) - <time datetime="2010-05-02 11:10:05">May 0, 2010</time></p>
+
+<p>@Naty, I don&rsquo;t understand why you wouldn&rsquo;t want to try and preserve as much detail as possible? I would imagine this is the direction you want to go, 1) Simulate radiance in a scene. 2) Tone map the radiance to give the most similar representation of the human visual system. This includes preserving details, and retaining correct contrast ratios. 3) Finally, allow the art director/lighting artist to tweak the contrast ratios, saturation levels, smash the darks, blow out the whites, change the hue, etc&hellip; The last step is where the creativity comes in to play and can define the artistic look for the game. The S-shaped tone curve was engineered under the limitations that cameras couldn&rsquo;t record high dynamic ranges. Modern cameras are just beginning to record higher ranges in brightness and I suspect these &lsquo;academic&rsquo; methods will be incorporated into modern film. Games dynamic range is only limited by the encoding methods of our textures, back buffer, and bandwidth.
+<hr />
+####
+<a href="http://defaultex.wordpress.com" title="default_ex@live.com">defaultex</a> - <time datetime="2010-05-05 11:29:25">May 3, 2010</time></p>
+
+<p>Thanks for putting in the work on showing all three under such controlled situation. I&rsquo;ve been trying to decide which method I liked enough to implement, while I still haven&rsquo;t decided fully I do really like that adjustable filmic curve, I could see artist having fun with it an churning out some really pretty scenes.
+<hr />
+####
+<a href="http://www.gamedevblogs.net/2010/07/blog-added-the-danger-zone/">Blog added &#8211; The Danger Zone &laquo; GameDevBlogs</a> - <time datetime="2010-07-29 23:51:19">Jul 4, 2010</time></p>
+
+<p>[&hellip;] blogs, the site is heavy on tutorials and samples, and has some very in-depth articles (such as this one about tone mapping), so it will no doubt prove very useful to people interested in that [&hellip;]
+<hr />
+####
+<a href="http://balkanforest.com" title="contact@balkanforest.com">Balkan Forest</a> - <time datetime="2010-08-23 03:54:30">Aug 1, 2010</time></p>
+
+<p>Nice post, very good information, thanks.
+<hr />
+####
+<a href="http://www.racer.nl" title="ruud@racer.nl">Ruud van Gaal</a> - <time datetime="2010-08-26 04:15:49">Aug 4, 2010</time></p>
+
+<p>Interesting. I did my own downsampling and it turned out to be slightly faster than using glGenerateMipmap(). Haven&rsquo;t touched too many tonemapping tuning yet though; such a world of lighting info to read up on&hellip;
+<hr />
+####
+<a href="http://www.facebook.com/jischneider" title="jischneider@hotmail.com">José Schneider</a> - <time datetime="2012-04-19 05:28:00">Apr 4, 2012</time></p>
+
+<p>I want to improve the tau value calculation to contemplate rod and cones adaptation velocity. <a href="http://www.mpi-inf.mpg.de/resources/hdr/peffects/krawczyk05sccg.pdf">http://www.mpi-inf.mpg.de/resources/hdr/peffects/krawczyk05sccg.pdf</a> said that a value of 0.4 sec for rods and 0.1 sec for cones are good values. But knowing the proportion of the two values using a non-calibrated average luminance is tricky. Rods work between 10^-6 and 10^1 cd/m2 and cones work between 10^-1 and 10^8 cd/m2. But, what is the estimated unit of the average luminance? I’m not talking about a precise conversion, it is almost impossible without calibrated data and physical correct materials. But what you will do? Using a slider to control the range? or directly assuming that an average luminance value of 1 equals… x candelas?
+<hr />
+####
+<a href="http://www.facebook.com/jischneider" title="jischneider@hotmail.com">José Schneider</a> - <time datetime="2012-04-24 10:24:22">Apr 2, 2012</time></p>
+
+<p>Matt, I think I find an error in the Drago operator. You write: toneMappedLuminance /= log10(2 + 8 * ((pixelLuminance / WhiteLevel) * log10(Bias) / log10(0.5f))); But it has to be: toneMappedLuminance /= log10(2 + 8 * (pow((pixelLuminance / WhiteLevel), log10(Bias) / log10(0.5f)))); Because the Perlin and Hoffert’s bias function is defined as: biasp(x) = pow(x, log(p)/ log(0.5)) Any ideas about my previous question?
+<hr />
+####
+[Remko]( &ldquo;remko@act-3d.com&rdquo;) - <time datetime="2012-03-19 14:50:59">Mar 1, 2012</time></p>
+
+<p>You&rsquo;re right! It&rsquo;s the strange order of operators that threw me off. The local adaptation does not really work that well because it just ends up as ghosting. Maybe it can work for scenes without moving objects. I wonder if it is even possible to have slowly adapting local exposures. Probably it will always end in ghosting. A single exposure value for the entire screen seems to work best. Another nice addition to the curves you tried might be actual real-world curves. I looked up some film curves from Kodakchrome 25 and other film types and approximated their curves with a polynomal. The process is really simple. I just used an online least squares approximations utility to convert tables of values to functions. Of course the easiest way is to use a lookup texture. Actual film curves do not only change the luminance but they also add some style because they warp the colors.
+<hr />
+####
+[Remko]( &ldquo;remko@act-3d.com&rdquo;) - <time datetime="2012-03-19 12:32:58">Mar 1, 2012</time></p>
+
+<p>There&rsquo;s a small error in the code. Log10 is used to generate the average log of the image. To get back to a value exp() is used which has a base of e and not 10. It does not matter which base you use as long as the are the same: you can: use log10(x) for downsampling and pow(10,x) to get the geometric mean or: use log(x) for downsampling and exp(x) to get the geometric mean
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-03-19 13:08:31">Mar 1, 2012</time></p>
+
+<p>Hi Remko, The sample doesn&rsquo;t use log10 for computing the geometric mean. The log is performed at the end of the &ldquo;AdaptLuminance&rdquo; pixel shader, which adapts the luminance value based on the luminance of the previous frame. Usually you do the adaptation after you&rsquo;ve finished computing the geometric mean, but for this sample I did the adaptation first at full resolution so I could try out my wacky idea of using localized geometric means for adaptive auto-exposure. In all of my other samples I do it the &ldquo;normal&rdquo; way and immediately take the log of luminance right when I calculate it per-pixel. The only log10&rsquo;s in the shader code are either in tone mapping operators (logarithmic and Drago logarithmic), or in the bit of code that attempts to guess at a good key value to use for auto exposure.
+<hr />
+####
+<a href="http://lousodrome.net/blog/light/2012/09/11/readings-on-color-management/">Readings on color management | Light is beautiful</a> - <time datetime="2012-09-10 21:55:48">Sep 1, 2012</time></p>
+
+<p>[&hellip;] A Closer Look At Tone Mapping: another follow up, where the author makes various tone mapping experiments (also find more links there). [&hellip;]
+<hr />
+####
+[SteveM]( &ldquo;steve.marton@gmail.com&rdquo;) - <time datetime="2012-10-11 19:05:17">Oct 4, 2012</time></p>
+
+<p>Thanks for such an excellent and insanely thorough article! Whoever is not doing some sort of nonlinear tone mapping is just shooting themselves in the foot and missing out ;) Here&rsquo;s my super simple curve. float a = 10.0; /// Mid float b = 0.3; /// Toe float c = 0.5; /// Shoulder float d = 1.5; /// Mid return (x * (a * x + b)) / (x * (a * x + c) + d); Essentially it&rsquo;s John Hable&rsquo;s curve, but I wanted to remove the extraneous pow 2.2, and I wanted my whites to get white faster. Snow looked grey without it, and in general things were a bit less saturated than I liked. Put some sliders on those parameters and got exactly what I wanted. Whites are white, highlights are still very well controlled, little more contrast, little darker toe. The point is that it&rsquo;s a very powerful function, and you can get pretty much anything you want out of it. Try it. One more thing. I thought I would want to do tone mapping on luminance instead of individual color channels, and then I realized that&rsquo;s wrong, film/cameras apply the tone curve to the channels individually. You get a much more natural look, as MJP alluded.
+<hr />
+####
+[SteveM]( &ldquo;steel_3d@hotmail.com&rdquo;) - <time datetime="2014-11-11 12:04:52">Nov 2, 2014</time></p>
+
+<p>Here&rsquo;s another useful curve to try: float a = 1.8; /// Mid float b = 1.4; /// Toe float c = 0.5; /// Shoulder float d = 1.5; /// Mid return (col * (a * col + b)) * rcp(col * (a * col + c) + d); It&rsquo;s essentially linear - it only modifies the shoulder region and drastically improves highlight clipping. Doesn&rsquo;t modify the overall contrast or brightness, and it especially doesn&rsquo;t crush the darks in the toe region. My artists currently prefer this linear look, which better matches other content creation packages for baseline preview. Extra contrast and saturation can always be added later under artistic control (ie: color grading).
+<hr />
+####
+<a href="http://interplayoflight.wordpress.com/2013/12/30/readings-on-physically-based-rendering/">Readings on Physically Based Rendering | Interplay of Light</a> - <time datetime="2013-12-30 05:15:16">Dec 1, 2013</time></p>
+
+<p>[…] A Closer Look At Tone Mapping, Matt Pettineo provides a showcase of  popular tonemapping operators with sample code. […]
+<hr />
+####
+<a href="http://mtnphil.wordpress.com/2014/04/30/cleaning-up-the-hdr-pipeline/">Cleaning up the HDR pipeline | IceFall Games</a> - <time datetime="2014-04-29 23:34:01">Apr 2, 2014</time></p>
+
+<p>[…] I also implemented the filmic tone-mapping described here. I think it does look a little better than Reinhard (more “punchy”). There is a lot more information here too. […]
+<hr />
+####
+<a href="https://chetanjags.wordpress.com/2015/06/28/hdr-rendering-tonemapping-and-bloom/">HDR Rendering &#8211; Tonemapping and Bloom | Chetan Jags</a> - <time datetime="2015-06-27 14:56:13">Jun 6, 2015</time></p>
+
+<p>[…] <a href="https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/">https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/</a> […]
+<hr />
+####
+[Ciro Cardoso]( &ldquo;cirocardoso@yahoo.co.uk&rdquo;) - <time datetime="2016-10-30 13:23:29">Oct 0, 2016</time></p>
+
+<p>How can we implement these curves in something like Fusion? I already have script to create a Filmic Tonemapping, but I would love to play with the other curves.
+<hr />
+####
+<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-10-31 21:54:13">Oct 1, 2016</time></p>
+
+<p>Hi Ciro, Unfortunately I&rsquo;m not at all familiar with Fusion, so I don&rsquo;t know how to implement arbitrary tone mapping curves in that program. -Matt
+<hr />
+####
+[Ciro Cardoso]( &ldquo;cirocardoso@yahoo.co.uk&rdquo;) - <time datetime="2016-11-04 01:07:48">Nov 5, 2016</time></p>
+
+<p>Hi MJP, Thanks for the quick reply. Basically, I am trying to translate those curves (Log Luminance/RGB/ Output Luminance/RGB) to curves that you can find in Photoshop for example. But, I don&rsquo;t understand how can I translate for example the Log Luminance/RGB to a curve. Maybe I can&rsquo;t??
+<hr />
+####
+<a href="https://kosmonautblog.wordpress.com/2017/03/26/designing-a-linear-hdr-pipeline/">Designing A Linear HDR Pipeline | kosmonaut games</a> - <time datetime="2017-03-26 08:31:39">Mar 0, 2017</time></p>
+
+<p>[…] A great resource for tonemapping is, again, MJP’s blog. Highly recommended:<a href="https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/">https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/</a> […]
+<hr />
+####
+<a href="https://tesorodelsaberretro.wordpress.com/2016/09/10/todo-sobre-hdr-el-resumen/">Todo sobre HDR el resumen &#8211; El tesoro del saber retro</a> - <time datetime="2016-09-10 09:24:23">Sep 6, 2016</time></p>
+
+<p>[…] <a href="https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/">https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/</a> […]
+<hr /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3385 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-04-30 01:47 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://therealmjp.github.io/posts/msaa-sample-pattern-detector/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>MSAA Sample Pattern Detector</span>
+			</a>
+			<a class="prev-post" href="https://therealmjp.github.io/posts/attack-of-the-depth-buffer/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Attack of the depth buffer</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.35ccbf1cdceb91e4c64c06b5d009d6e2977fafe56beda7762febd4e67528d2ac.js" integrity="sha256-Ncy/HNzrkeTGTAa10AnW4pd/r+Vr7ad2L+vU5nUo0qw="></script>
+
+
+
+</body>
+
+</html>
