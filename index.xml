@@ -6,10 +6,19 @@
     <description>Recent content on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hello, Hugo</title>
+      <link>https://therealmjp.github.io/posts/hello-hugo/</link>
+      <pubDate>Mon, 12 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/hello-hugo/</guid>
+      <description>For the past 11(!) years I&amp;rsquo;ve hosted my blog on wordpress.com, which had a very low barrier to entry. But for a year or two now I&amp;rsquo;ve been itching to move on to something that I actually enjoy working with, and that doesn&amp;rsquo;t leave me locked in to the WordPress platform and hosting services. Over the past two weeks or so I&amp;rsquo;ve been working on setting up this new blog, which is hosted on GitHub pages and is generated as a static site using Hugo.</description>
+    </item>
     
     <item>
       <title>Publications</title>
@@ -33,21 +42,7 @@ Slides (pdf)
       
       <guid>https://therealmjp.github.io/about/</guid>
       <description>My name is Matt, and I’m the lead graphics/engine programmer for Ready At Dawn Studios. I usually go by &amp;ldquo;MJP&amp;rdquo; on the internet.
-This site is mainly for blog, where I mostly post about things related to graphics and game programming.</description>
-    </item>
-    
-    <item>
-      <title>Test Blog Post</title>
-      <link>https://therealmjp.github.io/posts/test/</link>
-      <pubDate>Sat, 20 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://therealmjp.github.io/posts/test/</guid>
-      <description>Hello there! Here&amp;rsquo;s some inline math: \( \int x^3 dx \)
-And here&amp;rsquo;s some centered math:
-$$\int_{a}^{b} x^2 dx$$
-And now for some code!
-void DoSomething() { Whatever(); for(int i = 0; i &amp;lt; 10; ++i) { auto x = i * 2; printf(&amp;#34;i&amp;#34;, x); } }  How about a cool image?
-Conclusion This has been a great test.</description>
+This site is mainly here for my blog, where I mostly post about things related to graphics and game programming.</description>
     </item>
     
     <item>

@@ -108,6 +108,20 @@ If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp
     </item>
     
     <item>
+      <title>SG Series Part 6: Step Into The Baking Lab</title>
+      <link>https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/</link>
+      <pubDate>Mon, 10 Oct 2016 07:13:58 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/</guid>
+      <description>This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+    </item>
+    
+    <item>
       <title>SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s</title>
       <link>https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/</link>
       <pubDate>Mon, 10 Oct 2016 07:12:13 +0000</pubDate>
