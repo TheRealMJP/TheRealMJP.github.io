@@ -17,7 +17,7 @@
 			<description>For the past 11(!) years I&amp;rsquo;ve hosted my blog on wordpress.com, which had a very low barrier to entry. But for a year or two now I&amp;rsquo;ve been itching to move on to something that I actually enjoy working with, and that doesn&amp;rsquo;t leave me locked in to the WordPress platform and hosting services. Over the past two weeks or so I&amp;rsquo;ve been working on setting up this new blog, which is hosted on GitHub pages and is generated as a static site using Hugo.</description>
 			<content type="html"><![CDATA[
 
-<p><img src="https://d33wubrfki0l68.cloudfront.net/30790d6888bd8af863fb2b5c33a7f337cdbda243/4e867/images/hugo-logo-wide.svg" alt="Hugo logo" /></p>
+<p><img src="/images/hello-hugo/hugo-logo-wide.svg" alt="Hugo logo" /></p>
 
 <p>For the past 11(!) years I&rsquo;ve hosted my <a href="https://mynameismjp.wordpress.com/">blog</a> on wordpress.com, which had a very low barrier to entry. But for a year or two now I&rsquo;ve been itching to move on to something that I actually enjoy working with, and that doesn&rsquo;t leave me locked in to the WordPress platform and hosting services. Over the past two weeks or so I&rsquo;ve been working on setting up this new blog, which is hosted on <a href="https://pages.github.com/">GitHub pages</a> and is generated as a static site using <a href="https://gohugo.io/">Hugo</a>. If you&rsquo;re not familiar with the term &ldquo;static site&rdquo;, what this basically means is that I use the Hugo executable to convert source markdown files into pure HTML files that I can load onto whichever host I want, without any crazy scripting or server-side stuff to generate that HTML on-the-fly whenever a user loads the web page. From my point of view I get the following benefits:</p>
 

@@ -14,7 +14,19 @@
   </url>
   
   <url>
+    <loc>https://therealmjp.github.io/tags/</loc>
+    <lastmod>2019-08-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://therealmjp.github.io/</loc>
+    <lastmod>2019-08-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/the-blog/</loc>
     <lastmod>2019-08-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -32,12 +44,6 @@
   <url>
     <loc>https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/</loc>
     <lastmod>2019-01-15T05:36:42+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://therealmjp.github.io/tags/</loc>
-    <lastmod>2019-01-15T05:36:42+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -245,12 +251,6 @@
   <url>
     <loc>https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/</loc>
     <lastmod>2012-10-15T08:00:47+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://therealmjp.github.io/tags/the-blog/</loc>
-    <lastmod>2012-10-15T08:00:47+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

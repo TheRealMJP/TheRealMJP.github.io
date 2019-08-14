@@ -6,10 +6,19 @@
     <description>Recent content in the blog on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Oct 2012 08:00:47 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/the-blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hello, Hugo</title>
+      <link>https://therealmjp.github.io/posts/hello-hugo/</link>
+      <pubDate>Mon, 12 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/hello-hugo/</guid>
+      <description>For the past 11(!) years I&amp;rsquo;ve hosted my blog on wordpress.com, which had a very low barrier to entry. But for a year or two now I&amp;rsquo;ve been itching to move on to something that I actually enjoy working with, and that doesn&amp;rsquo;t leave me locked in to the WordPress platform and hosting services. Over the past two weeks or so I&amp;rsquo;ve been working on setting up this new blog, which is hosted on GitHub pages and is generated as a static site using Hugo.</description>
+    </item>
     
     <item>
       <title>Upcoming Series on Signal Processing and MSAA</title>
