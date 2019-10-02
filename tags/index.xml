@@ -6,10 +6,46 @@
     <description>Recent content in Tags on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>DirectX 12</title>
+      <link>https://therealmjp.github.io/tags/directx-12/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/directx-12/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Graphics</title>
+      <link>https://therealmjp.github.io/tags/graphics/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/graphics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shading</title>
+      <link>https://therealmjp.github.io/tags/shading/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/shading/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulkan</title>
+      <link>https://therealmjp.github.io/tags/vulkan/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/tags/vulkan/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>the blog</title>
@@ -35,24 +71,6 @@
       <pubDate>Mon, 10 Dec 2018 02:01:27 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/tags/dx12/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Graphics</title>
-      <link>https://therealmjp.github.io/tags/graphics/</link>
-      <pubDate>Mon, 10 Dec 2018 02:01:27 +0000</pubDate>
-      
-      <guid>https://therealmjp.github.io/tags/graphics/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>DirectX 12</title>
-      <link>https://therealmjp.github.io/tags/directx-12/</link>
-      <pubDate>Fri, 25 Mar 2016 08:39:36 +0000</pubDate>
-      
-      <guid>https://therealmjp.github.io/tags/directx-12/</guid>
       <description></description>
     </item>
     

@@ -3,32 +3,53 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://therealmjp.github.io/tags/directx-12/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/graphics/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/shader-fp16/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/shading/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/tags/vulkan/</loc>
+    <lastmod>2019-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://therealmjp.github.io/posts/hello-hugo/</loc>
     <lastmod>2019-08-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://therealmjp.github.io/posts/</loc>
-    <lastmod>2019-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://therealmjp.github.io/tags/</loc>
-    <lastmod>2019-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://therealmjp.github.io/</loc>
-    <lastmod>2019-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://therealmjp.github.io/tags/the-blog/</loc>
     <lastmod>2019-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -49,7 +70,6 @@
   <url>
     <loc>https://therealmjp.github.io/tags/uncategorized/</loc>
     <lastmod>2019-01-15T05:36:42+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -60,13 +80,6 @@
   <url>
     <loc>https://therealmjp.github.io/tags/dx12/</loc>
     <lastmod>2018-12-10T02:01:27+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://therealmjp.github.io/tags/graphics/</loc>
-    <lastmod>2018-12-10T02:01:27+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -135,12 +148,6 @@
   </url>
   
   <url>
-    <loc>https://therealmjp.github.io/tags/directx-12/</loc>
-    <lastmod>2016-03-25T08:39:36+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://therealmjp.github.io/posts/update-for-my-shadow-sample-update/</loc>
     <lastmod>2016-01-25T00:24:56+00:00</lastmod>
   </url>
@@ -178,13 +185,11 @@
   <url>
     <loc>https://therealmjp.github.io/tags/directx-11/</loc>
     <lastmod>2014-02-04T06:58:04+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/tags/programming/</loc>
     <lastmod>2014-02-04T06:58:04+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -205,7 +210,6 @@
   <url>
     <loc>https://therealmjp.github.io/tags/directx/</loc>
     <lastmod>2013-09-11T07:45:40+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -356,7 +360,6 @@
   <url>
     <loc>https://therealmjp.github.io/tags/xna/</loc>
     <lastmod>2010-03-23T07:42:36+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -392,7 +395,6 @@
   <url>
     <loc>https://therealmjp.github.io/tags/xbox-360/</loc>
     <lastmod>2009-12-31T22:31:58+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

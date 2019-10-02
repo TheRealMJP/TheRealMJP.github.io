@@ -6,10 +6,19 @@
     <description>Recent content in DirectX 12 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Mar 2016 08:39:36 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/directx-12/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Half The Precision, Twice The Fun: Working With FP16 In HLSL</title>
+      <link>https://therealmjp.github.io/posts/shader-fp16/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/shader-fp16/</guid>
+      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
+    </item>
     
     <item>
       <title>Bindless Texturing for Deferred Rendering and Decals</title>
