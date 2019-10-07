@@ -115,11 +115,13 @@
 
 <p>I'm not sure if any game actually shipped with this approach (or something) similar at runtime. Uncharted 2 used the approach described by John Hable for offline-rendered cinematics, but at runtime they fell back to something much simpler and cheaper. There was an <a href="http://amd-dev.wpengine.netdna-cdn.com/wordpress/media/2012/10/Gosselin_skin.pdf">old ATI demo</a> that did texture-space diffusion 3 years before d'Eon and Luebke published their work at Nvidia, but what they describe sounds much less sophisticated. Overall the lack of adoption isn't terribly surprising given the large list of potential headaches.</p>
 
+<p>Update 10/7/2019: <a href="https://twitter.com/vicki_ferg">Vicki Ferguson</a> was kind enough to <a href="https://twitter.com/vicki_ferg/status/1181069047053635584?s=20">point out</a> that <a href="https://en.wikipedia.org/wiki/FaceBreaker">FaceBreaker</a> shipped with texture-space diffusion way back in 2008! Angelo Pesce then <a href="https://twitter.com/kenpex/status/1181073843613339648?s=20">explained</a> how this tech made its way into the Fight Night series, where it eventually evolved into pre-integrated subsurface scattering! See <a href="https://www.gdcvault.com/browse/gdc-11/play/1014661">Vicki's GDC presentation</a> and Angelo's &quot;director's cut&quot; <a href="https://www.scribd.com/document/66973213/Fight-Night-Champion-GDC-Presentation">slide deck</a> for more info on the tech used for Fight Night Champion.</p>
+
 <h3 id="screenspace-subsurface-scattering-ssss">Screen-Space Subsurface Scattering (SSSS)</h3>
 
 <p><figure><img src="/images/sss/sssss.jpg" alt="sampling irradiance in screen-space"></figure></p>
 
-<p>Once it became clear that texture-space diffusion would be both difficult and expensive to use in a real-time game scenario, a few people started looking into cheaper options that make use of lighting data stored in screen-space buffers. The idea was popularlized by the work of <a href="http://www.iryoku.com/">Jorge Jimenez</a>, thanks to a <a href="http://www.iryoku.com/sssss/">very popular article</a> that was published in the first edition of GPU Pro. Morten Mikkelson (of MikkT fame) also did some <a href="http://jbit.net/~sparky/subsurf/cbf_skin.pdf">early work</a> in this area, and Jorge continued to publish <a href="http://www.iryoku.com/translucency/">additions</a> and <a href="https://github.com/iryoku/separable-sss">improvements</a> in the following years. The state-of-the-art is probably best represented by <a href="http://advances.realtimerendering.com/s2018/Efficient%20screen%20space%20subsurface%20scattering%20Siggraph%202018.pdf">Evgenii Golubev's presentation</a> from SIGGRAPH 2018, where he explained how Unity adopted Disney's Normalized Diffusion profile for real-time use.</p>
+<p>Once it became clear that texture-space diffusion would be both difficult and expensive to use in a real-time game scenario, a few people started looking into cheaper options that make use of lighting data stored in screen-space buffers. The idea was popularlized by the work of <a href="http://www.iryoku.com/">Jorge Jimenez</a>, thanks to a <a href="http://www.iryoku.com/sssss/">very popular article</a> that was published in the first edition of GPU Pro. Morten Mikkelsen (of MikkT fame) also did some <a href="https://www.dropbox.com/s/tn9b9tenykk650w/cbf_skin.pdf?dl=0">early work</a> in this area, and Jorge continued to publish <a href="http://www.iryoku.com/translucency/">additions</a> and <a href="https://github.com/iryoku/separable-sss">improvements</a> in the following years. The state-of-the-art is probably best represented by <a href="http://advances.realtimerendering.com/s2018/Efficient%20screen%20space%20subsurface%20scattering%20Siggraph%202018.pdf">Evgenii Golubev's presentation</a> from SIGGRAPH 2018, where he explained how Unity adopted Disney's Normalized Diffusion profile for real-time use.</p>
 
 <p>At a high level you're making a similar bet that you make with texture-space diffusion: you're hoping that 3D locality of a sample point's neigboring surfaces is preserved when it's rasterized and projected into 2D. When this is the case (and it often is) then you merely have to do a few texture fetches from neighboring texels in order to convolve the lighting with your diffusion profile. This is quite a bit more appealing than shading a surface in unwrapped UV space (especially on 2009-era hardware and APIs), since you can borrow from typical deferred approaches in order to output per-pixel irradiance to a secondary render target. This spares you from having to figure out the appropriate shading rate to use for the surface, and also prevents you from inadvertantly shading pixels that end up being occluded by other opaque surfaces.</p>
 
@@ -479,7 +481,7 @@
 <hr>
 
 <ol>
-<li id="fn:1">AMD's Polaris series (gfx803) supports fp16 at full rate (non-packed, unlike Vega) but it doesn't seem to be exposed in any API
+<li id="fn:1">AMD's Polaris series (gfx803) supports fp16 at full rate (non-packed, unlike Vega) but it doesn't seem to be exposed in any API. Update 10/7/2019: Allan MacKinnon has helpfully pointed me to <a href="https://github.com/GPUOpen-Drivers/AMDVLK/issues/94">this GitHub issue</a> where AMD engineers explained why they never enabled fp16 support for pre-gfx900 hardware.
  <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
 <li id="fn:2">There's actually a few other types such as <code>min10float</code> and <code>min16uint</code> to along with the 16-bit float types, but this article is just going to focus on fp16.
  <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
@@ -2740,7 +2742,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/aN0StrS2moI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/aN0StrS2moI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -2748,7 +2750,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/WhSlZgycQfM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/WhSlZgycQfM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -2766,7 +2768,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/LUrCpZYQbm0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/LUrCpZYQbm0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
