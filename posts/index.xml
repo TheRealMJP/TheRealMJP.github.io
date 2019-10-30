@@ -15,7 +15,7 @@
 			
 			<guid>https://therealmjp.github.io/posts/sss-intro/</guid>
 			<description>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what&#39;s commonly used to shade skin and other materials in recent games.</description>
-			<content type="html"><![CDATA[<p>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what's commonly used to shade skin and other materials in recent games. If you're already an expert in this area then this probably isn't the post for you, since I'm not going to talk about anything new or novel here. But if you're not an expert, feel free to read on!</p>
+			<content:encoded><![CDATA[<p>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what's commonly used to shade skin and other materials in recent games. If you're already an expert in this area then this probably isn't the post for you, since I'm not going to talk about anything new or novel here. But if you're not an expert, feel free to read on!</p>
 
 <h2 id="sss-basics">SSS Basics</h2>
 
@@ -232,7 +232,7 @@
 			
 			<guid>https://therealmjp.github.io/posts/shader-fp16/</guid>
 			<description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
-			<content type="html"><![CDATA[<p>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the <code>half</code> scalar type, which corresponded to a <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">floating-point value using 16-bits of precision</a>. Using it was crucial for extracting the best performance from Nvidia's FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values. But then the D3D10 era came along with its unified shader cores, and suddenly fp16 math was no more. None of the desktop hardware supported it anymore, and so HLSL went ahead and mapped the <code>half</code> type to <code>float</code> and called it day. And that's the end of story when it comes to fp16 in shaders, The End.</p>
+			<content:encoded><![CDATA[<p>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the <code>half</code> scalar type, which corresponded to a <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">floating-point value using 16-bits of precision</a>. Using it was crucial for extracting the best performance from Nvidia's FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values. But then the D3D10 era came along with its unified shader cores, and suddenly fp16 math was no more. None of the desktop hardware supported it anymore, and so HLSL went ahead and mapped the <code>half</code> type to <code>float</code> and called it day. And that's the end of story when it comes to fp16 in shaders, The End.</p>
 
 <p>...or not. It turns out that fp16 is still useful for the reasons it was originally useful back in the days of D3D9: it's a good way to improve throughput on a limited transitor/power budget, and the smaller storage size means that you can store more values in general purpose registers without having your thread occupancy suffer due to register pressure. As of Nvidia's new Turing architecture (AKA the RTX 2000 series), AMD's Vega (AKA gfx900, AKA GCN 5) series<sup class="footnote-ref" id="fnref:1"><a class="footnote" href="#fn:1">1</a></sup> and Intel's Gen8 architecture (used in Broadwell) fp16 is now back in the desktop world. Which means that us desktop graphics programmers now have to deal with it again. And of course if you're a mobile developer, it never really left in the first place. But how do you actually use fp16 in your shader code? That's exactly what this blog will explain!</p>
 
@@ -499,7 +499,7 @@
 			
 			<guid>https://therealmjp.github.io/posts/hello-hugo/</guid>
 			<description>For the past 11(!) years I&amp;rsquo;ve hosted my blog on wordpress.com, which had a very low barrier to entry. But for a year or two now I&amp;rsquo;ve been itching to move on to something that I actually enjoy working with, and that doesn&amp;rsquo;t leave me locked in to the WordPress platform and hosting services. Over the past two weeks or so I&amp;rsquo;ve been working on setting up this new blog, which is hosted on GitHub pages and is generated as a static site using Hugo.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><img src="/images/hello-hugo/hugo-logo-wide.svg" alt="Hugo logo" /></p>
 
@@ -576,7 +576,7 @@
 			
 			<guid>https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/</guid>
 			<description>When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><img src="https://mynameismjp.files.wordpress.com/2019/01/waycool.png" alt="waycool" /></p>
 
@@ -785,7 +785,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
 
@@ -1099,7 +1099,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is Part 5 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
 
@@ -1323,7 +1323,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 
 
@@ -1548,7 +1548,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 
 
@@ -1876,7 +1876,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 Welcome to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 
 
@@ -2523,7 +2523,7 @@ Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
 
@@ -2698,7 +2698,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><img src="https://mynameismjp.files.wordpress.com/2016/09/bakinglab_post_intro.png" alt="bakinglab_post_intro" /></p>
 
@@ -2951,7 +2951,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
 
@@ -3159,7 +3159,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
 
@@ -3503,7 +3503,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
 
@@ -3695,7 +3695,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
 
@@ -3883,7 +3883,7 @@ Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>This is part 1 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
 
@@ -4079,7 +4079,7 @@ h an result very low (or even negative!) values when evaluated. It&rsquo;s gen
 			
 			<guid>https://therealmjp.github.io/posts/new-blog-series-lightmap-baking-and-spherical-gaussians/</guid>
 			<description>So nearly year and a half ago myself and Dave Neubelt gave a presentation at SIGGRAPH where we described the approach that we developed for approximating incoming radiance using Spherical Gaussians in both our lightmaps and 3D probe grids. We had planned on releasing a source code demo as well as course notes that would serve as a full set of implementation details, but unfortunately those efforts were sidetracked by other responsibilities.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><img src="https://mynameismjp.files.wordpress.com/2016/09/white_room_small.png" alt="white_room_small" /></p>
 
@@ -4124,7 +4124,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 			<description>https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
 To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><img src="https://mynameismjp.files.wordpress.com/2016/03/title.png" alt="Title Image" /></p>
 
@@ -4511,7 +4511,7 @@ MSAA Resolve: 0.21ms (0.21ms max)
 			
 			<guid>https://therealmjp.github.io/posts/update-for-my-shadow-sample-update/</guid>
 			<description>Recently I was contacted by Christoph Peters (one of the authors of Moment Shadow Mapping) regarding a blog post where I compared EVSM to MSM using my sample app. He noticed that I was incorrectly clamping the maximum exponential warp to 10.0 for the 16-bit variant of EVSM, which can result in values that are greater than what can be stored in a 16-bit floating point texture. Doing this has 2 effects: it causes incorrect results during filtering (clamping the moments can lead to negative variance, causing a reconstruction that resembles a step function), and it reduces the amount of light bleeding.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Recently I was contacted by Christoph Peters (one of the authors of <a href="http://cg.cs.uni-bonn.de/en/publications/paper-details/peters-2015-msm/">Moment Shadow Mapping</a>) regarding a <a href="../shadow-sample-update/">blog post</a> where I compared EVSM to MSM using my sample app. He noticed that I was incorrectly clamping the maximum exponential warp to 10.0 for the 16-bit variant of EVSM, which can result in values that are greater than what can be stored in a 16-bit floating point texture. Doing this has 2 effects: it causes incorrect results during filtering (clamping the moments can lead to negative variance, causing a reconstruction that resembles a step function), and it reduces the amount of light bleeding. Unfortunately all of my comparisons were done without any additional prefiltering, and so I didn&rsquo;t notice my error. Even more unfortunate was that it misrepresented the extent of EVSM16&rsquo;s light bleeding issues in my comparison images, making the test unfairly skewed in favor of EVSM.</p>
 
@@ -4538,7 +4538,7 @@ MSAA Resolve: 0.21ms (0.21ms max)
 			
 			<guid>https://therealmjp.github.io/posts/programmable-sample-points/</guid>
 			<description>What Is and Should Never Be Historically, the sub-pixel location of MSAA sample points was totally out of your control as a programmer. Typically the hardware used rotated grid patterns such as this one, which were fixed for every pixel in your render target. For FEATURE_LEVEL_10_1, D3D added the concept of standard sample patterns that were required to be supported by the hardware. These were nice, in that you could specify the appropriate quality level and know exactly where the samples would be located.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <h2 id="what-is-and-should-never-be">What Is and Should Never Be</h2>
 
@@ -4890,7 +4890,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			
 			<guid>https://therealmjp.github.io/posts/siggraph-2015/</guid>
 			<description>SIGGRAPH 2015 wrapped up just a few days ago, and it really was fantastic this year! There was tons of great content, and I got a chance to meet up with some of best graphics programmers in the industry. I wanted to thank anyone that came to my talk at Advances in Real-Time Rendering, as well as anyone who came to our talk at the Physically Based Shading course. It&amp;rsquo;s always awesome to see so many people interested in the latest rendering technology, and the other presenters really knocked it out of the park in both courses.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>SIGGRAPH 2015 wrapped up just a few days ago, and it really was fantastic this year! There was tons of great content, and I got a chance to meet up with some of best graphics programmers in the industry. I wanted to thank anyone that came to my talk at <a href="http://advances.realtimerendering.com/s2015/index.html">Advances in Real-Time Rendering</a>, as well as anyone who came to our talk at the <a href="http://blog.selfshadow.com/publications/s2015-shading-course/">Physically Based Shading course</a>. It&rsquo;s always awesome to see so many people interested in the latest rendering technology, and the other presenters really knocked it out of the park in both courses. I&rsquo;d also like to thank Natalya Tatarchuk for organizing the Advances course year after year. It&rsquo;s really amazing when you look back on the 10 years worth of high-quality material that she&rsquo;s assembled, and this year in particular was full of some really inspiring presentations. And of course I should thank Stephen Hill and Stephen McAuley as well, who also do a phenomenal job of cultivating top-notch material from both games and film.</p>
 
@@ -4956,7 +4956,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			
 			<guid>https://therealmjp.github.io/posts/mitsuba-quick-start-guide/</guid>
 			<description>Angelo Pesce&amp;rsquo;s recent blog post brought up a great point towards the end of the article: having a &amp;ldquo;ground-truth&amp;rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Angelo Pesce&rsquo;s <a href="http://c0de517e.blogspot.ca/2015/03/being-more-wrong-parallax-corrected.html">recent blog post</a> brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation. On Twitter I advocated writing your own path tracer for such purposes, primarily because doing so can be an extremely educational experience. However not everyone has time to write their own path tracer, and then populate with all of the required functionality. And even if you do have the time, it&rsquo;s helpful to have a &ldquo;ground truth for your ground truth&rdquo;, so that you can make sure that you&rsquo;re not making any subtle mistakes (which is quite easy to do with a path tracer!). To help in both of these situations, it&rsquo;s really handy to have a battle-tested renderer at your disposal. For me, that renderer is <a href="https://www.mitsuba-renderer.org/">Mitsuba</a>.</p>
 
@@ -5145,7 +5145,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			
 			<guid>https://therealmjp.github.io/posts/some-special-thanks/</guid>
 			<description>About a month ago, a little game called The Order: 1886 finally hit store shelves. Its release marks the culmination of my past 4 years at Ready At Dawn, which were largely devoted to developing the core rendering and engine technology that was ultimately used for the game. It&amp;rsquo;s also a major milestone for me personally, as it&amp;rsquo;s the first project that I&amp;rsquo;ve worked on full-time from start to finish.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>About a month ago, a little game called The Order: 1886 finally hit store shelves. Its release marks the culmination of my past 4 years at Ready At Dawn, which were largely devoted to developing the core rendering and engine technology that was ultimately used for the game. It&rsquo;s also a major milestone for me personally, as it&rsquo;s the first project that I&rsquo;ve worked on full-time from start to finish. I&rsquo;m of course immensely proud of what our team has managed to accomplish, and I feel tremendously lucky to go to work every day with such a talented and dedicated group of people.</p>
 
@@ -5215,7 +5215,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			
 			<guid>https://therealmjp.github.io/posts/shadow-sample-update/</guid>
 			<description>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings. The version of the sample that&rsquo;s now uploaded to <a href="https://github.com/TheRealMJP/Shadows">GitHub</a> has corrected this issue, and I&rsquo;ve generated a new set of comparison images. I&rsquo;ve also updated my commentary on these comparisons to better reflect MSM&rsquo;s improvements over EVSM.</em></p>
 
@@ -5338,7 +5338,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			
 			<guid>https://therealmjp.github.io/posts/come-see-me-talk-at-gdc-2014/</guid>
 			<description>Myself and fellow lead graphics programmer David Neubelt will be at GDC next week, talking about the rendering technology behind The Order: 1886. Unfortunately the talk came together a bit late, and so it initially started from the talk that we gave back at SIGGRAPH at last year (which is why it has the same title). However we don&amp;rsquo;t want to just rehash the same material, so we&amp;rsquo;ve added tons of new slides and revamped the old ones.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Myself and fellow lead graphics programmer David Neubelt will be at GDC next week, <a href="http://schedule.gdconf.com/session-id/826899">talking</a> about the rendering technology behind The Order: 1886. Unfortunately the talk came together a bit late, and so it initially started from the talk that we gave back at <a href="http://blog.selfshadow.com/publications/s2013-shading-course/">SIGGRAPH</a> at last year (which is why it has the same title). However we don&rsquo;t want to just rehash the same material, so we&rsquo;ve added tons of new slides and revamped the old ones. The resulting presentation has a much more of an engineering focus, and will cover a lot of the nuts and bolts behind our engine and the material pipeline. Some of the new things we&rsquo;ll be covering include:</p>
 
@@ -5397,7 +5397,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 			<guid>https://therealmjp.github.io/posts/weighted-blended-oit/</guid>
 			<description>http://mynameismjp.files.wordpress.com/2014/02/blendedoit.zip
 Back in December, Morgan McGuire and Louis Bavoil published a paper called Weighted Blended Order-Independent Transparency. In case you haven&amp;rsquo;t read it yet (you really should!), it proposes an OIT scheme that uses a weighted blend of all surfaces that overlap a given pixel. In other words finalColor = w0 * c0 + w1 * c1 + w2 * c2&amp;hellip;etc. With a weighted blend the order of rendering no longer matters, which frees you from the never-ending nightmare of sorting.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><a href="http://mynameismjp.files.wordpress.com/2014/02/blendedoit.zip">http://mynameismjp.files.wordpress.com/2014/02/blendedoit.zip</a></p>
 
@@ -5499,7 +5499,7 @@ That&rsquo;s about all I have for now. Feel free to download the demo and play a
 			<guid>https://therealmjp.github.io/posts/sample-framework-updates/</guid>
 			<description>You may have noticed that my latest sample now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my older samples. What you might not have noticed is that there&amp;rsquo;s a whole bunch of behind-the-scenes changes to go with that new UI! Before I ramble on, here&amp;rsquo;s a quick bullet-point list of the new features:
  Switched to VS2012 and adopted a few C++11 features New UI back-end provided by AntTweakBar C#-based data-definition format for auto-generating UI Shader hot-swapping Better shader caching, and compressed cache files  It occurred to me a little while ago that I could try to develop my framework into something that enables rapid prototyping, instead of just being some random bits of cobbled-together code.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>You may have noticed that my <a href="http://mynameismjp.wordpress.com/2013/09/10/shadow-maps/">latest sample</a> now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my older samples. What you might not have noticed is that there&rsquo;s a whole bunch of behind-the-scenes changes to go with that new UI! Before I ramble on, here&rsquo;s a quick bullet-point list of the new features:</p>
 
@@ -5580,7 +5580,7 @@ That&rsquo;s about all I have for now. Feel free to download the demo and play a
 			
 			<guid>https://therealmjp.github.io/posts/shadow-maps/</guid>
 			<description>A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&amp;rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison. And so I did just that. I had always intended to put it on the blog, since I thought it was likely that other people would be evaluating some of the same techniques as they upgrade their engines for next-gen consoles. But I was a bit lazy about cleaning it up (there was a lot of code!), and it wasn&rsquo;t the most <em>exciting</em> thing that I was working on, so it sort-of fell by the wayside. Fast forward to a year later, and I found myself  looking for a testbed for some major changes that I was planning for the settings and UI portion of my sample framework. My shadows sample came to mind since it was chock-full of settings, and that lead me to finally clean it up and get it ready for sharing. So here it is: (and now on GitHub!)</p>
 
@@ -5937,7 +5937,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 			<guid>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</guid>
 			<description>Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&amp;rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
-			<content type="html"><![CDATA[<p><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn312084%28v=vs.85%29.aspx#tile">Tiled resources</a> seems to be the big-ticket item for the upcoming DX11.2 update. While the online <a href="http://msdn.microsoft.com/en-us/library/windows/apps/bg182880.aspx#four">documentation</a> has some information about the new functions added to the API, there&rsquo;s currently no information about the <a href="http://msdn.microsoft.com/library/windows/apps/dn280435">two tiers</a> of tiled resource functionality being offered. Fortunately there is a <a href="https://tiledresources.codeplex.com/">sample app</a> available that provides some clues. After poking around a bit last night, these were the differences that I noticed:</p>
+			<content:encoded><![CDATA[<p><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn312084%28v=vs.85%29.aspx#tile">Tiled resources</a> seems to be the big-ticket item for the upcoming DX11.2 update. While the online <a href="http://msdn.microsoft.com/en-us/library/windows/apps/bg182880.aspx#four">documentation</a> has some information about the new functions added to the API, there&rsquo;s currently no information about the <a href="http://msdn.microsoft.com/library/windows/apps/dn280435">two tiers</a> of tiled resource functionality being offered. Fortunately there is a <a href="https://tiledresources.codeplex.com/">sample app</a> available that provides some clues. After poking around a bit last night, these were the differences that I noticed:</p>
 
 <ul>
 <li><p>TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels. In the sample they use this when sampling a residency texture that tells the shader the highest-resolution mip level that can be used when sampling a particular tile. For TIER1 they emulate it with a Gather.</p></li>
@@ -5960,7 +5960,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 			
 			<guid>https://therealmjp.github.io/posts/siggraph-follow-up/</guid>
 			<description>So I&amp;rsquo;m hoping that if you&amp;rsquo;re reading this, you&amp;rsquo;ve already attended or read the slides from my presentation about The Order: 1886 that was part of the Physically Based Shading Course at SIGGRAPH last week. If not, go grab them and get started! If you haven&amp;rsquo;t read through the course notes already there&amp;rsquo;s a lot of good info there, in fact there&amp;rsquo;s almost 30 pages worth! The highlights include:</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>So I&rsquo;m hoping that if you&rsquo;re reading this, you&rsquo;ve already attended or read the slides from my presentation about The Order: 1886 that was part of the Physically Based Shading Course at SIGGRAPH last week. If not, <a href="http://blog.selfshadow.com/publications/s2013-shading-course/">go grab them</a> and get started! If you haven&rsquo;t read through the course notes already there&rsquo;s a lot of good info there, in fact there&rsquo;s almost 30 pages worth! The highlights include:</p>
 
@@ -6075,7 +6075,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 			
 			<guid>https://therealmjp.github.io/posts/what-ive-been-working-on/</guid>
 			<description>The announce trailer for Ready At Dawn&amp;rsquo;s latest project was shown during Sony&amp;rsquo;s E3 press conference yesterday, but if you missed it you can watch it here. There&amp;rsquo;s also a few full-res screenshots available here, with less compress-o-vision. It feels really good to finally be able to tell people what game I&amp;rsquo;ve been working on, and that we&amp;rsquo;re making a PS4 title. I&amp;rsquo;m also insanely proud of the trailer itself, as well as the in-house tech we&amp;rsquo;ve developed that made it possible.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>The announce trailer for Ready At Dawn&rsquo;s latest project was shown during Sony&rsquo;s E3 press conference yesterday, but if you missed it you can watch it <a href="http://www.youtube.com/watch?v=MbAhOB-59Ag">here</a>. There&rsquo;s also a few full-res screenshots available <a href="http://www.gamespot.com/e3/image/6409861-1/">here</a>, with less compress-o-vision. It feels <em>really</em> good to finally be able to tell people what game I&rsquo;ve been working on, and that we&rsquo;re making a PS4 title. I&rsquo;m also insanely proud of the trailer itself, as well as the in-house tech we&rsquo;ve developed that made it possible. I have no doubts that I work with some of the most dedicated and talented people in the industry, and being able to collaborate with them makes it worth getting up in the morning. I&rsquo;m really looking forward to sharing some of the cool things we&rsquo;ve come up with, both on this blog as well as in more <a href="http://s2013.siggraph.org/attendees/courses/events/physically-based-shading-theory-and-practice">formal settings</a>.</p>
 
@@ -6132,7 +6132,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 			
 			<guid>https://therealmjp.github.io/posts/hlsl-udl/</guid>
 			<description>When it comes to writing shaders, Notepad++ is currently my editor of choice. The most recent release of Notepad++ added version 2.0 of their User Defined Language (UDL) system, which adds quite a few improvements. I&amp;rsquo;ve been using an HLSL UDL file that I downloaded from somewhere else for a while now, and I decided to upgrade it to the 2.0 format and also make it work better for SM5.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>When it comes to writing shaders, <a href="http://notepad-plus-plus.org/news/notepad-6.2-release-udl2.html">Notepad++</a> is currently my editor of choice. The most recent release of Notepad++ added version 2.0 of their User Defined Language (UDL) system, which adds quite a few improvements. I&rsquo;ve been using an HLSL UDL file that I downloaded from somewhere else for a while now, and I decided to upgrade it to the 2.0 format and also make it work better for SM5.0 profiles. I added all of the operators, keywords, types attributes, system-value semantics, intrinsics, and methods, so they all get syntax highlighting now. I also stripped out all of the old pre-SM4.0 intrinsics and semantics, as well as the effect-specifics keywords. I&rsquo;ve exported it as an XML file and uploaded it to my <a href="https://docs.google.com/open?id=0B9NkyJjiExTjN1VyT2pCbWpJYlE">Google Drive</a> so that others can make use of it as well. To use it, you can either import the XML file from the UDL dialog (Language-&gt;Define your language), or you can replace your userDefineLang.xml file in the <code>AppData\Notepad++</code> folder. Enjoy!</p>
 
@@ -6193,7 +6193,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 			<guid>https://therealmjp.github.io/posts/msaa-resolve-filters/</guid>
 			<description>Previous article in the series: A Quick Overview of MSAA
 Update 8/26/2017: while working on The Order I improved upon the work described here, which I presented at SIGGRAPH 2015. I also created an updated MSAA + TAA filtering demo that you can find on GitHub, which just about completely supersedes the demo that&amp;rsquo;s linked at the end of the article. So make sure that you look at the new one as well!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Previous article in the series: <a href="../msaa-overview/">A Quick Overview of MSAA</a></em></p>
 
@@ -6664,7 +6664,7 @@ Update 8/26/2017: while working on The Order I improved upon the work described 
 			<description>Previous article in the series: Applying Sampling Theory to Real-Time Graphics
 Updated 1/27/2016 - replaced the MSAA partial coverage image with a new image that illustrates subsamples being written to, as suggested by Simon Trümpler.
 MSAA can be a bit complicated, due to the fact that it affects nearly the entire rasterization pipeline used in GPU’s. It’s also complicated because really understanding why it works requires at least a basic understanding of signal processing and image resampling.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Previous article in the series: <a href="../applying-sampling-theory-to-real-time-graphics/">Applying Sampling Theory to Real-Time Graphics</a></em></p>
 
@@ -6926,7 +6926,7 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
 			<description>Previous article in the series: Signal Processing Primer
 Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
 Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Previous article in the series: <a href="../signal-processing-primer/">Signal Processing Primer</a></em></p>
 
@@ -7090,7 +7090,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 			
 			<guid>https://therealmjp.github.io/posts/signal-processing-primer/</guid>
 			<description>For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of signal processing[1] and sampling theory[2]. This article will explain some of the basics of these two related field in my own words, taking a more theoretical point of view. In the following article the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>For a theoretical understanding of aliasing and anti-aliasing, we can turn to the fields of <a href="http://en.wikipedia.org/wiki/Signal_processing">signal processing</a>[1] and <a href="http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem">sampling theory</a>[2]. This article will explain some of the basics of  these two related field in my own words, taking a more theoretical point of view. In the <a href="../applying-sampling-theory-to-real-time-graphics/">following article</a> the concepts covered here will be used to analyze common aspects of real-time graphics, so that we can describe them in terms of signal processing. If you&rsquo;d like some further reading, I&rsquo;d recommend consulting chapter 7 of <em>Physically Based Rendering</em>[3] (available as a <a href="http://www.pbrt.org/chapters/pbrt_chapter7.pdf">free download</a>), chapter 5 of <em>Real-Time Rendering, 3rd Edition</em>[4] or <em>Principles of Digital Image Synthesis</em>[5] (which is also <a href="http://realtimerendering.com/Principles_of_Digital_Image_Synthesis_v1.0.1.pdf">freely available for download</a>)</p>
 
@@ -7357,7 +7357,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 			
 			<guid>https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/</guid>
 			<description>Aliasing is everywhere in graphics. Almost everything we do uses discrete sampling, which means almost everything can produce a variety of aliasing artifacts. The folks in the film industry have historically taken a “no aliasing allowed” stance in their work, but in real-time graphics we’re still producing games with more sparkling and shimmering than a glitzy prom dress. If we’re going to do anything about that problem, I think it’s important that we all try to have at least a basic understanding of signal processing.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Aliasing is everywhere in graphics. Almost everything we do uses discrete sampling, which means almost everything can produce a variety of aliasing artifacts. The folks in the film industry have historically taken a “no aliasing allowed” stance in their work, but in real-time graphics we’re still producing games with more sparkling and shimmering than a glitzy prom dress. If we’re going to do anything about that problem, I think it’s important that we all try to have at least a basic understanding of signal processing. Signal processing is something that I had a lot of experience with during my previous life as an engineering student, but even with that experience it wasn’t always immediately obvious to me how some of the fundamentals applied to common aspects of 3D rendering. You might see people mentioning signal processing terminology when talking about some particular technique, but it can be difficult to use those small pieces to assemble the bigger picture.</p>
 
@@ -7398,7 +7398,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 			<guid>https://therealmjp.github.io/posts/opengl-insights/</guid>
 			<description>Some time ago Charles de Rousiers adapted my Bokeh Depth of Field sample to OpenGL, and we contributed it as a chapter to the recently-released OpenGL Insights. Bokeh is still an ongoing area of R&amp;amp;D for myself, and hopefully I&amp;rsquo;ll be able to share some more improvements and optimizations once my current project is announced or released.
 There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIGGRAPH booth (#929) this Tuesday from 2-3PM, and I&amp;rsquo;ll most likely be stopping by.</description>
-			<content type="html"><![CDATA[<p>Some time ago <a href="http://www.derousiers.net/">Charles de Rousiers</a> adapted my <a href="http://mynameismjp.wordpress.com/2011/04/19/bokeh-ii-the-sequel/">Bokeh Depth of Field sample</a> to OpenGL, and we contributed it as a chapter to the recently-released <a href="http://openglinsights.com/index.html">OpenGL Insights</a>. Bokeh is still an ongoing area of R&amp;D for myself, and hopefully I&rsquo;ll be able to share some more improvements and optimizations once my current project is announced or released.</p>
+			<content:encoded><![CDATA[<p>Some time ago <a href="http://www.derousiers.net/">Charles de Rousiers</a> adapted my <a href="http://mynameismjp.wordpress.com/2011/04/19/bokeh-ii-the-sequel/">Bokeh Depth of Field sample</a> to OpenGL, and we contributed it as a chapter to the recently-released <a href="http://openglinsights.com/index.html">OpenGL Insights</a>. Bokeh is still an ongoing area of R&amp;D for myself, and hopefully I&rsquo;ll be able to share some more improvements and optimizations once my current project is announced or released.</p>
 
 <p>There&rsquo;s going to be an author meet-up/book signing a the CRC Press SIGGRAPH booth (#929) this Tuesday from 2-3PM, and I&rsquo;ll most likely be stopping by. So if you want to talk about Bokeh o(r anything else graphics-related), then feel free to stop by and chat me up!</p>
 ]]></content>
@@ -7411,7 +7411,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			
 			<guid>https://therealmjp.github.io/posts/looking-for-a-job/</guid>
 			<description>My company, Ready At Dawn Studios, is hiring pretty much across the board. Our jobs page has the full details, but the gist of it is that we&amp;rsquo;re working on a new AAA IP for a next-generation home console. I can&amp;rsquo;t really say more than that about the project, but I will say that we&amp;rsquo;re doing some *really* exciting work in terms of graphics. If you&amp;rsquo;re interested, send your resume to jobs[at]readyatdawn.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>My company, <a href="http://www.readyatdawn.com/index.php">Ready At Dawn Studios</a>, is hiring pretty much across the board. Our <a href="http://www.readyatdawn.com/jobs.php">jobs page</a> has the full details, but the gist of it is that we&rsquo;re working on a new AAA IP for a next-generation home console. I can&rsquo;t really say more than that about the project, but I will say that we&rsquo;re doing some *really* exciting work in terms of graphics. If you&rsquo;re interested, send your resume to jobs[at]readyatdawn.com or email me directly at matt[at]readyatdawn.com.</p>
 
@@ -7444,7 +7444,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			
 			<guid>https://therealmjp.github.io/posts/a-quick-note-on-shader-compilers/</guid>
 			<description>This morning I was wrestling with a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&amp;rsquo;d try it out with the new version of the compiler that comes with the Windows 8 SDK. I wasn&amp;rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>This morning I was wrestling with  a particularly complicated compute shader, which was taking just shy of 10 minutes to compile using D3DCompiler_43 from the June 2010 DirectX SDK. After a few failed attempts to speed it up by rearranging the code, I figured I&rsquo;d try it out with the new version of the compiler that comes with the <a href="http://msdn.microsoft.com/en-us/windows/hardware/hh852363">Windows 8 SDK</a>. I wasn&rsquo;t expecting any miracles, but to my surprise it compiled my shader in about 45 seconds! I figured I would pass along the knowledge, in case anyone else is dealing with a similar problem.</p>
 
@@ -7537,7 +7537,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			
 			<guid>https://therealmjp.github.io/posts/light-indexed-deferred-rendering/</guid>
 			<description>There&amp;rsquo;s been a bit of a stir on the Internet lately due to AMD&amp;rsquo;s recent Leo demo, which was recently revealed to be using a modern twist on Light Indexed Deferred Rendering. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>There&rsquo;s been a <a href="http://forum.beyond3d.com/showthread.php?t=61487">bit</a> of a <a href="http://www.gamedev.net/topic/622221-revival-of-forward-rending/">stir</a> on the <a href="http://aras-p.info/blog/2012/03/02/2012-theory-for-forward-rendering/">Internet</a> lately due to AMD&rsquo;s recent <a href="http://developer.amd.com/samples/demos/pages/AMDRadeonHD7900SeriesGraphicsReal-TimeDemos.aspx">Leo demo</a>, which was <a href="http://developer.amd.com/gpu_assets/AMD_Demos_LeoDemoGDC2012.ppsx">recently revealed</a> to be using a modern twist on <a href="http://code.google.com/p/lightindexed-deferredrender/">Light Indexed Deferred Rendering</a>. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface. While there&rsquo;s little doubt at this point that deferred rendering has proven itself as an effective and practical technique, I&rsquo;m sure that plenty of programmers currently maintaining such a renderer have dreamed of a day where they don&rsquo;t have to figure out how to cram every attribute into their G-Buffer using as few bits as possible, or consume 100&rsquo;s of megabytes for MSAA G-Buffer textures.</p>
 
@@ -8387,7 +8387,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			<guid>https://therealmjp.github.io/posts/things-that-need-to-die/</guid>
 			<description>Lately I&amp;rsquo;ve been thinking about things in graphics that have long worn out their welcome, and I started a list of techniques that I hope will be nowhere in sight once everyone moves on to next-gen console hardware (or starts truly exploiting high-end PC hardware). Here they are, in no particular order:
  Phong/Blinn-Phong - we need more expressive BRDF&amp;rsquo;s for our materials, and these guys are getting in the way.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Lately I&rsquo;ve been thinking about things in graphics that have long worn out their welcome, and I started a list of techniques that I hope will be nowhere in sight once everyone moves on to next-gen console hardware (or starts truly exploiting high-end PC hardware). Here they are, in no particular order:</p>
 
@@ -8482,7 +8482,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			
 			<guid>https://therealmjp.github.io/posts/profiling-in-dx11-with-queries/</guid>
 			<description>For profiling GPU performance on the PC, there aren&amp;rsquo;t too many options. AMD&amp;rsquo;s GPU PerfStudio and Nvidia&amp;rsquo;s Parallel Nsight can be pretty handy due to their ability to query hardware performance counters and display the data, but they only work on each vendor&amp;rsquo;s respective hardware. You also might want to integrate some GPU performance numbers into your own internal profiling systems, in which case those tools aren&amp;rsquo;t going to be of much use.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><a href="http://mynameismjp.files.wordpress.com/2011/10/queryprofiling_64bit-2011-10-13-01-55-52-65.png"><img src="http://mynameismjp.files.wordpress.com/2011/10/queryprofiling_64bit-2011-10-13-01-55-52-65.png?w=1024" alt="" title="QueryProfiling_64bit 2011-10-13 01-55-52-65" /></a></p>
 
@@ -8561,7 +8561,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			<guid>https://therealmjp.github.io/posts/average-luminance-compute-shader/</guid>
 			<description>A common part of most HDR rendering pipelines is some form of average luminance calculation. Typically it&amp;rsquo;s used to implement Reinhard&amp;rsquo;s method of image calibration, which is to map the geometric mean of luminance (log average) to some &amp;ldquo;key value&amp;rdquo;. This, combined with some time-based adaptation, allows for a reasonable approximation of auto-exposure or human eye adaptation.
 In the old days of DX9, the average luminance calculation was usually done repeatedly downscaling a luminance texture as if generating mipmaps.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A common part of most HDR rendering pipelines is some form of average luminance calculation. Typically it&rsquo;s used to implement <a href="http://www.cs.ucf.edu/%7Ereinhard/cdrom/tonemap.pdf">Reinhard&rsquo;s method of image calibration</a>, which is to map the geometric mean of luminance (log average) to some &ldquo;key value&rdquo;. This, combined with some time-based adaptation, allows for a reasonable approximation of auto-exposure or human eye adaptation.</p>
 
@@ -8669,7 +8669,7 @@ In the old days of DX9, the average luminance calculation was usually done repea
 			
 			<guid>https://therealmjp.github.io/posts/i-am-officially-a-published-author/</guid>
 			<description>I recently collaborated with fellow DX MVP&amp;rsquo;s Jason Zink and Jack Hoxley to write a D3D11-focused book entitled Practical Rendering and Computation with Direct3D 11, which just came up for sale on Amazon today. I wrote the HLSL and Deferred Rendering chapters in particular. All of the code samples are up on the Hieroglyph 3 CodePlex site, if you want to get an idea of the content. Or you can just take my word for it that it&amp;rsquo;s awesome.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>I recently collaborated with fellow DX MVP&rsquo;s Jason Zink and Jack Hoxley to write a D3D11-focused book entitled <a href="http://www.amazon.com/Practical-Rendering-Computation-Direct3D-11/dp/1568817207/ref=sr_1_1?ie=UTF8&amp;qid=1312513966&amp;sr=8-1">Practical Rendering and Computation with Direct3D 11</a>, which just came up for sale on Amazon today. I wrote the HLSL and Deferred Rendering chapters in particular. All of the code samples are up on the <a href="http://hieroglyph3.codeplex.com/">Hieroglyph 3 CodePlex site</a>, if you want to get an idea of the content. Or you can just take my word for it that it&rsquo;s awesome. :P</p>
 
@@ -8752,7 +8752,7 @@ Jason Zink - <time datetime="2011-08-08 08:21:21">Aug 1, 2011</time></p>
 			
 			<guid>https://therealmjp.github.io/posts/lens-flares/</guid>
 			<description>Since the dawn of time, the greatest struggle of the graphics programmer is to ensure that bright stuff looks really damn bright. We&amp;rsquo;re stuck with displays that have a limited displayable range, which means it&amp;rsquo;s fallen upon us to come up with new hacks and tricks to make sure the player at least feels like he&amp;rsquo;s blinded by the sun, even if we can&amp;rsquo;t really cause physical damage to their eyes (if only!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Since the dawn of time, the greatest struggle of the graphics programmer is to ensure that bright stuff looks <em>really damn bright</em>. We&rsquo;re stuck with displays that have a limited displayable range, which means it&rsquo;s fallen upon us to come up with new hacks and tricks to make sure the player at least <em>feels</em> like he&rsquo;s blinded by the sun, even if we can&rsquo;t really cause physical damage to their eyes (if only!).</p>
 
@@ -8821,7 +8821,7 @@ Jason Zink - <time datetime="2011-08-08 08:21:21">Aug 1, 2011</time></p>
 			<guid>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</guid>
 			<description>After I finished the bokeh sample, there were a few remaining issues that I wanted to tackle before I was ready to call it &amp;ldquo;totally awesome&amp;rdquo; and move on with my life.
 Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at &amp;frac14; resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>After I finished the <a href="http://mynameismjp.wordpress.com/2011/02/28/bokeh/">bokeh sample</a>, there were a few remaining issues that I wanted to tackle before I was ready to call it &ldquo;totally awesome&rdquo; and move on with my life.</p>
 
@@ -8928,7 +8928,7 @@ Out-of-focus foreground objects** - As in most DOF implementations, foreground o
 			
 			<guid>https://therealmjp.github.io/posts/crashes-on-nvidia-hardware/</guid>
 			<description>A few people have told me that my past two samples (Bokeh and RadiosityDX11) were crashing on Nvidia GPU&amp;rsquo;s, which I verified myself on my coworker&amp;rsquo;s GTX 470. The crash appears to be a driver bug, since it happens deep in the Nvidia runtime DLL on a worker thread and also because it works fine on AMD hardware and the REF device. This morning we managed to narrow it down to the shadow map filtering shader code (shader code can crash drivers apparently, who knew?</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A few people have told me that my past two samples (Bokeh and RadiosityDX11) were crashing on Nvidia GPU&rsquo;s, which I verified myself on my coworker&rsquo;s GTX 470. The crash appears to be a driver bug, since it happens deep in the Nvidia runtime DLL on a worker thread and also because it works fine on AMD hardware and the REF device. This morning we managed to narrow it down to the shadow map filtering shader code (shader code can crash drivers apparently, who knew?), and I suspect that it&rsquo;s the the fact that shader makes use of a SampleCmp with an integer offset. Commenting out the filtering and replacing it with a single SampleCmp seems to work, but I think using a regular texture coordinate offset might work as well. Anyone want to try putting this into &ldquo;SampleShadowCascade&rdquo; in Mesh.hlsl, and let me know if it works?</p>
 
@@ -8972,7 +8972,7 @@ for (int y = -Radius; y &lt;= Radius; y++)
 			
 			<guid>https://therealmjp.github.io/posts/bokeh/</guid>
 			<description>Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&amp;rsquo;ve started noticing, I can&amp;rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&amp;rsquo;t have bokeh, it just looks wrong. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&amp;rsquo;t look right at all (especially if you don&amp;rsquo;t do it in HDR).</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Before I bought a decent DSLR camera and started putting it in manual mode, I never really noticed bokeh that much. I always just equated out-of-focus with blur, and that was that. But now that I&rsquo;ve started noticing, I can&rsquo;t stop seeing it everywhere. And now every time I see depth of field effects in a game that doesn&rsquo;t have bokeh, it just looks <em>wrong</em>. A disc blur or even Gaussian blur is fine for approximating the look of out-0f-focus areas that are mostly low-frequency, but the hot spots just don&rsquo;t look right at all (<em>especially</em> if you don&rsquo;t do it in HDR).</p>
 
@@ -9151,7 +9151,7 @@ Finally, this one is with the brightness threshold set to 0. Basically this mean
 			
 			<guid>https://therealmjp.github.io/posts/radiosity-dx11-style/</guid>
 			<description>Radiosity isn&amp;rsquo;t exactly new. According to Wikipedia it&amp;rsquo;s been used for rendering since the early 80&amp;rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Radiosity isn&rsquo;t exactly new. According to Wikipedia it&rsquo;s been used for rendering since the early 80&rsquo;s, and <a href="http://freespace.virgin.net/hugo.elias/radiosity/radiosity.htm">this page</a> looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point.  As described in the article I linked, this is typically done by rendering 5 faces of a hemicube so as to play nice with a traditional perspective projection.  It&rsquo;s possible to use a parabolic projection for this (as in dual-paraboloid shadow mapping), but there are problems you can run into which are outlined <a href="http://the-witness.net/news/?p=244">here</a>. Once you&rsquo;ve fully rendered your hemisphere, you then integrate your computed radiance about the hemisphere with a cosine kernel to compute irradiance, which you can use to determine the diffuse reflectance for that point. You can then store this diffuse lighting value in your vertex or lightmap texel, and you&rsquo;re ready to render your geometry fully lit by direct lighting. Typically you repeat the process many times, rendering the geometry scene geometry as lit by the results of your previous iteration. This effectively allows you to compute lighting for each successive bounce off the scene geometry, adding an indirect lighting term. With enough iterations, you eventually begin to converge on a full global illumination solution for diffuse lighting. The nice part about the technique is that it&rsquo;s pretty simple to implement&hellip;if you can rasterize a mesh you&rsquo;re already most of the way there, and you can even co-opt an existing real-time rendering engine to do it. Taking the latter approach has the added benefit that any material or lighting feature you add to your engine benefits your radiosity baker by default&hellip;so for instance if you have some complex pixel shader that blends multiple maps to determine the final material albedo, you don&rsquo;t need to implement an equivalent solution in a ray tracer or photon mapper. You can even take advantage of your lighting and shadowing pipeline, if you do it right. The major downside is that it&rsquo;s usually pretty slow, even if you implement it all on the GPU. This is because you typically have to serialize rendering of the scene for each vertex or lightmap texel, rather than baking many vertices/texels in parallel (which is possible with ray tracing implementations, particularly if you do it on the GPU using Cuda/Optix). Recently when I was trying to get myself familar with GI techniques, I decided to implement my own radiosity baker (with a lot of help from my coworker Dave). However to make it cool and hip for the DX11 age, I deviated from the &ldquo;standard&rdquo; radiosity process in 3 ways:</p>
 
@@ -9437,7 +9437,7 @@ Finally, this one is with the brightness threshold set to 0. Basically this mean
 			<guid>https://therealmjp.github.io/posts/position-from-depth-glsl-style/</guid>
 			<description>Commenter &amp;ldquo;Me&amp;rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I previously posted for reconstructing position from depth. So I figured I&amp;rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P
 // deferred shading VERTEX (GEOMETRY) varying vec3 normalv, posv; void main( void ) { normalv = ( gl_NormalMatrix * gl_Normal ).</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Commenter &ldquo;Me&rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I <a href="http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">previously posted</a> for reconstructing position from depth. So I figured I&rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P</p>
 
@@ -9505,7 +9505,7 @@ void main( void ){
 			
 			<guid>https://therealmjp.github.io/posts/d3d11-features/</guid>
 			<description>D3D11 came with a whole bunch of new big-ticket features that received plenty of attention and publicity. Things like tessellation, compute shaders, and multithreaded command submission have the subject of many presentations, discussion, and sample apps. However D3D11 also came with a few other features that allow more &amp;ldquo;traditional&amp;rdquo; rendering approaches to benefit from the increased programmability of graphics hardware. Unfortunately most of them have gone relatively unnoticed, which isn&amp;rsquo;t surprising when you consider that most of them have little or no documentation, (much like some of the cool stuff that came in D3D10.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>D3D11 came with a whole bunch of new big-ticket features that received plenty of attention and publicity. Things like tessellation, compute shaders, and multithreaded command submission have the subject of many presentations, discussion, and sample apps. However D3D11 also came with a few other features that allow more &ldquo;traditional&rdquo; rendering approaches to benefit from the increased programmability of graphics hardware. Unfortunately most of them have gone relatively unnoticed, which isn&rsquo;t surprising when you consider that most of them have little or no documentation, (much like some of the <a href="http://www.humus.name/index.php?page=News&amp;ID=230">cool stuff</a> that came in D3D10.1). Not too long ago one of these neat tricks came to my attention by way of <a href="http://filmicgames.com/archives/507#more-507">John Hable&rsquo;s blog</a>, which inspired me to dig around a bit and try out some of other neat tricks I was missing out on. Quite a few are briefly described in <a href="http://www.slideshare.net/hgruen/dx11-performance-tipstricks">this presentation</a> from GDC. Here&rsquo;s a few of my favorites, in no particular order:</p>
 
@@ -9576,7 +9576,7 @@ void main( void ){
 			<guid>https://therealmjp.github.io/posts/position-from-depth-3/</guid>
 			<description>A friend of mine once told me that you could use &amp;ldquo;back in the habit&amp;rdquo; as the subtitle for any movie sequel. I think it works.
 So a lot of people still have trouble with reconstructing position from depth thing, judging by the emails I get and also the threads I see in the gamedev forums made by people who read my earlier blog posts. Can&amp;rsquo;t say I blame them&amp;hellip;it&amp;rsquo;s pretty tricky, and easy to screw up.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A friend of mine once told me that you could use &ldquo;back in the habit&rdquo; as the subtitle for any movie sequel. I think it works.</p>
 
@@ -9886,7 +9886,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 			
 			<guid>https://therealmjp.github.io/posts/deferred-msaa/</guid>
 			<description>A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&amp;rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&amp;rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A long while ago I was looking into <a href="http://visual-computing.intel-research.net/publications/papers/2009/mlaa/mlaa.pdf">morphological antialiasing</a> (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image.  It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.  This seems pretty important to me, since in real-time rendering we&rsquo;re getting further and further away from the old days of forward rendering to the backbuffer (AKA, the case where MSAA actually works properly).</p>
 
@@ -9966,7 +9966,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 			
 			<guid>https://therealmjp.github.io/posts/msaa-sample-pattern-detector/</guid>
 			<description>Recently I&amp;rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&amp;rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&amp;rsquo;m still stuck on a 10-level GPU so that wasn&amp;rsquo;t an option.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><a href="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png"><img src="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png" alt="" title="SamplePattern" /></a></p>
 
@@ -10032,7 +10032,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 			
 			<guid>https://therealmjp.github.io/posts/a-closer-look-at-tone-mapping/</guid>
 			<description>A few months ago my coworker showed me some slides from a presentation by tri-Ace regarding their game &amp;ldquo;Star Ocean 4&amp;rdquo;. The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A few months ago my coworker showed me some slides from a <a href="http://research.tri-ace.com/Data/SO4_flexible_shader_managment_and_postprocessing.ppt">presentation</a> by tri-Ace regarding their game &ldquo;Star Ocean 4&rdquo;.  The slides that really caught my eye were pages 90 to 96, where they discussed their approach to tone mapping. Instead of using the standard Reinhard tone mapping operator that everybody is so fond of, they decided to instead use curves based on actual specifications from different film types and CMOS sensors. This not only produced some really nice results (the screenshots in the slides speak for themselves), but it fit very nicely into their &ldquo;virtual camera&rdquo; approach towards post processing.  While I was intrigued by their approach, it wasn&rsquo;t until I read through <a href="http://johnhable.com/">John Hable</a>&rsquo;s recent <a href="http://www.gdcvault.com/play/1012459/Uncharted_2__HDR_Lighting">presentation</a> on gamma and HDR lighting that I decided to start doing my own research.  His presentation gave an overview of Uncharted 2&rsquo;s approach to tone mapping, which (like Star Ocean 4) eschews Reinhard&rsquo;s operator in favor of mimicking a filmic response curve. Once again the images in the slides speak for themselves, and they intrigued me enough to make me dig deeper.</p>
 
@@ -10248,7 +10248,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 			
 			<guid>https://therealmjp.github.io/posts/attack-of-the-depth-buffer/</guid>
 			<description>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel. This can be a powerful performance optimization, since the alternative is to output position into a &amp;ldquo;fat&amp;rdquo; floating-point buffer.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">reconstruct world-space or view-space position</a> of our geometry at any given pixel.  This can be a powerful performance optimization, since the alternative is to output position into a &ldquo;fat&rdquo; floating-point buffer. However it&rsquo;s important to realize that using the depth buffer in such unconventional ways can impose new precision requirements, since complex functions like lighting attenuation and shadowing will depend on the accuracy of the value stored in your depth buffer.  This is particularly important if you&rsquo;re using a hardware depth buffer for reconstructing position,  since the z/w value stored in it will be non-linear with respect to the view-space z value of the pixel. If you&rsquo;re not familiar with any of this, there&rsquo;s a good overview <a href="http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html">here</a> by Steve Baker. The basic gist of it is that z/w will increase very quickly in the as you move away from the near-clip plane of your perspective projection, and for much of the area viewable by your camera you will have values &gt;= 0.9 in your depth buffer. Consequently you&rsquo;ll end up with a lot of precision for geometry that&rsquo;s close to your camera, and very little for geometry that&rsquo;s way in the back. <a href="http://www.codermind.com/articles/Depth-buffer-tutorial.html">This article</a> from codermind has some mostly-accurate graphs that visualize the problem.</p>
 
@@ -10446,7 +10446,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 			
 			<guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/</guid>
 			<description>Officially, Nvidia&amp;rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&amp;rsquo;s. Unofficially, it&amp;rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&amp;rsquo;s a performance issue on the PC. Here&amp;rsquo;s some of the things I like to do with it (warning, it&amp;rsquo;s a long list!</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer.  While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!):</p>
 
@@ -10632,7 +10632,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 			
 			<guid>https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-pix/</guid>
 			<description>So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&amp;rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud.  This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360.  Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent. For instance it can easily tell you how many DrawIndexedPrimitives calls you&rsquo;re making, but it can&rsquo;t tell you whether the GPU is bound by texture bandwidth. For that reason I find that PIX is much more useful for debugging as opposed to performance investigations. However it can be useful when your performance is held up by API calls (since it can tell you where you&rsquo;re making them in a frame, and how many) and in Vista/Win7 it has access to GPU timing information that cam tell you how much time per frame the GPU is working, idle, or waiting for resources.  Another nice thing about PIX is that it now has full support for D3D11 as of the new February 2010 SDK, which unfortunately isn&rsquo;t the case for NVPerfHUD.</p>
 
@@ -10720,7 +10720,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 			<guid>https://therealmjp.github.io/posts/new-series-d3d-performance-and-debugging-tools-round-up/</guid>
 			<description>Recently I&amp;rsquo;ve been spending a lot of time with the various performance and debugging utilities available for Direct3D, and I thought it might be useful to give a quick overview of what&amp;rsquo;s out there. I&amp;rsquo;m sure most people who do a lot of Direct3D/XNA work are aware of these tools, but probably aren&amp;rsquo;t familiar with all of the really cool things you can do with them.
 What I&amp;rsquo;m going to do is run through each tool one at a time, and share some of the common use cases and show some screenshots of features I think are neat.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Recently I&rsquo;ve been spending a lot of time with the various performance and debugging utilities available for Direct3D, and I thought it might be useful to give a quick overview of what&rsquo;s out there.  I&rsquo;m sure most people who do a lot of Direct3D/XNA work are aware of these tools, but probably aren&rsquo;t familiar with all of the really cool things you can do with them.</p>
 
@@ -10760,7 +10760,7 @@ What I&amp;rsquo;m going to do is run through each tool one at a time, and share
 			<guid>https://therealmjp.github.io/posts/name-change/</guid>
 			<description>I got tired having an awkward mouthful of a blog name, so I decided to shorten it to something much snappier. Hence &amp;ldquo;MJP&amp;rsquo;s XNA Danger Zone&amp;rdquo; becomes simply &amp;ldquo;The Danger Zone&amp;rdquo;. I like it better already.
 Actually the main reason for the change is that I&amp;rsquo;ve been taking a break from the XNA stuff so that I can finally play around with DX11 a bit. In fact I&amp;rsquo;ve been working on a simple and flexible DX11 sample framework, so you may see a few DX11 samples from me in the future.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>I got tired having an awkward mouthful of a blog name, so I decided to shorten it to something much snappier.  Hence &ldquo;MJP&rsquo;s XNA Danger Zone&rdquo; becomes simply &ldquo;The Danger Zone&rdquo;. I like it better already.</p>
 
@@ -10785,7 +10785,7 @@ Actually the main reason for the change is that I&amp;rsquo;ve been taking a bre
 			
 			<guid>https://therealmjp.github.io/posts/inferred-rendering/</guid>
 			<description>So like I said in my last post, I&amp;rsquo;ve been doing some research into Inferred Rendering. If you&amp;rsquo;re not familiar with the technique, Scott Kircher has the original paper and presentation materials hosted on his website. The main topic of the paper is what they call &amp;ldquo;Discontinuity Sensitive Filtering&amp;rdquo;, or &amp;ldquo;DSF&amp;rdquo; for short. Basically it&amp;rsquo;s standard 2x2 bilinear filtering, except in addition to sampling the texture you&amp;rsquo;re interested in you also sample what they call a a &amp;ldquo;DSF buffer&amp;rdquo; containing depth, an instance ID (semi-unique for each instance rendering on-screen), and a normal ID (a semi-unique value identifying areas where the normals are continuous).</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>So like I said in my last post, I&rsquo;ve been doing some research into Inferred Rendering.  If you&rsquo;re not familiar with the technique, Scott Kircher has the original paper and presentation materials hosted on <a href="http://graphics.cs.uiuc.edu/~kircher/publications.html">his website</a>.  The main topic of the paper is what they call &ldquo;Discontinuity Sensitive Filtering&rdquo;, or &ldquo;DSF&rdquo; for short.  Basically it&rsquo;s standard 2x2 bilinear filtering, except in addition to sampling the texture you&rsquo;re interested in you also sample what they call a a &ldquo;DSF buffer&rdquo; containing depth, an instance ID (semi-unique for each instance rendering on-screen), and a normal ID (a semi-unique value identifying areas where the normals are continuous).  By comparing the values sampled from the DSF buffer with the values supplied for the mesh being rendered (they apply the DSF filter during final pass of a light-prepass renderer where meshes are re-rendered and sample from the lighting buffer), they can bias the bilinear weights so that texels not &ldquo;belonging&rdquo; to the object being rendered are automatically rejected.  They go through all of this effort so that they can do two things:</p>
 
@@ -10894,7 +10894,7 @@ Here&rsquo;s what I get with ATI&rsquo;s GPU ShaderAnalyzer:</p>
 			<guid>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</guid>
 			<description>One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
 Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>One thing I never used to pay attention to is <a href="http://download.microsoft.com/download/b/5/5/b55d67ff-f1cb-4174-836a-bbf8f84fb7e1/Picture%20Perfect%20-%20Gamma%20Through%20the%20Rendering%20Pipeline.zip">gamma correction</a>.  This is mainly because it rarely gets mentioned, and also because you can usually get <em>pretty good</em> results without ever even thinking about it.  However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.</p>
 
@@ -10992,7 +10992,7 @@ float3 SRGBToLinear(in float3 color)
 			
 			<guid>https://therealmjp.github.io/posts/more-post-processing-tricks-lens-flare/</guid>
 			<description>I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&amp;rsquo;t have to do occlusion queries or anything like that since that&amp;rsquo;s handled automatically.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used.  Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom.  The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically.  Plus it&rsquo;s really easy to fit it into a post-processing chain, since you can use your bloom results as the input.  The downside is that it&rsquo;s pretty far from realistic&hellip;I&rsquo;m not sure that most would like the end result.  This screen <a href="http://image.com.com/gamespot/images/2009/139/928377_20090520_screen014.jpg">here</a> shows the effect pretty clearly (it&rsquo;s the orange and purple blobby areas by the left bad guy&rsquo;s head, on the opposite side of the screen from the bright light source).</p>
 
@@ -11130,7 +11130,7 @@ technique LensFlareSecondPass
 			
 			<guid>https://therealmjp.github.io/posts/two-samples/</guid>
 			<description>Today I have two XNA samples fresh out of the oven: a Motion Blur Sample, and Depth Of Field Sample. I figure all of the kids these days wanna add fancy post-processing tricks to their games, right? The motion blur sample shows you how to do camera motion blur using a depth buffer, or full object motion blur using a velocity buffer. The depth of field sample shows you how to do a standard blur-based DOF, a slightly-smarter blur-based DOF that doesn&amp;rsquo;t blur across edges, and the somewhat more physically accurate disc blur approach.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Today I have two XNA samples fresh out of the oven: a <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/motion-blur-sample/">Motion Blur Sample</a>, and <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/depth-of-field-sample/">Depth Of Field Sample</a>.  I figure all of the kids these days wanna add fancy post-processing tricks to their games, right?  The motion blur sample shows you how to do camera motion blur using a depth buffer, or full object motion blur using a velocity buffer. The depth of field sample shows you how to do a standard blur-based DOF, a slightly-smarter blur-based DOF that doesn&rsquo;t blur across edges, and the somewhat more physically accurate disc blur approach.</p>
 
@@ -11160,7 +11160,7 @@ technique LensFlareSecondPass
 			
 			<guid>https://therealmjp.github.io/posts/pix-with-xna/</guid>
 			<description>Ladies and gentlemen, I present you with the most epic of tutorials: Using PIX With XNA. This 37-page monster teaches PIX for the XNA programmer, and includes an in-depth explanation of the XNA/D3D9 relationship as well as 6 excercises that show you the how to solve common problems (full source code and XNA 3.1 projects included). I sure hope somebody finds this thing useful&amp;hellip;it took me forever to write this thing.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Ladies and gentlemen, I present you with the most epic of tutorials: <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/pix-with-xna-tutorial/">Using PIX With XNA</a>.  This 37-page monster teaches PIX for the XNA programmer, and includes an in-depth explanation of the XNA/D3D9 relationship as well as 6 excercises that show you the how to solve common problems (full source code and XNA 3.1 projects included).  I sure hope somebody finds this thing useful&hellip;it took me <em>forever</em> to write this thing.</p>
 
@@ -11206,7 +11206,7 @@ technique LensFlareSecondPass
 			<guid>https://therealmjp.github.io/posts/storing-normals-using-spherical-coordinates/</guid>
 			<description>Update: n00body posted this link in the comments, which is way more in-depth than my post. Check it out!
 If you&amp;rsquo;ve ever implemented a deferred renderer, you know that one of the important points is keeping your G-Buffer small enough as to be reasonable in terms of bandwidth and your number of render targets. Thanks to that constant struggle between good and evil, people have come up with some reasonable clever approaches towards packing necessary attributes in your G-Buffer.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Update:  n00body posted <a href="http://aras-p.info/texts/CompactNormalStorage.html">this link</a> in the comments, which is way more in-depth than my post.  Check it out!</em></p>
 
@@ -11275,7 +11275,7 @@ float3 SphericalToCartesian(float2 spherical)
 			
 			<guid>https://therealmjp.github.io/posts/whats-good-on-the-menu-waiter/</guid>
 			<description>I remember reading someone say on gamedev.net that at some point everyone tries to write their own UI system, and usually gets it wrong. Apparently he&amp;rsquo;s right (or at least about the first part), because I&amp;rsquo;ve gone ahead and written a menu/UI system. While it initially started out as part of the engine/framework I&amp;rsquo;ve been working on for my game, as I worked on it I decided it might be better off if I decoupled it from the rest of the engine components and made it a standalone library/editor package so that other people could make use of it.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>I remember reading someone say on gamedev.net that at some point everyone tries to write their own UI system, and usually gets it wrong.  Apparently he&rsquo;s right (or at least about the first part), because I&rsquo;ve gone ahead and written a menu/UI system.  While it initially started out as part of the engine/framework I&rsquo;ve been working on for my game, as I worked on it I decided it might be better off if I decoupled it from the rest of the engine components and made it a standalone library/editor package so that other people could make use of it.</p>
 
@@ -11330,7 +11330,7 @@ float3 SphericalToCartesian(float2 spherical)
 			<guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/</guid>
 			<description>Picking up where I left off here&amp;hellip;
 As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &amp;ldquo;camera world matrix&amp;rdquo;, which is a matrix representing the camera&amp;rsquo;s position and orientation in world-space.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Picking up where I left off <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">here</a>&hellip;</p>
 
@@ -11503,7 +11503,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 			<guid>https://therealmjp.github.io/posts/undo-and-redo-take-2/</guid>
 			<description>Please excuse the rhyming in the title&amp;hellip;sometimes I just can&amp;rsquo;t help myself. It&amp;rsquo;s a problem.
 A few weeks ago I started working on a super-duper-secret project (to be revealed soon), a big part of which was a new editor. Since I&amp;rsquo;m the kind of guy who gets all worked up about having proper undo and redo support, I took the opportunity to make it an up-front part of my design rather than just shoving it in afterwords.</description>
-			<content type="html"><![CDATA[<p>Please excuse the rhyming in the title&hellip;sometimes I just can&rsquo;t help myself.  It&rsquo;s a problem.</p>
+			<content:encoded><![CDATA[<p>Please excuse the rhyming in the title&hellip;sometimes I just can&rsquo;t help myself.  It&rsquo;s a problem.</p>
 
 <p>A few weeks ago I started working on a  super-duper-secret project (to be revealed soon), a big part of which was a new editor.   Since I&rsquo;m the kind of guy who gets <a href="http://mynameismjp.wordpress.com/2008/12/19/undo-and-redo/">all worked up</a> about having proper undo and redo support, I took the opportunity to make it an up-front part of my design rather than just shoving it in afterwords.</p>
 
@@ -11605,7 +11605,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 			
 			<guid>https://therealmjp.github.io/posts/theres-more-than-one-way-to-defer-a-renderer/</guid>
 			<description>While the idea of deferred shading/deferred rendering isn&amp;rsquo;t quite as hot as it was year or two ago (OMG, Killzone 2 uses deferred rendering!), it&amp;rsquo;s still a cool idea that gets discussed rather often. People generally tend to be attracted to way a &amp;ldquo;pure&amp;rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene. However as anyone who&amp;rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.</description>
-			<content type="html"><![CDATA[<p>While the idea of deferred shading/deferred rendering isn&rsquo;t quite as hot as it was  year or two ago (OMG, <a href="http://www.guerrilla-games.com/publications/dr_kz2_rsx_dev07.pdf">Killzone 2 uses deferred rendering</a>!), it&rsquo;s still a cool idea that gets discussed rather often.  People generally tend to be attracted to way a &ldquo;pure&rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene.  However as anyone who&rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.  The main ones being that for MSAA you need to individually light all your subsamples (which isn&rsquo;t doable in D3D9), and also that for non-opaque objects you have use forward rendering anyway.</p>
+			<content:encoded><![CDATA[<p>While the idea of deferred shading/deferred rendering isn&rsquo;t quite as hot as it was  year or two ago (OMG, <a href="http://www.guerrilla-games.com/publications/dr_kz2_rsx_dev07.pdf">Killzone 2 uses deferred rendering</a>!), it&rsquo;s still a cool idea that gets discussed rather often.  People generally tend to be attracted to way a &ldquo;pure&rdquo; deferred renderer neatly and cleanly separates your geometry from your lighting, as well as the idea of being able to throw lights everywhere in their scene.  However as anyone who&rsquo;s done a little bit of research into the topic surely knows, it comes with a few drawbacks.  The main ones being that for MSAA you need to individually light all your subsamples (which isn&rsquo;t doable in D3D9), and also that for non-opaque objects you have use forward rendering anyway.</p>
 
 <p>The neat thing about the concepts involved with deferred shading is that you&rsquo;re not all locked into the typical &ldquo;render depth+normals+diffuse+specular to a fat G-Buffer and then shade&rdquo; approach.  I&rsquo;m not sure enough people are aware of this, and appreciate it.  For example, you can just <a href="http://mynameismjp.wordpress.com/2009/01/19/deferred-shadow-maps-sample/">defer your shadow map calculations</a> to gain the related performance and organization benefits, and then use standard forward rendering techniques for everything else.  Or you can <a href="http://diaryofagraphicsprogrammer.blogspot.com/2008/03/light-pre-pass-renderer.html">reconfigure the deferred lighting pipeline</a> to gain back the ability to have multiple materials, or the ability to multisample without shading individual subsamples.  Surely there are even more possibilities!</p>
 
@@ -11635,7 +11635,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 			<guid>https://therealmjp.github.io/posts/reconstructing-position-from-depth/</guid>
 			<description>There are times I wish I&amp;rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&amp;rsquo;s that I still get about it. Wouldn&amp;rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&amp;rsquo;re right, it would be!
 First things first: what am I talking about? I&amp;rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>There are times I wish I&rsquo;d never responded to <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=474166&amp;PageSize=25&amp;WhichPage=1">this thread</a> over at GDnet, simply because of the constant stream of PM&rsquo;s that I still get about it.  Wouldn&rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it?  You&rsquo;re right, it would be!</p>
 
@@ -11954,7 +11954,7 @@ for (int i = 0; i &lt; 4; i++)
 			
 			<guid>https://therealmjp.github.io/posts/snippet-content-project/</guid>
 			<description>One of the tools I made for my current project is a model editor. Basically it can import in .fbx or .x models, and then you can apply my custom effects, set parameters, set textures, and then save it using my custom model format I named &amp;ldquo;.jsm&amp;rdquo; (it&amp;rsquo;s just XML&amp;hellip;don&amp;rsquo;t tell anyone!). Anyway one of the neat features I wanted it to have was the ability to add a model to my game&amp;rsquo;s Content project so that you wouldn&amp;rsquo;t have to manually do it through Visual Studio.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>One of the tools I made for my current project is a model editor.  Basically it can import in .fbx or .x models, and then you can apply my custom effects, set parameters, set textures, and then save it using my custom model format I named &ldquo;.jsm&rdquo; (it&rsquo;s just XML&hellip;don&rsquo;t tell anyone!).  Anyway one of the neat features I wanted it to have was the ability to add a model to my game&rsquo;s Content project so that you wouldn&rsquo;t have to manually do it through Visual Studio.  And since the Content Pipeline uses MSBuild, this is easy to do:</p>
 
@@ -12005,7 +12005,7 @@ contentProject.Save(projectFileName);
 			
 			<guid>https://therealmjp.github.io/posts/deferred-cascaded-shadow-maps/</guid>
 			<description>For my next sample I was planning on extending my deferred shadow maps sample to implement cascaded shadow maps. I got an email asking about how to make the sample look decent with large viewing distances which is exactly the problem CSM&amp;rsquo;s solve. So I decided to bump up my plans a little early and get the code up and running. It&amp;rsquo;ll be a while before I get the write-up finished, but until then feel free to play around with code (PC and 360 projects included).</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>For my next sample I was planning on extending my <a href="http://www.ziggyware.com/readarticle.php?article_id=235">deferred shadow maps sample</a> to implement cascaded shadow maps.  I got an email asking about how to make the sample look decent with large viewing distances which is exactly the problem CSM&rsquo;s solve.  So I decided to bump up my plans a little early and get the code up and running.  It&rsquo;ll be a while before I get the write-up finished, but until then feel free to play around with <a href="http://cid-538e432ea49f5bde.skydrive.live.com/self.aspx/Public/Samples%20And%20Tutorials/DeferredCascadedShadowMaps.zip">code</a> (PC and 360 projects included).</p>
 
@@ -12034,7 +12034,7 @@ contentProject.Save(projectFileName);
 			<guid>https://therealmjp.github.io/posts/profiling-events/</guid>
 			<description>Over the past week or so I&amp;rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible. One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something. I narrowed it down to two options:
  notify owners via the ICollisionOwner interface I was using  OR</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Over the past week or so I&rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible.  One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something.  I narrowed it down to two options:</p>
 
@@ -12179,7 +12179,7 @@ public class EventHandler2 : EventHandler
  Comments: sam - Feb 4, 2009
 This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
 1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>Got a new sample ready, this one  shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer.  Check it out on <a href="http://www.ziggyware.com/readarticle.php?article_id=235">Ziggyware</a>!</p>
 
@@ -12237,7 +12237,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 			<guid>https://therealmjp.github.io/posts/teach-your-effects-a-new-trick/</guid>
 			<description>The Effects Framework is a pretty damn awesome tool. However I&amp;rsquo;m afraid that&amp;rsquo;s not totally obvious to a lot of newbies, who either just don&amp;rsquo;t what it can do or haven&amp;rsquo;t been exposed to some of the situations where Effect&amp;rsquo;s can really come in handy.
 One neat thing Effect&amp;rsquo;s can do that isn&amp;rsquo;t obvious from the documentation or samples is auto-generate variants of shaders for you based on the value of uniform parameters.</description>
-			<content type="html"><![CDATA[<p>The Effects Framework is a pretty damn awesome tool.  However I&rsquo;m afraid that&rsquo;s not totally obvious to a lot of newbies, who either just don&rsquo;t what it can do or haven&rsquo;t been exposed to some of the situations where Effect&rsquo;s can really come in handy.</p>
+			<content:encoded><![CDATA[<p>The Effects Framework is a pretty damn awesome tool.  However I&rsquo;m afraid that&rsquo;s not totally obvious to a lot of newbies, who either just don&rsquo;t what it can do or haven&rsquo;t been exposed to some of the situations where Effect&rsquo;s can really come in handy.</p>
 
 <p>One neat thing Effect&rsquo;s can do that isn&rsquo;t obvious from the documentation or samples is auto-generate variants of shaders for you based on the value of uniform parameters.  For instance let&rsquo;s take a common scenario: lets say you have a shader for model, and you need it to work for either a point light, a spot light, or a directional light one-at-a-time.  You might write your shader code like this:</p>
 
@@ -12314,7 +12314,7 @@ technique DirectionalLight
 			<guid>https://therealmjp.github.io/posts/fun-with-compiled-content/</guid>
 			<description>EDIT: I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere. So here it is.
 Wouldn&amp;rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure? Of course it would!</description>
-			<content type="html"><![CDATA[<p>EDIT:  I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere.  So <a href="http://members.gamedev.net/MJP/ContentBrowser.zip">here it is</a>.</p>
+			<content:encoded><![CDATA[<p>EDIT:  I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere.  So <a href="http://members.gamedev.net/MJP/ContentBrowser.zip">here it is</a>.</p>
 
 <p>Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure?  Of course it would!  Only a crazy person would think otherwise.  Well the good news is I already did this, so feel free to plunder the code for your own use.</p>
 
@@ -12565,7 +12565,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 			
 			<guid>https://therealmjp.github.io/posts/book-recommendation-real-time-collision-detection/</guid>
 			<description>I just recently ordered and received Real-Time Collision Detection from Amazon, and it was worth every penny. Collision detection was never something I was never particularly interested in, and in that past I was always willing to just leave it all up to a physics package to handle. But as anyone else working on an XNA game for the 360 knows, a physics engine isn&amp;rsquo;t really a practical option this time around.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>I just recently ordered and received <a href="http://realtimecollisiondetection.net/" title="Real-TimeCollision Detection">Real-Time Collision Detection</a> from <a href="http://www.amazon.com/Real-Time-Collision-Detection-Interactive-Technology/dp/1558607323">Amazon</a>, and it was worth every penny.  Collision detection was never something I was never particularly interested in, and in that past I was always willing to just leave it all up to a physics package to handle.  But as anyone else working on an XNA game for the 360 knows, a physics engine isn&rsquo;t really a practical option this time around.  I&rsquo;ve had some basic stuff working for a long time now (thanks to <a href="http://fabio.policarpo.nom.br/">Fabio Policarpo&rsquo;s</a> BoxCollider), but my level designer has made some requests that have led me to finally dig in and start making my system robust while keeping it performance.  Fortunately the book I ordered cam to the rescue:  it has some fantastic overviews and demonstration of just about every aspect of collision detection.  The explanations are concise and get right to the important points, and derivation of the mathematical formulas are always followed by a sample implementation in C++ (If you&rsquo;re like me and you hate pseudo-code, then this truly is a wonderful thing).</p>
 
@@ -12590,7 +12590,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 			
 			<guid>https://therealmjp.github.io/posts/undo-and-redo/</guid>
 			<description>A professional developer on the gamedev.net forums once said &amp;ldquo;if you&amp;rsquo;ve implemented Undo and Redo in your app, then you&amp;rsquo;re in the top 1% of applicants for a tools developer position&amp;rdquo;. That&amp;rsquo;s funny to me, because I have no idea how you could possibly have a useful tool without such a fundamental element of GUI application development. I mean&amp;hellip;people screw up. It&amp;rsquo;s nice for users to know that their mistake can go away with a single press of &amp;ldquo;ctrl+z&amp;rdquo;.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p>A professional developer on the gamedev.net forums once said &ldquo;if you&rsquo;ve implemented Undo and Redo in your app, then you&rsquo;re in the top 1% of applicants for a tools developer position&rdquo;.  That&rsquo;s funny to me, because I have no idea how you could possibly have a useful tool without such a fundamental element of GUI application development.  I mean&hellip;people screw up.  It&rsquo;s nice for users to know that their mistake can go away with a single press of &ldquo;ctrl+z&rdquo;.</p>
 
@@ -12736,7 +12736,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 			<guid>https://therealmjp.github.io/posts/logluv-encoding-for-hdr/</guid>
 			<description>Okay so this marks the third time I&amp;rsquo;ve posted this blog entry somewhere. What can I say&amp;hellip;I like it! I also think it&amp;rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&amp;rsquo;m hoping some people will stumble upon it.
 Designing an effective and performant HDR implementation for my game&amp;rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.</description>
-			<content type="html"><![CDATA[
+			<content:encoded><![CDATA[
 
 <p><em>Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere.  What can  I say&hellip;I like it!  I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.</em></p>
 
@@ -12866,7 +12866,7 @@ float3 LogLuvDecode(in float4 vLogLuv)
 Working With Unicode in the Windows API
 Don&amp;rsquo;t Cast Function Pointers (Unless You Really Know What You&amp;rsquo;re Doing)
 Posting WM_DESTROY is *not* how you destroy a window</description>
-			<content type="html"><![CDATA[<p>Just wanted to post some links to old blog entries from gamedev.net&hellip;</p>
+			<content:encoded><![CDATA[<p>Just wanted to post some links to old blog entries from gamedev.net&hellip;</p>
 
 <p><a href="http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=475298&amp;#3182072"><strong>Working With Unicode in the Windows API</strong></a></p>
 
@@ -12885,7 +12885,7 @@ Posting WM_DESTROY is *not* how you destroy a window</description>
 			<description>Look out interwebs, I have a new blog to call my own!
 *insert trumpet fanfare here*
 Here&amp;rsquo;s what I plan on doing with it: -integrating some of the stuff I&amp;rsquo;ve been posting on gamedev.net and xnainfo.com in one place -put up some samples/tutorials/tools/code I&amp;rsquo;ve come up with -yammer on about JumpSwitch, the Xbox 360 game I&amp;rsquo;m working on -set up a page to show some sweet pics and vids of JumpSwitch, so everyone can see how awesome it is -post links to cool and helpful stuff I find -try to somewhat serious (not likely to happen)</description>
-			<content type="html"><![CDATA[<p><img src="/images/converted/takeoff.jpg" alt="takeoff!" /></p>
+			<content:encoded><![CDATA[<p><img src="/images/converted/takeoff.jpg" alt="takeoff!" /></p>
 
 <p>Look out interwebs, I have a new blog to call my own!</p>
 
