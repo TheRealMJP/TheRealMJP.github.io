@@ -222,7 +222,7 @@
 <p>Hopefully this post has helped give you a basic understanding of how subsurface scattering works, and how it can be approximated in real-time graphics. Perhaps it will also give you enough information to make a preliminary decision about which technique to use for your own real-time engine. If you were to ask me right now to choose between the 3 techniques that I discussed, I would probably go with the screen-space option. In general it seems to have the least corner cases to handle, and most closely resembles a ray-tracing approach. But that could also be a bit of &quot;the grass is always greener&quot; syndrome on my part. I also fully expect a few games to start using ray-traced SSS on high-end hardware at some point in the near future, since you can use that for high-quality results while keeping a screen-space path as a fallback for weaker hardware. You could also do a hybrid approach similar to what DICE did for <a href="https://developer.download.nvidia.com/video/gputechconf/gtc/2019/presentation/s91023-it-just-works-ray-traced-reflections-in-battlefield-v.pdf">reflections in Battlefield V</a>, where you use screen-space for most pixels and only use ray-tracing in areas the necessary data isn't present on the screen.</p>
 
 <p>Please feel free to reach out in the comments or on Twitter if you have questions, or if you spot something incorrect that I should fix!</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -489,7 +489,7 @@
  <a class="footnote-return" href="#fnref:3"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -566,7 +566,7 @@
  <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -768,7 +768,7 @@
 
 <p>Hey Matt! I basically had a very simple side-scrolling shooter working, where you could shoot a few infinitely-spawning enemies. It featured the main character &ldquo;Jack&rdquo; from our Lone Echo game series (I called my game &ldquo;Super Lone Echo, naturally), so I had been meaning to clear it with my company&rsquo;s owner before posting images or video. I guess I should actually do that at some point! :P
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -1082,7 +1082,7 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 
 <p>Great series! Very in depth and would love to see more :)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -1306,7 +1306,7 @@ Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so
  <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -1531,7 +1531,7 @@ Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth l
 
 <p>[…] a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting With Overlap and […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -1859,7 +1859,7 @@ Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a 
  <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -2506,7 +2506,7 @@ Welcome to part 2 of the series! In the previous article, I explained the basics
 
 <p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -2683,7 +2683,7 @@ If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp
 
 <p>This is so nice. I am learning a lot from your articles :-)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -2936,7 +2936,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 <p>Very nice article and description! Excellent sample application and makes me wanna incorporate this into my editor. I am curious about a few things Am I correct in assuming that, if you were to save &ldquo;Lightmap&rdquo; resource view from &ldquo;MeshBakerStatus&rdquo; after the progress reaches 100%, you could then reuse this in next launch (or in game), assuming light parameters are the same.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -3144,7 +3144,7 @@ By Krishnavedala (Own work) [CC0], via Wikimedia Commons</em></p>
 
 <p>Excellent series, thanks for posting!
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -3488,7 +3488,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 <p>Hi MJP, I&rsquo;ve noticed that we could fit more gaussians to an arbitrary function. For example I&rsquo;ve managed to match the Beckmann distribution with 3 gaussians for the roughness value of 1 <a href="https://www.desmos.com/calculator/o1lces1o1l">https://www.desmos.com/calculator/o1lces1o1l</a> My aim is to fit between 2-5 gaussians to common BRDFs and sample from environment maps pre-convolved with SG, then that way I can get a much better approximation to Importance Sampled references than the current IBL methods.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -3680,7 +3680,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 <p>(Great series!) I was initially confused by your graph comparing numerical integration with the SG inner product&ndash;&ldquo;shouldn&rsquo;t numerical integration give the same result, since the inner product is exact and in closed form?&rdquo; I asked myself; it wasn&rsquo;t clear that you were comparing the integration of two different functions. I eventually figured out that you were numerically integrating the SG light model with the actual clamped cosine and comparing that to the inner product of the SG light and the SG clamped cosine (I think!); it might be nice to clarify the text/caption about that part of it. (On to part 4!)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -3868,7 +3868,7 @@ $$ \lambda = \frac{ln(\epsilon) - ln(a)}{cos\theta - 1} $$</p>
 
 <p>\( G_{1}(\mathbf{v})G_{2}(\mathbf{v}) = G(\mathbf{v};\frac{\mu_{m}}{||\mu_{m}||},a_{1}a_{2}e^{\lambda_{m}(||\mu_{m}|| - 1)}) \) is it lost the sharpness λm∥pm∥? and <code>SG SGProduct(in SG x, in SG y) { float3 um = (x.Sharpness * x.Axis + y.Sharpness + y.Axis) / (x.Sharpness + y.Sharpness);</code> is this should be: <code>float3 um = (x.Sharpness * x.Axis + y.Sharpness * y.Axis) / (x.Sharpness + y.Sharpness);</code>
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4069,7 +4069,7 @@ h an result very low (or even negative!) values when evaluated. It&rsquo;s gen
 
 <p>Yes you&rsquo;re 100% correct: that sentence is referring to the middle image, not the bottom image. It&rsquo;s now been corrected. Thank you for pointing out the mistake!
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4112,7 +4112,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 <p>Wow, was planning to research this in the near future due to our indirect specular being rather lousy for higher roughness values using env-probes. This is going to be sure excellent reading this week, thank you immensely.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4501,7 +4501,7 @@ MSAA Resolve: 0.21ms (0.21ms max)
 
 <p>[…] are few solutions to it. I will mention first a heavy / complicated, but best solution, suggested by Matt Pettineo – rasterizing the cone in tested space and then either simply checking against this […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4528,7 +4528,7 @@ MSAA Resolve: 0.21ms (0.21ms max)
 
 <p>I suggest a buildfix for VS2015: In Shadows.cpp (119-120), add &ldquo;.AsEnum()&rdquo; in both strings. So the result should be like Float4x4 meshWorld = Float4x4::ScaleMatrix(MeshScales[AppSettings::CurrentScene.AsEnum()]); meshRenderer.SetSceneMesh(context, &amp;models[AppSettings::CurrentScene.AsEnum()], meshWorld);
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4880,7 +4880,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
  <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -4946,7 +4946,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 
 <p>We covered the cloth BRDF in the course notes from our SIGGRAPH 2013 presentation: <a href="http://blog.selfshadow.com/publications/s2013-shading-course/rad/s2013_pbs_rad_notes.pdf">http://blog.selfshadow.com/publications/s2013-shading-course/rad/s2013_pbs_rad_notes.pdf</a>
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5135,7 +5135,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 
 <p>Hi Nicolas, I think that writing a path tracer gives you a better perspective on BRDF&rsquo;s and the rendering equation, since you take a more unified approach to solving the rendering equation. In real-time we end up having to do so many specialized paths for things like point lights, area lights, environment specular, etc., since we have such strict limitations on what we can do in a single frame. Meanwhile in a path tracer you&rsquo;re free to to do arbitrary queries on your scene via ray tracing, which lets you focus on integrating to solve the rendering equation. So instead of using approximation X or for one light source and technique Y for handling your environment specular, you just use ray tracing to get radiance and use the same BRDF for everything. Having that flexibility and simplicity also makes it much easier (IMO) to explore things like refraction, and volumetric scattering. This is all my own opinion based on my personal experiences, so your mileage may vary. If nothing else, knowing how a path tracer works will give you valuable knowledge for understanding how offline renderers work, or for writing an offline baking tool that you use for a real-time engine. Monte Carlo integration (which is used heavily in path tracing) is also an invaluable tool to have on your belt for almost any rendering scenario, both real-time and offline.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5205,7 +5205,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 
 <p>Thank you and all the people at Ready at Dawn, I honestly loved the game. And visually (technical and artistically) is among the best I&rsquo;ve played on my almost 30 years of gaming. Congratulations!
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5328,7 +5328,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 
 <p>Oh, I didn&rsquo;t even see that! I&rsquo;m pretty sure that&rsquo;s just some kind of search/replace gone badly, and it definitely wasn&rsquo;t intentional. I don&rsquo;t think it will have any effect, but I&rsquo;m definitely going to remove it when I get a chance. Thank you for pointing that out!
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5386,7 +5386,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 
 <p>Talk was awesome Matt and was great to meet you! I really liked how you guys use material inheritance to lock down the &ldquo;look&rdquo; of levels.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5488,7 +5488,7 @@ That&rsquo;s about all I have for now. Feel free to download the demo and play a
 
 <p>I tried to implement this technique in our game engine and I was able to resolve all the artefact to a playable state&hellip; for a static scene. But when particles (very low alpha, very near to the camera) go on top of a very distant but almost solid translucent object (the sea at the horizon or ice blocks) we had random annoying flashes. And this is almost unavoidable without tweaking continuously the weight function, probably a &ldquo;per object&rdquo; weight multiplier can solve these problems but I think is too much works for the artist. I&rsquo;m pretty sure somebody will come with a smart compute shader solution at some point, till then I think I&rsquo;ll using this technique only for low-res particle.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5570,7 +5570,7 @@ That&rsquo;s about all I have for now. Feel free to download the demo and play a
 
 <p>AntTweakBar is really great library. I hope you had no problems with the integration, it literally takes a minutes. Still it would be nice if the author of this library make some more updates :) For instance in the OpenGL version there was a bug when cursor changed: <a href="http://www.bfilipek.com/2013/11/anttweakbar-cursor-lag-workaround.htm">http://www.bfilipek.com/2013/11/anttweakbar-cursor-lag-workaround.htm</a>
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5926,7 +5926,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 
 <p>Thanks. And thanks for the sample too, it&rsquo;s been incredibly useful. I&rsquo;ve not seen samples this well thought out and well executed since I had access to the old Microsoft ATG stuff. So - thank you.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -5950,7 +5950,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 </ul>
 
 <p>Based on this information it appears that TIER1 offers all of the core functionality, while TIER2 has few extras bring it up to par with <a href="http://www.opengl.org/registry/specs/AMD/sparse_texture.txt">AMD&rsquo;s sparse texture extension</a>.</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -6065,7 +6065,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 
 <p>[…] implementation details, the reference is MJP specularAA project, in which the main specular anti aliasing techniques used in games are […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -6122,7 +6122,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 
 <p>First of all, congrats. At first i thought sony was pulling the same trick when they showed killzone 2, and went for a &ldquo;hey guys, this is realtime.. lol.. jk.. its CG&rdquo;, but then I noticed some clues that it was indeed realtime. Second thing, what are exactly the 8 things you crossed off the list?
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -6182,7 +6182,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 
 <p>Thanks!
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -6652,7 +6652,7 @@ Update 8/26/2017: while working on The Order I improved upon the work described 
 
 <p>Sorry, may be i missed something but i cannot understand the line 196 in your resolve.hlsl shader: SampleOffset += SampleOffsets[subSampleIdx].xy; Why is here += in the inner loop? As far as i understand it will be correct only for index 0. Thank you for your answer.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -6914,7 +6914,7 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
  <a class="footnote-return" href="#fnref:4"><sup>[return]</sup></a></li>
 </ol>
 </div>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7080,7 +7080,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 
 <p>Interesting as usual. I&rsquo;ll spare you my usual puritan amateur comments ;)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7347,7 +7347,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 
 <p>[…] More information on sampling (written with graphics in mind, but the same concepts apply to digital audio): <a href="http://mynameismjp.wordpress.com/2012/10/15/signal-processing-primer/">http://mynameismjp.wordpress.com/2012/10/15/signal-processing-primer/</a> […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7387,7 +7387,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 
 <p>Awesome! Always like your posts.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7401,7 +7401,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 			<content:encoded><![CDATA[<p>Some time ago <a href="http://www.derousiers.net/">Charles de Rousiers</a> adapted my <a href="http://mynameismjp.wordpress.com/2011/04/19/bokeh-ii-the-sequel/">Bokeh Depth of Field sample</a> to OpenGL, and we contributed it as a chapter to the recently-released <a href="http://openglinsights.com/index.html">OpenGL Insights</a>. Bokeh is still an ongoing area of R&amp;D for myself, and hopefully I&rsquo;ll be able to share some more improvements and optimizations once my current project is announced or released.</p>
 
 <p>There&rsquo;s going to be an author meet-up/book signing a the CRC Press SIGGRAPH booth (#929) this Tuesday from 2-3PM, and I&rsquo;ll most likely be stopping by. So if you want to talk about Bokeh o(r anything else graphics-related), then feel free to stop by and chat me up!</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7434,7 +7434,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 
 <p>&rsquo;s missing the coffe-cup refiller slave, or possibly the inventor guy which makes crazy little helper-bots, which clean the finger-prints on the monitor after you pointed at a peculiar piece of code. :^D
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -7527,7 +7527,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 
 <p>arg sorry for double post I was too excited by faster shader compilation (and cannot switch to win8 atm) :)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8376,7 +8376,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 
 <p>MJP: Did you have any joy with spot culling? I&rsquo;m running with the cone/plane test per frustum plane I had on PS3/SPU. Haven&rsquo;t seen any false positives ..
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8472,7 +8472,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 
 <p>We could just replace ssao with ssdo, or hbao. Both produce much better results and still maintain great framerates. Also, I implemented the improved fog in under 45min. New record =P
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8550,7 +8550,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
 
 <p>Timestamp and Disjoint doesn&rsquo;t work with lower feature levels (i.e. 9.3) at the D3D11. Lower levels support events and occlussions only.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8659,7 +8659,7 @@ In the old days of DX9, the average luminance calculation was usually done repea
 
 <p>[…] of the screen [Hen14]. Additionally we could also use a compute shader for computing averages [Pet11]. This is usually simpler and more efficient than repeated texture […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8742,7 +8742,7 @@ Jason Zink - <time datetime="2011-08-08 08:21:21">Aug 1, 2011</time></p>
 
 <p>LOL, I didn&rsquo;t noticed that before :D
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8810,7 +8810,7 @@ Jason Zink - <time datetime="2011-08-08 08:21:21">Aug 1, 2011</time></p>
 
 <p>hilarious, i think this all goes back to the BELIEVE video by cher&hellip;
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8918,7 +8918,7 @@ Out-of-focus foreground objects** - As in most DOF implementations, foreground o
 
 <p>[&hellip;] time ago Charles de Rousiers adapted my Bokeh Depth of Field sample to OpenGL, and we contributed it as a chapter to the recently-released OpenGL Insights. Bokeh is [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -8962,7 +8962,7 @@ for (int y = -Radius; y &lt;= Radius; y++)
 
 <p>Thanks rake, really appreciate it! I&rsquo;ll update the old samples with the new shader code.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9141,7 +9141,7 @@ Finally, this one is with the brightness threshold set to 0. Basically this mean
 
 <p>[…] sprite，其他部分就是普通的模糊处理[14]。这篇博客里有详细的介绍和代码提供，效果也是不错的，GPU […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9426,7 +9426,7 @@ Finally, this one is with the brightness threshold set to 0. Basically this mean
 
 <p>I must had something corrupt. Fresh download and conversion now work beautifully. Thank you for this.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9495,7 +9495,7 @@ void main( void ){
 
 <p>This is a good code basis for a deferred spotlight shader. To make it more understandable I would like to add: - &ldquo;uniform vec2 nfv;&rdquo; should be &ldquo;uniform float farClipDistance&rdquo; - Replace &ldquo;nfv.y&rdquo; by &ldquo;farClipDistance&rdquo;, x is never used and i can&rsquo;t think of a way of using it here. - I would change &ldquo;vec2 tcoord = gl_FragCoord.xy * sic;&rdquo; to &ldquo;vec4 ex_persp_position = gl_FragCoord / gl_FragCoord.w; vec2 texCoord = ex_persp_position.xy * 0.5 + vec2(0.5);&rdquo; This should work- the variable &ldquo;sic&rdquo; can be removed then&hellip;
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9565,7 +9565,7 @@ void main( void ){
 
 <p>[…] loose the early Z unless you use the variant SV_DepthGreater, or SV_DepthLessEqual. Check out this blog post for more details. In most cases though I would argue that non linear depth is just […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9876,7 +9876,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 
 <p>[…] I was creating an additional geometry buffer to store depth in view space. I followed an article to reuse the already existent depth stencil buffer […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -9956,7 +9956,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 
 <p>links dead :(
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10022,7 +10022,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 
 <p>The link says &ldquo;service unavailable&rdquo;&hellip; can you please reupload it?
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10238,7 +10238,7 @@ float3 positionWS = CameraPositionWS + viewRay * (linearDepth / viewZDist);
 
 <p>[…] <a href="https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/">https://mynameismjp.wordpress.com/2010/04/30/a-closer-look-at-tone-mapping/</a> […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10436,7 +10436,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 
 <p>[…] This post by Matt Pettineo has a good overview of the trade-offs of different approaches to depth buffer precision. You can use the embedded tool in this post by Theodor Mader to get a sense of how error is distributed when using 16-bit depth. […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10622,7 +10622,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 
 <p>In XNA 4.0 the member GraphicsDeviceInformation.DeviceType is gone. When I try to start my test game with PerfHUD it says: No suitable graphics card found. Unable to create the graphics device. What can I do? Thanks :)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10709,7 +10709,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 
 <p>[&hellip;] Start with PIX. [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10749,7 +10749,7 @@ What I&amp;rsquo;m going to do is run through each tool one at a time, and share
 
 <p>[&hellip;] Enter Matt “” Pettineo. [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10775,7 +10775,7 @@ Actually the main reason for the change is that I&amp;rsquo;ve been taking a bre
 
 <p>[&hellip;] Enter Matt “Danger Mouse” Pettino. [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10883,7 +10883,7 @@ Here&rsquo;s what I get with ATI&rsquo;s GPU ShaderAnalyzer:</p>
 
 <p>[…] Use some sort of screen door transparency like the one implemented by Inferred rendering. This is basically opaque rendering in which the “alpha” object is rendered on top of […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -10982,7 +10982,7 @@ float3 SRGBToLinear(in float3 color)
 
 <p>[…] <a href="https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/">https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/</a> […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11120,7 +11120,7 @@ technique LensFlareSecondPass
 
 <p>[&hellip;] Shows some code. [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11150,7 +11150,7 @@ technique LensFlareSecondPass
 
 <p>It would be nice if these were updated to XNA 4.0&hellip; hint, hint
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11195,7 +11195,7 @@ technique LensFlareSecondPass
 
 <p>Haven&rsquo;t opened it yet, but I&rsquo;ve been looking for an intro to PIX from the standpoint of XNA for awhile (haven&rsquo;t done any true DirectX dev yet, and XNA is oh so comfy). Thanks a ton. Its people like you that make the XNA community work.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11265,7 +11265,7 @@ float3 SphericalToCartesian(float2 spherical)
 
 <p>there will be a bug then you represent float3(0.0, 0.0, some_z) like vectors. and one will have a workaround for this, which also cost shaders instructions. :)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11319,7 +11319,7 @@ float3 SphericalToCartesian(float2 spherical)
 
 <p>[&hellip;] for the XNA Framework Content Pipeline! But that’s not all! During that time Matt also shared a menu/UI system he wrote! How cool is [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11492,7 +11492,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 
 <p>hi! I am a student studying in Korea. I do not speak English well There was wondering Why do you need four frustum corner?
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11595,7 +11595,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 </code></pre>
 
 <p>The main problem with this is that the PropertyGrid is now editing a &ldquo;live&rdquo; object: changes it makes to items actually affect their state.  This unfortunately broke my &ldquo;everything must go through the ActionManager&rdquo; philosophy, but I couldn&rsquo;t think of any better alternatives.  So I added a new method to the ActionManager that allows me to &ldquo;register&rdquo; that a property value was changes after the fact.  It basically works the same as the old ChangePropertyValue method, except that it doesn&rsquo;t call &ldquo;Do&rdquo; on the PropertyEditAction after it creates it.   So yeah kinda ugly&hellip;but it works.  Good enough, I guess.</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11624,7 +11624,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 <p>One downside that came with this was that since I was just additively blending in the lights, I couldn&rsquo;t use my beloved LogLuv encoding for HDR.  My next-best option of the 360 was to normalize R10G10B10A2 to a range greater than [0,1].  I ended up having to normalize to [0,8] to get the dynamic range I wanted, and unfortunately this can give some visible banding in certain cases.  And alternative I&rsquo;ll have to explore is rendering just the point lights to an R10G10B10A2 buffer, and then sending this to my forward rendering pass to be sampled and added to the result.  If I did this I could also use the light prepass approach, and gain back material parameters and proper MSAA for the point lights.</p>
 
 <p>Anyway I&rsquo;m not saying that what I&rsquo;m doing is that particularly interesting or useful, I&rsquo;m just trying to demonstrate that there are many possibilities to explore.  It&rsquo;s good to think out of the box every once in a while!</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11944,7 +11944,7 @@ for (int i = 0; i &lt; 4; i++)
 
 <p>[…] This implementation is by no means perfect, or even good. Remember i am still a beginner at this and this post was only meant to give you an understanding of how you could go about implementing your own Deferred Renderer. Anyways as for improvements, one thing i am considering is to reconstruct World Space Positions using the Depth Buffer, because this will allow us to remove the Position Buffer from the G-Buffer thus making it smaller. Matt Pettineo from Ready-At-Dawn has some great tutorials about it on his blog. […]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -11995,7 +11995,7 @@ contentProject.Save(projectFileName);
 
 <p>Hi, I can&rsquo;t use Project.RemoveItemsByName because all of the items are called &ldquo;Compile&rdquo;. And if I were to use Project.RemoveItem I would have to loop through all of the projects BuildItem&rsquo;s find which one to remove. Have you got any more suggestions?
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12023,7 +12023,7 @@ contentProject.Save(projectFileName);
 
 <p>Thanks,just what I needed! Presentations, GDC Powerpoints and suchlike only help so far.:)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12166,7 +12166,7 @@ public class EventHandler2 : EventHandler
 
 <p>[&hellip;] Over a year later, bittermanandy was writing a chronicle about what recipes and rituals he found most useful in his delvings into XNA, and in one of these chronicles, he touched on the subject of the CLR Profiler again. That same year, jwatte gave away a free potion that could be used for performing the profiling ritual in the kingdom of the Xbox 360, which was not possible using NProf. MJP made a comparison between events and virtual functions, using the Stopwatch spell, and left his writing for all to read in one of his scrolls. [&hellip;]
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12226,7 +12226,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 
 <p>I&rsquo;ve got a very weak signal <a href="http://buycytotec.net/">http://buycytotec.net/</a> cytotec without prescription a. Policy Information Handout
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12303,7 +12303,7 @@ technique DirectionalLight
 <p>Very similar, but one big difference: the HLSL code branches on a uniform int parameter to the pixel shader function, whose value is set in our technique declaration.  This means that the Effect knows that this parameter has a constant value for that entire technique, which allows it to generate a seperate shader for each technique where the parameter is a constant and not a variable.  Since it&rsquo;s a constant for each shader variant, no branching of any sort is necessary.  Now our app just picks the technique it wants for each light source it&rsquo;s handling, rather than setting a shader parameter.</p>
 
 <p>Now keep in mind that using separate shaders like this will have performance implications:  switching vertex or pixel shaders has an associated overhead, and if you auto-generate different variants like we did above you&rsquo;ll be switching shaders more than if you used one big shader.  Whether or not it&rsquo;s a performance win will depend on what you&rsquo;re doing.  However, it&rsquo;s <em>always</em> good to be aware of all the neat tricks your tools can pull off.</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12555,7 +12555,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
     }
 }
 </code></pre>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12580,7 +12580,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 
 <p>Yes, sir :)
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12725,7 +12725,7 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 
 <p>Indeed&hellip;I didn&rsquo;t have to create too many more EditAction derivatives before I realized how much of a pain the system was to extend and maintain. It really doesn&rsquo;t help that I keep making big changes to the map editor&hellip;unfortunately it&rsquo;s the first (3D) editor I&rsquo;ve ever made and without experience behind me I just keep running into problems that seem obvious in hindsight. But I&rsquo;m learning I suppose. :) That Maya API stuff is really interesting. Like you said&hellip;on one hand it works since the basic underlying system is generic, but after a while it all just explodes into this huge monster. I have enough trouble keeping my EditAction&rsquo;s from glitching&hellip;I can&rsquo;t imagine trying to maintain the amount of commands they have available. When I first starting implementing the system I have right now, I had a few visions in my head of a system where the user/map boundary was designed in such a way that any modifying of the map was just a generic transaction that could be easily understood by the Undo/Redo system without having to write specific code to handle it. What I&rsquo;m doing with the PropertyGrid is actually sorta in that direction&hellip;I do a lot of custom stuff with the PropertyGrid control and (for the most part) my Undo/Redo stuff works for that without me having to do anything special. I figure if you planned out right, you could probably extend that somehow (probably using a lot of Attributes for metadata) to make an automatic (or mostly automatic) system&hellip;at least for a managed app, anyway. I&rsquo;d love to refactor what I have into something that would make this work&hellip;but unfortunately I&rsquo;ve got a thousand other things to do for the project and almost zero free time to do them. In fact I wish I had more time to devote to tool development in general&hellip;I really enjoy it but at the moment I have to keep bouncing back and forth to different areas and subsystems. Anyway, thank you so much for comments! It&rsquo;s nice to discuss these things with someone&hellip;it&rsquo;s not a popular topic on the forums I&rsquo;m afraid. I also greatly appreciate the insights you&rsquo;ve offered&hellip;especially the ones that aren&rsquo;t NDA&rsquo;ed. :P
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12853,7 +12853,7 @@ float3 LogLuvDecode(in float4 vLogLuv)
 
 <p>Sorry for bothering you with this again, but I read the article of Christer which started with a linear RGB to XYZ conversion and sequentially added extra operations to the conversion matrix M. I am not very familiar with display formats, so feel free to correct me. The CCIR became the ITU-R, so I presume that &ldquo;CCIR 709&rdquo; is the same as &ldquo;ITU-R Recommendation BT.709&rdquo; (a.k.a. &ldquo;Rec. 709&rdquo; or &ldquo;BT.709&rdquo;)? If this is the case, the used RGB-to-XYZ conversion (cfr. paper by Gregory Ward) is different from the one used in Real-Time Rendering (3th edition), pbrt-v2, pbrt-v3 and Mitsuba (which all use the same coefficients)? Thanks in advance.
 <hr /></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12873,7 +12873,7 @@ Posting WM_DESTROY is *not* how you destroy a window</description>
 <p><a href="http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=475298&amp;#3294497"><strong>Don&rsquo;t Cast Function Pointers (Unless You Really Know What You&rsquo;re Doing)</strong></a></p>
 
 <p><a href="http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=475298&amp;#3291725"><strong>Posting WM_DESTROY is *not* how you destroy a window</strong></a></p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 		<item>
@@ -12900,7 +12900,7 @@ Here&amp;rsquo;s what I plan on doing with it: -integrating some of the stuff I&
 -try to somewhat serious (not likely to happen)</p>
 
 <p>Exciting, right?</p>
-]]></content>
+]]></content:encoded>
 		</item>
 		
 	</channel>
