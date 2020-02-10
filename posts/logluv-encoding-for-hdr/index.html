@@ -8,16 +8,13 @@
 <meta itemprop="name" content="LogLuv Encoding for HDR">
 <meta itemprop="description" content="Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere. What can I say&hellip;I like it! I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.
 Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.">
-
-
 <meta itemprop="datePublished" content="2008-12-12T17:00:59&#43;00:00" />
 <meta itemprop="dateModified" content="2008-12-12T17:00:59&#43;00:00" />
-<meta itemprop="wordCount" content="1567">
+<meta itemprop="wordCount" content="1538">
 
 
 
-<meta itemprop="keywords" content="Programming,Xbox 360,XNA," />
-<meta property="og:title" content="LogLuv Encoding for HDR" />
+<meta itemprop="keywords" content="Programming,Xbox 360,XNA," /><meta property="og:title" content="LogLuv Encoding for HDR" />
 <meta property="og:description" content="Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere. What can I say&hellip;I like it! I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.
 Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360." />
 <meta property="og:type" content="article" />
@@ -37,7 +34,7 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>LogLuv Encoding for HDR</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -77,12 +74,8 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 				<h1>LogLuv Encoding for HDR</h1>
 			</header>
 			<div class="content">
-				
-
-<p><em>Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere.  What can  I say&hellip;I like it!  I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.</em></p>
-
+				<p><em>Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere.  What can  I say&hellip;I like it!  I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.</em></p>
 <p>Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.  As a quick refresher for those who aren&rsquo;t experts on the subject, HDR is most commonly implemented by rendering the scene to a floating-point buffer and then performing a tone-mapping pass to bring the colors back into he visible range. Floating-point formats (like A16B16G16R16F, AKA HalfVector4) are used because their added precision and floating-point nature allows them to comfortbly store linear RGB values in ranges beyond the [0,1] typically used for shader output to the backbuffer, which is crucial as HDR requires having data with a wide dynamic range. They&rsquo;re also convenient, as this it allows values to be stored in the same format they&rsquo;re manipulated in the shaders. Newer GPU&rsquo;s also support full texture filtering and alpha-blending with fp surfaces, which prevents the need for special-case handling of things like non-opaque geometry. However as with most things, what&rsquo;s convient is not always the best option. During planning, I came up with the following list of pro&rsquo;s and con&rsquo;s for various types of HDR implementations:</p>
-
 <p>Standard HDR, fp16 buffer
 +Very easy to integrate (no special work needed for the shaders)
 +Good precision
@@ -93,14 +86,12 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 -Hardware filtering not available on ATI SM2.0 and SM3.0 GPU&rsquo;s
 -No blending on the Xbox 360
 -Requires double space in framebuffer on the 360, which increases the number of tiles needed</p>
-
 <p>HDR with tone-mapping applied directly in the pixel shader (Valve-style)
 +Doesn&rsquo;t require output to an HDR format, no floating-point or encoding required
 +Multi-sampling and blending is supported, even on old hardware
 -Can&rsquo;t do HDR bloom, since only an LDR image is available for post-processing
 -Luminance can&rsquo;t be calculated directly, need to use fancy techniques to estimate it
 -Increases shader complexity and combinations</p>
-
 <p>HDR using an encoded format
 +Allows for a standard tone-mapping chain
 +Allows for HDR bloom effects
@@ -111,15 +102,10 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 -Linear filtering and multisampling usually isn&rsquo;t mathmatically correct, although often the results are &ldquo;good enough&rdquo;
 -Additional shader math needed for format conversions
 -Adds complexity to shaders</p>
-
 <p>My early prototyping used a standard tone-mapping chain and I didn&rsquo;t want to ditch that, nor did I want to move away from what I was comfortable with.  This pretty much eliminated the second option for me off the bat&hellip;although I was unlikely to choose it anyway due its other drawbacks (having nice HDR bloom was something I felt was an important part of the look I wanted for my game, and in my opinion Valve&rsquo;s method doesn&rsquo;t do a great job of determining average luminance).  When I tried out the first method I found that it worked as well as it always did on the PC (I&rsquo;ve used it before), but on the 360 it was another story.  I&rsquo;m not sure why exactly, but for some reason it simply does not like the HalfVector4 format.  Performance was terrible, I couldn&rsquo;t blend, I got all kinds of strange rendering artifacts (entire lines of pixels missing), and I&rsquo;d get bizarre exceptions if I enabled multisampling. Loads of fun, let me tell you.</p>
-
 <p>This left me with option #3.  I wasn&rsquo;t a fan of this approach initially, as my original design plan called for things to be simple and straightforward whenever possible.  I didn&rsquo;t really want to have two versions of my material shaders to support encoding, nor did I want to integrate decoding into the other parts of the pipeline that needed it.  But unfortunately, I wasn&rsquo;t really left with any other options after I found there were <a href="https://connect.microsoft.com/feedback/ViewFeedback.aspx?FeedbackID=343887&amp;SiteID=226">no plans</a> to bring the support for the 360&rsquo;s special fp10 backbuffer format to XNA (which would have conveniently solved my problems on the 360).  So, I started doing my research.  Naturally the first place I looked was to actual released commercial game.  Why?  Because usually when a technique is used in a shipped game, it means it&rsquo;s gone though the paces and has been determined to actually be feasible and practical in game environment.  Which of course naturally led me to consider NAO32.</p>
-
 <p>NAO32 is a format that gained some fame in the dev community when ex-Ninja Theory programmer Marco Salvi shared some details on the technique over on the beyond3D forums.  Used in the game Heavenly Sword, it allowed for multisampling to be used in conjuction with HDR on a platform (PS3) whose GPU didn&rsquo;t support multisampling of floating-point surfaces (The RSX is heavily based on Nvidia G70).  In this technique, color is stored in the <a href="http://www.anyhere.com/gward/papers/jgtpap1.pdf">LogLuv format</a> using a standard R8G8B8A8 surface.  Two components are used to store X and Y at 8-bit precision, and the other two are used to store the log of luminance at 16-bit precision.  Having 16 bits for luminance allows for a wide dynamic range to be stored in this format, and storing the log of the luminance allows for linear filtering in multisampling or texture sampling.  Since he first explained it other games have also used it, such as Naughty Dog&rsquo;s Uncharted.  It&rsquo;s likely that it&rsquo;s been used in many other PS3 games, as well.</p>
-
 <p>My actual shader implementation was helped along quite a bit by <a href="http://realtimecollisiondetection.net/blog/?p=15">Christer Ericson&rsquo;s blog post</a>, which described how to derive optimized shader code for encoding RGB into the LogLuv format.  Using his code as a starting point, I came up with the following HLSL code for encoding and decoding:</p>
-
 <pre><code>// M matrix, for encoding
 
 const static float3x3 M = float3x3(
@@ -155,45 +141,27 @@ float3 LogLuvDecode(in float4 vLogLuv)
     float3 vRGB = mul(Xp_Y_XYZp, InverseM);
     return max(vRGB, 0);
 }
-</code></pre>
-
-<p>Once I had this implemented and worked through a few <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=500219">small glitches</a>;, results were much improved in the 360 version of my game. Performance was much much better, I could multi-sample again, and the results looked great. So while things didn&rsquo;t exactly work out in an ideal way, I&rsquo;m pleased enough with the results.</p>
-
+</code></pre><p>Once I had this implemented and worked through a few <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=500219">small glitches</a>;, results were much improved in the 360 version of my game. Performance was much much better, I could multi-sample again, and the results looked great. So while things didn&rsquo;t exactly work out in an ideal way, I&rsquo;m pleased enough with the results.</p>
 <p>If you&rsquo;re interested in this, be sure to check out my <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/xna-hdr/">sample</a></p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-<a href="http://blog.daikonforge.com" title="takuan@daikonforge.com">Takuan</a> - <time datetime="2008-12-12 14:25:01">Dec 5, 2008</time></p>
-
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="http://blog.daikonforge.com" title="takuan@daikonforge.com">Takuan</a> - <!-- raw HTML omitted -->Dec 5, 2008<!-- raw HTML omitted --></p>
 <blockquote>
 <p>I also think it’s something useful for just about anyone trying to do HDR on the 360 through XNA, and I’m hoping some people will stumble upon it.</p>
 </blockquote>
-
-<p>I didn&rsquo;t exactly stumble on it, I found your blog through GameDev.net, but it is indeed useful!
-<hr />
-####
-[matt77hias]( &ldquo;matthias.moulin@gmail.com&rdquo;) - <time datetime="2018-04-08 03:20:38">Apr 0, 2018</time></p>
-
-<p>Thanks!
-<hr />
-####
-[matt77hias]( &ldquo;matthias.moulin@gmail.com&rdquo;) - <time datetime="2018-04-05 11:42:29">Apr 4, 2018</time></p>
-
-<p>Two small questions: 1) What is the reasoning behing your &ldquo;Xp_Y_XYZp&rdquo; local variable name? 2) What do the matrices M and inverseM convert to/from? It is not just linear to LogLUV and vice versa since the conversion isn&rsquo;t finished yet?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2018-04-05 21:52:11">Apr 4, 2018</time></p>
-
-<p>1) The code was taken from Christer&rsquo;s blog post, so he&rsquo;s the one who came up with the variable names. If you read through the linked post, he explains how he simplified the math into what&rsquo;s represented in the code. He calls it that because one of the intermediate steps is converting to CIE XYZ, and he folds a dot product into the matrix multiply to produce X, Y, and the dot product result (that he calls &lsquo;XYZ&rsquo;). He also folds in the multiplication of two other constants, to produce what he calls X` and XYZ`, hence the &lsquo;p&rsquo; in the variable name (short for &lsquo;prime&rsquo;, I assume). 2) See above. It&rsquo;s a combination of converting from RGB -&gt; XYZ, and some of the related math for converting to LogLuv.
-<hr />
-####
-[matt77hias]( &ldquo;matthias.moulin@gmail.com&rdquo;) - <time datetime="2018-04-11 03:32:15">Apr 3, 2018</time></p>
-
-<p>Sorry for bothering you with this again, but I read the article of Christer which started with a linear RGB to XYZ conversion and sequentially added extra operations to the conversion matrix M. I am not very familiar with display formats, so feel free to correct me. The CCIR became the ITU-R, so I presume that &ldquo;CCIR 709&rdquo; is the same as &ldquo;ITU-R Recommendation BT.709&rdquo; (a.k.a. &ldquo;Rec. 709&rdquo; or &ldquo;BT.709&rdquo;)? If this is the case, the used RGB-to-XYZ conversion (cfr. paper by Gregory Ward) is different from the one used in Real-Time Rendering (3th edition), pbrt-v2, pbrt-v3 and Mitsuba (which all use the same coefficients)? Thanks in advance.
-<hr /></p>
+<p>I didn&rsquo;t exactly stumble on it, I found your blog through GameDev.net, but it is indeed useful!</p>
+<!-- raw HTML omitted -->
+<p>Thanks!</p>
+<!-- raw HTML omitted -->
+<p>Two small questions: 1) What is the reasoning behing your &ldquo;Xp_Y_XYZp&rdquo; local variable name? 2) What do the matrices M and inverseM convert to/from? It is not just linear to LogLUV and vice versa since the conversion isn&rsquo;t finished yet?</p>
+<!-- raw HTML omitted -->
+<ol>
+<li>The code was taken from Christer&rsquo;s blog post, so he&rsquo;s the one who came up with the variable names. If you read through the linked post, he explains how he simplified the math into what&rsquo;s represented in the code. He calls it that because one of the intermediate steps is converting to CIE XYZ, and he folds a dot product into the matrix multiply to produce X, Y, and the dot product result (that he calls &lsquo;XYZ&rsquo;). He also folds in the multiplication of two other constants, to produce what he calls X` and XYZ`, hence the &lsquo;p&rsquo; in the variable name (short for &lsquo;prime&rsquo;, I assume). 2) See above. It&rsquo;s a combination of converting from RGB -&gt; XYZ, and some of the related math for converting to LogLuv.</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>Sorry for bothering you with this again, but I read the article of Christer which started with a linear RGB to XYZ conversion and sequentially added extra operations to the conversion matrix M. I am not very familiar with display formats, so feel free to correct me. The CCIR became the ITU-R, so I presume that &ldquo;CCIR 709&rdquo; is the same as &ldquo;ITU-R Recommendation BT.709&rdquo; (a.k.a. &ldquo;Rec. 709&rdquo; or &ldquo;BT.709&rdquo;)? If this is the case, the used RGB-to-XYZ conversion (cfr. paper by Gregory Ward) is different from the one used in Real-Time Rendering (3th edition), pbrt-v2, pbrt-v3 and Mitsuba (which all use the same coefficients)? Thanks in advance.</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -201,7 +169,7 @@ float3 LogLuvDecode(in float4 vLogLuv)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xbox-360">Xbox 360</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1567 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1538 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2008-12-12 09:00 -0800</p>
 			</footer>
 		</article>
@@ -224,7 +192,7 @@ float3 LogLuvDecode(in float4 vLogLuv)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

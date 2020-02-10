@@ -7,16 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Light Indexed Deferred Rendering">
 <meta itemprop="description" content="There&rsquo;s been a bit of a stir on the Internet lately due to AMD&rsquo;s recent Leo demo, which was recently revealed to be using a modern twist on Light Indexed Deferred Rendering. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface.">
-
-
 <meta itemprop="datePublished" content="2012-04-01T02:53:53&#43;00:00" />
 <meta itemprop="dateModified" content="2012-04-01T02:53:53&#43;00:00" />
-<meta itemprop="wordCount" content="5296">
+<meta itemprop="wordCount" content="5032">
 
 
 
-<meta itemprop="keywords" content="DirectX 11,Graphics,Programming," />
-<meta property="og:title" content="Light Indexed Deferred Rendering" />
+<meta itemprop="keywords" content="DirectX 11,Graphics,Programming," /><meta property="og:title" content="Light Indexed Deferred Rendering" />
 <meta property="og:description" content="There&rsquo;s been a bit of a stir on the Internet lately due to AMD&rsquo;s recent Leo demo, which was recently revealed to be using a modern twist on Light Indexed Deferred Rendering. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/light-indexed-deferred-rendering/" />
@@ -34,7 +31,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Light Indexed Deferred Rendering</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -74,20 +71,12 @@
 				<h1>Light Indexed Deferred Rendering</h1>
 			</header>
 			<div class="content">
-				
-
-<p>There&rsquo;s been a <a href="http://forum.beyond3d.com/showthread.php?t=61487">bit</a> of a <a href="http://www.gamedev.net/topic/622221-revival-of-forward-rending/">stir</a> on the <a href="http://aras-p.info/blog/2012/03/02/2012-theory-for-forward-rendering/">Internet</a> lately due to AMD&rsquo;s recent <a href="http://developer.amd.com/samples/demos/pages/AMDRadeonHD7900SeriesGraphicsReal-TimeDemos.aspx">Leo demo</a>, which was <a href="http://developer.amd.com/gpu_assets/AMD_Demos_LeoDemoGDC2012.ppsx">recently revealed</a> to be using a modern twist on <a href="http://code.google.com/p/lightindexed-deferredrender/">Light Indexed Deferred Rendering</a>. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface. While there&rsquo;s little doubt at this point that deferred rendering has proven itself as an effective and practical technique, I&rsquo;m sure that plenty of programmers currently maintaining such a renderer have dreamed of a day where they don&rsquo;t have to figure out how to cram every attribute into their G-Buffer using as few bits as possible, or consume 100&rsquo;s of megabytes for MSAA G-Buffer textures.</p>
-
+				<p>There&rsquo;s been a <a href="http://forum.beyond3d.com/showthread.php?t=61487">bit</a> of a <a href="http://www.gamedev.net/topic/622221-revival-of-forward-rending/">stir</a> on the <a href="http://aras-p.info/blog/2012/03/02/2012-theory-for-forward-rendering/">Internet</a> lately due to AMD&rsquo;s recent <a href="http://developer.amd.com/samples/demos/pages/AMDRadeonHD7900SeriesGraphicsReal-TimeDemos.aspx">Leo demo</a>, which was <a href="http://developer.amd.com/gpu_assets/AMD_Demos_LeoDemoGDC2012.ppsx">recently revealed</a> to be using a modern twist on <a href="http://code.google.com/p/lightindexed-deferredrender/">Light Indexed Deferred Rendering</a>. The idea of light indexed deferred has always been pretty appealing, since it gives you some of the advantages of deferred rendering (namely using the GPU to decide which lights affect each pixel) while still letting you use forward rendering to actually apply the lighting to each surface. While there&rsquo;s little doubt at this point that deferred rendering has proven itself as an effective and practical technique, I&rsquo;m sure that plenty of programmers currently maintaining such a renderer have dreamed of a day where they don&rsquo;t have to figure out how to cram every attribute into their G-Buffer using as few bits as possible, or consume 100&rsquo;s of megabytes for MSAA G-Buffer textures.</p>
 <p>While the benefits of light indexed deferred were pretty obvious to, I was pretty sure that the performance wouldn&rsquo;t hold up when compared to the state-of-art in traditional deferred rendering. So I decided to make a simple test app where I could toggle between the two techniques for the same scene. For the deferred renderer, I based my implementation very closely on <a href="http://software.intel.com/en-us/articles/deferred-rendering-for-current-and-future-rendering-pipelines/">Andrew Lauritzen&rsquo;s work</a> since he had done quite a bit of work in terms of optimizing it for modern GPU architectures. The only differences were that I used a different G-Buffer layout (normals, specular albedo + roughness, diffuse albedo, and ambient lighting, all 32bpp) and I used an oversized texture instead of a structured buffer for writing out the individual MSAA subsamples from the compute shader.</p>
-
 <p>For the light indexed deferred renderer implementation I used a depth-only prepass to fill the depth buffer, which was then used by a compute shader to compute the list of intersecting lights per-tile. This list was stored in either an R8_UINT or R16_UINT typed buffer (8-bit for &lt; 255 lights, 16-bit otherwise), with enough space pre-allocated in the buffer to store a full light list for each tile. So no bitfields or linked lists or anything fancy like that, just a simple per-tile list terminated by sentinel value. I found that this worked best for the forward lighting pass, since this resulted in the least amount of overheard for reading the list in the forward rendering pass, although there might be better ways to do it. The forward rendering pass then figures out which tile each pixel is in, and applies the list of lights one by one.</p>
-
 <p>In both cases I used normalized Blinn-Phong with fresnel approximation for the lights, so nothing fancy there. I did use a terrible linear falloff for the point lights just so that I could artificially restrict the radius, so please don&rsquo;t judge me for that. I also used the depth-only prepass for both implementations, since it actually resulted in a speed up of around 0.5ms for the G-Buffer pass. For a test scene, I used the ol&rsquo; Sponza atrium.</p>
-
 <p>I gathered some performance numbers for the hardware I have access to, which is an AMD 6970 and an Nvidia GTX 570. For both GPU&rsquo;s I ran at 1920x1080 resolution with VSYNC disabled, and the timings represent total frame time. The Nvidia numbers were pretty much in line with my expectations:</p>
-
 <p>Nvidia GTX 570</p>
-
 <table>
 <thead>
 <tr>
@@ -97,7 +86,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -105,14 +93,12 @@
 <td>6.94ms</td>
 <td>6.41ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>7.81ms</td>
 <td>7.51ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -121,9 +107,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -133,7 +117,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -141,14 +124,12 @@
 <td>11.67ms</td>
 <td>9.43ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>12.987ms</td>
 <td>10.75ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -157,9 +138,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -169,7 +148,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -177,14 +155,12 @@
 <td>18.18ms</td>
 <td>14.084ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>20.00ms</td>
 <td>15.63ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -193,9 +169,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -205,7 +179,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -213,14 +186,12 @@
 <td>N/A</td>
 <td>27.03ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>N/A</td>
 <td>29.41ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -229,13 +200,9 @@
 </tr>
 </tbody>
 </table>
-
 <p>Tile-based deferred rendering wins out and nearly every case, and it only gets worse as you add in more lights.  Light indexed seems to scale a bit better with MSAA, but even with that it&rsquo;s only enough to overcome the overall disadvantage for the 128 light case. For 1024 lights it seemed as though the Nvidia driver or hardware couldn&rsquo;t handle the large buffer I was using for storing the light indices, as I was getting very strange artifacts on the lower half of the screen. However I can only imagine the trend would continue, and it would lag further behind the tile-based deferred renderer.</p>
-
 <p>For the AMD 6970, the results were much more interesting:</p>
-
 <p>AMD 6970</p>
-
 <table>
 <thead>
 <tr>
@@ -245,7 +212,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -253,14 +219,12 @@
 <td>5.26ms</td>
 <td>5.71ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>5.98ms</td>
 <td>9.43ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -269,9 +233,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -281,7 +243,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -289,14 +250,12 @@
 <td>7.87ms</td>
 <td>7.87ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>8.77ms</td>
 <td>11.11ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -305,9 +264,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -317,7 +274,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -325,14 +281,12 @@
 <td>11.67ms</td>
 <td>11.36ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>12.98ms</td>
 <td>14.93ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -341,9 +295,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -353,7 +305,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -361,14 +312,12 @@
 <td>22.22ms</td>
 <td>20.00ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>24.39ms</td>
 <td>25.64ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -377,26 +326,18 @@
 </tr>
 </tbody>
 </table>
-
 <p>These results really surprised me. The light indexed renderer actually starts out <em>faster</em> than the deferred renderer, and doesn&rsquo;t really start to fall behind until you hit 1024 lights. However with either 2xMSAA or 4xMSAA the light indexed renderer absolutely blows away the competition. I actually suspected that I did something wrong in my MSAA implementation, until I verified that I got similar results from the Intel sample. Perhaps there&rsquo;s a better way to handle MSAA in a compute shader for AMD hardware? I didn&rsquo;t spend a lot of time experimenting, so perhaps someone else has a few bright ideas. Either way it&rsquo;s clear that forward rendering scales <em>really</em> well with MSAA on this hardware. Even the G-Buffer pass fares pretty well, as it goes from 1ms to 1.2ms to 1.3ms as the MSAA level increases (1.5ms to 1.9ms to 2.1ms without a z prepass).</p>
-
 <p>So, where does this leave us? Even with these numbers we really don&rsquo;t have a complete picture. Really we need some tests run with&hellip;</p>
-
 <p>1. Different scenes, preferably some with even higher poly counts and/or some tessellation
 2. More realistic material variety, including different texture configurations, layer blending, decals
 3. A variety of complex BRDF&rsquo;s
 4. A few different ambient/bounce lighting configurations
 5. More lighting types, with different shadowing configurations
 6. More hardware to test on</p>
-
 <p>These things have some big implications on what you store in the G-Buffer, forward shading efficiency, and the cost of a z prepass. That last one is important, since it&rsquo;s mandatory for light indexed deferred but optional for traditional deferred. While it can still be cheaper overall to have a z prepass before your G-Buffer pass (as it was in my case), that could change depending on how your vertex processing costs.</p>
-
 <p>So for now, my conclusion is that Light Indexed Deferred is at least in the realm of practical for most cases. Personally I consider even 256 to be a LOT of lights, so I&rsquo;m not too worried about scaling up to thousands of lights anytime soon. But if anyone has access to different GPU&rsquo;s, I would love to get some more numbers so that I can post them here. So if you happen to have a 7970 or GTX 680 lying around, feel free to download my sample and take down some numbers. Originally the number of lights was hard-coded to 128 in the binary, but I uploaded a new version that lets you toggle through the number of lights that I used for my test runs.</p>
-
 <p>You can find the code and binary on CodePlex: <a href="http://mjp.codeplex.com/releases/view/85279#DownloadId=363173">http://mjp.codeplex.com/releases/view/85279#DownloadId=363173</a></p>
-
 <p>Here are a few numbers for a GTX 680 contributed by Sander van Rossen:</p>
-
 <table>
 <thead>
 <tr>
@@ -406,7 +347,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -414,14 +354,12 @@
 <td>2.30ms</td>
 <td>2.60ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>2.62ms</td>
 <td>3.86ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -430,9 +368,7 @@
 </tr>
 </tbody>
 </table>
-
 <p>And some more numbers for the AM 7970 courtesy of phantom, gathered at 1280x720:</p>
-
 <table>
 <thead>
 <tr>
@@ -442,7 +378,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -450,14 +385,12 @@
 <td>1.80ms</td>
 <td>1.90ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>2.00ms</td>
 <td>2.72ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -466,9 +399,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -478,7 +409,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -486,14 +416,12 @@
 <td>2.50ms</td>
 <td>2.30ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>2.70ms</td>
 <td>3.30ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -502,9 +430,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -514,7 +440,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -522,14 +447,12 @@
 <td>3.30ms</td>
 <td>2.90ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>3.80ms</td>
 <td>4.20ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -538,9 +461,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -550,7 +471,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -558,14 +478,12 @@
 <td>5.90ms</td>
 <td>4.50ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>6.700ms</td>
 <td>6.40ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -574,9 +492,7 @@
 </tr>
 </tbody>
 </table>
-
 <p>Radeon 7970 @ 1920x1080, from 3dcgi:</p>
-
 <table>
 <thead>
 <tr>
@@ -586,7 +502,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -594,14 +509,12 @@
 <td>3.03ms</td>
 <td>3.34ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>3.52ms</td>
 <td>5.12ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -610,9 +523,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -622,7 +533,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -630,14 +540,12 @@
 <td>4.18ms</td>
 <td>4.20ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>4.76ms</td>
 <td>6.25ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -646,9 +554,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -658,7 +564,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -666,14 +571,12 @@
 <td>5.85ms</td>
 <td>5.46ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>6.62ms</td>
 <td>8.00ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -682,9 +585,7 @@
 </tr>
 </tbody>
 </table>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -694,7 +595,6 @@
 <th>Tile-Based Deferred</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
@@ -702,14 +602,12 @@
 <td>10.42ms</td>
 <td>8.92ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>2x MSAA</td>
 <td>11.63ms</td>
 <td>12.66ms</td>
 </tr>
-
 <tr>
 <td></td>
 <td>4xMSAA</td>
@@ -718,201 +616,86 @@
 </tr>
 </tbody>
 </table>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-[zxaida]( &ldquo;&rdquo;) - <time datetime="2012-05-29 22:44:10">May 2, 2012</time></p>
-
-<p>Radeon 7970 at 1200MHz clocks 1280x720,default setting 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 1.70ms 1.80ms 2x MSAA 1.91ms 2.55ms 4xMSAA 6.25ms 3.27ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.15ms 2.08ms 2x MSAA 2.42ms 2.94ms 4xMSAA 7.35ms 3.74ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.84ms 2.51ms 2x MSAA 3.21ms 3.57ms 4xMSAA 8.771ms 4.46ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 4.78ms 3.74ms 2x MSAA 5.43ms 5.26ms 4xMSAA 11.9ms 6.53ms
-<hr />
-####
-[Cyrus Rohani]( &ldquo;crohani@gmx.com&rdquo;) - <time datetime="2012-05-02 15:04:33">May 3, 2012</time></p>
-
-<p>Just got my first results after switching from light-prepass to tiled deferred:) I&rsquo;m quite happy with it. Have you had time to investigate arbitrary volume or spot light implementations yet? I haven&rsquo;t had time yet since I&rsquo;m dealing with cascade shadow map performance:( Off topic but, from the latest GDC papers, seems DICE is using VS instancing and the GS to select a rendertarget array index. This is to avoid multiple draws per cascade. But you mention texture arrays being lower performance than an atlas in your tests. Any idea why? Also, I have not heard anyone talk about using an atlas with VS instancing and selecting a viewport index. That would eliminate the array but keep the single draw for all cascades.
-<hr />
-####
-[Andrew Lauritzen]( &ldquo;andrew.lauritzen@gmail.com&rdquo;) - <time datetime="2012-04-27 12:37:35">Apr 5, 2012</time></p>
-
-<p>Your demo could be doing something different than mine of course, but if you hit &ldquo;F8&rdquo; in mine you can disable G-buffer rendering/updating and last I checked that was the biggest part of the bottleneck on ATI. Of course it would make more sense if it was something in the significantly-more-complex light/shading pass, but that wasn&rsquo;t what I experienced at least in the past :)
-<hr />
-####
-[Andrew Lauritzen]( &ldquo;andrew.lauritzen@gmail.com&rdquo;) - <time datetime="2012-04-27 13:07:44">Apr 5, 2012</time></p>
-
-<p>I will note too that I typically prefer to &ldquo;disable parts of the rendering&rdquo;, etc. rather than use queries. Queries are a bit finicky in that they don&rsquo;t necessarily interact with the pipelining in the GPU in a natural way (i.e. are you measuring end-to-end latency of a submitted command? stalling between each command instead? None is a good solution). Of course there&rsquo;s no perfect solution but I find that a somewhat more consistent and predictable way to profile than queries.
-<hr />
-####
-<a href="http://reedbeta.com/" title="nathaniel.reed@gmail.com">Nathan Reed</a> - <time datetime="2012-04-01 16:49:19">Apr 0, 2012</time></p>
-
-<p>On my GTX 580 at 1280x720: 128 lights 1x: LI 3.77 TD 3.17 2x: LI 4.14 TD 3.58 4x: LI 4.39 TD 4.17 256 lights 1x: LI 5.68 TD 4.37 2x: LI 6.33 TD 4.95 4x: LI 6.80 TD 5.52 512 lights 1x: LI 8.54 TD 6.10 2x: LI 9.62 TD 6.80 4x: LI 10.42 TD 7.35 1024 lights 1x: LI 16.67 TD 10.99 2x: LI 18.87 TD 12.05 4x: LI 20.41 TD 12.82 Similar pattern to your GTX 570. I should also note I disabled the Z prepass for the tilde deferred cases since it was slowing it down a bit. By the way, in multisampling mode with light-indexed are you running lighting per MSAA sample or just per pixel? And have you looked at detecting edges and running the per-sample lighting only for the tiles (or pixels) containing edges? That can be a big optimization for tiled-deferred, maybe less so for light-indexed deferred as it seems you&rsquo;d have to branch in the pixel shader to implement it. Finally, I wonder how CSAA (NVIDIA) or EQAA (AMD) would affect things. I&rsquo;m not sure how you actually turn those on in D3D, though.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-15 18:40:35">Apr 0, 2012</time></p>
-
-<p>Thanks for those cool graphs Cyrus! I realized a few days ago that I was running an older driver on the machine I did the 570 test on, so it was probably just a driver bug that was resolved at some point. Spot lights are pretty tricky. I&rsquo;ve been meaning to dedicate some time investigating efficent ways to cull them per-tile, but haven&rsquo;t gotten around to it yet. A full frustum-frustum test with SAT seems too heavyweight to be done in a single thread (IIRC it&rsquo;s something like 6*8 + 6*8 + 6*6*8 dot products for the full test), so I&rsquo;m thinking a cheaper approximation might be the way to go. I&rsquo;ve been kicking around something I came up with based on plane/cone intersection tests that&rsquo;s alot cheaper, but gives false positives for a few cases. Rasterizing the volume might be another viable option for expensive lights. I can let you know how it goes once I get some time to work on it more.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-14 15:23:53">Apr 6, 2012</time></p>
-
-<p>@directtovideo I suspected the same thing regarding shared memory pressure, so I ran a few experiments where I varied the thread group size but I wasn&rsquo;t able to improve the performance. And you&rsquo;re absolutely right about the scheduling&hellip;it&rsquo;s really the key difference between the two techniques. Ultimately it comes to down to whether the the flexibility you get from shading in a compute shader ends up winning out over the efficiency of hardware scheduling, and taking that into account along with having to render out a G-Buffer (for tiled deferred), or requiring geometry to be rasterized twice (for indexed deferred). @Anonymous For a large number of lights in a scene having a per-pixel list doesn&rsquo;t seem very compelling to me. The problems to me are: A. You&rsquo;d have to compute light intersections per-list rather than per-tile, which means that you can&rsquo;t compute the intersections for many lights in parallel like you can with per-tile lists. You could rasterize the light volumes and append the index to the per-tile linked lists (like in the AMD demo, as you suggested) but I&rsquo;d imagine that would still be much slower. B. Your granularity during the forward lighting phase is limited by branching coherency, so it doesn&rsquo;t seem worth it to do fine-grained light intersection C. You&rsquo;ll consume a lot more memory with per-pixel lists D. If you use a linked list, just reading the light indices in the forward lighting phase is going to be slower. One thing I discovered early on was that just reading indices can be a serious performance drain, so I tried to make it as cheap as possible. For a smaller number of lights it might make sense though, especially if going fine-grained allows you to do a better job culling non-spherical light sources.
-<hr />
-####
-[]( &ldquo;&rdquo;) - <time datetime="2012-04-14 14:33:19">Apr 6, 2012</time></p>
-
-<p>MJP - great read. Just wondering, why didn&rsquo;t you try using a per-pixel list (like the AMD order-independent-transparency demo) for the light indices? Do you think that would have worse performance? Thanks.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-28 14:41:44">Apr 6, 2012</time></p>
-
-<p>You definitely have a good point regarding the queries&hellip;I try to only use them to get a rough idea of timings but even then they can be quite off from the delta you get in overall frame time. I put it in a setting to disable G-Buffer rendering, and that shows a delta of about 4-4.5ms with 4xMSAA which is definitely pretty significant and more in line with your findings. I can actually get a similar result from my queries if try to force a sync point with a simple compute shader that reads from the MSAA G-Buffer textures. I would suspect that there might be something else expensive going on here, perhaps an expensive decompression step to allow the shader to sample the MSAA textures. Thank you for your input!
-<hr />
-####
-[Cyrus Rohani]( &ldquo;&rdquo;) - <time datetime="2012-04-15 08:14:04">Apr 0, 2012</time></p>
-
-<p>Not sure why you had issues with the GTX 570 at 1920x1080, it worked fine with mine. Here&rsquo;s my results: Windows 7, Intel Q6600, 2.40Ghz NVIDIA GeForce 570 GTX, 296.10 drivers 1280x720: LIDR TBDR No MSAA 4.34 4.03 2x MSAA 4.78 4.54 4x MSAA 5.18 5.05 No MSAA 6.53 5.40 2x MSAA 7.35 6.05 4x MSAA 7.87 6.66 No MSAA 9.90 7.46 2x MSAA 11.23 8.19 4x MSAA 12.04 8.84 No MSAA 19.23 13.15 2x MSAA 21.73 14.49 4x MSAA 23.80 15.38 1920x1080: LIDR TBDR No MSAA 7.24 6.80 2x MSAA 8.00 7.69 4x MSAA 8.47 9.17 No MSAA 11.62 9.90 2x MSAA 12.98 10.98 4x MSAA 13.88 12.19 No MSAA 18.51 14.49 2x MSAA 20.40 15.87 4x MSAA 21.73 17.24 No MSAA 37.03 27.02 2x MSAA 40.00 28.57 4x MSAA 43.47 30.30 I uploaded a graph of results from this page, substituting my GTX 570 results: <a href="http://img543.imageshack.us/img543/4589/lidrvstidr.png">http://img543.imageshack.us/img543/4589/lidrvstidr.png</a> Do you have any idea about the performance difference if using arbitrary light volumes? Or frustum volumes for spot lights? Thanks.
-<hr />
-####
-<a href="http://gravatar.com/logicalerror" title="sander.vanrossen@gmail.com">Sander van Rossen</a> - <time datetime="2012-04-01 23:05:21">Apr 0, 2012</time></p>
-
-<p>It was at the default resolution, I don&rsquo;t know if that&rsquo;s 1280×720.. 128 lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.3ms 2.6ms 2x MSAA 2.62ms 3.86ms 4xMSAA 2.85ms 4.95ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.5ms 3.95ms 2x MSAA 3.95ms 4.76ms 4xMSAA 4.3ms 6.28ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.26ms 5.71ms 2x MSAA 5.95ms 7.87ms 4xMSAA 6.45ms 9.61ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 10.2ms 12.6ms 2x MSAA 11.62ms 15.15ms 4xMSAA 12.65ms 16.39ms And it&rsquo;s dual gtx680 (so 2x with sli, not a single card). These results make me wonder if SLI is configured correctly &hellip; or if something in the app makes it impossible for the driver to use SLI effectively. It&rsquo;s just hard to believe that dual gtx680&rsquo;s can be beaten so easily heh
-<hr />
-####
-[metatronico]( &ldquo;niels@frohling.biz&rdquo;) - <time datetime="2012-04-01 17:10:18">Apr 0, 2012</time></p>
-
-<p>AMD 5870 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.48ms 3.59ms 2x MSAA 4.03ms 4.60ms 4xMSAA 4.44ms 5.49ms
-<hr />
-####
-[ethatron]( &ldquo;niels@paradice-insight.us&rdquo;) - <time datetime="2012-04-01 17:30:56">Apr 0, 2012</time></p>
-
-<p>Continued &hellip; (above the &ldquo;No MSAA&rdquo; is swapped, sorry - yes on the 5870 &ldquo;No MSAA&rdquo; and &ldquo;Some MSAA&rdquo; swaps the rank = 512 indexed can&rsquo;t manage competing) 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.18ms 4.42ms 2x MSAA 5.78ms 5.95ms 4xMSAA 6.32ms 6.89ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 7.51ms 5.95ms 2x MSAA 8.40ms 7.63ms 4xMSAA 9.09ms 8.69ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 14.28ms 10.20ms 2x MSAA 15.87ms 12.98ms 4xMSAA 17.24ms 14.28ms All default resolution.
-<hr />
-####
-[ethatron]( &ldquo;niels@paradice-insight.us&rdquo;) - <time datetime="2012-04-01 18:08:26">Apr 0, 2012</time></p>
-
-<p>LI seems ALU-bound and TB seems at least memory-related on the 5870, overclocking the core yields different speedup for LI and TB respectively (looking at the two extremes): LI speeds up more or less linear on all accounts, that is 850 to 990 (MHz) ^= 3.59 to 3.19 (linear is 3.08) ^= 17.24 to 14.92 (linear is 14.80). TB is stalemate in the &ldquo;No MSAA&rdquo; case for 990, not faster anymore, that is 850 to 990 (MHz) ^= 3.48 to 3.14 (linear is 2.98) ^= 14.28 to 12.65 (linear is 12.26). On the slow extreme it&rsquo;s 13.5% vs. 11.5% speedup from a 14.2% overclock, that is TB gains 85% vs. LI. To me it seems on the GKs it&rsquo;s only that TB is faster because of the large sustainable memory bandwidth. And it is visible, that if I would clock my 5870 at say 2GHz, then TB would never win. LI vs. TB seems a ALU vs. mem tradeoff, or not that relevant if the architecture is somewhere in the middle. But as memory speeds are unlikely to rise much further, and often are below our GDDR5 speeds on medium class cards, and core clock still keeps rising even on medium class cards, I&rsquo;d say LI has a rosier prognosis.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-01 18:39:12">Apr 0, 2012</time></p>
-
-<p>@Nathan, For Light Indexed Deferred it&rsquo;s really just forward lighting, so I just turn on MSAA for the render target and let the hardware do its thing. This means that you only shade multiple times per pixel along triangle edges where the triangle doesn&rsquo;t full cover all subsamples of a pixel. You could certainly use CSAA if you wanted, you just turn it on by using a different quality level. I&rsquo;m not sure about EQAA. @ethatron Thank you for sharing such a detailed analysis! Your findings make sense though, since light indexed deferred tends to be VERY heavy on ALU in the pixel shader.
-<hr />
-####
-<a href="http://3dcgi.com" title="tmartin@ieee.org">3dcgi</a> - <time datetime="2012-04-01 19:49:59">Apr 0, 2012</time></p>
-
-<p>Radeon 7970 at stock clocks full screen on a 1080p monitor with the taskbar hidden so the rendering window is a title bar short of 1080p. 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.03ms 3.34ms 2x MSAA 3.52ms 5.12ms 4xMSAA 3.96ms 6.84ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 4.18ms 4.20ms 2x MSAA 4.76ms 6.25ms 4xMSAA 5.32ms 8.13ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.85ms 5.46ms 2x MSAA 6.62ms 8.00ms 4xMSAA 7.19ms 10.00ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 10.42ms 8.92ms 2x MSAA 11.63ms 12.66ms 4xMSAA 12.82ms 15.63ms
-<hr />
-####
-[ethatron]( &ldquo;niels@paradice-insight.us&rdquo;) - <time datetime="2012-04-01 20:53:42">Apr 0, 2012</time></p>
-
-<p>@mjp Here: &ldquo;No MSAA 3.48ms 3.59ms&rdquo; I accidentally flipped the number, it should be &ldquo;No MSAA 3.59ms 3.48ms&rdquo;. :^)
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-01 12:38:24">Apr 0, 2012</time></p>
-
-<p>Thanks for posting those Sanders! The original binary was running at 128 lights. I just uploaded a new one that lets you switch the number of lights. I would assume that you ran at the default resolution of 1280x720?
-<hr />
-####
-<a href="http://reedbeta.wordpress.com/" title="nathaniel.reed@gmail.com">Nathan Reed</a> - <time datetime="2012-04-02 12:02:32">Apr 1, 2012</time></p>
-
-<p>@MJP Hah, using the hardware to do what it&rsquo;s designed for - who does that? :) But anyway, it seems that this is a bit of an unfair comparison because light-indexed is mostly shading per-pixel while tiled-deferred is (I presume) shading per sample in all cases. Tiled-deferred with MSAA edge detection could turn things around on the AMD cards. (Of course, the fact that MSAA &lsquo;just works&rsquo; with light-indexed is itself an argument in its favor&hellip;)
-<hr />
-####
-<a href="http://reedbeta.wordpress.com/" title="nathaniel.reed@gmail.com">Nathan Reed</a> - <time datetime="2012-04-02 13:33:37">Apr 1, 2012</time></p>
-
-<p>Aha, that&rsquo;s great! In that case, yeah, the different MSAA scaling between the two techniques is very interesting.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-02 13:02:02">Apr 1, 2012</time></p>
-
-<p>@Nathan The tile-based deferred renderer does use edge detection. It compares the normal + depth of all subsamples in a pixel, and appends the coordinate of those pixels to a list in shared memory. Then all of the subsamples from those pixels distributed evenly among threads in the thread group so they can be shaded. The comparison is actually pretty conservative in my sample, so you end up doing per-sample shading on significantly fewer pixels than in the forward-rendered case. But even with that optimization the AMD cards take a huge hit from MSAA, which is a bit puzzling to me.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-11-26 14:09:31">Nov 1, 2012</time></p>
-
-<p>Hi Matt, I&rsquo;ve been using a simple frustum/cone that checks to ensure that some part of the cone is on the positive side of all 6 frustum planes (using the cone/plane test from Real-Time Collision Detection). It certainly works when the cone is entirely on the negative side of one of the 6 planes, but for cones that are rather large relative to the frustum you can get cases where the cone is on the positive side of all 6 planes but still doesn&rsquo;t intersect the actual frustum (you can actually get the same problem with a sphere/frustum test if you do it the same way). Constructing additional planes to test against will help, but doesn&rsquo;t solve the problem entirely. If you&rsquo;re not running into the same issues, then perhaps you&rsquo;re doing something that&rsquo;s a bit more sophisticated?
-<hr />
-####
-<a href="http://3dcgi.com" title="tmartin@ieee.org">3dcgi</a> - <time datetime="2012-04-02 05:06:07">Apr 1, 2012</time></p>
-
-<p>I don&rsquo;t have time to perform a full run, but here are a few 1280x720 numbers for comparison with a stock Radeon 7970. 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 6.02ms 4.63ms 2x MSAA 6.85ms 6.58ms 4xMSAA 7.52ms 8.00ms One thing I noticed from the other reported numbers is the GTX580 is faster than the 680 at tiled deferred yet the situation changes for index deferred. I&rsquo;m surprised at how much faster the Radeon 7970 is than the GTX 680. At least with 1024 lights.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-02 01:05:29">Apr 1, 2012</time></p>
-
-<p>Yeah, the default resolution is 1280x720. SLI won&rsquo;t kick in unless the driver has a profile for the app (or you use NVAPI to manually select a profile), so I&rsquo;m sure that it&rsquo;s just running on 1 GPU.
-<hr />
-####
-<a href="http://gravatar.com/logicalerror" title="sander.vanrossen@gmail.com">Sander van Rossen</a> - <time datetime="2012-04-01 01:04:46">Apr 0, 2012</time></p>
-
-<p>I couldn&rsquo;t see how many lights your binary was displaying, but these are the results for my ridiculously overpowered dual gtx680&rsquo;s: MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.3ms 2.6ms 2x MSAA 2.62ms 3.86ms 4xMSAA 2.85ms 4.95ms
-<hr />
-####
-[Andrew Lauritzen]( &ldquo;andrew.lauritzen@gmail.com&rdquo;) - <time datetime="2012-04-19 11:57:00">Apr 4, 2012</time></p>
-
-<p>The big hit on AMD cards with MSAA seems to be in the G-buffer rendering phase in my brief testing. Never tracked down why, as the cards have plenty of bandwidth available. Perhaps a ROP throughput bottleneck, I&rsquo;m not sure. Ideally if MSAA compression was &ldquo;perfect&rdquo;, it should be about the same overhead as MSAA with forward as it (roughly) is on NVIDIA.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-04-19 22:04:49">Apr 4, 2012</time></p>
-
-<p>Hi Andrew, According to my profiling (perfomed via queries) filing the G-Buffer on my AMD 6970 only accounts for 2.09ms at 1920x1080, 4xMSAA with no z prepass. With a z prepass it takes 1.31ms, with 0.4ms for the z prepass. The increase in frame time mostly comes from the lighting compute shader, which goes from 2.7ms with no MSAA to 6.8ms with 4xMSAA for the 128 light case.
-<hr />
-####
-[anteru]( &ldquo;wordpress@catchall.shelter13.net&rdquo;) - <time datetime="2012-06-06 01:29:35">Jun 3, 2012</time></p>
-
-<p>GTX 680, 1280x720 (Numbers are light prepass, tile deferred.) 256 Lights 1x 3.58 4.15 2x 4.07 5.32 4x 4.4 6.25 512 Lights 1x 5.46 5.6 2x 6.2 7.75 4x 6.7 9.4 1024 Lights 1x 10.6 12.2 2x 12.04 14.7 4x 13.1 16.1
-<hr />
-####
-<a href="http://directtovideo.wordpress.com" title="smaash@yahoo.com">directtovideo</a> - <time datetime="2012-04-05 09:23:34">Apr 4, 2012</time></p>
-
-<p>MJP: this is all speculation, but one problem I&rsquo;ve found with the tile-based deferred and splitting the samples across threads is the amount of shared memory. I&rsquo;ve had real problems with this especially on geforce - seems real sensitive to sharedmem (and effect on occupancy). The other thing is, with the deferred version (with quite large threadgroups running 16x16 tiles = 256 threads - I actually went for 8x8 here) you&rsquo;re making quite a big statement about your own scheduling / work balancing - the light indexed version is running a pixel shader to do the lighting so the hardware is scheduling the work in its own, probably smart, way. Wonder if that&rsquo;s a part of the difference. Nice comparison though! Very useful to see.
-<hr />
-####
-<a href="http://twitter.com/matiasgoldberg" title="matiasgoldberg@twitter.example.com">Matías N. Goldberg (@matiasgoldberg)</a> - <time datetime="2012-10-28 10:36:52">Oct 0, 2012</time></p>
-
-<p>At least on a AMD Radeon HD 7770, there are artifacts when using 1024 lights (all MSAA settings) with Forward rendering (G-Buffer works fine) Here&rsquo;s an image highlighting the artifacts: <a href="http://i.imgur.com/5Gvl2.jpg">http://i.imgur.com/5Gvl2.jpg</a> IT ONLY APPEARS WHEN LOOKING FROM THAT ANGLE Although it looks very small, it&rsquo;s actually *very* noticeable because it flickers in blocks (tiles) across ALL the roof border; even when the camera is completely still. It works fine with 512 lights. My theory from a quick glance is that those tiles have more lights than what the card allows to hold in the linked list buffer (is there a hard limit? or may be there&rsquo;s a hard limit in the forward rendering loop&hellip;?) and race conditions cause different lights to be dropped each frame; therefore the tile always has a light list that doesn&rsquo;t hold all the needed lights; being always different. Each tile flickers going lighter &amp; darker. I don&rsquo;t have an NVIDIA DX11 card to compare with, unfortunately.
-<hr />
-####
-<a href="http://dickyjim.wordpress.com/2012/07/04/hpg-2012/">HPG 2012 | dickyjim</a> - <time datetime="2012-07-04 04:35:08">Jul 3, 2012</time></p>
-
-<p>[&hellip;] Clustered Deferred and Forward Shading This was another paper I had read before attending. The value of the clustering for the samples is based on the spatial distribution of a large group of lights and how that interacts with tile based deferred shading where each tile contains a large range of depths. As an additional clustering key, they’ve also looked at normal cone clustering. Although this was expensive in their scenes, the normal cone clustering looked like it would have value in tiles with less depth and normal variance which is more likely in a game environment. One other thing of note, they mentioned during the managing clusters that their code was 2 passes on Fermi but could be 1 on Kepler due to the improved atomic performance. Overall, I think that a large part of the positive results for the test was due to the selective nature of the scenes used to test the technique. I’d like to see the performance results in a wider range of scenes (for example as in Matt Pettineo’s light indexed work). [&hellip;]
-<hr />
-####
-<a href="http://directtovideo.wordpress.com" title="mattswoboda@yahoo.co.uk">directtovideo</a> - <time datetime="2012-11-27 01:35:16">Nov 2, 2012</time></p>
-
-<p>MJP: Looks like I&rsquo;m doing the same as you then. Clearly I just haven&rsquo;t managed to generate a case that breaks it yet, so will look out for that.
-<hr />
-####
-<a href="http://chetanjags.wordpress.com/2014/09/25/wip-deferred-rendering/">WIP: Deferred Rendering | Chetan Jags</a> - <time datetime="2014-09-25 08:05:22">Sep 4, 2014</time></p>
-
-<p>[…] mentioned in Battlefield3 presentation and in this demo from Intel. Thinking about ForwardPlus or Light Indexed Deferred for transparent […]
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2012-10-28 23:42:42">Oct 0, 2012</time></p>
-
-<p>Hi Matias, I haven&rsquo;t seen any similar artifacts myself, but I&rsquo;m not terribly surprised. It certainly wouldn&rsquo;t be the first time that I encountered quirky behavior with compute shaders that use atomics on shared memory variables. There&rsquo;s actually no linked list, each tile has enough room in a buffer to store indices for N lights (where N is the maximum number of lights in the scene). So there *should* be enough room in the buffer to store 1024 lights, as well as in shared memory.
-<hr />
-####
-[Lukas M]( &ldquo;mjp@lukasmeindl.at&rdquo;) - <time datetime="2012-11-09 14:48:16">Nov 5, 2012</time></p>
-
-<p>@matiasgoldberg i got the same problem. I got a HD Radeon 7950 - it flickers on that angle and with the 1024 lights activatated. However it works fine with less lights.
-<hr />
-####
-<a href="http://ozlael.egloos,com" title="ozjjangozjjang@gmail.com">ozlael</a> - <time datetime="2012-09-02 06:15:28">Sep 0, 2012</time></p>
-
-<p>always thank for good article :-)
-<hr />
-####
-<a href="http://twitter.com/matiasgoldberg" title="matiasgoldberg@twitter.example.com">Matías N. Goldberg (@matiasgoldberg)</a> - <time datetime="2012-11-03 10:04:07">Nov 6, 2012</time></p>
-
-<p>Hi, thanks for the answer. Yeah, when I was referring to the linked list buffer, I was thinking you probably just used a big per-tile array. This is unsurprising for me either, CS puts more responsibility to developers than pixel shaders, but it&rsquo;s a new tech where driver, compiler &amp; even HW bugs can&rsquo;t be ruled out yet. So, either the driver clamps the buffer size, the HW&rsquo;s atomic operation is malfunctioning, there&rsquo;s a rare race condition somewhere, the tile is somehow overflowing, or the pixel shader in the forward pass is just refusing to read the entire buffer and just parsing it partially. So many possibilities&hellip;. I just wanted to know if someone else was able to reproduce the artifacts (only shows when lightcount = 1024; while looking from that particular angle as in the screenshot)
-<hr />
-####
-<a href="http://directtovideo.wordpress.com" title="mattswoboda@yahoo.co.uk">directtovideo</a> - <time datetime="2012-11-26 02:11:22">Nov 1, 2012</time></p>
-
-<p>MJP: Did you have any joy with spot culling? I&rsquo;m running with the cone/plane test per frustum plane I had on PS3/SPU. Haven&rsquo;t seen any false positives ..
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="%22%22">zxaida</a> - <!-- raw HTML omitted -->May 2, 2012<!-- raw HTML omitted --></p>
+<p>Radeon 7970 at 1200MHz clocks 1280x720,default setting 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 1.70ms 1.80ms 2x MSAA 1.91ms 2.55ms 4xMSAA 6.25ms 3.27ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.15ms 2.08ms 2x MSAA 2.42ms 2.94ms 4xMSAA 7.35ms 3.74ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.84ms 2.51ms 2x MSAA 3.21ms 3.57ms 4xMSAA 8.771ms 4.46ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 4.78ms 3.74ms 2x MSAA 5.43ms 5.26ms 4xMSAA 11.9ms 6.53ms</p>
+<!-- raw HTML omitted -->
+<p>Just got my first results after switching from light-prepass to tiled deferred:) I&rsquo;m quite happy with it. Have you had time to investigate arbitrary volume or spot light implementations yet? I haven&rsquo;t had time yet since I&rsquo;m dealing with cascade shadow map performance:( Off topic but, from the latest GDC papers, seems DICE is using VS instancing and the GS to select a rendertarget array index. This is to avoid multiple draws per cascade. But you mention texture arrays being lower performance than an atlas in your tests. Any idea why? Also, I have not heard anyone talk about using an atlas with VS instancing and selecting a viewport index. That would eliminate the array but keep the single draw for all cascades.</p>
+<!-- raw HTML omitted -->
+<p>Your demo could be doing something different than mine of course, but if you hit &ldquo;F8&rdquo; in mine you can disable G-buffer rendering/updating and last I checked that was the biggest part of the bottleneck on ATI. Of course it would make more sense if it was something in the significantly-more-complex light/shading pass, but that wasn&rsquo;t what I experienced at least in the past :)</p>
+<!-- raw HTML omitted -->
+<p>I will note too that I typically prefer to &ldquo;disable parts of the rendering&rdquo;, etc. rather than use queries. Queries are a bit finicky in that they don&rsquo;t necessarily interact with the pipelining in the GPU in a natural way (i.e. are you measuring end-to-end latency of a submitted command? stalling between each command instead? None is a good solution). Of course there&rsquo;s no perfect solution but I find that a somewhat more consistent and predictable way to profile than queries.</p>
+<!-- raw HTML omitted -->
+<p>On my GTX 580 at 1280x720: 128 lights 1x: LI 3.77 TD 3.17 2x: LI 4.14 TD 3.58 4x: LI 4.39 TD 4.17 256 lights 1x: LI 5.68 TD 4.37 2x: LI 6.33 TD 4.95 4x: LI 6.80 TD 5.52 512 lights 1x: LI 8.54 TD 6.10 2x: LI 9.62 TD 6.80 4x: LI 10.42 TD 7.35 1024 lights 1x: LI 16.67 TD 10.99 2x: LI 18.87 TD 12.05 4x: LI 20.41 TD 12.82 Similar pattern to your GTX 570. I should also note I disabled the Z prepass for the tilde deferred cases since it was slowing it down a bit. By the way, in multisampling mode with light-indexed are you running lighting per MSAA sample or just per pixel? And have you looked at detecting edges and running the per-sample lighting only for the tiles (or pixels) containing edges? That can be a big optimization for tiled-deferred, maybe less so for light-indexed deferred as it seems you&rsquo;d have to branch in the pixel shader to implement it. Finally, I wonder how CSAA (NVIDIA) or EQAA (AMD) would affect things. I&rsquo;m not sure how you actually turn those on in D3D, though.</p>
+<!-- raw HTML omitted -->
+<p>Thanks for those cool graphs Cyrus! I realized a few days ago that I was running an older driver on the machine I did the 570 test on, so it was probably just a driver bug that was resolved at some point. Spot lights are pretty tricky. I&rsquo;ve been meaning to dedicate some time investigating efficent ways to cull them per-tile, but haven&rsquo;t gotten around to it yet. A full frustum-frustum test with SAT seems too heavyweight to be done in a single thread (IIRC it&rsquo;s something like 6*8 + 6*8 + 6*6*8 dot products for the full test), so I&rsquo;m thinking a cheaper approximation might be the way to go. I&rsquo;ve been kicking around something I came up with based on plane/cone intersection tests that&rsquo;s alot cheaper, but gives false positives for a few cases. Rasterizing the volume might be another viable option for expensive lights. I can let you know how it goes once I get some time to work on it more.</p>
+<!-- raw HTML omitted -->
+<p>@directtovideo I suspected the same thing regarding shared memory pressure, so I ran a few experiments where I varied the thread group size but I wasn&rsquo;t able to improve the performance. And you&rsquo;re absolutely right about the scheduling&hellip;it&rsquo;s really the key difference between the two techniques. Ultimately it comes to down to whether the the flexibility you get from shading in a compute shader ends up winning out over the efficiency of hardware scheduling, and taking that into account along with having to render out a G-Buffer (for tiled deferred), or requiring geometry to be rasterized twice (for indexed deferred). @Anonymous For a large number of lights in a scene having a per-pixel list doesn&rsquo;t seem very compelling to me. The problems to me are: A. You&rsquo;d have to compute light intersections per-list rather than per-tile, which means that you can&rsquo;t compute the intersections for many lights in parallel like you can with per-tile lists. You could rasterize the light volumes and append the index to the per-tile linked lists (like in the AMD demo, as you suggested) but I&rsquo;d imagine that would still be much slower. B. Your granularity during the forward lighting phase is limited by branching coherency, so it doesn&rsquo;t seem worth it to do fine-grained light intersection C. You&rsquo;ll consume a lot more memory with per-pixel lists D. If you use a linked list, just reading the light indices in the forward lighting phase is going to be slower. One thing I discovered early on was that just reading indices can be a serious performance drain, so I tried to make it as cheap as possible. For a smaller number of lights it might make sense though, especially if going fine-grained allows you to do a better job culling non-spherical light sources.</p>
+<!-- raw HTML omitted -->
+<p>MJP - great read. Just wondering, why didn&rsquo;t you try using a per-pixel list (like the AMD order-independent-transparency demo) for the light indices? Do you think that would have worse performance? Thanks.</p>
+<!-- raw HTML omitted -->
+<p>You definitely have a good point regarding the queries&hellip;I try to only use them to get a rough idea of timings but even then they can be quite off from the delta you get in overall frame time. I put it in a setting to disable G-Buffer rendering, and that shows a delta of about 4-4.5ms with 4xMSAA which is definitely pretty significant and more in line with your findings. I can actually get a similar result from my queries if try to force a sync point with a simple compute shader that reads from the MSAA G-Buffer textures. I would suspect that there might be something else expensive going on here, perhaps an expensive decompression step to allow the shader to sample the MSAA textures. Thank you for your input!</p>
+<!-- raw HTML omitted -->
+<p>Not sure why you had issues with the GTX 570 at 1920x1080, it worked fine with mine. Here&rsquo;s my results: Windows 7, Intel Q6600, 2.40Ghz NVIDIA GeForce 570 GTX, 296.10 drivers 1280x720: LIDR TBDR No MSAA 4.34 4.03 2x MSAA 4.78 4.54 4x MSAA 5.18 5.05 No MSAA 6.53 5.40 2x MSAA 7.35 6.05 4x MSAA 7.87 6.66 No MSAA 9.90 7.46 2x MSAA 11.23 8.19 4x MSAA 12.04 8.84 No MSAA 19.23 13.15 2x MSAA 21.73 14.49 4x MSAA 23.80 15.38 1920x1080: LIDR TBDR No MSAA 7.24 6.80 2x MSAA 8.00 7.69 4x MSAA 8.47 9.17 No MSAA 11.62 9.90 2x MSAA 12.98 10.98 4x MSAA 13.88 12.19 No MSAA 18.51 14.49 2x MSAA 20.40 15.87 4x MSAA 21.73 17.24 No MSAA 37.03 27.02 2x MSAA 40.00 28.57 4x MSAA 43.47 30.30 I uploaded a graph of results from this page, substituting my GTX 570 results: <a href="http://img543.imageshack.us/img543/4589/lidrvstidr.png">http://img543.imageshack.us/img543/4589/lidrvstidr.png</a> Do you have any idea about the performance difference if using arbitrary light volumes? Or frustum volumes for spot lights? Thanks.</p>
+<!-- raw HTML omitted -->
+<p>It was at the default resolution, I don&rsquo;t know if that&rsquo;s 1280×720.. 128 lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.3ms 2.6ms 2x MSAA 2.62ms 3.86ms 4xMSAA 2.85ms 4.95ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.5ms 3.95ms 2x MSAA 3.95ms 4.76ms 4xMSAA 4.3ms 6.28ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.26ms 5.71ms 2x MSAA 5.95ms 7.87ms 4xMSAA 6.45ms 9.61ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 10.2ms 12.6ms 2x MSAA 11.62ms 15.15ms 4xMSAA 12.65ms 16.39ms And it&rsquo;s dual gtx680 (so 2x with sli, not a single card). These results make me wonder if SLI is configured correctly &hellip; or if something in the app makes it impossible for the driver to use SLI effectively. It&rsquo;s just hard to believe that dual gtx680&rsquo;s can be beaten so easily heh</p>
+<!-- raw HTML omitted -->
+<p>AMD 5870 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.48ms 3.59ms 2x MSAA 4.03ms 4.60ms 4xMSAA 4.44ms 5.49ms</p>
+<!-- raw HTML omitted -->
+<p>Continued &hellip; (above the &ldquo;No MSAA&rdquo; is swapped, sorry - yes on the 5870 &ldquo;No MSAA&rdquo; and &ldquo;Some MSAA&rdquo; swaps the rank = 512 indexed can&rsquo;t manage competing) 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.18ms 4.42ms 2x MSAA 5.78ms 5.95ms 4xMSAA 6.32ms 6.89ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 7.51ms 5.95ms 2x MSAA 8.40ms 7.63ms 4xMSAA 9.09ms 8.69ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 14.28ms 10.20ms 2x MSAA 15.87ms 12.98ms 4xMSAA 17.24ms 14.28ms All default resolution.</p>
+<!-- raw HTML omitted -->
+<p>LI seems ALU-bound and TB seems at least memory-related on the 5870, overclocking the core yields different speedup for LI and TB respectively (looking at the two extremes): LI speeds up more or less linear on all accounts, that is 850 to 990 (MHz) ^= 3.59 to 3.19 (linear is 3.08) ^= 17.24 to 14.92 (linear is 14.80). TB is stalemate in the &ldquo;No MSAA&rdquo; case for 990, not faster anymore, that is 850 to 990 (MHz) ^= 3.48 to 3.14 (linear is 2.98) ^= 14.28 to 12.65 (linear is 12.26). On the slow extreme it&rsquo;s 13.5% vs. 11.5% speedup from a 14.2% overclock, that is TB gains 85% vs. LI. To me it seems on the GKs it&rsquo;s only that TB is faster because of the large sustainable memory bandwidth. And it is visible, that if I would clock my 5870 at say 2GHz, then TB would never win. LI vs. TB seems a ALU vs. mem tradeoff, or not that relevant if the architecture is somewhere in the middle. But as memory speeds are unlikely to rise much further, and often are below our GDDR5 speeds on medium class cards, and core clock still keeps rising even on medium class cards, I&rsquo;d say LI has a rosier prognosis.</p>
+<!-- raw HTML omitted -->
+<p>@Nathan, For Light Indexed Deferred it&rsquo;s really just forward lighting, so I just turn on MSAA for the render target and let the hardware do its thing. This means that you only shade multiple times per pixel along triangle edges where the triangle doesn&rsquo;t full cover all subsamples of a pixel. You could certainly use CSAA if you wanted, you just turn it on by using a different quality level. I&rsquo;m not sure about EQAA. @ethatron Thank you for sharing such a detailed analysis! Your findings make sense though, since light indexed deferred tends to be VERY heavy on ALU in the pixel shader.</p>
+<!-- raw HTML omitted -->
+<p>Radeon 7970 at stock clocks full screen on a 1080p monitor with the taskbar hidden so the rendering window is a title bar short of 1080p. 128 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 3.03ms 3.34ms 2x MSAA 3.52ms 5.12ms 4xMSAA 3.96ms 6.84ms 256 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 4.18ms 4.20ms 2x MSAA 4.76ms 6.25ms 4xMSAA 5.32ms 8.13ms 512 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 5.85ms 5.46ms 2x MSAA 6.62ms 8.00ms 4xMSAA 7.19ms 10.00ms 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 10.42ms 8.92ms 2x MSAA 11.63ms 12.66ms 4xMSAA 12.82ms 15.63ms</p>
+<!-- raw HTML omitted -->
+<p>@mjp Here: &ldquo;No MSAA 3.48ms 3.59ms&rdquo; I accidentally flipped the number, it should be &ldquo;No MSAA 3.59ms 3.48ms&rdquo;. :^)</p>
+<!-- raw HTML omitted -->
+<p>Thanks for posting those Sanders! The original binary was running at 128 lights. I just uploaded a new one that lets you switch the number of lights. I would assume that you ran at the default resolution of 1280x720?</p>
+<!-- raw HTML omitted -->
+<p>@MJP Hah, using the hardware to do what it&rsquo;s designed for - who does that? :) But anyway, it seems that this is a bit of an unfair comparison because light-indexed is mostly shading per-pixel while tiled-deferred is (I presume) shading per sample in all cases. Tiled-deferred with MSAA edge detection could turn things around on the AMD cards. (Of course, the fact that MSAA &lsquo;just works&rsquo; with light-indexed is itself an argument in its favor&hellip;)</p>
+<!-- raw HTML omitted -->
+<p>Aha, that&rsquo;s great! In that case, yeah, the different MSAA scaling between the two techniques is very interesting.</p>
+<!-- raw HTML omitted -->
+<p>@Nathan The tile-based deferred renderer does use edge detection. It compares the normal + depth of all subsamples in a pixel, and appends the coordinate of those pixels to a list in shared memory. Then all of the subsamples from those pixels distributed evenly among threads in the thread group so they can be shaded. The comparison is actually pretty conservative in my sample, so you end up doing per-sample shading on significantly fewer pixels than in the forward-rendered case. But even with that optimization the AMD cards take a huge hit from MSAA, which is a bit puzzling to me.</p>
+<!-- raw HTML omitted -->
+<p>Hi Matt, I&rsquo;ve been using a simple frustum/cone that checks to ensure that some part of the cone is on the positive side of all 6 frustum planes (using the cone/plane test from Real-Time Collision Detection). It certainly works when the cone is entirely on the negative side of one of the 6 planes, but for cones that are rather large relative to the frustum you can get cases where the cone is on the positive side of all 6 planes but still doesn&rsquo;t intersect the actual frustum (you can actually get the same problem with a sphere/frustum test if you do it the same way). Constructing additional planes to test against will help, but doesn&rsquo;t solve the problem entirely. If you&rsquo;re not running into the same issues, then perhaps you&rsquo;re doing something that&rsquo;s a bit more sophisticated?</p>
+<!-- raw HTML omitted -->
+<p>I don&rsquo;t have time to perform a full run, but here are a few 1280x720 numbers for comparison with a stock Radeon 7970. 1024 Lights MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 6.02ms 4.63ms 2x MSAA 6.85ms 6.58ms 4xMSAA 7.52ms 8.00ms One thing I noticed from the other reported numbers is the GTX580 is faster than the 680 at tiled deferred yet the situation changes for index deferred. I&rsquo;m surprised at how much faster the Radeon 7970 is than the GTX 680. At least with 1024 lights.</p>
+<!-- raw HTML omitted -->
+<p>Yeah, the default resolution is 1280x720. SLI won&rsquo;t kick in unless the driver has a profile for the app (or you use NVAPI to manually select a profile), so I&rsquo;m sure that it&rsquo;s just running on 1 GPU.</p>
+<!-- raw HTML omitted -->
+<p>I couldn&rsquo;t see how many lights your binary was displaying, but these are the results for my ridiculously overpowered dual gtx680&rsquo;s: MSAA Level Light Indexed Deferred Tile-Based Deferred No MSAA 2.3ms 2.6ms 2x MSAA 2.62ms 3.86ms 4xMSAA 2.85ms 4.95ms</p>
+<!-- raw HTML omitted -->
+<p>The big hit on AMD cards with MSAA seems to be in the G-buffer rendering phase in my brief testing. Never tracked down why, as the cards have plenty of bandwidth available. Perhaps a ROP throughput bottleneck, I&rsquo;m not sure. Ideally if MSAA compression was &ldquo;perfect&rdquo;, it should be about the same overhead as MSAA with forward as it (roughly) is on NVIDIA.</p>
+<!-- raw HTML omitted -->
+<p>Hi Andrew, According to my profiling (perfomed via queries) filing the G-Buffer on my AMD 6970 only accounts for 2.09ms at 1920x1080, 4xMSAA with no z prepass. With a z prepass it takes 1.31ms, with 0.4ms for the z prepass. The increase in frame time mostly comes from the lighting compute shader, which goes from 2.7ms with no MSAA to 6.8ms with 4xMSAA for the 128 light case.</p>
+<!-- raw HTML omitted -->
+<p>GTX 680, 1280x720 (Numbers are light prepass, tile deferred.) 256 Lights 1x 3.58 4.15 2x 4.07 5.32 4x 4.4 6.25 512 Lights 1x 5.46 5.6 2x 6.2 7.75 4x 6.7 9.4 1024 Lights 1x 10.6 12.2 2x 12.04 14.7 4x 13.1 16.1</p>
+<!-- raw HTML omitted -->
+<p>MJP: this is all speculation, but one problem I&rsquo;ve found with the tile-based deferred and splitting the samples across threads is the amount of shared memory. I&rsquo;ve had real problems with this especially on geforce - seems real sensitive to sharedmem (and effect on occupancy). The other thing is, with the deferred version (with quite large threadgroups running 16x16 tiles = 256 threads - I actually went for 8x8 here) you&rsquo;re making quite a big statement about your own scheduling / work balancing - the light indexed version is running a pixel shader to do the lighting so the hardware is scheduling the work in its own, probably smart, way. Wonder if that&rsquo;s a part of the difference. Nice comparison though! Very useful to see.</p>
+<!-- raw HTML omitted -->
+<p>At least on a AMD Radeon HD 7770, there are artifacts when using 1024 lights (all MSAA settings) with Forward rendering (G-Buffer works fine) Here&rsquo;s an image highlighting the artifacts: <a href="http://i.imgur.com/5Gvl2.jpg">http://i.imgur.com/5Gvl2.jpg</a> IT ONLY APPEARS WHEN LOOKING FROM THAT ANGLE Although it looks very small, it&rsquo;s actually *very* noticeable because it flickers in blocks (tiles) across ALL the roof border; even when the camera is completely still. It works fine with 512 lights. My theory from a quick glance is that those tiles have more lights than what the card allows to hold in the linked list buffer (is there a hard limit? or may be there&rsquo;s a hard limit in the forward rendering loop&hellip;?) and race conditions cause different lights to be dropped each frame; therefore the tile always has a light list that doesn&rsquo;t hold all the needed lights; being always different. Each tile flickers going lighter &amp; darker. I don&rsquo;t have an NVIDIA DX11 card to compare with, unfortunately.</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] Clustered Deferred and Forward Shading This was another paper I had read before attending. The value of the clustering for the samples is based on the spatial distribution of a large group of lights and how that interacts with tile based deferred shading where each tile contains a large range of depths. As an additional clustering key, they’ve also looked at normal cone clustering. Although this was expensive in their scenes, the normal cone clustering looked like it would have value in tiles with less depth and normal variance which is more likely in a game environment. One other thing of note, they mentioned during the managing clusters that their code was 2 passes on Fermi but could be 1 on Kepler due to the improved atomic performance. Overall, I think that a large part of the positive results for the test was due to the selective nature of the scenes used to test the technique. I’d like to see the performance results in a wider range of scenes (for example as in Matt Pettineo’s light indexed work). [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>MJP: Looks like I&rsquo;m doing the same as you then. Clearly I just haven&rsquo;t managed to generate a case that breaks it yet, so will look out for that.</p>
+<!-- raw HTML omitted -->
+<p>[…] mentioned in Battlefield3 presentation and in this demo from Intel. Thinking about ForwardPlus or Light Indexed Deferred for transparent […]</p>
+<!-- raw HTML omitted -->
+<p>Hi Matias, I haven&rsquo;t seen any similar artifacts myself, but I&rsquo;m not terribly surprised. It certainly wouldn&rsquo;t be the first time that I encountered quirky behavior with compute shaders that use atomics on shared memory variables. There&rsquo;s actually no linked list, each tile has enough room in a buffer to store indices for N lights (where N is the maximum number of lights in the scene). So there *should* be enough room in the buffer to store 1024 lights, as well as in shared memory.</p>
+<!-- raw HTML omitted -->
+<p>@matiasgoldberg i got the same problem. I got a HD Radeon 7950 - it flickers on that angle and with the 1024 lights activatated. However it works fine with less lights.</p>
+<!-- raw HTML omitted -->
+<p>always thank for good article :-)</p>
+<!-- raw HTML omitted -->
+<p>Hi, thanks for the answer. Yeah, when I was referring to the linked list buffer, I was thinking you probably just used a big per-tile array. This is unsurprising for me either, CS puts more responsibility to developers than pixel shaders, but it&rsquo;s a new tech where driver, compiler &amp; even HW bugs can&rsquo;t be ruled out yet. So, either the driver clamps the buffer size, the HW&rsquo;s atomic operation is malfunctioning, there&rsquo;s a rare race condition somewhere, the tile is somehow overflowing, or the pixel shader in the forward pass is just refusing to read the entire buffer and just parsing it partially. So many possibilities&hellip;. I just wanted to know if someone else was able to reproduce the artifacts (only shows when lightcount = 1024; while looking from that particular angle as in the screenshot)</p>
+<!-- raw HTML omitted -->
+<p>MJP: Did you have any joy with spot culling? I&rsquo;m running with the cone/plane test per frustum plane I had on PS3/SPU. Haven&rsquo;t seen any false positives ..</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -920,7 +703,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5296 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5032 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-03-31 19:53 -0700</p>
 			</footer>
 		</article>
@@ -943,7 +726,7 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

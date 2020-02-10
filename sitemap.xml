@@ -1,34 +1,39 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://therealmjp.github.io/posts/sss-intro/</loc>
-    <lastmod>2019-10-06T00:00:00+00:00</lastmod>
+    <loc>https://therealmjp.github.io/posts/sss-sg/</loc>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/tags/graphics/</loc>
-    <lastmod>2019-10-06T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/posts/</loc>
-    <lastmod>2019-10-06T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/tags/shading/</loc>
-    <lastmod>2019-10-06T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/tags/</loc>
-    <lastmod>2019-10-06T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://therealmjp.github.io/</loc>
+    <lastmod>2020-02-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://therealmjp.github.io/posts/sss-intro/</loc>
     <lastmod>2019-10-06T00:00:00+00:00</lastmod>
   </url>
   

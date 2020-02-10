@@ -8,16 +8,13 @@
 <meta itemprop="name" content="Correcting XNA&#39;s Gamma Correction">
 <meta itemprop="description" content="One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
 Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.">
-
-
 <meta itemprop="datePublished" content="2009-12-31T22:31:58&#43;00:00" />
 <meta itemprop="dateModified" content="2009-12-31T22:31:58&#43;00:00" />
-<meta itemprop="wordCount" content="1148">
+<meta itemprop="wordCount" content="1109">
 
 
 
-<meta itemprop="keywords" content="DirectX,Programming,Xbox 360,XNA," />
-<meta property="og:title" content="Correcting XNA&#39;s Gamma Correction" />
+<meta itemprop="keywords" content="DirectX,Programming,Xbox 360,XNA," /><meta property="og:title" content="Correcting XNA&#39;s Gamma Correction" />
 <meta property="og:description" content="One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
 Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline." />
 <meta property="og:type" content="article" />
@@ -37,7 +34,7 @@ Lately I&rsquo;ve been doing some research into inferred rendering (more on that
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Correcting XNA&#39;s Gamma Correction</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -77,18 +74,11 @@ Lately I&rsquo;ve been doing some research into inferred rendering (more on that
 				<h1>Correcting XNA&#39;s Gamma Correction</h1>
 			</header>
 			<div class="content">
-				
-
-<p>One thing I never used to pay attention to is <a href="http://download.microsoft.com/download/b/5/5/b55d67ff-f1cb-4174-836a-bbf8f84fb7e1/Picture%20Perfect%20-%20Gamma%20Through%20the%20Rendering%20Pipeline.zip">gamma correction</a>.  This is mainly because it rarely gets mentioned, and also because you can usually get <em>pretty good</em> results without ever even thinking about it.  However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.</p>
-
+				<p>One thing I never used to pay attention to is <a href="http://download.microsoft.com/download/b/5/5/b55d67ff-f1cb-4174-836a-bbf8f84fb7e1/Picture%20Perfect%20-%20Gamma%20Through%20the%20Rendering%20Pipeline.zip">gamma correction</a>.  This is mainly because it rarely gets mentioned, and also because you can usually get <em>pretty good</em> results without ever even thinking about it.  However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.</p>
 <p>Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once)  be gamma-correct throughout the pipeline.  So I went looking through the XNA Framework documentation for framework&rsquo;s equvalent of the D3DSAMP_SRGBTEXTURE sampler state (which automatically converts from sRGB to linear in the texture unit) and the D3DRS_SRGBWRITEENABLE render state (which automatically converts from linear to sRGB in the ROP)&hellip;and I didn&rsquo;t find them.  The thought of these being left out struck me as odd, so I did a bit of searching on Google.  After refining my search terms I found <a href="http://forums.xna.com/forums/t/9727.aspx">this post</a> by framework developer Shawn Hargreaves, confirming that those states were not exposed in the framework due to inconsistencies between Windows and Xbox.  After looking through some presentations again I concluded that he was talking about&hellip;</p>
-
 <p>1.  The fact that the 360 uses a 4-segment piecewise linear approximation curve to perform conversion to and from sRGB, which gives quite different results compared to what you get with PC GPU&rsquo;s.</p>
-
 <p>2.  The fact that blending behavior is different in DX9 and DX10-level GPU&rsquo;s, regardless of which API you use.  DX9 GPU&rsquo;s will perform framebuffer blending after conversion to sRGB (which is mathematically incorrect), while DX10 GPU&rsquo;s will do the blending in linear space and then convert the blended result to sRGB.  There is a cap to detect this behavior (D3DPMISCCAPS_POSTBLENDSRGBCONVERT) but it&rsquo;s only available if you create an IDirect3D9Ex device.</p>
-
 <p>So yeah, that&rsquo;s annoying.  But like most limitations in the framework you can work around them if you&rsquo;re determined enough, and fortunately this one is a piece of cake.  Well&hellip;on the PC, at least.  So let&rsquo;s start with the first half, sampling sRGB textures.  Like I mentioned before there&rsquo;s a nice convenient sampler state in D3D9 that will do the sRGB-&gt;linear automatically, but XNA&rsquo;s SamplerState just doesn&rsquo;t have it.  But fortunately that&rsquo;s not the only way to set sampler states&hellip;we can also get the Effects framework to do it for us by defining a sampler_state in our effect files.  So I took a peek at the <a href="http://msdn.microsoft.com/en-us/library/ee418548%28VS.85%29.aspx#Sampler_Stage_States">D3D9 Effect States documentation</a>, and added the appropriate state declaration to my effect file.  And it worked!  For the lazy, all you have to do is this (important line in bold):</p>
-
 <pre><code>texture2D DiffuseMap;
 sampler2D DiffuseSampler = sampler_state
 {
@@ -97,10 +87,7 @@ sampler2D DiffuseSampler = sampler_state
 };
 
 
-</code></pre>
-
-<p>Okay now for the other half, sRGB writes.  Once again D3D9 has a convenient render state that does all of the work for us, and the Effects framework can set render states for us if we include them in a pass declaration.  But unfortunately this time the Effect States documentation didn&rsquo;t have anything for SRGBWRITEENABLE.  Too determined to give up, I followed the standard convention of effect states and chopped the prefix off the &ldquo;D3DRS_&rdquo; prefix.  And hey, it worked!</p>
-
+</code></pre><p>Okay now for the other half, sRGB writes.  Once again D3D9 has a convenient render state that does all of the work for us, and the Effects framework can set render states for us if we include them in a pass declaration.  But unfortunately this time the Effect States documentation didn&rsquo;t have anything for SRGBWRITEENABLE.  Too determined to give up, I followed the standard convention of effect states and chopped the prefix off the &ldquo;D3DRS_&rdquo; prefix.  And hey, it worked!</p>
 <pre><code>technique Transparent
 {
     pass Pass1
@@ -111,14 +98,9 @@ sampler2D DiffuseSampler = sampler_state
        **SRGBWriteEnable = true;**
     }
 }
-</code></pre>
-
-<p>So we&rsquo;ve solved our gamma problems&hellip;at least if you&rsquo;re only targeting the PC and you&rsquo;re using Effects.  If you&rsquo;re not using Effects, then I don&rsquo;t know of any way to toggle those states.  It&rsquo;s probably possible with some sort of interop/reflection voodoo, but I don&rsquo;t know enough about these things to recommend it.</p>
-
+</code></pre><p>So we&rsquo;ve solved our gamma problems&hellip;at least if you&rsquo;re only targeting the PC and you&rsquo;re using Effects.  If you&rsquo;re not using Effects, then I don&rsquo;t know of any way to toggle those states.  It&rsquo;s probably possible with some sort of interop/reflection voodoo, but I don&rsquo;t know enough about these things to recommend it.</p>
 <p>There&rsquo;s also the Xbox 360 problem, which is actually two problems in one.  The first problem is that the Xbox 360 doesn&rsquo;t use sampler and render states to control sRGB read and writes.  It instead uses the D3D10 convention of having special surface formats for textures and render targets that control whether conversion takes place.  I don&rsquo;t have access to my Xbox 360 at the moment so I can&rsquo;t verify for sure, but I strongly suspect that the effect states won&rsquo;t work.  And even if they did work you&rsquo;d still have the second problem, which is that the Xbox uses that piecewise approximation curve  (<a href="http://www.valvesoftware.com/publications/2008/GDC2008_PostProcessingInTheOrangeBox.pdf">this presentation</a> by Valve shows some of the nastiness that can occur with it).</p>
-
 <p>Fortunately we can bypass those problems by doing the conversion ourselves in the shader.  The good news is that the code is a piece of cake&hellip;the bad news is that it&rsquo;s not super cheap since it involves raising your RGB color value to a non-integral power. Here&rsquo;s the code:</p>
-
 <pre><code>// Converts from linear RGB space to sRGB.
 float3 LinearToSRGB(in float3 color)
 {
@@ -130,41 +112,22 @@ float3 SRGBToLinear(in float3 color)
 {
     return pow(color, 2.2f);
 }
-</code></pre>
-
-<p>Unfortunately with these you also have the problem that filtering and blending will be performed in sRGB space, and there&rsquo;s not much you can do about that (aside from doing the filtering and blending yourself, but that would be way too expensive).</p>
-
+</code></pre><p>Unfortunately with these you also have the problem that filtering and blending will be performed in sRGB space, and there&rsquo;s not much you can do about that (aside from doing the filtering and blending yourself, but that would be way too expensive).</p>
 <p>If you want to make these conversions a little cheaper, you can use a trick that my coworker showed me: round down the 2.2 to 2.0.  This gives you a simple square operation for conversion to linear (you can just dot the value with itself), and a sqrt operation for conversion to sRGB.</p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-[Joe Venzon]( &ldquo;spm@venzon.net&rdquo;) - <time datetime="2010-06-01 15:53:22">Jun 2, 2010</time></p>
-
-<p>&ldquo;If you want to make these conversions a little cheaper, you can use a trick that my coworker showed me: round down the 2.2 to 2.0. This gives you a simple square operation for conversion to linear (you can just dot the value with itself), and a sqrt operation for conversion to sRGB.&rdquo; I think you mean you want to multiply the value with itself, not dot it with itself.
-<hr />
-####
-<a href="http://porg.es/blog/" title="porges@porg.es">porges</a> - <time datetime="2011-05-08 16:01:28">May 0, 2011</time></p>
-
-<p>In XNA 4.0, sRGBWriteEnable doesn&rsquo;t work. The compiler claims it is obsolete. Do you know anything about this?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2011-05-08 19:10:15">May 0, 2011</time></p>
-
-<p>I do know that for XNA 4 the effect content processor does some extra stuff when compiling effects to keep track of which states need to be set, and I&rsquo;m guessing that when they did that they decided not to support the sRGB states.
-<hr />
-####
-<a href="http://ploobs.com.br/?p=1207">XNA 4.0 Gamma Corrected Pipeline | Ploobs</a> - <time datetime="2011-07-02 04:59:01">Jul 6, 2011</time></p>
-
-<p>[&hellip;] In XNA 3.1 (PC version only) we could use a DirectX 9c instructions to configure the texture sampler to automatically convert the texture from SRGB to Linear space on hardware. We also could set the render surface to be SRGB, so the gamma correction pipeline was pretty simple and fully done in hardware. More informations here. [&hellip;]
-<hr />
-####
-<a href="https://ywjheart.wordpress.com/2016/11/04/correcting-xnas-gamma-correction/">CORRECTING XNA’S GAMMA CORRECTION &#8211; morning&#039;s blog</a> - <time datetime="2016-11-03 23:04:12">Nov 4, 2016</time></p>
-
-<p>[…] <a href="https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/">https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/</a> […]
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="%22spm@venzon.net%22">Joe Venzon</a> - <!-- raw HTML omitted -->Jun 2, 2010<!-- raw HTML omitted --></p>
+<p>&ldquo;If you want to make these conversions a little cheaper, you can use a trick that my coworker showed me: round down the 2.2 to 2.0. This gives you a simple square operation for conversion to linear (you can just dot the value with itself), and a sqrt operation for conversion to sRGB.&rdquo; I think you mean you want to multiply the value with itself, not dot it with itself.</p>
+<!-- raw HTML omitted -->
+<p>In XNA 4.0, sRGBWriteEnable doesn&rsquo;t work. The compiler claims it is obsolete. Do you know anything about this?</p>
+<!-- raw HTML omitted -->
+<p>I do know that for XNA 4 the effect content processor does some extra stuff when compiling effects to keep track of which states need to be set, and I&rsquo;m guessing that when they did that they decided not to support the sRGB states.</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] In XNA 3.1 (PC version only) we could use a DirectX 9c instructions to configure the texture sampler to automatically convert the texture from SRGB to Linear space on hardware. We also could set the render surface to be SRGB, so the gamma correction pipeline was pretty simple and fully done in hardware. More informations here. [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>[…] <a href="https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/">https://mynameismjp.wordpress.com/2009/12/31/correcting-xnas-gamma-correction/</a> […]</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -172,7 +135,7 @@ float3 SRGBToLinear(in float3 color)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xbox-360">Xbox 360</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1148 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1109 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-12-31 14:31 -0800</p>
 			</footer>
 		</article>
@@ -195,7 +158,7 @@ float3 SRGBToLinear(in float3 color)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

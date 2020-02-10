@@ -8,16 +8,13 @@
 <meta itemprop="name" content="Undo and Redo: Take 2">
 <meta itemprop="description" content="Please excuse the rhyming in the title&hellip;sometimes I just can&rsquo;t help myself. It&rsquo;s a problem.
 A few weeks ago I started working on a super-duper-secret project (to be revealed soon), a big part of which was a new editor. Since I&rsquo;m the kind of guy who gets all worked up about having proper undo and redo support, I took the opportunity to make it an up-front part of my design rather than just shoving it in afterwords.">
-
-
 <meta itemprop="datePublished" content="2009-04-30T19:37:03&#43;00:00" />
 <meta itemprop="dateModified" content="2009-04-30T19:37:03&#43;00:00" />
 <meta itemprop="wordCount" content="1001">
 
 
 
-<meta itemprop="keywords" content="Uncategorized," />
-<meta property="og:title" content="Undo and Redo: Take 2" />
+<meta itemprop="keywords" content="Uncategorized," /><meta property="og:title" content="Undo and Redo: Take 2" />
 <meta property="og:description" content="Please excuse the rhyming in the title&hellip;sometimes I just can&rsquo;t help myself. It&rsquo;s a problem.
 A few weeks ago I started working on a super-duper-secret project (to be revealed soon), a big part of which was a new editor. Since I&rsquo;m the kind of guy who gets all worked up about having proper undo and redo support, I took the opportunity to make it an up-front part of my design rather than just shoving it in afterwords." />
 <meta property="og:type" content="article" />
@@ -37,7 +34,7 @@ A few weeks ago I started working on a super-duper-secret project (to be reveal
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Undo and Redo: Take 2</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -78,19 +75,12 @@ A few weeks ago I started working on a super-duper-secret project (to be reveal
 			</header>
 			<div class="content">
 				<p>Please excuse the rhyming in the title&hellip;sometimes I just can&rsquo;t help myself.  It&rsquo;s a problem.</p>
-
 <p>A few weeks ago I started working on a  super-duper-secret project (to be revealed soon), a big part of which was a new editor.   Since I&rsquo;m the kind of guy who gets <a href="http://mynameismjp.wordpress.com/2008/12/19/undo-and-redo/">all worked up</a> about having proper undo and redo support, I took the opportunity to make it an up-front part of my design rather than just shoving it in afterwords.</p>
-
 <p>One of the things I&rsquo;d thought about for map editor was having a well-defined boundary between the user&rsquo;s input and actions that could be performed on the document.  For the map editor it was too late for that, but this time I could put it in from the start.  What I came up with was the ActionManager (yeah I know, bad name.  Sue me.).  It provides as public methods a variety of actions that can be performed on the document: adding a new item, removing an item, setting a property on an item, etc.   When one of these methods gets called it creates an IEditAction derivative, configures it, has the IEditAction &ldquo;do&rdquo; the action, and then pushes it onto the Undo stack.  So similar to what I had previously in my map editor, except that the EditActions actually perform the action the first time around and all the Undo/Redo stuff is wrapped up in a nice class.  It&rsquo;s also less error prone, because you go through the ActionManager layer rather than going directly to the document (this helps ensure that everything the user does goes through the proper Undo/Redo jazz).</p>
-
 <p>I also managed to get it down to just three EditAction&rsquo;s: AddRemoveItemAction, PropertyEditAction, and CompoundAction.  The first is for adding and removing items to the document, the second is for whenever an item&rsquo;s property is modified (this is the majority of actions), and the third just represents multiple AddRemoveItemAction&rsquo;s and/or PropertyEditAction&rsquo;s that are peformed as the result of a single user action.   It still doesn&rsquo;t necessarily deal with the problem of having the number of EditAction&rsquo;s explode as the app grows, but it helps that Reflection in .NET is awesome enough to let me use PropertyEditAction for just about <em>everything</em>.</p>
-
 <p>The one problem I still had to deal with was the stupid PropertyGrid.  The PropertyGrid is fantastic, but it&rsquo;s not realy set up for Undo and Redo.  Well that&rsquo;s a lie, it sorta is.  See it raises a PropertyValueChanged event whenever a property value changes, and the EventArgs conveniently has an OldValue property that tells you what the previous value was.  Great, right?  Right&hellip;except  for the fact that this is null when you have multple objects selected on the PropertyGrid.  Not so great.</p>
-
 <p>This led me to approach #1:  each time an item is supposed to be set onto the PropertyGrid, create a &ldquo;proxy&rdquo; item byt cloning the original and set that onto the PropertyGrid.  Then whenever a property value is changed, I can look up the &ldquo;real item, query it for the old property value, and then actually set the property value via the ActionManager.  And this worked&hellip;at first.  Where I ran into problems was where setting properties on an item affected the state of another item.  For instance items have an &ldquo;Index&rdquo; property that controls the index within a parent item&rsquo;s children collection.  So setting that property causes the item to send a request to the parent item for a reorder of the children, and that might fail based on the state of parent.  This means that if I leave my references hooked up properly in my clone I end up with a situation where actions like that get performed twice (and usually failing the second time), or if I  &ldquo;detatch&rdquo; a clone from all outside references I lose my error verification (not to mention the fact that I have to be very very careful in how I clone something).</p>
-
 <p>This brought me to attempt #2, which I consider uglier but has actually worked out: every time the user selects a GridItem in the PropertyGrid, save the current state of the Property for all selected items so that I have an OldValue.</p>
-
 <pre><code>private GridItem GetRootReferenceGridItem(GridItem gridItem)
 {
     GridItem rootItem = gridItem;
@@ -166,9 +156,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 
     SetOldValues();
 }
-</code></pre>
-
-<p>The main problem with this is that the PropertyGrid is now editing a &ldquo;live&rdquo; object: changes it makes to items actually affect their state.  This unfortunately broke my &ldquo;everything must go through the ActionManager&rdquo; philosophy, but I couldn&rsquo;t think of any better alternatives.  So I added a new method to the ActionManager that allows me to &ldquo;register&rdquo; that a property value was changes after the fact.  It basically works the same as the old ChangePropertyValue method, except that it doesn&rsquo;t call &ldquo;Do&rdquo; on the PropertyEditAction after it creates it.   So yeah kinda ugly&hellip;but it works.  Good enough, I guess.</p>
+</code></pre><p>The main problem with this is that the PropertyGrid is now editing a &ldquo;live&rdquo; object: changes it makes to items actually affect their state.  This unfortunately broke my &ldquo;everything must go through the ActionManager&rdquo; philosophy, but I couldn&rsquo;t think of any better alternatives.  So I added a new method to the ActionManager that allows me to &ldquo;register&rdquo; that a property value was changes after the fact.  It basically works the same as the old ChangePropertyValue method, except that it doesn&rsquo;t call &ldquo;Do&rdquo; on the PropertyEditAction after it creates it.   So yeah kinda ugly&hellip;but it works.  Good enough, I guess.</p>
 
 			</div>
 			<hr class="post-end">
@@ -199,7 +187,7 @@ void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

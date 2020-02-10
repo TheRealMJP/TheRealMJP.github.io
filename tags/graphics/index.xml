@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Graphics on The Danger Zone</title>
@@ -6,10 +6,19 @@
     <description>Recent content in Graphics on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Approximating Subsurface Scattering With Spherical Gaussians</title>
+      <link>https://therealmjp.github.io/posts/sss-sg/</link>
+      <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/sss-sg/</guid>
+      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;quot;wrapped&amp;quot; or &amp;quot;blurred&amp;quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
+    </item>
     
     <item>
       <title>An Introduction To Real-Time Subsurface Scattering</title>
@@ -36,13 +45,7 @@
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</guid>
       <description>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIn the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
     </item>
     
     <item>
@@ -52,13 +55,7 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</guid>
       <description>This is Part 5 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
     </item>
     
     <item>
@@ -68,13 +65,7 @@ Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</guid>
       <description>This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU.</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome back!</description>
     </item>
     
     <item>
@@ -84,13 +75,7 @@ Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth l
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</guid>
       <description>This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!</description>
     </item>
     
     <item>
@@ -100,13 +85,7 @@ Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a 
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</guid>
       <description>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-Welcome to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU.</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!</description>
     </item>
     
     <item>
@@ -116,13 +95,7 @@ Welcome to part 2 of the series! In the previous article, I explained the basics
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</guid>
       <description>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?
-Part 2 - Synchronizing GPU Threads
-Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption
-Part 5 - Back To The Real World
-Part 6 - Experimenting With Overlap and Preemption
-If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
+Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIf you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
     </item>
     
     <item>
@@ -132,11 +105,7 @@ If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/</guid>
       <description>This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabGet the code on GitHub: https://github.</description>
     </item>
     
     <item>
@@ -146,11 +115,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/</guid>
       <description>This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the two previous articles I showed workable approaches for approximating the diffuse and specular result from a Spherical Gaussian light source.</description>
     </item>
     
     <item>
@@ -160,11 +125,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/</guid>
       <description>This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the previous article, we explored a few ways to compute the contribution of an SG light source when using a diffuse BRDF.</description>
     </item>
     
     <item>
@@ -174,11 +135,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/</guid>
       <description>This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabA Big Gaussian In The Sky In the previous post we covered a few of the universal properties of SG&amp;rsquo;s.</description>
     </item>
     
     <item>
@@ -188,11 +145,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/</guid>
       <description>This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the previous article, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location.</description>
     </item>
     
     <item>
@@ -202,11 +155,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/</guid>
       <description>This is part 1 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
-Part 2 - Spherical Gaussians 101
-Part 3 - Diffuse Lighting From an SG Light Source
-Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabFor part 1 of this series, I&amp;rsquo;m going to provide some background material for our research into Spherical Gaussians.</description>
     </item>
     
     <item>
@@ -226,7 +175,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       <guid>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</guid>
       <description>https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
+To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever. In place of the old system, both API&amp;rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory.</description>
     </item>
     
     <item>
@@ -244,7 +193,7 @@ To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year
       <pubDate>Wed, 18 Feb 2015 18:00:06 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shadow-sample-update/</guid>
-      <description>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering.</description>
+      <description>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings.</description>
     </item>
     
     <item>
@@ -273,7 +222,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       
       <guid>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</guid>
       <description>Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&amp;rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
- TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
+  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
     </item>
     
     <item>
@@ -282,7 +231,8 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       <pubDate>Mon, 29 Jul 2013 06:15:04 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/siggraph-follow-up/</guid>
-      <description>So I&amp;rsquo;m hoping that if you&amp;rsquo;re reading this, you&amp;rsquo;ve already attended or read the slides from my presentation about The Order: 1886 that was part of the Physically Based Shading Course at SIGGRAPH last week. If not, go grab them and get started! If you haven&amp;rsquo;t read through the course notes already there&amp;rsquo;s a lot of good info there, in fact there&amp;rsquo;s almost 30 pages worth! The highlights include:</description>
+      <description>So I&amp;rsquo;m hoping that if you&amp;rsquo;re reading this, you&amp;rsquo;ve already attended or read the slides from my presentation about The Order: 1886 that was part of the Physically Based Shading Course at SIGGRAPH last week. If not, go grab them and get started! If you haven&amp;rsquo;t read through the course notes already there&amp;rsquo;s a lot of good info there, in fact there&amp;rsquo;s almost 30 pages worth! The highlights include:
+ Full description of our Cook-Torrance and Cloth BRDF&amp;rsquo;s, including a handy optimization for the GGX Smith geometry term (for which credit belongs to Steve McAuley) Analysis of our specular antialiasing solution Plenty of details regarding the material scanning process HLSL sample code for the Cook-Torrance BRDF&amp;rsquo;s as well as the specular AA roughness modification Lots of beautiful LaTeX equations  If you did attend, I really appreciate you coming and I hope that you found it interesting.</description>
     </item>
     
     <item>
@@ -361,7 +311,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
       
       <guid>https://therealmjp.github.io/posts/things-that-need-to-die/</guid>
       <description>Lately I&amp;rsquo;ve been thinking about things in graphics that have long worn out their welcome, and I started a list of techniques that I hope will be nowhere in sight once everyone moves on to next-gen console hardware (or starts truly exploiting high-end PC hardware). Here they are, in no particular order:
- Phong/Blinn-Phong - we need more expressive BRDF&amp;rsquo;s for our materials, and these guys are getting in the way.</description>
+  Phong/Blinn-Phong - we need more expressive BRDF&amp;rsquo;s for our materials, and these guys are getting in the way.</description>
     </item>
     
     <item>
@@ -408,7 +358,7 @@ In the old days of DX9, the average luminance calculation was usually done repea
       
       <guid>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</guid>
       <description>After I finished the bokeh sample, there were a few remaining issues that I wanted to tackle before I was ready to call it &amp;ldquo;totally awesome&amp;rdquo; and move on with my life.
-Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at &amp;frac14; resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
+Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at 1/4 resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
     </item>
     
     <item>

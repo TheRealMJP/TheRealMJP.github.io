@@ -8,16 +8,13 @@
 <meta itemprop="name" content="Reconstructing Position From Depth, Continued">
 <meta itemprop="description" content="Picking up where I left off here&hellip;
 As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space.">
-
-
 <meta itemprop="datePublished" content="2009-05-05T20:09:33&#43;00:00" />
 <meta itemprop="dateModified" content="2009-05-05T20:09:33&#43;00:00" />
-<meta itemprop="wordCount" content="1756">
+<meta itemprop="wordCount" content="1632">
 
 
 
-<meta itemprop="keywords" content="DirectX,Programming,XNA," />
-<meta property="og:title" content="Reconstructing Position From Depth, Continued" />
+<meta itemprop="keywords" content="DirectX,Programming,XNA," /><meta property="og:title" content="Reconstructing Position From Depth, Continued" />
 <meta property="og:description" content="Picking up where I left off here&hellip;
 As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space." />
 <meta property="og:type" content="article" />
@@ -37,7 +34,7 @@ As I mentioned, you can also reconstruct a world-space position using the frustu
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Reconstructing Position From Depth, Continued</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -77,12 +74,8 @@ As I mentioned, you can also reconstruct a world-space position using the frustu
 				<h1>Reconstructing Position From Depth, Continued</h1>
 			</header>
 			<div class="content">
-				
-
-<p>Picking up where I left off <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">here</a>&hellip;</p>
-
+				<p>Picking up where I left off <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">here</a>&hellip;</p>
 <p>As I mentioned, you can also reconstruct a world-space position using the frustum ray technique.  The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera.  You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space.  If you don&rsquo;t have this available you can just invert your view matrix.  I&rsquo;ll demonstrate doing it right in the vertex shader for the sake of simplicity, but you&rsquo;d probably want to do it ahead of time in your application code.</p>
-
 <pre><code>// Vertex shader for rendering a full-screen quad
 void QuadVS (   in float3 in_vPositionOS                : POSITION,
                 in float3 in_vTexCoordAndCornerIndex    : TEXCOORD0,
@@ -105,22 +98,15 @@ void QuadVS (   in float3 in_vPositionOS                : POSITION,
     float3 vFrustumCornerVS = g_vFrustumCornersVS[in_vTexCoordAndCornerIndex.z];
     out_vFrustumCornerWS = mul(vFrustumCornerVS, g_matCameraWorld);
 }
-</code></pre>
-
-<p>So what we&rsquo;ve done here is we&rsquo;ve <em>rotated</em> (not translated, since vFrusumCornerVS is only a float3) the view-space frustum corner so that it&rsquo;s now matches the camera&rsquo;s orientation.  However it&rsquo;s still centered around <0,0,0> and not the camera&rsquo;s world-space position, so when we reconstruct position we&rsquo;ll also add the camera&rsquo;s world-space position:</p>
-
+</code></pre><p>So what we&rsquo;ve done here is we&rsquo;ve <em>rotated</em> (not translated, since vFrusumCornerVS is only a float3) the view-space frustum corner so that it&rsquo;s now matches the camera&rsquo;s orientation.  However it&rsquo;s still centered around &lt;0,0,0&gt; and not the camera&rsquo;s world-space position, so when we reconstruct position we&rsquo;ll also add the camera&rsquo;s world-space position:</p>
 <pre><code>// Pixel shader function for reconstructing world-space position
 float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 {
     float fPixelDepth = tex2D(DepthSampler, vTexCoord).r;
     return g_vCameraPosWS + fPixelDepth * vFrustumRayWS;
 }
-</code></pre>
-
-<p>And there it is. Easy peasy, lemon squeezy.</p>
-
+</code></pre><p>And there it is. Easy peasy, lemon squeezy.</p>
 <p>The other bit I hinted at was using this same technique with arbitray geometry, for example  the bounding volumes for a local light source.  For this we once again need a ray that points from the camera position through the pixel position to the far-clip plane.  We can do this in the pixel shader by using the view-space position of the pixel.</p>
-
 <pre><code>void VSBoundingVolume(  in float3 in_vPositionOS       : POSITION,
                         out float4 out_vPositionCS     : POSITION,
                         out float3 out_vPositionVS    : TEXCOORD0 )
@@ -130,10 +116,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
     // Pass along the view-space vertex position to the pixel shader
     out_vPositionVS = mul(in_vPositionOS, g_matWorldView);
 }
-</code></pre>
-
-<p>Then in our pixel shader, we calculate the ray and reconstruct position like this:</p>
-
+</code></pre><p>Then in our pixel shader, we calculate the ray and reconstruct position like this:</p>
 <pre><code>float3 VSPositionFromDepth(float2 vTexCoord, float3 vPositionVS)
 {
     // Calculate the frustum ray using the view-space position.
@@ -142,103 +125,47 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
     float3 vFrustumRayVS = vPositionVS.xyz * (g_fFarClip/-vPositionVS.z);
     return tex2D(DepthSampler, vTexCoord).x * vFrustumRayVS;
 }
-</code></pre>
-
-<p>So there you go, I did your homework for you.  Now stop beating me up in the schoolyard!</p>
-
+</code></pre><p>So there you go, I did your homework for you.  Now stop beating me up in the schoolyard!</p>
 <p>EDIT: Fixed the code and explanation so that it actually works now!  Big thanks to Bill and Josh for pointing out the mistake.</p>
-
 <p>UPDATE: More position from depth goodness <a href="http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">here</a></p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-<a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">Scintillating Snippets: Reconstructing Position From Depth &laquo; MJP’s XNA Danger Zone</a> - <time datetime="2009-05-05 15:14:43">May 2, 2009</time></p>
-
-<p>[&hellip;] Answers to extra credit questions here Posted in DirectX, Programming, XNA. 2 Comments [&hellip;]
-<hr />
-####
-[Phil]( &ldquo;phil.teschner@gmail.com&rdquo;) - <time datetime="2009-05-06 13:07:11">May 3, 2009</time></p>
-
-<p>I don&rsquo;t think your solution for arbitrary geometry works. You alluded to the problems yourself in your previous post. Interpolationg (xyz / z) per-vertex doesn&rsquo;t work as it is not a linear operation. You have to do the division in the pixel shader for this to work.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2009-11-17 17:56:58">Nov 2, 2009</time></p>
-
-<p>You need to do this: wsPos = mul(float4(wsPos, 1.0f), InvertView); If you don&rsquo;t convert to a float4 and set w = 1.0, then your view-space position won&rsquo;t get transformed by the translation part of your inverse view matrix (in other words, it will only get rotated).
-<hr />
-####
-<a href="http://www.wailingninja.com" title="guldbran@gmail.com">Icaton</a> - <time datetime="2009-11-17 05:08:57">Nov 2, 2009</time></p>
-
-<p>Hi! I have a problem getting the last technique to work. VSPositionFromDepth gets the position in view space right? So in order to obtain the reconstructed world space position, I multiply the resulting value with an inverse view matrix like this: //View space position float3 wsPos = VSPositionFromDepth(tex, input.vsPos); //Transform to world space //wsPos = mul(wsPos, InvertView); Where the texcoords are: input.ssPos.xy /= input.ssPos.w; //Transforming from [-1,1]-&gt;[1,-1] to [0,1]-&gt;[1,0] float2 tex = (0.5f * (float2(input.ssPos.x, -input.ssPos.y) + 1)) - halfPixel; Where SsPos equals csPos in the example. Well&hellip;the problem is that it doesn&rsquo;t work, the ws positionons are incorrect. Any ideas of what I&rsquo;m doing wrong?
-<hr />
-####
-<a href="http://www.gamerendering.com/2009/12/07/position-reconstruction/">Game Rendering &raquo; Position Reconstruction</a> - <time datetime="2009-12-07 10:34:14">Dec 1, 2009</time></p>
-
-<p>[&hellip;] “Reconstructing Position From Depth, Continued” <a href="http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/">http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/</a> Please [&hellip;]
-<hr />
-####
-[Default Ex]( &ldquo;defaultex@live.com&rdquo;) - <time datetime="2009-08-30 20:22:20">Aug 0, 2009</time></p>
-
-<p>Forgot to mention in that last one, you alike the first one multiply view space depth (negated if your not using floating point buffers) then add camera position.
-<hr />
-####
-[Default Ex]( &ldquo;defaultex@live.com&rdquo;) - <time datetime="2009-08-30 20:20:05">Aug 0, 2009</time></p>
-
-<p>A heads up to those using the first technique, it expects coordinates in the 0 to 1 range. Which should have been apparent with the texCoord parameter. My own world space arbitrary implementation: float3 GetFrustumRay(in float2 screenPosition) { float2 sp = sign(screenPosition); return float3(Camera.FrustumRay.x * sp.x, Camera.FrustumRay.y * sp.y, Camera.MaxDepth); } The Camera.FrustumRay is calculated in the application using the following: Vector2 frustumRay = new Vector2(); frustumRay.Y = (float)Math.Tan(Math.PI / 3.0 / 2.0) * camera.Viewport.MaxDepth; frustumRay.X = -(frustumRay.Y * camera.Viewport.AspectRatio);
-<hr />
-####
-[Josh]( &ldquo;&rdquo;) - <time datetime="2009-06-20 23:11:28">Jun 6, 2009</time></p>
-
-<p>Phil was correct. I tried doing the calculation in the vertex shader for my code, and it introduced very nasty visual artifacts. When I moved the calculation to the fragment shader, it produced the correct results.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2009-07-20 09:55:34">Jul 1, 2009</time></p>
-
-<p>Yup, you guys are right. For a while I was trying to figure out why I wasn&rsquo;t getting artifacts&hellip;and then I realized that in code I was calculating the ray in the pixel shader too. Whoops. :-D Thanks everyone for pointing it out, much appreciated.
-<hr />
-####
-[GALOP1N]( &ldquo;galopin@gmail.com&rdquo;) - <time datetime="2010-03-27 05:18:24">Mar 6, 2010</time></p>
-
-<p>Hi, I have a clever solution for you. It allows reconstruction of the view position in only two mul and no computation at all in the application. First you need to output the depth in view space of your image. You can choose a R32F a G16R16F or anything you want. Second, when you need to retrieve the pixel position in view space. Like in a full screen post process, draw a quad with those vertices (-1,-1) (-1,1) (1,1) (1,-1). If you need it in a real geometry, just send the xyw of the projected position and divide xy by w in the pixel shader Let&rsquo;s go with some math now: 1. we have a well know projection matrix with lot of zero and some value A 0 0 0 0 B 0 0 0 0 C -1 0 0 D 0 let&rsquo;s write the process to transform a view space position to projection space ( Vw == 1 ) Px = Vx * A + Vy * 0 + Vz * 0 + 1 * 0 Py = Vx * 0 + Vy * B + Vz * 0 + 1 * 0 Pw = Vx * 0 + Vy * 0 - 1 * Vz + 1 * 0 Now let&rsquo;s reconstruct Vx. What we know in your fragment program is the interpolated pixel position in projected space ( Px/Pw ). let&rsquo;s call it Ix for InterpolatedX so: Px/Pw = Ix Vx * A / -Vz = Ix Vx = Ix * Vz * ( -1 / A) if we do the same for Vy we got Vy = Iy * Vz * ( -1 / B). Let&rsquo;s write this in a HLSL form. // Vertex part out.position = in.position; out.projpos.xy = in.position.xy; out.magiccoef = -1.f / float2( gProj(0][0], gProj[1][1] // Pixel part float3 viewposition; viewposition.z = tex2D( /***/ ).x; viewposition.xy = viewposition.zz * in.magiccoef.xy * in.projpos.xy; You know have your view space position, you can transform it to World space with a transform with the inverse view or keep it this way and do your math in view space. Voilà :)
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/">Attack of the depth buffer &laquo; The Danger Zone</a> - <time datetime="2010-03-22 23:42:46">Mar 1, 2010</time></p>
-
-<p>[&hellip;] by the distance to the far-clip plane.  Position was reconstructed using the method decribed here. For formats marked “Perspective Z/W”, the depth was calculated by interpolating the z [&hellip;]
-<hr />
-####
-[Tiago]( &ldquo;tjcostinha@gmail.com&rdquo;) - <time datetime="2010-06-12 02:26:49">Jun 6, 2010</time></p>
-
-<p>Some more questions lol: -g_matCameraWorld is the inverse of view matrix or inverse of world-view matrix? -g_vCameraPosWS is the camera position multiplied by the world matrix or simply the camera position vector? -How do I calculate vFrustumRayWS? float3 vFrustumRayWS = vPositionWS.xyz * (g_fFarClip/-vPositionWS.z);
-<hr />
-####
-<a href="http://n00body.squarespace.com/" title="n00body.else@gmail.com">n00body</a> - <time datetime="2010-05-24 09:08:53">May 1, 2010</time></p>
-
-<p>Interesting trick, GALOP1N. On the whole, this actually seems like it would be cheaper than the prevalent method from Crytek. The &ldquo;magiccoef&rdquo; can be calculated outside the shaders, but is still significantly cheaper to do than the frustum corner. Then the actual stored depth needn&rsquo;t be normalized &amp; negated, so that is another savings. Of course, anything relying on the depth being in the range [0,1] might be affected, but that will be situation-specific. I&rsquo;m gonna try using this from now on, and see how well it holds up. Thanks. :)
-<hr />
-####
-<a href="http://twitter.com/sscholle" title="sscholle@twitter.example.com">Sebastian Scholle (@sscholle)</a> - <time datetime="2015-06-29 01:44:31">Jun 1, 2015</time></p>
-
-<p>where can i find a GLSL example of this code?
-<hr />
-####
-<a href="http://irvingpliy.tblog.com" title="inessteel@gmail.com">irvingpliy.tblog.com</a> - <time datetime="2013-07-14 16:29:01">Jul 0, 2013</time></p>
-
-<p>This is a really good tip especially to those fresh to the blogosphere. Short but very accurate information… Appreciate your sharing this one. A must read article!
-<hr />
-####
-<a href="http://beauctqa.blogspace.fr" title="marvin-burrow@gmail.com">obama care taxes</a> - <time datetime="2013-07-31 03:00:24">Jul 3, 2013</time></p>
-
-<p>I rarely leave comments, but after looking at a bunch of responses on Reconstructing Position From Depth, Continued | The Danger Zone. I do have a couple of questions for you if you don&rsquo;t mind. Is it simply me or does it appear like some of these remarks look as if they are left by brain dead folks? :-P And, if you are posting at other online sites, I&rsquo;d like to follow you. Would you post a list of every one of your shared sites like your Facebook page, twitter feed, or linkedin profile?
-<hr />
-####
-[hyuk jae lee]( &ldquo;oiloveyouio@naver.com&rdquo;) - <time datetime="2016-09-05 07:29:36">Sep 1, 2016</time></p>
-
-<p>hi! I am a student studying in Korea. I do not speak English well There was wondering Why do you need four frustum corner?
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/" title="">Scintillating Snippets: Reconstructing Position From Depth « MJP’s XNA Danger Zone</a> - <!-- raw HTML omitted -->May 2, 2009<!-- raw HTML omitted --></p>
+<p>[&hellip;] Answers to extra credit questions here Posted in DirectX, Programming, XNA. 2 Comments [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>I don&rsquo;t think your solution for arbitrary geometry works. You alluded to the problems yourself in your previous post. Interpolationg (xyz / z) per-vertex doesn&rsquo;t work as it is not a linear operation. You have to do the division in the pixel shader for this to work.</p>
+<!-- raw HTML omitted -->
+<p>You need to do this: wsPos = mul(float4(wsPos, 1.0f), InvertView); If you don&rsquo;t convert to a float4 and set w = 1.0, then your view-space position won&rsquo;t get transformed by the translation part of your inverse view matrix (in other words, it will only get rotated).</p>
+<!-- raw HTML omitted -->
+<p>Hi! I have a problem getting the last technique to work. VSPositionFromDepth gets the position in view space right? So in order to obtain the reconstructed world space position, I multiply the resulting value with an inverse view matrix like this: //View space position float3 wsPos = VSPositionFromDepth(tex, input.vsPos); //Transform to world space //wsPos = mul(wsPos, InvertView); Where the texcoords are: input.ssPos.xy /= input.ssPos.w; //Transforming from [-1,1]-&gt;[1,-1] to [0,1]-&gt;[1,0] float2 tex = (0.5f * (float2(input.ssPos.x, -input.ssPos.y) + 1)) - halfPixel; Where SsPos equals csPos in the example. Well&hellip;the problem is that it doesn&rsquo;t work, the ws positionons are incorrect. Any ideas of what I&rsquo;m doing wrong?</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] “Reconstructing Position From Depth, Continued” <a href="http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/">http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/</a> Please [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>Forgot to mention in that last one, you alike the first one multiply view space depth (negated if your not using floating point buffers) then add camera position.</p>
+<!-- raw HTML omitted -->
+<p>A heads up to those using the first technique, it expects coordinates in the 0 to 1 range. Which should have been apparent with the texCoord parameter. My own world space arbitrary implementation: float3 GetFrustumRay(in float2 screenPosition) { float2 sp = sign(screenPosition); return float3(Camera.FrustumRay.x * sp.x, Camera.FrustumRay.y * sp.y, Camera.MaxDepth); } The Camera.FrustumRay is calculated in the application using the following: Vector2 frustumRay = new Vector2(); frustumRay.Y = (float)Math.Tan(Math.PI / 3.0 / 2.0) * camera.Viewport.MaxDepth; frustumRay.X = -(frustumRay.Y * camera.Viewport.AspectRatio);</p>
+<!-- raw HTML omitted -->
+<p>Phil was correct. I tried doing the calculation in the vertex shader for my code, and it introduced very nasty visual artifacts. When I moved the calculation to the fragment shader, it produced the correct results.</p>
+<!-- raw HTML omitted -->
+<p>Yup, you guys are right. For a while I was trying to figure out why I wasn&rsquo;t getting artifacts&hellip;and then I realized that in code I was calculating the ray in the pixel shader too. Whoops. :-D Thanks everyone for pointing it out, much appreciated.</p>
+<!-- raw HTML omitted -->
+<p>Hi, I have a clever solution for you. It allows reconstruction of the view position in only two mul and no computation at all in the application. First you need to output the depth in view space of your image. You can choose a R32F a G16R16F or anything you want. Second, when you need to retrieve the pixel position in view space. Like in a full screen post process, draw a quad with those vertices (-1,-1) (-1,1) (1,1) (1,-1). If you need it in a real geometry, just send the xyw of the projected position and divide xy by w in the pixel shader Let&rsquo;s go with some math now: 1. we have a well know projection matrix with lot of zero and some value A 0 0 0 0 B 0 0 0 0 C -1 0 0 D 0 let&rsquo;s write the process to transform a view space position to projection space ( Vw == 1 ) Px = Vx * A + Vy * 0 + Vz * 0 + 1 * 0 Py = Vx * 0 + Vy * B + Vz * 0 + 1 * 0 Pw = Vx * 0 + Vy * 0 - 1 * Vz + 1 * 0 Now let&rsquo;s reconstruct Vx. What we know in your fragment program is the interpolated pixel position in projected space ( Px/Pw ). let&rsquo;s call it Ix for InterpolatedX so: Px/Pw = Ix Vx * A / -Vz = Ix Vx = Ix * Vz * ( -1 / A) if we do the same for Vy we got Vy = Iy * Vz * ( -1 / B). Let&rsquo;s write this in a HLSL form. // Vertex part out.position = in.position; out.projpos.xy = in.position.xy; out.magiccoef = -1.f / float2( gProj(0][0], gProj[1][1] // Pixel part float3 viewposition; viewposition.z = tex2D( /***/ ).x; viewposition.xy = viewposition.zz * in.magiccoef.xy * in.projpos.xy; You know have your view space position, you can transform it to World space with a transform with the inverse view or keep it this way and do your math in view space. Voilà :)</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] by the distance to the far-clip plane.  Position was reconstructed using the method decribed here. For formats marked “Perspective Z/W”, the depth was calculated by interpolating the z [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>Some more questions lol: -g_matCameraWorld is the inverse of view matrix or inverse of world-view matrix? -g_vCameraPosWS is the camera position multiplied by the world matrix or simply the camera position vector? -How do I calculate vFrustumRayWS? float3 vFrustumRayWS = vPositionWS.xyz * (g_fFarClip/-vPositionWS.z);</p>
+<!-- raw HTML omitted -->
+<p>Interesting trick, GALOP1N. On the whole, this actually seems like it would be cheaper than the prevalent method from Crytek. The &ldquo;magiccoef&rdquo; can be calculated outside the shaders, but is still significantly cheaper to do than the frustum corner. Then the actual stored depth needn&rsquo;t be normalized &amp; negated, so that is another savings. Of course, anything relying on the depth being in the range [0,1] might be affected, but that will be situation-specific. I&rsquo;m gonna try using this from now on, and see how well it holds up. Thanks. :)</p>
+<!-- raw HTML omitted -->
+<p>where can i find a GLSL example of this code?</p>
+<!-- raw HTML omitted -->
+<p>This is a really good tip especially to those fresh to the blogosphere. Short but very accurate information… Appreciate your sharing this one. A must read article!</p>
+<!-- raw HTML omitted -->
+<p>I rarely leave comments, but after looking at a bunch of responses on Reconstructing Position From Depth, Continued | The Danger Zone. I do have a couple of questions for you if you don&rsquo;t mind. Is it simply me or does it appear like some of these remarks look as if they are left by brain dead folks? :-P And, if you are posting at other online sites, I&rsquo;d like to follow you. Would you post a list of every one of your shared sites like your Facebook page, twitter feed, or linkedin profile?</p>
+<!-- raw HTML omitted -->
+<p>hi! I am a student studying in Korea. I do not speak English well There was wondering Why do you need four frustum corner?</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -246,7 +173,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1756 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1632 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-05-05 13:09 -0700</p>
 			</footer>
 		</article>
@@ -269,7 +196,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

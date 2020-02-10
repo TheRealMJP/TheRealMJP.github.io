@@ -7,16 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Attack of the depth buffer">
 <meta itemprop="description" content="In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel. This can be a powerful performance optimization, since the alternative is to output position into a &ldquo;fat&rdquo; floating-point buffer.">
-
-
 <meta itemprop="datePublished" content="2010-03-23T07:42:36&#43;00:00" />
 <meta itemprop="dateModified" content="2010-03-23T07:42:36&#43;00:00" />
-<meta itemprop="wordCount" content="2944">
+<meta itemprop="wordCount" content="2751">
 
 
 
-<meta itemprop="keywords" content="DirectX,DirectX 11,Programming,XNA," />
-<meta property="og:title" content="Attack of the depth buffer" />
+<meta itemprop="keywords" content="DirectX,DirectX 11,Programming,XNA," /><meta property="og:title" content="Attack of the depth buffer" />
 <meta property="og:description" content="In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel. This can be a powerful performance optimization, since the alternative is to output position into a &ldquo;fat&rdquo; floating-point buffer." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/attack-of-the-depth-buffer/" />
@@ -34,7 +31,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Attack of the depth buffer</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -74,194 +71,92 @@
 				<h1>Attack of the depth buffer</h1>
 			</header>
 			<div class="content">
-				
-
-<p>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">reconstruct world-space or view-space position</a> of our geometry at any given pixel.  This can be a powerful performance optimization, since the alternative is to output position into a &ldquo;fat&rdquo; floating-point buffer. However it&rsquo;s important to realize that using the depth buffer in such unconventional ways can impose new precision requirements, since complex functions like lighting attenuation and shadowing will depend on the accuracy of the value stored in your depth buffer.  This is particularly important if you&rsquo;re using a hardware depth buffer for reconstructing position,  since the z/w value stored in it will be non-linear with respect to the view-space z value of the pixel. If you&rsquo;re not familiar with any of this, there&rsquo;s a good overview <a href="http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html">here</a> by Steve Baker. The basic gist of it is that z/w will increase very quickly in the as you move away from the near-clip plane of your perspective projection, and for much of the area viewable by your camera you will have values &gt;= 0.9 in your depth buffer. Consequently you&rsquo;ll end up with a lot of precision for geometry that&rsquo;s close to your camera, and very little for geometry that&rsquo;s way in the back. <a href="http://www.codermind.com/articles/Depth-buffer-tutorial.html">This article</a> from codermind has some mostly-accurate graphs that visualize the problem.</p>
-
+				<p>In these exciting modern times, people get a lot of mileage out of their depth buffers. Long gone are the days where we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">reconstruct world-space or view-space position</a> of our geometry at any given pixel.  This can be a powerful performance optimization, since the alternative is to output position into a &ldquo;fat&rdquo; floating-point buffer. However it&rsquo;s important to realize that using the depth buffer in such unconventional ways can impose new precision requirements, since complex functions like lighting attenuation and shadowing will depend on the accuracy of the value stored in your depth buffer.  This is particularly important if you&rsquo;re using a hardware depth buffer for reconstructing position,  since the z/w value stored in it will be non-linear with respect to the view-space z value of the pixel. If you&rsquo;re not familiar with any of this, there&rsquo;s a good overview <a href="http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html">here</a> by Steve Baker. The basic gist of it is that z/w will increase very quickly in the as you move away from the near-clip plane of your perspective projection, and for much of the area viewable by your camera you will have values &gt;= 0.9 in your depth buffer. Consequently you&rsquo;ll end up with a lot of precision for geometry that&rsquo;s close to your camera, and very little for geometry that&rsquo;s way in the back. <a href="http://www.codermind.com/articles/Depth-buffer-tutorial.html">This article</a> from codermind has some mostly-accurate graphs that visualize the problem.</p>
 <p>Recently I&rsquo;ve been doing some research into different formats for storing depth, in order to get a solid idea of the amount of error I can expect.  To do this I made DirectX11 app where I rendered a series of objects at various depths, and compared the position reconstructed from the depth buffer with a position interpolated from the vertex shader.  This let me easily flip through different depth formats visualize the associated error. Here&rsquo;s a front view and a side view of the test scene:</p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/scene.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/scene.png" alt="" title="Scene" /></a></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/sceneside.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/sceneside.png" alt="" title="SceneSide" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/scene.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/scene.png" alt="" title="Scene"></a></p>
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/sceneside.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/sceneside.png" alt="" title="SceneSide"></a></p>
 <p>The cylinders are placed at depths of 5, 20, 40, 60, 80, and 100. The near-clip plane was set to 1, and the far-clip was set to 101.</p>
-
 <p>For an error metric, I calculated the difference between the reference position (interpolated view-space vertex position) and normalized it by dividing by the distance to the far clip plane. I also multiplied by 100, so that a fully red pixel represented a difference equivalent to 1% of the view distance. For a final output I put the shaded and lit scene in the top-left corner, the sampled depth in the top right, the error in the bottom left, and error * 100 in the bottom right.</p>
-
 <p>For all formats marked &ldquo;Linear Z&rdquo;, the depth was calculated by taking view-space Z and dividing by the distance to the far-clip plane.  Position was reconstructed using the method decribed <a href="http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/">here</a>. For formats marked &ldquo;Perspective Z/W&rdquo;, the depth was calculated by interpolating the z and w components of the clip-space position and then dividing in the pixel shader.  Position was reconstructed by first reconstructing view-space Z from Z/W using values derived from the projection matrix.  For formats marked &ldquo;1 - Perspective Z/W&rdquo;, the near and far plane values were flipped when creating the perspective projection matrix. This effectively stores 1 - z/w in the depth buffer. More on that in #9.</p>
-
 <p>So without further rambling, let&rsquo;s look at some results:</p>
-
 <p><strong>1. Linear Z, 16-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png">
-</a><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png" alt="" title="16F_Linear" /></a></p>
-
+<p>[
+](<a href="http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png)%5B!%5B%5D(http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png">http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png)[![](http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png</a> &ldquo;16F_Linear&rdquo;)](<a href="http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png">http://mynameismjp.files.wordpress.com/2010/03/16f_linear.png</a>)</p>
 <p>So things are not so good on our first try. We get significant errors along the entire visible range with this format,  with the error increasing as we get towards the far-clip plane. This makes sense, considering that a floating-point value has more precision closer to 0.0 than it does closer to 1.0.</p>
-
 <p><strong>2. Linear Z, 32-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_linear.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_linear.png" alt="" title="32F_Linear" /></a>
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_linear.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_linear.png" alt="" title="32F_Linear"></a>
 Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rsquo;re going to manually write depth to a render target, this is a good way to go. Storing into a 32-bit UINT would probably have even better results due to an even distribution of precision, but that format may not be available depending on your platform.  In D3D11 you&rsquo;d also have to add a tiny bit of packing/unpacking code since there&rsquo;s no UNORM format.</p>
-
 <p><strong>3. Linear Z, 16-bit UINT</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16u_linear.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16u_linear.png" alt="" title="16U_Linear" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16u_linear.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16u_linear.png" alt="" title="16U_Linear"></a></p>
 <p>For this image I output depth to a render target with the DXGI_FORMAT_R16_UNORM format. As you can see it still has errors, but they&rsquo;re significantly decreased compared to a 16-bit floating point. It seems to me that if you were going to restrict yourself to 16 bits for depth, this is a way to go.</p>
-
 <p><strong>4. Perspective Z/W, 16-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective.png" alt="" title="16F_Perspective" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective.png" alt="" title="16F_Perspective"></a></p>
 <p>This is easily the worst format out of everything I tested.  You&rsquo;re at a disadvantage right off the bat just from using 16-bits instead of 32, and you also compound that with the non-linear distribution of precision that occurs from storing perspective depth. Then on top of <em>that</em>, you&rsquo;re encoding to floating point which gives you even worse precision for geometry that&rsquo;s far from the camera. The results are not pretty&hellip;don&rsquo;t use this!</p>
-
 <p><strong>5. Perspective Z/W, 32-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective.png" alt="" title="32F_Perspective" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective.png" alt="" title="32F_Perspective"></a></p>
 <p>This one isn&rsquo;t so bad compared to using a 16-bit float, but there&rsquo;s still error at higher depth values.</p>
-
 <p><strong>6. Perspective Z/W, 16-bit UINT</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16u_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16u_perspective.png" alt="" title="16U_Perspective" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16u_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16u_perspective.png" alt="" title="16U_Perspective"></a></p>
 <p>I used a normal render target for this in my test app, but it should be mostly equivalent to sampling from a 16-bit depth buffer. As you&rsquo;d expect, quite a bit of error once you move away from the near clip plane.</p>
-
 <p><strong>7. Perspective Z/W, 24-bit UINT</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/24u_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/24u_perspective.png" alt="" title="24U_Perspective" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/24u_perspective.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/24u_perspective.png" alt="" title="24U_Perspective"></a></p>
 <p>This is the most common depth buffer format, and in my sample app I actually sampled the hardware depth-stencil buffer created from the first rendering pass.  Compared to some of the alternatives this really isn&rsquo;t terrible, and a lot of people have shipped awesome-looking games with this format. The maximum error towards the back is ~0.005%. If the distance to your far plane is very high, the error can be pretty significant.</p>
-
 <p><strong>8. Position, 16-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/position16f.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/position16f.png" alt="" title="Position16F" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/position16f.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/position16f.png" alt="" title="Position16F"></a></p>
 <p>For this format, I just output view-space position straight to a DXGI_FORMAT_R16G16B16A16_FLOAT render target. The only thing this format has going for it is convenience and speed of reconstruction&hellip;all you have to do is sample and you have position. In terms of accuracy, the amount of error is pretty close to what you get from storing linear depth in a 16-bit float. All in all&hellip;it&rsquo;s a pretty bad choice.</p>
-
 <p><strong>9. 1 - Z/W, 16-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective_flipped.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective_flipped.png" alt="" title="16F_Perspective_Flipped" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective_flipped.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/16f_perspective_flipped.png" alt="" title="16F_Perspective_Flipped"></a></p>
 <p>This is where things get a bit interesting. Earlier I mentioned how floating-point values have more precision closer to 0.0 than they do closer to 1.0. It turns out that if you flip your near and far plane such so that you store 1 - z/w in the depth buffer, your two precision distribution issues will mostly cancel each other out. As far as I know this was first proposed by Humus in <a href="http://forum.beyond3d.com/showthread.php?t=52049">this Beyond3D</a> thread. He later posted <a href="http://www.humus.name/index.php?page=News&amp;ID=255">this short article</a>, where elaborated on some of the issues brought up in that thread.  As you can see he&rsquo;s quite right: flipping the clip planes gives significantly improved results. They&rsquo;re still not great, but clearly we&rsquo;re getting somewhere.</p>
-
 <p><strong>10. 1 - Z/W, 32-bit floating point</strong></p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective_flipped.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective_flipped.png" alt="" title="32F_Perspective_Flipped" /></a></p>
-
+<p><a href="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective_flipped.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/32f_perspective_flipped.png" alt="" title="32F_Perspective_Flipped"></a></p>
 <p>With a 32-bit float, flipping the planes gives us results similar to what we got when storing linear z. Not bad! In D3D10/D3D11 you can even use this format for a depth-stencil buffer&hellip;as long as you&rsquo;re willing to either give up stencil or use 64 bits for depth.</p>
-
 <p>The one format I would have liked to add to this list is a 24-bit float depth-stencil format.  This format is available on consoles, and is even exposed in D3D9 as D3DFMT_D24FS8. However according to the caps spreadsheet that comes with DX SDK, only ATI 2000-series and up GPU&rsquo;s actually support this format. In D3D10/D3D11 there doesn&rsquo;t even appear to be an equivalent DXGI format, unless I&rsquo;m missing something.</p>
-
 <p>If there&rsquo;s any other formats or optimizations out there that you think are worthwhile, please let me know so that I can add them to the test app!  Also if you&rsquo;d to play around with the test app, I&rsquo;ve upload the source and binaries <a href="http://cid-538e432ea49f5bde.skydrive.live.com/self.aspx/Public/Samples%20And%20Tutorials/DX11/PRTest.zip">here</a>.  The project uses my new sample framework, which I still consider to be work-in-progress.  However if you have any comments about the framework please let me know. I haven&rsquo;t put in the time to make the components totally separable, but if people are interested then I will take some time to clean things up a bit.</p>
-
 <p>EDIT: I also started a thread <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=565995">here</a> on gamedev.net, to try to get some discussion going on the subject. Feel free to weigh in!</p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-<a href="http://www.sgtconker.com/2010/03/depth-and-games/">Depth And Games &laquo; Sgt. Conker</a> - <time datetime="2010-03-26 23:03:57">Mar 5, 2010</time></p>
-
-<p>[&hellip;] “Blitzkrieg” Pettino fights with the depth buffer and Charles “One” Humphrey flags bits in [&hellip;]
-<hr />
-####
-[default_ex]( &ldquo;default_ex@live.com&rdquo;) - <time datetime="2010-03-23 08:49:15">Mar 2, 2010</time></p>
-
-<p>The bit about D24FS8 worries me a bit. I was thinking of using that format to provide layers to non-opaque objects in my deferred rendering system following an observation from the real world (not often are non-opaque objects visible through each other). I was also considering using that format with stencil passes later in the render system to provide natural separation of depth layers in depth of field post processing, similar to what was described at GDC09 by the SO4 developers.
-<hr />
-####
-<a href="http://recreationstudios.blogspot.com" title="mccarthp@gmail.com">Patrick</a> - <time datetime="2010-03-23 08:55:21">Mar 2, 2010</time></p>
-
-<p>Have you looked at a Logarithmic Depth Buffer? I first heard about it on Ysaneya&rsquo;s dev blog: <a href="http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&amp;reply_id=3513134">http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&amp;reply_id=3513134</a> It is incredibly simple and it has fixed all z-buffer issues I&rsquo;ve had in the past. It is amazing. I would definitely recommend trying it out.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-03-23 09:40:14">Mar 2, 2010</time></p>
-
-<p>Yeah I did look into that a bit. It&rsquo;s cool stuff, but I have two concerns: 1. It has artifacts for triangles that cross the near-clip plane. Ysaneya got around this by manually outputting depth from the pixel shader, but this is a non-option for me since it disables fast-z and early z-cull. It also means you can&rsquo;t use multisampling, since you can only output a single depth value per fragment. 2. If you don&rsquo;t store z/w, then I think you&rsquo;ll run into all sorts of problems with z-cull and hardware optimizations since the z buffer will no longer be linear in screen space. But thank you for bringing this up! It&rsquo;s always good to have more things to think about it.
-<hr />
-####
-<a href="http://www.evofxstudio.net" title="michaelhansen555@msn.com">Michael Hansen</a> - <time datetime="2010-03-24 08:28:40">Mar 3, 2010</time></p>
-
-<p>hello mp i love all your toturials you have ,, as of the new gamestudio 4.0 we can do this depth thing here are some code,,so you can test is out you can use custrom shaders if you only create a windows game 4.0 project delete the game.cs and here are the new class.. aswell handling the device now you have a floatpoint 128 bit hdr buffer if you have a directx 11 card and if you have a directx 10 or 10.1 you will get a floatpoint 64 bit hdr on xbox360 we will only get a float 32bit bit hdr buffer wicth is expandet to 64 bit in the xenon gpu so alot of stuff can be done here Best Regards Michael Hansen public partial class Form1 : Form { public EvoFxEngine EvoFxEngine; public bool InitializeGame() { EvoFxEngine = new EvoFxEngine(this.Panel3D.Handle); return true; } private int lastTickCount; private int frameCount; private float FrameRate; private SpriteBatch MySpriteBatch; private SpriteFont MySpriteFont; public void RenderScene() { int currentTickCount = Environment.TickCount; int ticks = currentTickCount - lastTickCount; if (ticks &gt;= 1000) { FrameRate = (float)frameCount * 1000 / ticks; frameCount = 0; lastTickCount = currentTickCount; } EvoFxEngine.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue); EvoFxEngine.GraphicsDevice.Present(); frameCount++; } #region NativeMethods Class [System.Security.SuppressUnmanagedCodeSecurity] // We won&rsquo;t use this maliciously [DllImport(&ldquo;User32.dll&rdquo;, CharSet = CharSet.Auto)] public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags); /// Windows Message [StructLayout(LayoutKind.Sequential)] public struct Message { public IntPtr hWnd; public IntPtr msg; public IntPtr wParam; public IntPtr lParam; public uint time; public System.Drawing.Point p; } public void OnApplicationIdle(object sender, EventArgs e) { while (this.AppStillIdle) { RenderScene(); } } private bool AppStillIdle { get { Message msg; return !PeekMessage(out msg, IntPtr.Zero, 0, 0, 0); } } #endregion ////////////////////////////////////////////////////////////////////// public class EvoFxEngine { private static GraphicsDevice graphicsDevice; public static GraphicsDevice GraphicsDevice { get { return graphicsDevice; } set { graphicsDevice = value; } } private GraphicsAdapter GraphicsAdapter; private GraphicsProfile GraphicsProfile; private PresentationParameters PresentationParameters; public EvoFxEngine(IntPtr ScreenHandle) { PresentationParameters = new PresentationParameters(); PresentationParameters.BackBufferFormat = SurfaceFormat.HdrBlendable; PresentationParameters.IsFullScreen = false; PresentationParameters.BackBufferWidth = 1280; PresentationParameters.BackBufferHeight = 720; PresentationParameters.DeviceWindowHandle = ScreenHandle; PresentationParameters.DepthStencilFormat = DepthFormat.Depth24; PresentationParameters.PresentationInterval = PresentInterval.Immediate; GraphicsProfile = GraphicsProfile.Reach; graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, PresentationParameters); } }
-<hr />
-####
-[]( &ldquo;&rdquo;) - <time datetime="2010-10-26 14:28:16">Oct 2, 2010</time></p>
-
-<p>DXGI_FORMAT includes: DXGI_FORMAT_D24_UNORM_S8_UINT <a href="http://msdn.microsoft.com/en-us/library/bb173059(VS.85).aspx">http://msdn.microsoft.com/en-us/library/bb173059(VS.85).aspx</a>
-<hr />
-####
-[Tex]( &ldquo;ejted@hotmail.com&rdquo;) - <time datetime="2010-07-30 02:18:53">Jul 5, 2010</time></p>
-
-<p>nice framework you have ! like the code for loading .X files&hellip; loading skinned .x files directly to dx11 would be nice to !
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">Position From Depth 3: Back In The Habit &laquo; The Danger Zone</a> - <time datetime="2010-09-05 23:12:00">Sep 0, 2010</time></p>
-
-<p>[&hellip;] an actual working sample showing some of these techniques, you can have a look at the sample for my article on depth precision. Posted in Graphics, Programming. Leave a Comment [&hellip;]
-<hr />
-####
-<a href="https://www.facebook.com/andon.coleman" title="amcolema@eagle.fgcu.edu">Andon M. Coleman</a> - <time datetime="2014-02-02 09:47:42">Feb 0, 2014</time></p>
-
-<p>One thing has been bugging me about this for years now&hellip; where are you getting a 16-bit **floating-point** perspective depth buffer from? In D3D and OpenGL the only 16-bit depth-renderable format is fixed-point (unorm). There is effectively only one portably exposed floating-point depth buffer format and that is 32-bit.
-<hr />
-####
-<a href="http://video.teletrunk.kz/?p=27">SSAO на OpenGL ES 3.0 | WithTube</a> - <time datetime="2014-12-08 03:49:17">Dec 1, 2014</time></p>
-
-<p>[…] на мой взгляд лучшая реализация Hemispherical SSAOSSAO | Game RenderingAttack of the depth buffer — различные представления z-буфераЛинейная алгебра […]
-<hr />
-####
-<a href="http://yosoygames.com.ar/wp/2014/01/linear-depth-buffer-my-ass/">Linear depth buffer my ass | Yosoygames</a> - <time datetime="2014-01-31 10:11:44">Jan 5, 2014</time></p>
-
-<p>[…] Attack of the depth buffer […]
-<hr />
-####
-<a href="http://blog.selfshadow.com" title="sjh199@zepler.org">Steve</a> - <time datetime="2014-06-06 08:22:40">Jun 5, 2014</time></p>
-
-<p>Did you give 24bit uint a go with 1 – z/w? You may find that you get the similar benefits.
-<hr />
-####
-[WillP]( &ldquo;pearcewf@gmail.com&rdquo;) - <time datetime="2014-06-06 06:29:44">Jun 5, 2014</time></p>
-
-<p>I&rsquo;ve been using a 32-bit floating point depth buffer in my project for a while, and recently gave the 1 - Z / W 32-bit floating point option shown above a try. It did indeed give me better depth precision, even with increasing the distance between my near and far planes by a decent amount. My question is are there any reasons besides losing stencil or having to use the 64 bit depth/stencil option that this should NOT be used? I didn&rsquo;t notice any difference in application performance, but was wondering if there are potential issues I may be overlooking by switching over and fully adopting this format into my engine. What would keep this usage pattern that gives better depth storage from becoming a norm (or is it already, and I just missed the boat)?
-<hr />
-####
-<a href="http://www.reedbeta.com/blog/2015/07/03/depth-precision-visualized/">Depth Precision Visualized &#8211; Nathan Reed&#039;s coding blog</a> - <time datetime="2015-07-03 00:59:02">Jul 5, 2015</time></p>
-
-<p>[…] open-access link available, unfortunately). It was more recently re-popularized in blog posts by Matt Pettineo and Brano Kemen, and by Emil Persson’s Creating Vast Game Worlds SIGGRAPH 2012 […]
-<hr />
-####
-[EO]( &ldquo;dominicstreeter@hotmail.com&rdquo;) - <time datetime="2014-07-05 06:22:06">Jul 6, 2014</time></p>
-
-<p>WARNING: The geometry is drawn twice to render the lighting in this sample there is no deferred lighting equation hidden here, this light is forward rendered. The sample does not demonstrate depth buffer position reconstruction for a light based model, resolving the view or world space position of the light on any part of the screen. The precision will vary between the fudged reconstruction here and a true reconstruction algorithms final precision. I have so many questions but rather than asking them I implore you to write the definitive baseline sample for depth reconstruction from a real light model so you can get the view and world space position and prove all the math. Your snippets tantalisingly offer the elements of a pipeline where every element is critical, in isolation they only become valuable if you get it perfect and it is very slow and grinding work coming from a forward background. I will never surrender to this depth buffers attack; but please help me. If the plea of common dev folk does not drive you perhaps that margin of error between algorithms and positions might do instead :)
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2014-02-03 17:42:34">Feb 1, 2014</time></p>
-
-<p>For most of the formats that were tested, I was manually generating the depth buffer outputting a depth value from a pixel shader to a render target. I don&rsquo;t think that fp16 is a supported depth format for any GPU that&rsquo;s I&rsquo;ve ever worked with. I included it in the testing because when I wrote the article it was still fairly common for DX9 games to store depth in render targets in order to avoid relying on driver hacks.
-<hr />
-####
-<a href="http://lousodrome.net/blog/light/2015/07/22/reading-list-on-z-buffer-precision/">Reading list on Z-buffer precision | Light is beautiful</a> - <time datetime="2015-07-22 07:42:32">Jul 3, 2015</time></p>
-
-<p>[…] Attack of the depth buffer, 2010, by Matt Pettineo, on visualizing depth buffer error when using different buffer formats. […]
-<hr />
-####
-<a href="https://nbertoa.wordpress.com/2017/01/21/how-can-i-find-the-pixel-space-coordinates-of-a-3d-point-part-3-the-depth-buffer/">How can I find the pixel space coordinates of a 3D point &#8211; Part 3 &#8211; The Depth Buffer &#8211; Nicolas Bertoa</a> - <time datetime="2017-01-21 13:51:09">Jan 6, 2017</time></p>
-
-<p>[…] Attack of The Depth Buffer – Matt Petineo […]
-<hr />
-####
-<a href="http://www.intrinsic-engine.com/reverse-z-cheat-sheet/">Reverse Z Cheat Sheet &#8211; Intrinsic</a> - <time datetime="2017-12-30 07:52:53">Dec 6, 2017</time></p>
-
-<p>[…] <a href="https://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/">https://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/</a> […]
-<hr />
-####
-<a href="http://metalbyexample.com/new-in-metal-3/">What&#8217;s New in Metal 3 &#8211; Metal by Example</a> - <time datetime="2019-06-10 16:08:11">Jun 1, 2019</time></p>
-
-<p>[…] This post by Matt Pettineo has a good overview of the trade-offs of different approaches to depth buffer precision. You can use the embedded tool in this post by Theodor Mader to get a sense of how error is distributed when using 16-bit depth. […]
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="http://www.sgtconker.com/2010/03/depth-and-games/" title="">Depth And Games « Sgt. Conker</a> - <!-- raw HTML omitted -->Mar 5, 2010<!-- raw HTML omitted --></p>
+<p>[&hellip;] “Blitzkrieg” Pettino fights with the depth buffer and Charles “One” Humphrey flags bits in [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>The bit about D24FS8 worries me a bit. I was thinking of using that format to provide layers to non-opaque objects in my deferred rendering system following an observation from the real world (not often are non-opaque objects visible through each other). I was also considering using that format with stencil passes later in the render system to provide natural separation of depth layers in depth of field post processing, similar to what was described at GDC09 by the SO4 developers.</p>
+<!-- raw HTML omitted -->
+<p>Have you looked at a Logarithmic Depth Buffer? I first heard about it on Ysaneya&rsquo;s dev blog: <a href="http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&amp;reply">http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&amp;reply</a>_id=3513134 It is incredibly simple and it has fixed all z-buffer issues I&rsquo;ve had in the past. It is amazing. I would definitely recommend trying it out.</p>
+<!-- raw HTML omitted -->
+<p>Yeah I did look into that a bit. It&rsquo;s cool stuff, but I have two concerns: 1. It has artifacts for triangles that cross the near-clip plane. Ysaneya got around this by manually outputting depth from the pixel shader, but this is a non-option for me since it disables fast-z and early z-cull. It also means you can&rsquo;t use multisampling, since you can only output a single depth value per fragment. 2. If you don&rsquo;t store z/w, then I think you&rsquo;ll run into all sorts of problems with z-cull and hardware optimizations since the z buffer will no longer be linear in screen space. But thank you for bringing this up! It&rsquo;s always good to have more things to think about it.</p>
+<!-- raw HTML omitted -->
+<p>hello mp i love all your toturials you have ,, as of the new gamestudio 4.0 we can do this depth thing here are some code,,so you can test is out you can use custrom shaders if you only create a windows game 4.0 project delete the game.cs and here are the new class.. aswell handling the device now you have a floatpoint 128 bit hdr buffer if you have a directx 11 card and if you have a directx 10 or 10.1 you will get a floatpoint 64 bit hdr on xbox360 we will only get a float 32bit bit hdr buffer wicth is expandet to 64 bit in the xenon gpu so alot of stuff can be done here Best Regards Michael Hansen public partial class Form1 : Form { public EvoFxEngine EvoFxEngine; public bool InitializeGame() { EvoFxEngine = new EvoFxEngine(this.Panel3D.Handle); return true; } private int lastTickCount; private int frameCount; private float FrameRate; private SpriteBatch MySpriteBatch; private SpriteFont MySpriteFont; public void RenderScene() { int currentTickCount = Environment.TickCount; int ticks = currentTickCount - lastTickCount; if (ticks &gt;= 1000) { FrameRate = (float)frameCount * 1000 / ticks; frameCount = 0; lastTickCount = currentTickCount; } EvoFxEngine.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue); EvoFxEngine.GraphicsDevice.Present(); frameCount++; } #region NativeMethods Class [System.Security.SuppressUnmanagedCodeSecurity] // We won&rsquo;t use this maliciously [DllImport(&ldquo;User32.dll&rdquo;, CharSet = CharSet.Auto)] public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags); /// Windows Message [StructLayout(LayoutKind.Sequential)] public struct Message { public IntPtr hWnd; public IntPtr msg; public IntPtr wParam; public IntPtr lParam; public uint time; public System.Drawing.Point p; } public void OnApplicationIdle(object sender, EventArgs e) { while (this.AppStillIdle) { RenderScene(); } } private bool AppStillIdle { get { Message msg; return !PeekMessage(out msg, IntPtr.Zero, 0, 0, 0); } } #endregion ////////////////////////////////////////////////////////////////////// public class EvoFxEngine { private static GraphicsDevice graphicsDevice; public static GraphicsDevice GraphicsDevice { get { return graphicsDevice; } set { graphicsDevice = value; } } private GraphicsAdapter GraphicsAdapter; private GraphicsProfile GraphicsProfile; private PresentationParameters PresentationParameters; public EvoFxEngine(IntPtr ScreenHandle) { PresentationParameters = new PresentationParameters(); PresentationParameters.BackBufferFormat = SurfaceFormat.HdrBlendable; PresentationParameters.IsFullScreen = false; PresentationParameters.BackBufferWidth = 1280; PresentationParameters.BackBufferHeight = 720; PresentationParameters.DeviceWindowHandle = ScreenHandle; PresentationParameters.DepthStencilFormat = DepthFormat.Depth24; PresentationParameters.PresentationInterval = PresentInterval.Immediate; GraphicsProfile = GraphicsProfile.Reach; graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, PresentationParameters); } }</p>
+<!-- raw HTML omitted -->
+<p>DXGI_FORMAT includes: DXGI_FORMAT_D24_UNORM_S8_UINT <a href="http://msdn.microsoft.com/en-us/library/bb173059(VS.85).aspx">http://msdn.microsoft.com/en-us/library/bb173059(VS.85).aspx</a></p>
+<!-- raw HTML omitted -->
+<p>nice framework you have ! like the code for loading .X files&hellip; loading skinned .x files directly to dx11 would be nice to !</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] an actual working sample showing some of these techniques, you can have a look at the sample for my article on depth precision. Posted in Graphics, Programming. Leave a Comment [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>One thing has been bugging me about this for years now&hellip; where are you getting a 16-bit **floating-point** perspective depth buffer from? In D3D and OpenGL the only 16-bit depth-renderable format is fixed-point (unorm). There is effectively only one portably exposed floating-point depth buffer format and that is 32-bit.</p>
+<!-- raw HTML omitted -->
+<p>[…] на мой взгляд лучшая реализация Hemispherical SSAOSSAO | Game RenderingAttack of the depth buffer — различные представления z-буфераЛинейная алгебра […]</p>
+<!-- raw HTML omitted -->
+<p>[…] Attack of the depth buffer […]</p>
+<!-- raw HTML omitted -->
+<p>Did you give 24bit uint a go with 1 – z/w? You may find that you get the similar benefits.</p>
+<!-- raw HTML omitted -->
+<p>I&rsquo;ve been using a 32-bit floating point depth buffer in my project for a while, and recently gave the 1 - Z / W 32-bit floating point option shown above a try. It did indeed give me better depth precision, even with increasing the distance between my near and far planes by a decent amount. My question is are there any reasons besides losing stencil or having to use the 64 bit depth/stencil option that this should NOT be used? I didn&rsquo;t notice any difference in application performance, but was wondering if there are potential issues I may be overlooking by switching over and fully adopting this format into my engine. What would keep this usage pattern that gives better depth storage from becoming a norm (or is it already, and I just missed the boat)?</p>
+<!-- raw HTML omitted -->
+<p>[…] open-access link available, unfortunately). It was more recently re-popularized in blog posts by Matt Pettineo and Brano Kemen, and by Emil Persson’s Creating Vast Game Worlds SIGGRAPH 2012 […]</p>
+<!-- raw HTML omitted -->
+<p>WARNING: The geometry is drawn twice to render the lighting in this sample there is no deferred lighting equation hidden here, this light is forward rendered. The sample does not demonstrate depth buffer position reconstruction for a light based model, resolving the view or world space position of the light on any part of the screen. The precision will vary between the fudged reconstruction here and a true reconstruction algorithms final precision. I have so many questions but rather than asking them I implore you to write the definitive baseline sample for depth reconstruction from a real light model so you can get the view and world space position and prove all the math. Your snippets tantalisingly offer the elements of a pipeline where every element is critical, in isolation they only become valuable if you get it perfect and it is very slow and grinding work coming from a forward background. I will never surrender to this depth buffers attack; but please help me. If the plea of common dev folk does not drive you perhaps that margin of error between algorithms and positions might do instead :)</p>
+<!-- raw HTML omitted -->
+<p>For most of the formats that were tested, I was manually generating the depth buffer outputting a depth value from a pixel shader to a render target. I don&rsquo;t think that fp16 is a supported depth format for any GPU that&rsquo;s I&rsquo;ve ever worked with. I included it in the testing because when I wrote the article it was still fairly common for DX9 games to store depth in render targets in order to avoid relying on driver hacks.</p>
+<!-- raw HTML omitted -->
+<p>[…] Attack of the depth buffer, 2010, by Matt Pettineo, on visualizing depth buffer error when using different buffer formats. […]</p>
+<!-- raw HTML omitted -->
+<p>[…] Attack of The Depth Buffer – Matt Petineo […]</p>
+<!-- raw HTML omitted -->
+<p>[…] <a href="https://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/">https://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/</a> […]</p>
+<!-- raw HTML omitted -->
+<p>[…] This post by Matt Pettineo has a good overview of the trade-offs of different approaches to depth buffer precision. You can use the embedded tool in this post by Theodor Mader to get a sense of how error is distributed when using 16-bit depth. […]</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -269,7 +164,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2944 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2751 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-03-23 00:42 -0700</p>
 			</footer>
 		</article>
@@ -292,7 +187,7 @@ Ahh, much nicer. No visible error at all. It&rsquo;s pretty clear that if you&rs
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

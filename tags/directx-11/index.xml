@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>DirectX 11 on The Danger Zone</title>
@@ -36,7 +36,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       <pubDate>Mon, 05 Nov 2012 07:09:39 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/hlsl-udl/</guid>
-      <description>When it comes to writing shaders, Notepad++ is currently my editor of choice. The most recent release of Notepad++ added version 2.0 of their User Defined Language (UDL) system, which adds quite a few improvements. I&amp;rsquo;ve been using an HLSL UDL file that I downloaded from somewhere else for a while now, and I decided to upgrade it to the 2.0 format and also make it work better for SM5.</description>
+      <description>When it comes to writing shaders, Notepad++ is currently my editor of choice. The most recent release of Notepad++ added version 2.0 of their User Defined Language (UDL) system, which adds quite a few improvements. I&amp;rsquo;ve been using an HLSL UDL file that I downloaded from somewhere else for a while now, and I decided to upgrade it to the 2.0 format and also make it work better for SM5.0 profiles.</description>
     </item>
     
     <item>
@@ -113,7 +113,7 @@ In the old days of DX9, the average luminance calculation was usually done repea
       
       <guid>https://therealmjp.github.io/posts/bokeh-ii-the-sequel/</guid>
       <description>After I finished the bokeh sample, there were a few remaining issues that I wanted to tackle before I was ready to call it &amp;ldquo;totally awesome&amp;rdquo; and move on with my life.
-Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at &amp;frac14; resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
+Good blur - in the last sample I used either a 2-pass blur on a poisson disc performed at full resolution, or a bilateral Gaussian blur performed at 1/4 resolution (both done in a pixel shader). The former is nice because it gives you variable filter width per-pixel, but you get some ugly noise-like artifacts due to insufficient sampling.</description>
     </item>
     
     <item>

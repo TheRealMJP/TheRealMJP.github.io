@@ -7,16 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="More Post-Processing Tricks: Lens Flare">
 <meta itemprop="description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically.">
-
-
 <meta itemprop="datePublished" content="2009-12-15T08:53:17&#43;00:00" />
 <meta itemprop="dateModified" content="2009-12-15T08:53:17&#43;00:00" />
-<meta itemprop="wordCount" content="750">
+<meta itemprop="wordCount" content="717">
 
 
 
-<meta itemprop="keywords" content="Programming," />
-<meta property="og:title" content="More Post-Processing Tricks: Lens Flare" />
+<meta itemprop="keywords" content="Programming," /><meta property="og:title" content="More Post-Processing Tricks: Lens Flare" />
 <meta property="og:description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/more-post-processing-tricks-lens-flare/" />
@@ -34,7 +31,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>More Post-Processing Tricks: Lens Flare</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -74,19 +71,13 @@
 				<h1>More Post-Processing Tricks: Lens Flare</h1>
 			</header>
 			<div class="content">
-				
-
-<p>I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used.  Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom.  The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically.  Plus it&rsquo;s really easy to fit it into a post-processing chain, since you can use your bloom results as the input.  The downside is that it&rsquo;s pretty far from realistic&hellip;I&rsquo;m not sure that most would like the end result.  This screen <a href="http://image.com.com/gamespot/images/2009/139/928377_20090520_screen014.jpg">here</a> shows the effect pretty clearly (it&rsquo;s the orange and purple blobby areas by the left bad guy&rsquo;s head, on the opposite side of the screen from the bright light source).</p>
-
+				<p>I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used.  Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom.  The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically.  Plus it&rsquo;s really easy to fit it into a post-processing chain, since you can use your bloom results as the input.  The downside is that it&rsquo;s pretty far from realistic&hellip;I&rsquo;m not sure that most would like the end result.  This screen <a href="http://image.com.com/gamespot/images/2009/139/928377_20090520_screen014.jpg">here</a> shows the effect pretty clearly (it&rsquo;s the orange and purple blobby areas by the left bad guy&rsquo;s head, on the opposite side of the screen from the bright light source).</p>
 <p>I haven&rsquo;t seen anyone duplicate or even discuss the technique since before the game out, so I figured I&rsquo;d take a crack at deciphering it myself.  After some experimenting I came up with the following basic approach:</p>
-
 <p>1.  Render a bloom buffer using standard downscale + threshold + blur
 2.  Flip the texture coordinates by doing float2(1, 1) - texCoord
 3.  Blur both towards the center of the screen and away from it
 4.  Combine additively with the bloom buffer</p>
-
 <p>To fake a chromatic aberration, Killzone 2 uses a strong orange tint for areas closer to the center of the screen and a purple tint on the periphery.  Upon some further close analysis it started to look like they were doing it in two passes with a different tint and different texture coordinate scaling for each pass.  I decided to make my implementation the same,  so I could produce similar results.  This is the shader code I came up with:</p>
-
 <pre><code>const static float4 vPurple = float4(0.7f, 0.2f, 0.9f, 1.0f);
 const static float4 vOrange = float4(0.7f, 0.4f, 0.2f, 1.0f);
 const static float fThreshold = 0.1f;
@@ -168,40 +159,22 @@ technique LensFlareSecondPass
         StencilEnable = false;
     }
 }
-</code></pre>
-
-<p>Obviously the code is severely unoptimized, but it&rsquo;s late and I&rsquo;m tired.  Here&rsquo;s a screen of what it looks like (ignore the obnoxious brightness and bloom, please):</p>
-
-<p><a href="http://mynameismjp.files.wordpress.com/2009/12/screen.png"><img src="http://mynameismjp.files.wordpress.com/2009/12/screen.png?w=300" alt="" title="Screen" /></a></p>
-
+</code></pre><p>Obviously the code is severely unoptimized, but it&rsquo;s late and I&rsquo;m tired.  Here&rsquo;s a screen of what it looks like (ignore the obnoxious brightness and bloom, please):</p>
+<p><a href="http://mynameismjp.files.wordpress.com/2009/12/screen.png"><img src="http://mynameismjp.files.wordpress.com/2009/12/screen.png?w=300" alt="" title="Screen"></a></p>
 <pre><code>
 
-</code></pre>
-
-<hr />
-
+</code></pre><hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-<a href="http://moorx.wordpress.com" title="mail.clang@gmail.com">moorx</a> - <time datetime="2009-12-15 04:46:31">Dec 2, 2009</time></p>
-
-<p>looks great! thanks for sharing!
-<hr />
-####
-[gjoel]( &ldquo;&rdquo;) - <time datetime="2009-12-15 04:49:43">Dec 2, 2009</time></p>
-
-<p>Hey - the technique was taken from the kawase gdc-presentation from 2003 <a href="http://www.daionet.gr.jp/~masa/column/2003-03-21.html">http://www.daionet.gr.jp/~masa/column/2003-03-21.html</a> ( <a href="http://www.daionet.gr.jp/~masa/column/index.html">http://www.daionet.gr.jp/~masa/column/index.html</a> ) ( <a href="http://www.daionet.gr.jp/~masa/rthdribl/index.html">http://www.daionet.gr.jp/~masa/rthdribl/index.html</a> ) Cheers!
-<hr />
-####
-<a href="http://www.sgtconker.com/2009/12/post-processing-trick-from-mjp/">Post Processing Trick from MJP &laquo; Sgt. Conker</a> - <time datetime="2009-12-15 11:17:52">Dec 2, 2009</time></p>
-
-<p>[&hellip;] Matt Pettineo took a crack at a trick used in Killzone 2 for Lens Flare, and decided to share his new shader with the world. [&hellip;]
-<hr />
-####
-<a href="http://www.sgtconker.com/2009/12/lens-and-flair/">Lens And Flair &laquo; Sgt. Conker</a> - <time datetime="2009-12-16 12:57:42">Dec 3, 2009</time></p>
-
-<p>[&hellip;] Shows some code. [&hellip;]
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="http://moorx.wordpress.com" title="mail.clang@gmail.com">moorx</a> - <!-- raw HTML omitted -->Dec 2, 2009<!-- raw HTML omitted --></p>
+<p>looks great! thanks for sharing!</p>
+<!-- raw HTML omitted -->
+<p>Hey - the technique was taken from the kawase gdc-presentation from 2003 <a href="http://www.daionet.gr.jp/~masa/column/2003-03-21.html">http://www.daionet.gr.jp/~masa/column/2003-03-21.html</a> ( <a href="http://www.daionet.gr.jp/~masa/column/index.html">http://www.daionet.gr.jp/~masa/column/index.html</a> ) ( <a href="http://www.daionet.gr.jp/~masa/rthdribl/index.html">http://www.daionet.gr.jp/~masa/rthdribl/index.html</a> ) Cheers!</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] Matt Pettineo took a crack at a trick used in Killzone 2 for Lens Flare, and decided to share his new shader with the world. [&hellip;]</p>
+<!-- raw HTML omitted -->
+<p>[&hellip;] Shows some code. [&hellip;]</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -209,7 +182,7 @@ technique LensFlareSecondPass
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>750 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>717 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-12-15 00:53 -0800</p>
 			</footer>
 		</article>
@@ -232,7 +205,7 @@ technique LensFlareSecondPass
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

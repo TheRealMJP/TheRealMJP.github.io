@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>DirectX 12 on The Danger Zone</title>
@@ -28,7 +28,7 @@
       <guid>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</guid>
       <description>https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
+To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever. In place of the old system, both API&amp;rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory.</description>
     </item>
     
   </channel>

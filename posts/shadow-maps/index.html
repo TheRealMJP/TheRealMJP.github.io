@@ -7,16 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="A Sampling of Shadow Techniques">
 <meta itemprop="description" content="A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison.">
-
-
 <meta itemprop="datePublished" content="2013-09-11T07:45:40&#43;00:00" />
 <meta itemprop="dateModified" content="2013-09-11T07:45:40&#43;00:00" />
-<meta itemprop="wordCount" content="7651">
+<meta itemprop="wordCount" content="7368">
 
 
 
-<meta itemprop="keywords" content="DirectX,DirectX 11,Graphics,Programming," />
-<meta property="og:title" content="A Sampling of Shadow Techniques" />
+<meta itemprop="keywords" content="DirectX,DirectX 11,Graphics,Programming," /><meta property="og:title" content="A Sampling of Shadow Techniques" />
 <meta property="og:description" content="A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/shadow-maps/" />
@@ -34,7 +31,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>A Sampling of Shadow Techniques</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -74,62 +71,52 @@
 				<h1>A Sampling of Shadow Techniques</h1>
 			</header>
 			<div class="content">
-				
-
-<p>A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison. And so I did just that. I had always intended to put it on the blog, since I thought it was likely that other people would be evaluating some of the same techniques as they upgrade their engines for next-gen consoles. But I was a bit lazy about cleaning it up (there was a lot of code!), and it wasn&rsquo;t the most <em>exciting</em> thing that I was working on, so it sort-of fell by the wayside. Fast forward to a year later, and I found myself  looking for a testbed for some major changes that I was planning for the settings and UI portion of my sample framework. My shadows sample came to mind since it was chock-full of settings, and that lead me to finally clean it up and get it ready for sharing. So here it is: (and now on GitHub!)</p>
-
+				<p>A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison. And so I did just that. I had always intended to put it on the blog, since I thought it was likely that other people would be evaluating some of the same techniques as they upgrade their engines for next-gen consoles. But I was a bit lazy about cleaning it up (there was a lot of code!), and it wasn&rsquo;t the most <em>exciting</em> thing that I was working on, so it sort-of fell by the wayside. Fast forward to a year later, and I found myself  looking for a testbed for some major changes that I was planning for the settings and UI portion of my sample framework. My shadows sample came to mind since it was chock-full of settings, and that lead me to finally clean it up and get it ready for sharing. So here it is: (and now on GitHub!)</p>
 <p><a href="https://github.com/TheRealMJP/Shadows">https://github.com/TheRealMJP/Shadows</a></p>
-
 <p>If you head to the <a href="https://github.com/TheRealMJP/Shadows/releases">releases page</a>, there&rsquo;s a zip file containing all of the code and content as well as a pre-compiled executable. Note that I&rsquo;ve fully switched over to VS 2012 now, so you&rsquo;ll need it to open the project and compile the code. If you don&rsquo;t have it installed, then you may need to download and install the <a href="http://www.microsoft.com/en-us/download/details.aspx?id=30679">VC++ 2012 Redistributable</a> in order to run the pre-compiled binary.</p>
-
 <ul>
-<li><p><em>Update 9/12/2013</em></p>
-
+<li>
+<p><em>Update 9/12/2013</em></p>
 <ul>
 <li><em>Fixed a bug with cascade stabilization behaving incorrectly for very small partitions</em></li>
 <li><em>Restore previous min/max cascade depth when disabling Auto-Compute Depth Bounds</em></li>
 <li><em>Thanks to Stephen Hill for pointing out the issues!</em></li>
-</ul></li>
-
-<li><p><em>Update 9/18/2013</em></p>
-
+</ul>
+</li>
+<li>
+<p><em>Update 9/18/2013</em></p>
 <ul>
 <li><em>Ignacio Castaño was kind enough to share the PCF technique being used in The Witness,</em> <em>which he integrated into the sample under the name &ldquo;OptimizedPCF&rdquo;. Thanks Ignacio!</em></li>
-</ul></li>
-
-<li><p><em>Update 11/3/2013</em></p>
-
+</ul>
+</li>
+<li>
+<p><em>Update 11/3/2013</em></p>
 <ul>
 <li><em>Fixed SettingsCompiler string formatting issues for non-US cultures</em></li>
-</ul></li>
-
-<li><p><em>Update 2/17/2015</em></p>
-
+</ul>
+</li>
+<li>
+<p><em>Update 2/17/2015</em></p>
 <ul>
 <li><em>Fixed VSM/EVSM filtering shader that was broken with latest Nvidia drivers</em></li>
 <li><em>Added Moment Shadow Mapping</em></li>
 <li><em>Added notes about biasing VSM, EVSM, and MSM</em></li>
-</ul></li>
-
-<li><p><em>Update 1/23/2016</em></p>
-
+</ul>
+</li>
+<li>
+<p><em>Update 1/23/2016</em></p>
 <ul>
 <li><em>Fixed incorrect maximum exponent for 16-bit EVSM (thank you Christoph!)</em></li>
 <li><em>Compile the main pixel shader on-demand so that all shader permutations don&rsquo;t need to be compiled and loaded up-front</em></li>
 <li><em>Uploaded the project to GitHub</em></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>The sample project is set up as a typical &ldquo;cascaded shadow map from a directional light&rdquo; scenario, in the same vein as the CascadedShadowMaps11 sample from the old DX SDK or the more recent <a href="http://visual-computing.intel-research.net/art/publications/sdsm/">Sample Distribution Shadow Maps sample</a> from Intel.  In fact I even use the same Powerplant scene from both samples, although I also added in human-sized model so that you can get a rough idea of how well the shadowing looks on characters (which can be fairly important if you want your shadows to look good in cutscenes without having to go crazy with character-specific lights and shadows). The basic cascade rendering and setup is pretty similar to the Intel sample: a single &ldquo;global&rdquo; shadow matrix is created every frame based on the light direction and current camera position/orientation, using an orthographic projection with width, height, and depth equal to 1.0. Then for each cascade a projection is created that&rsquo;s fit to the cascade, which is used for rendering geometry to the shadow map. For sampling the cascade, the projection is described as a 3D scale and offset that&rsquo;s applied to the UV space of the &ldquo;global&rdquo; shadow projection. That way you just use one matrix in the shader to calculate shadow map UV coordinates + depth, and then apply the scale and offset to compute the UV coordinates + depth for the cascade that you want to sample. Unlike the Intel sample I didn&rsquo;t use any kind of deferred rendering, so I decided to just fix the number of cascades at 4 instead of making it tweakable at runtime.</p>
-
 <h2 id="cascade-optimization">Cascade Optimization<a href="#cascade-optimization" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
 <p>Optimizing how you fit your cascades to your scene and current viewpoint is pretty crucial for reducing perspective aliasing and the artifacts that it causes. The old-school way of doing this for CSM is to chop up your entire visible depth range into N slices using some sort of partitioning scheme (logarithmic, linear, mixed, manual, etc.). Then for each slice of the view frustum, you&rsquo;d tightly fit an AABB to the slice  and use that as the parameters for your orthographic projection for that slice. This gives you the most optimal effective resolution for a given cascade partition, however with 2006-era shadow map sizes you still generally end up with an effective resolution that&rsquo;s pretty low relative to the screen resolution. Combine this with 2006-era filtering (2x2 PCF in a lot of cases), and you end up with quite a bit of aliasing. This aliasing was exceptionally bad, due to the fact that your cascade projections will translate and scale as your camera moves and rotates, which results in rasterization sample points changing from frame to frame as the camera moves. The end result was crawling shadow edges, even from static geometry. The most popular solution for this problem was to trade some effective shadow map resolution for stable sample points that  don&rsquo;t move from frame to frame. This was first proposed (to my knowledge) by Michal Valient in his ShaderX6 article entitled &ldquo;Stable Cascaded Shadow Maps&rdquo;. The basic idea is that instead of tightly mapping your orthographic projection to your cascade split, you map it in such a way that the projection won&rsquo;t change as the camera rotates. The way that Michal did it was to fit a sphere to the entire 3D frustum split and then fit the projection to that sphere, but you could do it any way that gives you a consistent projection size. To handle the translation issue, the projections are &ldquo;snapped&rdquo; to texel-sized increments so that you don&rsquo;t get sub-texel sample movement. This ends up working really well, provided that your cascade partitions never change (which means that changing your FOV or near/car clip planes can cause issues). In general the stability ends up being a net win despite the reduced effective shadow map resolution, however small features and dynamic objects end up suffering.</p>
-
 <p>2 years ago Andrew Lauritzen gave a talk on what he called &ldquo;Sample Distribution Shadow Maps&rdquo;, and released the sample that I mentioned earlier. He proposed that instead of stabilizing the cascades, we could instead focus on reducing wasted resolution in the shadow map to a point where effective resolution is high enough to give us sub-pixel resolution when sampling the shadow map. If you can do that then you don&rsquo;t really need to worry about your projection changing frame to frame, provided that you use decent filtering when sampling the shadow map. The way that he proposed to do this was to analyze the depth buffer generated for the current viewpoint, and use it to automatically generate an optimal partitioning for the cascades. He tried a few complicated ways of achieving this that involved generating a depth histogram on the GPU, but also proposed a much more practical scheme that simply computed the min and max depth values. Once you have the min and max depth, you can very easily use that to clamp your cascades to the subset of your depth range that actually contains visible pixels. This might not sound like a big deal, but in practice it can give you <em>huge</em> improvements. The min Z in particular allows you to have a much more optimal partitioning, which you can get by using an &ldquo;ideal&rdquo; logarithmic partitioning scheme. The main downside is that you need to use the depth buffer, which puts you in the awful position of having the CPU dependent on results from the GPU if you want to do your shadow setup and scene submission on the CPU. In the sample code they simply stall and readback the reduction results, which isn&rsquo;t really optimal at all in terms of performance. When you do something like this the CPU ends up waiting around for the driver to kick off commands to the GPU and for the GPU to finish processing them, and then you get a stall on the GPU while it sits around and waits for the CPU to start kicking off commands again. You can potentially get around this by doing what you normally do for queries and such, and deferring the readback for one or more frames. That way the results are (hopefully) already ready for readback, and so you don&rsquo;t get any stalls. But this can cause you problems, since the cascades will trail a frame behind what&rsquo;s actually on screen. So for instance if the camera moves towards an object, the min Z may not be low enough to fit all of the pixels in the first cascade and you&rsquo;ll get artifacts. One potential workaround is to use the previous frame&rsquo;s camera parameters to try to predict what the depth of a pixel will be for the <em>next</em> frame based on the instantaneous linear velocity of the camera, so that when you retrieve your min/max depth a frame late it actually contains the correct results. I&rsquo;ve actually done this in the past (but not for this sample, I got lazy) and it works as long as long as the camera motion stays constant. However it won&rsquo;t handle moving objects unless you store the per-pixel velocity with regards to depth and factor that into your calculations. The ultimate solution is to do all of the setup and submission on the GPU, but I&rsquo;ll talk about that in detail later on.</p>
-
 <p>These are the options implemented in the sample that affect cascade optimization:</p>
-
 <ul>
 <li><strong>Stabilize Cascades</strong> - enables cascade stabilization using the method from ShaderX6.</li>
 <li><strong>Auto-Compute Depth Bounds</strong> - computes the min and max Z on the GPU, and uses it to tightly fit the cascades as in SDSM.</li>
@@ -140,15 +127,10 @@
 <li><strong>PSSM Lambda</strong> - mix between linear and logarithmic partitioning when PartitionMode is PSSM</li>
 <li><strong>Visualize Cascades</strong> - colors pixels based on which cascade they select</li>
 </ul>
-
 <h2 id="shadow-filtering">Shadow Filtering<a href="#shadow-filtering" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
 <p>Shadow map filtering is the other important aspect of reducing artifacts. Generally it&rsquo;s needed to reduce aliasing due to undersampling the geometry being rasterized into the shadow map, but it&rsquo;s also useful for cases where the shadow map itself is being undersampled by the pixel shader. The most common technique for a long time has been Percentage Closer Filtering (PCF), which basically amounts to sampling a normal shadow map, performing the shadow comparison, and then filtering the result of that comparison. Nvidia hardware has been able to do a 2x2 bilinear PCF kernel in hardware since&hellip;forever, and it&rsquo;s required of all DX10-capable hardware. Just about every PS3 game takes advantage of this feature, and Xbox 360 games would too if the GPU supported it. In general you see lots of 2x2 or 3x3 grid-shaped PCF kernels with either a box filter or a triangle filter. A few games (notably the Crysis games) use a randomized sample pattern with sample points located on a disc, which trades regular aliasing for noise. With DX11 hardware there&rsquo;s support for GatherCmp, which essentially gives you the results of 4 shadow comparisons performed for the relevant 2x2 group of texels. With this you can efficiently implement large (7x7 or even 9x9) filter kernels with minimal fetch instructions, and still use arbitrary filter kernels. In fact there was an article in GPU Pro called &ldquo;Fast Conventional Shadow Filtering&rdquo; by Holger Gruen, that did exactly this, and even provided source code. It can be stupidly fast&hellip;in my sample app going from 2x2 PCF to 7x7 PCF only adds about 0.4ms when rendering at 1920x1080 on my AMD 7950. For comparison, a normal grid sampling approach adds about 2-3ms in my sample app for the maximum level of filtering. The big disadvantage to the fixed kernel modes is that they rely on the compiler to unroll the loops, which make for some <em>sloooowwww</em> compile times. The sample app uses a compilation cache so you won&rsquo;t notice it if you just start it up, but without the cache you&rsquo;ll see it takes quite while due to the many shader permutations being used. For that reason I decided to stick with a single kernel shape (disc) rather than using all of the shapes from the GPU Pro article, since compilation times were already bad enough.</p>
-
 <p>So far the only real competitor to gain any traction in games is Variance Shadow Maps (VSM). I won&rsquo;t go deep into the specifics since the <a href="http://www.punkuser.net/vsm/">original paper</a> and <a href="http://http.developer.nvidia.com/GPUGems3/gpugems3_ch08.html">GPU Gems article</a> do a great job of explaining it. But the basic gist is that you work in terms of the mean and variance of a distribution of depth values at a certain texel, and then use use that distribution to estimate the probability of a pixel being in shadow. The end result is that you gain the ability to filter the shadow map without having to perform a comparison, which means that you can use hardware filtering (including mipmaps, anistropy or even MSAA) and that you can pre-filter the shadow map with standard &ldquo;full-screen&rdquo; blur pass. Another important aspect is that you generally don&rsquo;t suffer from the same biasing issues that you do with PCF. There&rsquo;s some issues of performance and memory, since you now need to store 2 high-precision values in your shadow map instead of just 1. But in general the biggest problem is the light bleeding, which occurs when there&rsquo;s a large depth range between occluders and receivers. Lauritzen attempted to address this a few years later by applying an exponential warp to the depth values stored in the shadow map, and performing the filtering in log space. It&rsquo;s generally quite effective, but it requires high-precision floating point storage to accommodate the warping. For maximum quality he also proposed storing a negative term, which requires an extra 2 components in the shadow map. In total that makes for 4x FP32 components per texel, which is definitely not light in terms of bandwidth! However you could say that it arguably produces the highest-quality results, and it does so without having to muck around with biasing. This is especially true when pre-filtering, MSAA, anisotropic filtering, and mipmaps are all used, although each of those brings about additional cost. To provide some real numbers, using EVSM4 with 2048x2048 cascades, 4xMSAA, mipmaps, 8xAF, and highest-level filtering (9 texels wide for the first cascade), adds about 11.5ms relative to a 7x7  fixed PCF kernel. A more reasonable approach would be to go with 1024x1024 shadow maps with 4xMSAA, which is around 3ms slower than the PCF version.</p>
-
 <p>These are the shadow filtering modes that are implemented:</p>
-
 <ul>
 <li><strong>FixedSizePCF</strong> - optimized GatherCmp PCF with disc-shaped kernel</li>
 <li><strong>GridPCF</strong> - manual grid-based PCF sampling using NxN samples</li>
@@ -160,9 +142,7 @@
 <li><strong>MSM Hamburger</strong> - <a href="http://cg.cs.uni-bonn.de/en/publications/paper-details/peters-2015-msm/">moment shadow mapping</a>, using the &ldquo;Hamburger 4MSM&rdquo; technique from the paper.</li>
 <li><strong>MSM Hausdorff</strong> - moment shadow mapping, using the &ldquo;Hausdorff 4MSM&rdquo; technique from the paper</li>
 </ul>
-
 <p>Here&rsquo;s the options available in my sample related to filtering:</p>
-
 <ul>
 <li><strong>Shadow Mode</strong> - the shadow filtering mode, can be one of the above values</li>
 <li><strong>Fixed Filter Size</strong> - the kernel width in texels for the FixedSizePCF mode, can be 2x2 though 9x9</li>
@@ -177,25 +157,15 @@
 <li><strong>Positive Exponent</strong>/<strong>Negative Exponent</strong> - the exponential warping factors for the positive and negative components of EVSM</li>
 <li><strong>Light Bleeding Reduction</strong> - reduces light bleeding for VSM/EVSM/MSM, but results in over-darkening</li>
 </ul>
-
 <p>In general I try to keep the filtering kernel fixed in world space across each cascade by adjusting the kernel width based on the cascade size. The one exception is the FixedSizePCF mode, which uses the same size kernel for all cascades. I did this because I didn&rsquo;t think that branching over the fixed kernels would be a great idea. Matching the filter kernel for each cascade is nice because it helps hide the seams at cascade transitions, which means you don&rsquo;t have to try to filter across adjacent cascades in order to hide them. It also means that you don&rsquo;t have to use wider kernels on more distant pixels, although this can sometimes lead to visible aliasing on distant surfaces.</p>
-
 <p>I didn&rsquo;t put a whole lot of effort into the &ldquo;RandomDiscPCF&rdquo; mode, so it doesn&rsquo;t produce optimal results. The randomization is done per-pixel, which isn&rsquo;t great since you can clearly see the random pattern tiling over the screen as the camera moves. For a better comparison you would probably want to do something similar to what Crytek does, and tile a (stable) pattern over each cascade in shadowmap space.</p>
-
 <h2 id="biasing">Biasing<a href="#biasing" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
 <p>When using conventional PCF filtering, biasing is essential for avoiding &ldquo;shadow acne&rdquo; artifacts. Unfortunately, it&rsquo;s usually pretty tricky to get it right across different scenes and lighting scenarios. Just a bit too much bias will end up killing shadows entirely for small features, which can cause characters too look very bad. My sample app exposes 3 kinds of biasing: manual depth offset, manual normal-based offset, and automatic depth offset based on receiver slope. The manual depth offset, called simply <strong>Bias</strong> in the UI, simply subtracts a value from the pixel depth used to compare against the shadow map depth. Since the shadow map depth is a [0, 1] value that&rsquo;s normalized to the depth range of the cascade, the bias value represents a variable size in world space for each cascade. The normal-based offset, called <strong>Offset Scale</strong> in the UI, is based on &ldquo;Normal Offset Shadows&rdquo;, which was a poster presented at GDC 2011. The basic idea is you actually create a new virtual shadow receiver position by offsetting from the actual pixel position in the direction of the normal. The trick is that you offset more when the surface normal is more perpendicular to the light direction. Angelo Pesce has a hand-drawn diagram explaining the same basic premise on <a href="http://c0de517e.blogspot.com/2011/05/shadowmap-bias-notes.html">his blog</a>, if you&rsquo;re having trouble picturing it.. This technique can actually produce decent results, especially given how cheap it is. However since you&rsquo;re offsetting the receiver position, you actually &ldquo;move&rdquo; the shadows a bit which is a bit weird to see as you tweak the value. Since the offset is a world-space distance, in my sample I scale it based on the depth range of the cascade in order to make it consistent across cascade boundaries. If you want to try using it, I recommend starting with a small manual bias of 0.0015 or so and then slowly increasing the Offset Scale to about 1.0 or 2.0. Finally we have the automatic solution, where we attempt to compute the &ldquo;perfect&rdquo; bias amount based on the slope of the receiver. This setting is called <strong>Use Receiver Plane Depth Bias</strong> in the sample. To determine the slope, screen-space derivatives are used in the pixel shader. When it works, it&rsquo;s fantastic. However it will still run into degenerate cases where it can produce unpredictable results, which is something that often happens when working with screen-space derivatives.</p>
-
 <p>There are also separate biasing parameters for VSM and MSM techniques. The &ldquo;VSM Bias&rdquo; affects VSM and EVSM, while &ldquo;MSM Depth Bias&rdquo; and &ldquo;MSM Moment Bias&rdquo; are used for MSM. For VSM and 32-bit EVSM, a bias value of 0.01 (which corresponds to an actual value of 0.0001) is sufficent. However for 16-bit EVSM a bias of up to 0.5 (0.005) is required to alleviate precision issues. For only the moment bias is particularly relevent. This value needs to be at least 0.001-0.003 (0.000001-0.000003) for 32-bit modes, while the quantized 16-bit mode requires a higher bias of around 0.03 (0.00003). Note that for both EVSM and MSM increasing the bias can also increase the amount of visible light bleeding.</p>
-
 <h2 id="gpu-driven-cascade-setup-and-scene-submission">GPU-Driven Cascade Setup and Scene Submission<a href="#gpu-driven-cascade-setup-and-scene-submission" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
 <p>This is a topic that&rsquo;s both fun, and really frustrating. It&rsquo;s fun because you can really start to exploit the flexibility of DX11-class GPU&rsquo;s, and begin to break free of the old &ldquo;CPU spoon-feeds the GPU&rdquo; model that we&rsquo;ve been using for so long now. It&rsquo;s also frustrating because the API&rsquo;s still hold us back a quite a bit in terms of letting the GPU generate its own commands.  Either way it&rsquo;s something I see people talk about but not a lot of people actually doing it, so I thought I&rsquo;d give it a try for this sample. There&rsquo;s actually 2 reasons to try something like this. The first is that if you can offload enough work to the GPU, you can avoid the heavy CPU overhead of frustum culling and drawing and/or batching lots and lots of meshes. The second is that it lets you do SDSM-style cascade optimization based on the depth buffer without having to read back values from the GPU to the CPU, which is always a painful way of doing things.</p>
-
 <p>The obvious path to implementing GPU scene submission would be to make use of DrawInstancedIndirect/DrawIndexedInstancedIndirect. These API&rsquo;s are fairly simple to use: you simply write the parameters to a buffer (with the parameters being the same ones that you would normally pass on the CPU for the non-indirect version), and then on the CPU you specify that buffer when calling the appropriate function. Since instance count is one of the parameters, you can implement culling on the GPU my setting the instance count to 0 when a mesh shouldn&rsquo;t be rendered. However it turns out that this isn&rsquo;t really useful, since you still need to go through the overhead of submitting draw calls and setting associated state on the CPU. In fact the situation is worse than doing it all on the CPU, since you have to submit each draw call even if it will be frustum culled.</p>
-
 <p>Instead of using indirect draws, I decided to make a simple GPU-based batching system. Shadow map rendering is inherently more batchable than normal rendering, since you typically don&rsquo;t need to worry about having specialized shaders or binding lots of textures when you&rsquo;re only rendering depth. In my sample I take advantage of this by using a compute shader to generate one great big index buffer based on the results of a frustum culling pass, which can then be rendered in a single draw call. It&rsquo;s really very simple: during initialization I generate a buffer containing all vertex positions, a buffer containing all indices (offset to reflect the vertex position in the combined position buffer), and a structured buffer containing the parameters for every draw call (index start, num indices, and a bounding sphere). When it&rsquo;s time to batch, I run a compute shader with one thread per draw call that culls the bounding sphere against the view frustum. If it passes, the thread then &ldquo;allocates&rdquo; some space in the output index buffer by performing an atomic add on a value in a RWByteAddressBuffer containing the total number of culled indices that will be present in output index buffer (note that on my 7950 you should be able to just do the atomic in GDS like you would for an append buffer, but unfortunately in HLSL you can only increment by 1 using IncrementCounter()). I also append the draw call data to an append buffer for use in the next pass:</p>
-
 <pre><code>const uint drawIdx = TGSize * GroupID.x + ThreadIndex;
 if(drawIdx &gt;= NumDrawCalls)
     return;
@@ -211,10 +181,7 @@ if(FrustumCull(drawCall))
 
     CulledDrawsOutput.Append(culledDraw);
 }
-</code></pre>
-
-<p>Once that&rsquo;s completed, I then launch another compute shader that uses 1 thread group per draw call to copy all of the indices from the source index buffer to the final output index buffer that will be used for rendering. This shader is also very simple: it simply looks up the draw call info from the append buffer that tells it which indices to copy and where they should be copied, and then loops enough times for all indices to be copied in parallel by the different threads inside the thread group. The final result is an index buffer containing all of the culled draw calls, ready to be drawn in a single draw call:</p>
-
+</code></pre><p>Once that&rsquo;s completed, I then launch another compute shader that uses 1 thread group per draw call to copy all of the indices from the source index buffer to the final output index buffer that will be used for rendering. This shader is also very simple: it simply looks up the draw call info from the append buffer that tells it which indices to copy and where they should be copied, and then loops enough times for all indices to be copied in parallel by the different threads inside the thread group. The final result is an index buffer containing all of the culled draw calls, ready to be drawn in a single draw call:</p>
 <pre><code>const uint drawIdx = GroupID.x;
 CulledDraw drawCall = CulledDraws[drawIdx];
 for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGSize)
@@ -225,201 +192,86 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
     CulledIndices[dstIdx] = Indices[srcIdx];
 
 }
-</code></pre>
-
-<p>In order to avoid the min/max depth readback, I also had to port my cascade setup code to a compute shader so that the entire process could remain on the GPU. I was surprised to find that this was actually quite a bit more difficult than writing the batching system. Porting arbitrary C++ code to HLSL can be somewhat tedious, due to the various limitations of the language. I also ran into a rather ugly bug in the HLSL compiler where it kept  trying to keep matrices in column-major order no matter what code I wrote and what declarations I used, which I suppose it tries to do as an optimization. However this really messed me up when I tried to write the matrix into a structured buffer, and expected it to be row-major. My advice for the future: if you need to write a matrix from a compute shader, just use a <code>StructuredBuffer&lt;float4&gt;</code> and write out the rows manually. Ultimately after much hair-pulling I got it to work, and finally achieved my goal of 0-latency depth reduction with no CPU readback!</p>
-
+</code></pre><p>In order to avoid the min/max depth readback, I also had to port my cascade setup code to a compute shader so that the entire process could remain on the GPU. I was surprised to find that this was actually quite a bit more difficult than writing the batching system. Porting arbitrary C++ code to HLSL can be somewhat tedious, due to the various limitations of the language. I also ran into a rather ugly bug in the HLSL compiler where it kept  trying to keep matrices in column-major order no matter what code I wrote and what declarations I used, which I suppose it tries to do as an optimization. However this really messed me up when I tried to write the matrix into a structured buffer, and expected it to be row-major. My advice for the future: if you need to write a matrix from a compute shader, just use a <code>StructuredBuffer&lt;float4&gt;</code> and write out the rows manually. Ultimately after much hair-pulling I got it to work, and finally achieved my goal of 0-latency depth reduction with no CPU readback!</p>
 <p>In terms of performance, the GPU-driven path comes in about 0.8ms slower than the CPU version when the CPU uses 1 frame of latency for reading back the min/max depth results. I&rsquo;m not entirely sure why it&rsquo;s that much slower, although I haven&rsquo;t spend much time trying to profile the batching shaders or the cascade setup shader. I also wouldn&rsquo;t be surprised if the actual mesh rendering ends up being a bit slower, since I use 32-bit indices when batching on the GPU as opposed to 16-bit when submitting with the CPU. However when using the 0 frames of latency for the CPU readback, the GPU version turns it around and comes in a full millsecond faster on my PC. Obviously it makes sense that any additional GPU overhead would make up for the stall that occurs on the CPU and GPU when having to immediately read back data. One thing that I&rsquo;ll point out is that the GPU version is quite a bit slower than the CPU version when VSM&rsquo;s are used and pre-filtering is enabled. This is because the CPU path chooses an optimized blur shader based on the filter width for a cascade, and early outs of the blur process if no filtering is required. For the GPU path I got lazy and just used one blur shader that uses a dynamic loop, and it always runs the blur passes even if no filtering is requested. There&rsquo;s no technical reason why you couldn&rsquo;t do it the same way as the CPU path with enough motivation and DrawIndirects.</p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-[Jamie Hayes]( &ldquo;Strikemedown1981@gmail.com&rdquo;) - <time datetime="2013-09-13 19:41:42">Sep 5, 2013</time></p>
-
-<p>With regard to SDSM, I have so many questions! With a great big vertex buffer, how would you manage skinning and world space transformations? I&rsquo;m guessing you would need to generate one great big matrix buffer and eat the cost of having blend weights and indices on everything. Dealing with alpha test seems pretty daunting, maybe impossible? Also, handling objects getting added and removed as you would see in a normal game seems like it would be a headache.
-<hr />
-####
-[An Idiot]( &ldquo;superidiot@idiots.com&rdquo;) - <time datetime="2014-02-23 15:16:43">Feb 0, 2014</time></p>
-
-<p>I know I&rsquo;m an idiot but there is something very simple I cannot understand about SDSM: Before writing to the view depth buffer, usually one cleans it to a max value (ie 1) so samples lower than that will be rendered. When doing the min/max reduction&hellip; how the max z is found? Shouldn&rsquo;t it return always 1 if a sample is left uncovered/ showing the background leaving a 1 in the depth buffer? Sorry for my stupidity and thanks
-<hr />
-####
-[An Idiot]( &ldquo;idiot@idiotmail.com&rdquo;) - <time datetime="2014-03-11 18:11:02">Mar 2, 2014</time></p>
-
-<p>Thanks a lot Rocko! Now I have SDEVSM working in my game :)
-<hr />
-####
-[An Idiot]( &ldquo;idiot@ranersintarsioent.com&rdquo;) - <time datetime="2014-02-24 05:04:59">Feb 1, 2014</time></p>
-
-<p>Thanks! I was thinking of something like that. But what confused me is that I didn&rsquo;t saw that in the PS code so I thought that maybe there was a way to do it without a branch. Now, giving it a better look, I can&rsquo;t see also the four fetches one should do. I can only assume that &ldquo;float4 depthSamples = DepthMap.GatherRed(LinearClampSampler, TexCoord);&rdquo; someway does the four fetches and it also ignores values == 1.0? HLSL is quite a mystery for a GLSL user. Thanks for your quick reply.
-<hr />
-####
-<a href="http://lousodrome.net/blog/light/2013/09/15/a-sampling-of-shadow-techniques/">A sampling of shadow techniques | Light is beautiful</a> - <time datetime="2013-09-15 03:00:40">Sep 0, 2013</time></p>
-
-<p>[…] On his blog, Matt Pettineo writes about his experiments on cascaded shadow maps, including cascade optimization, shadow map filtering and GPU scene submission: A Sampling of Shadow Techniques. […]
-<hr />
-####
-[Alundra]( &ldquo;segura.mikael@orange.fr&rdquo;) - <time datetime="2014-04-07 04:27:25">Apr 1, 2014</time></p>
-
-<p>Hi MJP, SDSM begin to be an old technique, but it&rsquo;s the lastest technique found for shadow (2011). Is SDSM too heavy to use or THIS IS the technique to use nowadays ?
-<hr />
-####
-[Alundra]( &ldquo;segura.mikael@orange.fr&rdquo;) - <time datetime="2014-04-07 04:35:08">Apr 1, 2014</time></p>
-
-<p>Another thing is : Why ReadBack is faster ?! I don&rsquo;t get it. I have 5 FPS more on your sample disabling GPU submission, normally FPS is lower using a read-back, why this 5 FPS wasted ?!
-<hr />
-####
-<a href="http://none" title="dishwasherblood@gmail.com">dishwasher</a> - <time datetime="2013-11-03 20:30:13">Nov 0, 2013</time></p>
-
-<p>Now it works fine! Thank you very much for such a quick help!
-<hr />
-####
-<a href="http://www.sgc2000.co.uk/2014/03/development-resources/">Development resources</a> - <time datetime="2014-12-22 06:21:49">Dec 1, 2014</time></p>
-
-<p>[…] A sampling of shadow techniques […]
-<hr />
-####
-<a href="http://none" title="dishwasherblood@gmail.com">dishwasher</a> - <time datetime="2013-11-03 07:25:07">Nov 0, 2013</time></p>
-
-<p>Actually it seems something is wrong with it, here&rsquo;s an example: LightColor.Initialize(tweakBar, &ldquo;LightColor&rdquo;, &ldquo;SceneControls&rdquo;, &ldquo;Light Color&rdquo;, &ldquo;The color of the light&rdquo;, Float3(10, 8, 5), true, 0.0f, 20.0f, 0,1.0f); Look at the last parameter - 0,1.0f. All the errors ale like that: MinCascadeDistance.Initialize(tweakBar, &ldquo;MinCascadeDistance&rdquo;, &ldquo;Shadows&rdquo;, &ldquo;Min Cascade Distance&rdquo;, &ldquo;The closest depth that is covered by the shadow cascades&rdquo;, 0.0f, 0.0f, 0,1.0f, 0,001.0f); 0,1.0f, 0,001.0f? It looks like something&rsquo;s wrong with generating floats from attrubute strings?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-11-03 17:04:52">Nov 0, 2013</time></p>
-
-<p>Okay, I think I figured out the problem. I didn&rsquo;t specify the culture when outputting strings for float parameters, and it looks like it was using commas instead of decimal points for your locale. Clearly I am not an experienced C# programmer! I uploaded a new zip with some fixes, so could you download that and give it a try?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/2013/09/16/sample-framework-updates/">Sample Framework Updates | The Danger Zone</a> - <time datetime="2013-09-16 21:54:05">Sep 1, 2013</time></p>
-
-<p>[…] may have noticed that my latest sample now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my […]
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-09-14 17:57:50">Sep 6, 2013</time></p>
-
-<p>Thank you for the links Christoph! I actually wasn&rsquo;t familiar with that Nvidia extension, and I hadn&rsquo;t seen your presentation either. Sounds very useful indeed!
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-09-14 17:51:54">Sep 6, 2013</time></p>
-
-<p>Hi Jamie! What I did in the demo is definitely not production-ready, and I&rsquo;m not sure if I would even do it exactly the same way if I were going to try to ship with it. For this sample I handled the character by repeating the entire batching process for its meshes, and if you were to do it that way you could handle skinning as long as you also had the bone weight/indices in a combined vertex buffer as well. Or if you could set up system for pre-skinning vertices and writing them out (either via stream-out, or better yet by directly writing to the buffer from the vertex shader) then it would definitely make things easier. In fact if you did that, you could probably stream out vertices from multiple skinned meshes into a the same batch, and then run the culling/batching process on lots of skinned objects simultaneously. Alpha-test would definitely be pretty tricky, although you could always fall back to a DrawIndirect-based approach for anything that&rsquo;s difficult to batch.
-<hr />
-####
-<a href="http://none" title="dishwasherblood@gmail.com">dishwasher</a> - <time datetime="2013-11-02 14:20:46">Nov 6, 2013</time></p>
-
-<p>Sample doesn&rsquo;t build in VS2013: 1&gt; AppSettings.cpp 1&gt;AppSettings.cpp(129): error C2660: &lsquo;SampleFramework11::ColorSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(147): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(174): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(177): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(183): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(186): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(189): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(192): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(195): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(201): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(204): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(219): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(222): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(225): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(228): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(231): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(234): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 13 arguments 1&gt;AppSettings.cpp(237): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(240): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments SettingsCompiler and SettingsCompilerAttributes compiled successfully.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-11-02 16:48:42">Nov 6, 2013</time></p>
-
-<p>I just installed VS 2013 on my PC, and the sample builds fine for me. I tried both upgrading the project and not upgrading it, and it compiles either way. Does the code generated in AppSettings.cpp look okay?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2013-09-11 14:38:09">Sep 3, 2013</time></p>
-
-<p>Hi Sam, We&rsquo;ve been using EVSM and SDSM with similar cascade techniques for some time now in our game, although we have a lot of little tweaks, fixes, and platform-specific optimizations to make everything work in a production setting. We&rsquo;re not currently doing any GPU-driven submission, but I have plans to implement something specific to PS4 that&rsquo;s even more optimal than what I did in this sample. -Matt
-<hr />
-####
-<a href="http://gravatar.com/crazybutcher" title="crazybutcher@luxinia.de">Christoph Kubisch</a> - <time datetime="2013-09-14 01:43:23">Sep 6, 2013</time></p>
-
-<p>Hi thanks for the article! For the GPU-driven submission OpenGL provides multi-draw-indirect which allows for quite efficent read-back less culling. Been doing research on this topic at NVIDIA, some results were shown at thise years GTC <a href="http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf">http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf</a> from slide 35 on.There is <a href="http://www.opengl.org/registry/specs/NV/bindless_multi_draw_indirect.txt">http://www.opengl.org/registry/specs/NV/bindless_multi_draw_indirect.txt</a> which allows to source from arbitrary buffer locations, as well as <a href="http://www.opengl.org/registry/specs/ARB/indirect_parameters.txt">http://www.opengl.org/registry/specs/ARB/indirect_parameters.txt</a> which means you can batch the jobs efficiently.
-<hr />
-####
-[Rim]( &ldquo;remigius@netforge.nl&rdquo;) - <time datetime="2013-09-11 05:18:16">Sep 3, 2013</time></p>
-
-<p>Thanks for the treatise, Matt. Although it&rsquo;s been quite a while since I touched DirectX, I still found it educational to read up on the advances in shadowing and if nothing else, the article got me amped to finally give those fancy compute shaders a try for non-graphics stuffs. Cheers!
-<hr />
-####
-[Sam Martin]( &ldquo;sam@palgorithm.co.uk&rdquo;) - <time datetime="2013-09-11 03:45:01">Sep 3, 2013</time></p>
-
-<p>Hi Matt, This is a great summary of the state of the art and the gpu-driven cascade rendering is really good to see. Are you guys intending on using this approach in production? Cheers, Sam
-<hr />
-####
-<a href="http://the-witness.net/news/2013/09/shadow-mapping-summary-part-1/">Shadow Mapping Summary &#8211; Part 1</a> - <time datetime="2013-09-23 17:23:18">Sep 1, 2013</time></p>
-
-<p>[…] not going to try to address that here, but just as I was writting this Matt Pettineo released a good overview of some of the different techniques available that is a good starting point. Instead, I’ll […]
-<hr />
-####
-<a href="http://www.bfilipek.com" title="joebaf@gmail.com">fenbf</a> - <time datetime="2014-04-19 04:04:22">Apr 6, 2014</time></p>
-
-<p>Impressive! I made similar app for my master thesis: I&rsquo;ve used openGL and tested CSV vs standard shadow map techniques + some additional improvements.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2014-02-23 23:01:51">Feb 0, 2014</time></p>
-
-<p>I just ignore any z samples that aren&rsquo;t &lt; 1.0. This keeps you from considering background/sky pixels when computing the max depth, as long as you force your skybox to render at the far clip plane.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2014-02-24 14:44:59">Feb 1, 2014</time></p>
-
-<p>GatherRed just returns the the red component of the 4 samples that would be used for bilinear filtering, so basically it gives you a 2x2 grid of depth samples in this case. That file is probably a little confusing because there&rsquo;s actually 4 shaders in there. The two that actually get used in the sample are DepthReductionInitialCS and DepthReductionCS, which are the compute shader versions. The &ldquo;Initial&rdquo; shader is the one that&rsquo;s run first, and actually samples the depth buffer. When MSAA is enabled it loads all N subsamples for a given pixel, and when MSAA is not enabled it just grabs the 1 sample. In both cases it does a check of &ldquo;if(depthSample &lt; 1.0f)&rdquo; to decide if it should use a given depth sample, which is on lines 149 and 161. Taking a look at the code, it looks like the pixel shader version doesn&rsquo;t do the check if MSAA is disabled. This is definitely a bug, which is probably why were you confused. That code path never actually gets taken in the sample (I always had MSAA enabled), so I never noticed it. Sorry about that!
-<hr />
-####
-<a href="https://mynameismjp.wordpress.com/2015/02/18/shadow-sample-update/">Shadow Sample Update | The Danger Zone</a> - <time datetime="2015-02-18 10:00:21">Feb 3, 2015</time></p>
-
-<p>[…] the implementation of MSM is very straightforward, and so I decided to just integrate it into my old shadows sample. I updated the corresponding blog post and re-uploaded the binary + source, so if you’d like […]
-<hr />
-####
-[An Idiot]( &ldquo;idiot@idiotmail.com&rdquo;) - <time datetime="2014-03-12 15:42:17">Mar 3, 2014</time></p>
-
-<p>Just another comment to deepen my undestanding: When you compute the frustum slices, you take the linear Z min and maxes for the slice and then multiply them with the frustum rays between near and far corners to get the slice corners. However, the Z min and maxes work for for a ray at the center on the frustum and using them directly on the corner gives different planes, that for example, if using a pretty tight near to the geometry may leave parts out. What I did is to get the central ray of the frustum normalized and then use it to project the depths to the corners. ie: nearCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*prevSplitDist); farCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*splitDist); That fixed my problems, but I have no confidence in that I&rsquo;m doing the correct thing. Thanks!
-<hr />
-####
-<a href="https://johanmedestrom.wordpress.com/2016/03/18/opengl-cascaded-shadow-maps/">OpenGL Cascaded Shadow Maps | Make Games, Not War</a> - <time datetime="2016-03-25 14:04:25">Mar 5, 2016</time></p>
-
-<p>[…] I’d make a simple project in OpenGL for anyone interested. It is based on this example: <a href="https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/ which">https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/ which</a> explains it in great detail. I’ll go through the relevant code and a download link […]
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-06-16 10:14:41">Jun 4, 2016</time></p>
-
-<p>Thanks! The code for the OptimizedPCF path was generously provided by Ignacio Castaño, who didn&rsquo;t provide an implementation for a 9x9 filter. I had been meaning to write it myself, but never got around to it. :(
-<hr />
-####
-<a href="https://plus.google.com/111128623163722713524" title="simpetar@gmail.com">Кирилл Грустнёв</a> - <time datetime="2017-10-17 03:27:31">Oct 2, 2017</time></p>
-
-<p>Hello, Matt. I do not know whom to ask, so i decided to ask you, as your articles are always very profound and you clarify details that no one clarifies :-) i&rsquo;m implementing now sdsm technique from Andrew Lauritzen article with evsm filtering using opengl 4.5. So i read almost everything about esm, vsm, and other *sm, but cannot understand some points. I also looked through your shadow sample and intel&rsquo;s also (i do not know direcx, really). So the questions: 1. When we used positive and negative exponent factors in evsm, why the first is 42 (this i understand), but the last is 5(this is completely obscured to me). 2. All the articles about shadow mapping say that you should use front face culling when rendering to the shadow map (this should decrease wrong selfshadowing and acne), but both you and andrew lauritzen use NoCull in your samples. Why? 3. In Andrew&rsquo;s sample he &ldquo;normalizes&rdquo; exponent factors with cascade ranges, to make the transition between cascades less noticeable. You do not do that. I have ranges from several meters to 10s of kilometers (flight simulator). Is there any point to do that? 4. When blurring evsm, does it make sense to blur with decreasing kernel size (for example, 7x blur for cascade 0, 5x for 1, 3x for 2 and no blur for the last. Is there any &ldquo;state of the art&rdquo; technique? 5. The same question with light space orientation relative to camera space. I have only sun direction (z-axis), so i can rotate the light space basis around it (xy axes), is there the &ldquo;right way&rdquo; to do that? stick it to camera &ldquo;up&rdquo; vector or to world up vector? 6. Is there any point to do some shear transformation to light space. Could it help to better utilize sm resolution, I didn&rsquo;t see any articles on. Now my lighspace is a box. 7. Everybody uses square shadow maps (1024x1024 for ex.). Is it possible to find better aspect knowing scene parameters. Thank you for your answer :-):-)
-<hr />
-####
-<a href="https://kosmonautblog.wordpress.com/2017/03/25/shadow-filtering-for-pointlights/">Shadow Filtering For Pointlights | kosmonaut games</a> - <time datetime="2017-03-25 08:15:59">Mar 6, 2017</time></p>
-
-<p>[…] Should you be looking for different shadow filtering algorithms, you have come to the wrong place – the right place would be here:<a href="https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/">https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/</a> […]
-<hr />
-####
-[]( &ldquo;&rdquo;) - <time datetime="2016-06-15 15:37:49">Jun 3, 2016</time></p>
-
-<p>Great work! I just curious: SampleShadowMapOptimizedPCF() in Mesh.hlsl does not contain branch for FilterSize_ == 9. Is it by design?
-<hr />
-####
-[Steve Smith]( &ldquo;baboon_king@hotmail.com&rdquo;) - <time datetime="2019-02-02 17:47:40">Feb 6, 2019</time></p>
-
-<p>This is awesome stuff. I&rsquo;m curious (and this has been driving me nuts for hours now) - but how does your mesh rendering shader have depth/w always biased from 0 to 1? I&rsquo;m trying to follow this in my own code (and even for example the DirectX cascaded shadow maps sample) and these values are *way* different. You&rsquo;re doing some magic here I can&rsquo;t figure out&hellip; help!
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2019-02-02 18:15:49">Feb 6, 2019</time></p>
-
-<p>Hey Steve! Exactly which depth value are you referring to here? Are you talking the depth of the pixel from the light&rsquo;s point of view, that&rsquo;s used to compare against the shadow map value? In general the range of the result of when calculating z / w is a property of the projection matrix that you&rsquo;re using. In my sample the sun shadows are rasterized using an orthographic projection, where z is calculated as (viewSpaceZ - NearClip) / (FarClip - NearClip), and w is always just 1.0. So it naturally ends up in the [0, 1] range, since any other values would get clipped by the near/far clip planes. Does that answer your question? Feel free to let me know if I&rsquo;m misunderstanding.
-<hr />
-####
-[Steve Smith]( &ldquo;baboon_king@hotmail.com&rdquo;) - <time datetime="2019-02-02 18:52:09">Feb 6, 2019</time></p>
-
-<p>I did not explain that clearly, apologies. The shadow gen stuff makes sense (and I think I have that all figured out). On the rendering side, you have a super-simple vertex shader that spits out a value (DepthVS) from PositionCS.w. Side by side, my view projection and yours are almost identical, but my w value range appears to be in the order of my near/far clip range (so around 300). The only difference I see is that I&rsquo;m using non-transposed clipspace matrix (which works if you reverse the float4/matrix parameters in the transform mul) but I tried flipping that around and didn&rsquo;t see a difference.
-<hr />
-####
-[Steve Smith]( &ldquo;baboon_king@hotmail.com&rdquo;) - <time datetime="2019-02-02 21:17:08">Feb 6, 2019</time></p>
-
-<p>Oh dear lord. I was debugging visually, and completely forgot you had full HDR with tone-mapping (I had mine turned off). Hoo boy. Somebody needs more sleep.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2019-02-03 14:16:17">Feb 0, 2019</time></p>
-
-<p>Ahh okay, that makes more sense! So yeah: the w component in that case is equivalent to the z component of the view-space vertex position. A perspective projection matrix will typically be setup with the fourth column equal to [0, 0, 1, 0], which ends up setting w = x * 0 + y * 0 + z * 1 + 1 * 0. So you would expect that to be somewhere in the range of [NearClip, FarClip], which is what you&rsquo;re seeing.
-<hr />
-####
-[Steve Smith]( &ldquo;baboon_king@hotmail.com&rdquo;) - <time datetime="2019-02-03 16:04:09">Feb 0, 2019</time></p>
-
-<p>Thanks. And thanks for the sample too, it&rsquo;s been incredibly useful. I&rsquo;ve not seen samples this well thought out and well executed since I had access to the old Microsoft ATG stuff. So - thank you.
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="%22Strikemedown1981@gmail.com%22">Jamie Hayes</a> - <!-- raw HTML omitted -->Sep 5, 2013<!-- raw HTML omitted --></p>
+<p>With regard to SDSM, I have so many questions! With a great big vertex buffer, how would you manage skinning and world space transformations? I&rsquo;m guessing you would need to generate one great big matrix buffer and eat the cost of having blend weights and indices on everything. Dealing with alpha test seems pretty daunting, maybe impossible? Also, handling objects getting added and removed as you would see in a normal game seems like it would be a headache.</p>
+<!-- raw HTML omitted -->
+<p>I know I&rsquo;m an idiot but there is something very simple I cannot understand about SDSM: Before writing to the view depth buffer, usually one cleans it to a max value (ie 1) so samples lower than that will be rendered. When doing the min/max reduction&hellip; how the max z is found? Shouldn&rsquo;t it return always 1 if a sample is left uncovered/ showing the background leaving a 1 in the depth buffer? Sorry for my stupidity and thanks</p>
+<!-- raw HTML omitted -->
+<p>Thanks a lot Rocko! Now I have SDEVSM working in my game :)</p>
+<!-- raw HTML omitted -->
+<p>Thanks! I was thinking of something like that. But what confused me is that I didn&rsquo;t saw that in the PS code so I thought that maybe there was a way to do it without a branch. Now, giving it a better look, I can&rsquo;t see also the four fetches one should do. I can only assume that &ldquo;float4 depthSamples = DepthMap.GatherRed(LinearClampSampler, TexCoord);&rdquo; someway does the four fetches and it also ignores values == 1.0? HLSL is quite a mystery for a GLSL user. Thanks for your quick reply.</p>
+<!-- raw HTML omitted -->
+<p>[…] On his blog, Matt Pettineo writes about his experiments on cascaded shadow maps, including cascade optimization, shadow map filtering and GPU scene submission: A Sampling of Shadow Techniques. […]</p>
+<!-- raw HTML omitted -->
+<p>Hi MJP, SDSM begin to be an old technique, but it&rsquo;s the lastest technique found for shadow (2011). Is SDSM too heavy to use or THIS IS the technique to use nowadays ?</p>
+<!-- raw HTML omitted -->
+<p>Another thing is : Why ReadBack is faster ?! I don&rsquo;t get it. I have 5 FPS more on your sample disabling GPU submission, normally FPS is lower using a read-back, why this 5 FPS wasted ?!</p>
+<!-- raw HTML omitted -->
+<p>Now it works fine! Thank you very much for such a quick help!</p>
+<!-- raw HTML omitted -->
+<p>[…] A sampling of shadow techniques […]</p>
+<!-- raw HTML omitted -->
+<p>Actually it seems something is wrong with it, here&rsquo;s an example: LightColor.Initialize(tweakBar, &ldquo;LightColor&rdquo;, &ldquo;SceneControls&rdquo;, &ldquo;Light Color&rdquo;, &ldquo;The color of the light&rdquo;, Float3(10, 8, 5), true, 0.0f, 20.0f, 0,1.0f); Look at the last parameter - 0,1.0f. All the errors ale like that: MinCascadeDistance.Initialize(tweakBar, &ldquo;MinCascadeDistance&rdquo;, &ldquo;Shadows&rdquo;, &ldquo;Min Cascade Distance&rdquo;, &ldquo;The closest depth that is covered by the shadow cascades&rdquo;, 0.0f, 0.0f, 0,1.0f, 0,001.0f); 0,1.0f, 0,001.0f? It looks like something&rsquo;s wrong with generating floats from attrubute strings?</p>
+<!-- raw HTML omitted -->
+<p>Okay, I think I figured out the problem. I didn&rsquo;t specify the culture when outputting strings for float parameters, and it looks like it was using commas instead of decimal points for your locale. Clearly I am not an experienced C# programmer! I uploaded a new zip with some fixes, so could you download that and give it a try?</p>
+<!-- raw HTML omitted -->
+<p>[…] may have noticed that my latest sample now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my […]</p>
+<!-- raw HTML omitted -->
+<p>Thank you for the links Christoph! I actually wasn&rsquo;t familiar with that Nvidia extension, and I hadn&rsquo;t seen your presentation either. Sounds very useful indeed!</p>
+<!-- raw HTML omitted -->
+<p>Hi Jamie! What I did in the demo is definitely not production-ready, and I&rsquo;m not sure if I would even do it exactly the same way if I were going to try to ship with it. For this sample I handled the character by repeating the entire batching process for its meshes, and if you were to do it that way you could handle skinning as long as you also had the bone weight/indices in a combined vertex buffer as well. Or if you could set up system for pre-skinning vertices and writing them out (either via stream-out, or better yet by directly writing to the buffer from the vertex shader) then it would definitely make things easier. In fact if you did that, you could probably stream out vertices from multiple skinned meshes into a the same batch, and then run the culling/batching process on lots of skinned objects simultaneously. Alpha-test would definitely be pretty tricky, although you could always fall back to a DrawIndirect-based approach for anything that&rsquo;s difficult to batch.</p>
+<!-- raw HTML omitted -->
+<p>Sample doesn&rsquo;t build in VS2013: 1&gt; AppSettings.cpp 1&gt;AppSettings.cpp(129): error C2660: &lsquo;SampleFramework11::ColorSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(147): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(174): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(177): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(183): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(186): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(189): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(192): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(195): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(201): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(204): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(219): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(222): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(225): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(228): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(231): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(234): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 13 arguments 1&gt;AppSettings.cpp(237): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(240): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments SettingsCompiler and SettingsCompilerAttributes compiled successfully.</p>
+<!-- raw HTML omitted -->
+<p>I just installed VS 2013 on my PC, and the sample builds fine for me. I tried both upgrading the project and not upgrading it, and it compiles either way. Does the code generated in AppSettings.cpp look okay?</p>
+<!-- raw HTML omitted -->
+<p>Hi Sam, We&rsquo;ve been using EVSM and SDSM with similar cascade techniques for some time now in our game, although we have a lot of little tweaks, fixes, and platform-specific optimizations to make everything work in a production setting. We&rsquo;re not currently doing any GPU-driven submission, but I have plans to implement something specific to PS4 that&rsquo;s even more optimal than what I did in this sample. -Matt</p>
+<!-- raw HTML omitted -->
+<p>Hi thanks for the article! For the GPU-driven submission OpenGL provides multi-draw-indirect which allows for quite efficent read-back less culling. Been doing research on this topic at NVIDIA, some results were shown at thise years GTC <a href="http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf">http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf</a> from slide 35 on.There is <a href="http://www.opengl.org/registry/specs/NV/bindless">http://www.opengl.org/registry/specs/NV/bindless</a>_multi_draw_indirect.txt which allows to source from arbitrary buffer locations, as well as <a href="http://www.opengl.org/registry/specs/ARB/indirect">http://www.opengl.org/registry/specs/ARB/indirect</a>_parameters.txt which means you can batch the jobs efficiently.</p>
+<!-- raw HTML omitted -->
+<p>Thanks for the treatise, Matt. Although it&rsquo;s been quite a while since I touched DirectX, I still found it educational to read up on the advances in shadowing and if nothing else, the article got me amped to finally give those fancy compute shaders a try for non-graphics stuffs. Cheers!</p>
+<!-- raw HTML omitted -->
+<p>Hi Matt, This is a great summary of the state of the art and the gpu-driven cascade rendering is really good to see. Are you guys intending on using this approach in production? Cheers, Sam</p>
+<!-- raw HTML omitted -->
+<p>[…] not going to try to address that here, but just as I was writting this Matt Pettineo released a good overview of some of the different techniques available that is a good starting point. Instead, I’ll […]</p>
+<!-- raw HTML omitted -->
+<p>Impressive! I made similar app for my master thesis: I&rsquo;ve used openGL and tested CSV vs standard shadow map techniques + some additional improvements.</p>
+<!-- raw HTML omitted -->
+<p>I just ignore any z samples that aren&rsquo;t &lt; 1.0. This keeps you from considering background/sky pixels when computing the max depth, as long as you force your skybox to render at the far clip plane.</p>
+<!-- raw HTML omitted -->
+<p>GatherRed just returns the the red component of the 4 samples that would be used for bilinear filtering, so basically it gives you a 2x2 grid of depth samples in this case. That file is probably a little confusing because there&rsquo;s actually 4 shaders in there. The two that actually get used in the sample are DepthReductionInitialCS and DepthReductionCS, which are the compute shader versions. The &ldquo;Initial&rdquo; shader is the one that&rsquo;s run first, and actually samples the depth buffer. When MSAA is enabled it loads all N subsamples for a given pixel, and when MSAA is not enabled it just grabs the 1 sample. In both cases it does a check of &ldquo;if(depthSample &lt; 1.0f)&rdquo; to decide if it should use a given depth sample, which is on lines 149 and 161. Taking a look at the code, it looks like the pixel shader version doesn&rsquo;t do the check if MSAA is disabled. This is definitely a bug, which is probably why were you confused. That code path never actually gets taken in the sample (I always had MSAA enabled), so I never noticed it. Sorry about that!</p>
+<!-- raw HTML omitted -->
+<p>[…] the implementation of MSM is very straightforward, and so I decided to just integrate it into my old shadows sample. I updated the corresponding blog post and re-uploaded the binary + source, so if you’d like […]</p>
+<!-- raw HTML omitted -->
+<p>Just another comment to deepen my undestanding: When you compute the frustum slices, you take the linear Z min and maxes for the slice and then multiply them with the frustum rays between near and far corners to get the slice corners. However, the Z min and maxes work for for a ray at the center on the frustum and using them directly on the corner gives different planes, that for example, if using a pretty tight near to the geometry may leave parts out. What I did is to get the central ray of the frustum normalized and then use it to project the depths to the corners. ie: nearCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*prevSplitDist); farCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*splitDist); That fixed my problems, but I have no confidence in that I&rsquo;m doing the correct thing. Thanks!</p>
+<!-- raw HTML omitted -->
+<p>[…] I’d make a simple project in OpenGL for anyone interested. It is based on this example: <a href="https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/">https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/</a> which explains it in great detail. I’ll go through the relevant code and a download link […]</p>
+<!-- raw HTML omitted -->
+<p>Thanks! The code for the OptimizedPCF path was generously provided by Ignacio Castaño, who didn&rsquo;t provide an implementation for a 9x9 filter. I had been meaning to write it myself, but never got around to it. :(</p>
+<!-- raw HTML omitted -->
+<p>Hello, Matt. I do not know whom to ask, so i decided to ask you, as your articles are always very profound and you clarify details that no one clarifies :-) i&rsquo;m implementing now sdsm technique from Andrew Lauritzen article with evsm filtering using opengl 4.5. So i read almost everything about esm, vsm, and other *sm, but cannot understand some points. I also looked through your shadow sample and intel&rsquo;s also (i do not know direcx, really). So the questions: 1. When we used positive and negative exponent factors in evsm, why the first is 42 (this i understand), but the last is 5(this is completely obscured to me). 2. All the articles about shadow mapping say that you should use front face culling when rendering to the shadow map (this should decrease wrong selfshadowing and acne), but both you and andrew lauritzen use NoCull in your samples. Why? 3. In Andrew&rsquo;s sample he &ldquo;normalizes&rdquo; exponent factors with cascade ranges, to make the transition between cascades less noticeable. You do not do that. I have ranges from several meters to 10s of kilometers (flight simulator). Is there any point to do that? 4. When blurring evsm, does it make sense to blur with decreasing kernel size (for example, 7x blur for cascade 0, 5x for 1, 3x for 2 and no blur for the last. Is there any &ldquo;state of the art&rdquo; technique? 5. The same question with light space orientation relative to camera space. I have only sun direction (z-axis), so i can rotate the light space basis around it (xy axes), is there the &ldquo;right way&rdquo; to do that? stick it to camera &ldquo;up&rdquo; vector or to world up vector? 6. Is there any point to do some shear transformation to light space. Could it help to better utilize sm resolution, I didn&rsquo;t see any articles on. Now my lighspace is a box. 7. Everybody uses square shadow maps (1024x1024 for ex.). Is it possible to find better aspect knowing scene parameters. Thank you for your answer :-):-)</p>
+<!-- raw HTML omitted -->
+<p>[…] Should you be looking for different shadow filtering algorithms, you have come to the wrong place – the right place would be here:https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/ […]</p>
+<!-- raw HTML omitted -->
+<p>Great work! I just curious: SampleShadowMapOptimizedPCF() in Mesh.hlsl does not contain branch for FilterSize_ == 9. Is it by design?</p>
+<!-- raw HTML omitted -->
+<p>This is awesome stuff. I&rsquo;m curious (and this has been driving me nuts for hours now) - but how does your mesh rendering shader have depth/w always biased from 0 to 1? I&rsquo;m trying to follow this in my own code (and even for example the DirectX cascaded shadow maps sample) and these values are *way* different. You&rsquo;re doing some magic here I can&rsquo;t figure out&hellip; help!</p>
+<!-- raw HTML omitted -->
+<p>Hey Steve! Exactly which depth value are you referring to here? Are you talking the depth of the pixel from the light&rsquo;s point of view, that&rsquo;s used to compare against the shadow map value? In general the range of the result of when calculating z / w is a property of the projection matrix that you&rsquo;re using. In my sample the sun shadows are rasterized using an orthographic projection, where z is calculated as (viewSpaceZ - NearClip) / (FarClip - NearClip), and w is always just 1.0. So it naturally ends up in the [0, 1] range, since any other values would get clipped by the near/far clip planes. Does that answer your question? Feel free to let me know if I&rsquo;m misunderstanding.</p>
+<!-- raw HTML omitted -->
+<p>I did not explain that clearly, apologies. The shadow gen stuff makes sense (and I think I have that all figured out). On the rendering side, you have a super-simple vertex shader that spits out a value (DepthVS) from PositionCS.w. Side by side, my view projection and yours are almost identical, but my w value range appears to be in the order of my near/far clip range (so around 300). The only difference I see is that I&rsquo;m using non-transposed clipspace matrix (which works if you reverse the float4/matrix parameters in the transform mul) but I tried flipping that around and didn&rsquo;t see a difference.</p>
+<!-- raw HTML omitted -->
+<p>Oh dear lord. I was debugging visually, and completely forgot you had full HDR with tone-mapping (I had mine turned off). Hoo boy. Somebody needs more sleep.</p>
+<!-- raw HTML omitted -->
+<p>Ahh okay, that makes more sense! So yeah: the w component in that case is equivalent to the z component of the view-space vertex position. A perspective projection matrix will typically be setup with the fourth column equal to [0, 0, 1, 0], which ends up setting w = x * 0 + y * 0 + z * 1 + 1 * 0. So you would expect that to be somewhere in the range of [NearClip, FarClip], which is what you&rsquo;re seeing.</p>
+<!-- raw HTML omitted -->
+<p>Thanks. And thanks for the sample too, it&rsquo;s been incredibly useful. I&rsquo;ve not seen samples this well thought out and well executed since I had access to the old Microsoft ATG stuff. So - thank you.</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -427,7 +279,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7651 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7368 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2013-09-11 00:45 -0700</p>
 			</footer>
 		</article>
@@ -450,7 +302,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

@@ -6,25 +6,22 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Shadow Sample Update">
-<meta itemprop="description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering.">
-
-
+<meta itemprop="description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings.">
 <meta itemprop="datePublished" content="2015-02-18T18:00:06&#43;00:00" />
 <meta itemprop="dateModified" content="2015-02-18T18:00:06&#43;00:00" />
-<meta itemprop="wordCount" content="1821">
+<meta itemprop="wordCount" content="1786">
 
 
 
-<meta itemprop="keywords" content="Graphics," />
-<meta property="og:title" content="Shadow Sample Update" />
-<meta property="og:description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering." />
+<meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="Shadow Sample Update" />
+<meta property="og:description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/shadow-sample-update/" />
 <meta property="article:published_time" content="2015-02-18T18:00:06+00:00" />
 <meta property="article:modified_time" content="2015-02-18T18:00:06+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Shadow Sample Update"/>
-<meta name="twitter:description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering."/>
+<meta name="twitter:description" content="Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -34,7 +31,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Shadow Sample Update</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -74,119 +71,45 @@
 				<h1>Shadow Sample Update</h1>
 			</header>
 			<div class="content">
-				
-
-<p><em>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings. The version of the sample that&rsquo;s now uploaded to <a href="https://github.com/TheRealMJP/Shadows">GitHub</a> has corrected this issue, and I&rsquo;ve generated a new set of comparison images. I&rsquo;ve also updated my commentary on these comparisons to better reflect MSM&rsquo;s improvements over EVSM.</em></p>
-
+				<p><em>Update 1/24/2016: one of the authors of the Moment Shadow Mapping paper contacted to let me know that there was an issue in my implementation of the 16-bit variant of EVSM. My sample app was clamping the maximum exponential warp factor to 10.0, which can result in overflow for a 16-bit float. This has the effect of reducing light bleeding, but it also causes edge quality to suffer during filtering. This made the light bleeding comparison with MSM16 unfair, particularly since my comparisons did not use high filtering settings. The version of the sample that&rsquo;s now uploaded to <a href="https://github.com/TheRealMJP/Shadows">GitHub</a> has corrected this issue, and I&rsquo;ve generated a new set of comparison images. I&rsquo;ve also updated my commentary on these comparisons to better reflect MSM&rsquo;s improvements over EVSM.</em></p>
 <p>This past week a paper entitled &ldquo;<a href="http://cg.cs.uni-bonn.de/en/publications/paper-details/peters-2015-msm/">Moment Shadow Mapping</a>&rdquo; was released in advance of its planned publication at I3D in San Francisco. If you haven&rsquo;t seen it yet, it presents a new method for achieving filterable shadow maps, with a promised improvement in quality compared to Variance Shadow Maps. Myself and many others were naturally intrigued, as filterable shadow maps are highly desirable for reducing various forms of aliasing. The paper primarily suggests two variants of the technique: one that directly stores the 1st, 2nd, 3rd, and 4th moments in a RGBA32_FLOAT texture, and another that uses an optimized quantization scheme (which essentially boils down to a 4x4 matrix transform) in order to use an RGBA16_UNORM texture instead. The first variant most likely isn&rsquo;t immediately interesting for people working on games, since 128 bits per texel requires quite a bit of memory storage and bandwidth. It&rsquo;s also the same storage cost as the highest-quality variant of EVSM (VSM with an exponential warp), which already provides high-quality filterable shadows with minimal light bleeding. So that really leaves us with the quantized 16-bit variant. Using 16-bit storage for EVSM results in more artifacts and increased light bleeding compared to the 32-bit version, so if MSM can provide better results than it could potentially be useful for games.</p>
-
 <p>I was eager to see the results myself, so I downloaded the sample app that the authors were kind enough to provide. Unfortunately their sample didn&rsquo;t implement EVSM, and so I wasn&rsquo;t able perform any comparisons. However the implementation of MSM is very straightforward, and so I decided to just integrate it into my <a href="../shadow-maps/">old shadows sample</a>. I updated the corresponding blog post and re-uploaded the binary + source, so if you&rsquo;d like to check it out for yourself then feel free to download it from <a href="https://github.com/TheRealMJP/Shadows">GitHub</a>:</p>
-
 <p><a href="https://github.com/TheRealMJP/Shadows/releases">https://github.com/TheRealMJP/Shadows/releases</a></p>
-
 <p>The MSM techniques can be found under the &ldquo;Shadow Mode&rdquo; setting. I implemented both the Hamburger and Hausdorff methods, which are available as two separate shadow modes. If you change the VSM/MSM format from 32-bit to 16-bit, then the optimized quantization scheme will be used when converting from a depth map to a moment shadow map.</p>
-
 <p>The 32-bit variant of MSM seems to provide quality that&rsquo;s pretty close to the 32-bit variant of EVSM, with slightly worse performance. Both techniques are mostly free of light bleeding, but still exhibit bleeding artifacts for the more extreme cases. The 16-bit variant initially has some of the same issues as the 16-bit version of EVSM, in that it will typically result in artifacts due to a lack of precision in the storage format. Both EVSM16 and MSM16 can reduce or eliminate these artifacts by increasing their respective bias values, but raising them too high can result in a loss of shadow details in areas where the receiver is very close to the occluder. As for light bleeding, there&rsquo;s bad news and there&rsquo;s good news. The bad news is that MSM16 does suffer from increased bleeding compared to the MSM32, which is unfortunate. The good news that it ultimately fares better than EVSM16, which makes for a solid improvement with similar performance and storage cost. In fact, I&rsquo;ve found that bleeding can be almost avoided entirely in my test scenes by using the &ldquo;standard&rdquo; VSM bleeding reduction technique, which essentially just remaps the output range of the shadow visibility term. This technique also works for EVSM16, but in my test scenes this technique is not enough to entirely remove the bleeding for all cases. I gathered some images so that can compare for yourself:</p>
-
-<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-01-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-01-grid.png?w=620" alt="MSM Comparison 01 Grid" /></a></p>
-
+<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-01-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-01-grid.png?w=620" alt="MSM Comparison 01 Grid"></a></p>
 <p>The EVSM images all use the 4-component variant, while the MSM images all use the 4-moment Hamburger variant. For the images with the bleeding &ldquo;fix&rsquo;, they use a reduction factor of 0.25. In all cases the shadow map resolution is 2048x2048, with 4xMSAA, 16x anisotropic filtering, and mipmaps enabled for both EVSM and MSM. The first MSM16 image shows what happens if you don&rsquo;t use a moment bias, while the next one shows what it looks like with a moment bias of 0.030. The last image shows MSM16 with a light bleeding reduction applied, and as you can see the artifacts are almost completely gone. Compare it with the EVSM16 image, where some of the bleeding remains even when applying the reduction factor.</p>
-
 <p>Here&rsquo;s a few more images from another area with light bleeding:</p>
-
-<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-02-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-02-grid.png?w=620" alt="MSM Comparison 02 Grid" /></a></p>
-
+<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-02-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-02-grid.png?w=620" alt="MSM Comparison 02 Grid"></a></p>
 <p>EVSM16 and MSM16 both show bleeding artifacts by default, but the bleeding is reduced quite a bit with MSM16. The bleeding reduction works very well for both techniques for this particular viewpoint, but with MSM16 we can probably get away with a lower bleeding reduction factor.</p>
-
 <p>To finish up, here are some images from another particularly troublesome case: a close up on a character, with heavy filtering enabled.</p>
-
-<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-03-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-03-grid.png?w=395" alt="MSM Comparison 03 Grid" /></a></p>
-
-<p>This is a pretty tough situation for all shadow techniques. The character is very close, and has quite a few small details that need shadows in order for them to read properly. However there&rsquo;s still quite a bit of things in the background that need shadowing, and so the cascades need to cover a range beyond just the character. SDSM helps quite a bit here, since it ensures that we can create a logarithmic partioning of the viewable area for close-to-ideal distribution of our shadow map resolution. Even with that in place, our 9x9 PCF kernel still has some trouble. In the first image, the issues mostly stem from incorrect biasing. The bias factor in that image is computed &ldquo;automatically&rdquo; by determining the slope of the receiver using pixel shader derivatives, which is often quite effective. However it assumes that the receiver is planar, and this assumption is violated when the filter footprint covers an edge between two triangles that aren&rsquo;t coplanar. Switching to a &ldquo;fixed&rdquo; bias factor causes the artifacts to go away, but we then lose shadow detail in areas like the nose. EVSM and MSM also have issues due using a wider filter kernel, which requires increasing their bias factors in order to avoid artifacts at triangle boundaries. Even with an increased bias, EVSM16 still shows some precision artifacts in places where the occluder is rather close to the receiver (check out the nose, or the shadow under the collar). MSM16 also has some precision issues, at least initially. To fix this, I increased the &rdquo;depth bias&rdquo; parameter to 0.4, which directly biases the computed pixel depth. After doing that and applying a little bit of bleeding reduction, we end up with some very nice results!</p>
-
+<p><a href="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-03-grid.png"><img src="https://mynameismjp.files.wordpress.com/2015/02/msm-comparison-03-grid.png?w=395" alt="MSM Comparison 03 Grid"></a></p>
+<p>This is a pretty tough situation for all shadow techniques. The character is very close, and has quite a few small details that need shadows in order for them to read properly. However there&rsquo;s still quite a bit of things in the background that need shadowing, and so the cascades need to cover a range beyond just the character. SDSM helps quite a bit here, since it ensures that we can create a logarithmic partioning of the viewable area for close-to-ideal distribution of our shadow map resolution. Even with that in place, our 9x9 PCF kernel still has some trouble. In the first image, the issues mostly stem from incorrect biasing. The bias factor in that image is computed &ldquo;automatically&rdquo; by determining the slope of the receiver using pixel shader derivatives, which is often quite effective. However it assumes that the receiver is planar, and this assumption is violated when the filter footprint covers an edge between two triangles that aren&rsquo;t coplanar. Switching to a &ldquo;fixed&rdquo; bias factor causes the artifacts to go away, but we then lose shadow detail in areas like the nose. EVSM and MSM also have issues due using a wider filter kernel, which requires increasing their bias factors in order to avoid artifacts at triangle boundaries. Even with an increased bias, EVSM16 still shows some precision artifacts in places where the occluder is rather close to the receiver (check out the nose, or the shadow under the collar). MSM16 also has some precision issues, at least initially. To fix this, I increased the &ldquo;depth bias&rdquo; parameter to 0.4, which directly biases the computed pixel depth. After doing that and applying a little bit of bleeding reduction, we end up with some very nice results!</p>
 <p>If you&rsquo;d like to look a the full captures that I used to generate these comparison images, I uploaded the source .PSD files here: <a href="https://mynameismjp.files.wordpress.com/2016/01/msm-comparisons.zip">https://mynameismjp.files.wordpress.com/2016/01/msm-comparisons.zip</a></p>
-
-<hr />
-
+<hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-[](<a href="http://www.revivedgame.com/">http://www.revivedgame.com/</a> &ldquo;&rdquo;) - <time datetime="2015-02-18 12:28:17">Feb 3, 2015</time></p>
-
-<p>Hi Thank you for this great update and also so many thanks for nvidia driver bug fix!!! Unfortunately my 770 gpu has a problem with 16 and 32 bit Hausdorff method. <a href="http://postimg.org/image/ou0341izb/">http://postimg.org/image/ou0341izb/</a>
-<hr />
-####
-[Michael]( &ldquo;segura.mikael@orange.fr&rdquo;) - <time datetime="2015-02-21 09:23:14">Feb 6, 2015</time></p>
-
-<p>I have the same problem and using the 16-bits MSM I have lot of dot on the shadow. Another thing I saw is you set params on cascade shadow map, the original SDSM does all auto the split, is it safer to param or you just did that to win time on the demo ?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2015-02-22 01:01:47">Feb 0, 2015</time></p>
-
-<p>Hi Michael, If you&rsquo;re referring to the parameters for selecting the min and max depth ranges for the cascades as well as the cascade split depths, for all of my comparisons I was using the &ldquo;Auto Compute Depth Bounds&rdquo; option which automatically computes the min and max visible depth from the depth buffer in a manner similar to SDSM. I also used the logarithmic partitioning scheme, which also automatically computes the split depths.
-<hr />
-####
-[Michael]( &ldquo;segura.mikael@orange.fr&rdquo;) - <time datetime="2015-02-22 17:30:05">Feb 0, 2015</time></p>
-
-<p>Hi MJP, Thanks to have explained that, so the “Auto Compute Depth Bounds” + &ldquo;logarithmic partitioning scheme&rdquo; is the full auto. I have a question about the &ldquo;Depth Bounds Readback Latency&rdquo;, is it really needed to have a latency, for performance, which gives possible visual error on low FPS ? Screenshot of the 16-bits dot issue : <a href="http://zupimages.net/up/15/09/1s75.png">http://zupimages.net/up/15/09/1s75.png</a>
-<hr />
-####
-[Michael]( &ldquo;segura.mikael@orange.fr&rdquo;) - <time datetime="2015-02-22 17:37:19">Feb 0, 2015</time></p>
-
-<p>About the dot, just using a bias of 0.022 removes them. Only some are visible on intersection apparently, which is surely because of the mesh, you can confirm that surely.
-<hr />
-####
-<a href="https://mynameismjp.wordpress.com/2016/01/24/update-for-my-shadow-sample-update/">Update For My Shadow Sample Update &#8211; The Danger Zone</a> - <time datetime="2016-01-24 16:25:05">Jan 0, 2016</time></p>
-
-<p>[…] I was contacted by Christoph Peters (one of the authors of Moment Shadow Mapping) regarding a blog post where I compared EVSM to MSM using my sample app. He noticed that I was incorrectly clamping the […]
-<hr />
-####
-[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 10:40:17">May 1, 2016</time></p>
-
-<p>First, thanks for another great read and source. Again :) I hope you don&rsquo;t mind going off topic but I noticed something peculiar in GPUBatch.hlsl. There&rsquo;s a SV_GroupIndex for the DrawArgsBuffer. My google-fu is failing me here so&hellip; is this another undocumented feature (like SV_DepthGreaterEqual) ? What does it improve ? On what hardware ?
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-05-16 12:56:09">May 1, 2016</time></p>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>[unbird]( &ldquo;ugello@gmx.net&rdquo;) - <time datetime="2016-05-16 14:29:51">May 1, 2016</time></dt>
-</dl>
-
-<dl>
-<dt>ime=&ldquo;2016-05-16 14:29:51&rdquo;&gt;May 1, 2016</time></dt>
-</dl>
-
-<p>:D I know what it does for shader input. Sorry, maybe I wasn&rsquo;t quite clear. I meant this line: RWByteAddressBuffer DrawArgsBuffer : SV_GroupIndex : register(u0); It&rsquo;s legal to put semantics on globals, I just never saw a SV semantic this way and thought it would give the driver a hint or something. Other than turning up in the shader reflection I don&rsquo;t think they have any other impact. At least as far as I know ;) Thanks for the fast reply.
-<hr />
-####
-<a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">MJP</a> - <time datetime="2016-05-16 16:57:57">May 1, 2016</time></p>
-
-<p>Oh, I didn&rsquo;t even see that! I&rsquo;m pretty sure that&rsquo;s just some kind of search/replace gone badly, and it definitely wasn&rsquo;t intentional. I don&rsquo;t think it will have any effect, but I&rsquo;m definitely going to remove it when I get a chance. Thank you for pointing that out!
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>[](<a href="http://www.revivedgame.com/">http://www.revivedgame.com/</a> &ldquo;&quot;) - <!-- raw HTML omitted -->Feb 3, 2015<!-- raw HTML omitted --></p>
+<p>Hi Thank you for this great update and also so many thanks for nvidia driver bug fix!!! Unfortunately my 770 gpu has a problem with 16 and 32 bit Hausdorff method. <a href="http://postimg.org/image/ou0341izb/">http://postimg.org/image/ou0341izb/</a></p>
+<!-- raw HTML omitted -->
+<p>I have the same problem and using the 16-bits MSM I have lot of dot on the shadow. Another thing I saw is you set params on cascade shadow map, the original SDSM does all auto the split, is it safer to param or you just did that to win time on the demo ?</p>
+<!-- raw HTML omitted -->
+<p>Hi Michael, If you&rsquo;re referring to the parameters for selecting the min and max depth ranges for the cascades as well as the cascade split depths, for all of my comparisons I was using the &ldquo;Auto Compute Depth Bounds&rdquo; option which automatically computes the min and max visible depth from the depth buffer in a manner similar to SDSM. I also used the logarithmic partitioning scheme, which also automatically computes the split depths.</p>
+<!-- raw HTML omitted -->
+<p>Hi MJP, Thanks to have explained that, so the “Auto Compute Depth Bounds” + &ldquo;logarithmic partitioning scheme&rdquo; is the full auto. I have a question about the &ldquo;Depth Bounds Readback Latency&rdquo;, is it really needed to have a latency, for performance, which gives possible visual error on low FPS ? Screenshot of the 16-bits dot issue : <a href="http://zupimages.net/up/15/09/1s75.png">http://zupimages.net/up/15/09/1s75.png</a></p>
+<!-- raw HTML omitted -->
+<p>About the dot, just using a bias of 0.022 removes them. Only some are visible on intersection apparently, which is surely because of the mesh, you can confirm that surely.</p>
+<!-- raw HTML omitted -->
+<p>[…] I was contacted by Christoph Peters (one of the authors of Moment Shadow Mapping) regarding a blog post where I compared EVSM to MSM using my sample app. He noticed that I was incorrectly clamping the […]</p>
+<!-- raw HTML omitted -->
+<p>First, thanks for another great read and source. Again :) I hope you don&rsquo;t mind going off topic but I noticed something peculiar in GPUBatch.hlsl. There&rsquo;s a SV_GroupIndex for the DrawArgsBuffer. My google-fu is failing me here so&hellip; is this another undocumented feature (like SV_DepthGreaterEqual) ? What does it improve ? On what hardware ?</p>
+<!-- raw HTML omitted -->
+<p>The docs for SV_GroupIndex are here: <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff471569(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/ff471569(v=vs.85).aspx</a> It&rsquo;s basically just a shortcut for flattening the group thread ID into a 1D value. I don&rsquo;t think it&rsquo;s actually any faster, in fact driver&rsquo;s compiler might even insert some math at the beginning of the shader in order to generate it. It&rsquo;s also not at all necessary in that particular shader since the group size is 1D. I think I just used it out of habit.</p>
+<!-- raw HTML omitted -->
+<p>:D I know what it does for shader input. Sorry, maybe I wasn&rsquo;t quite clear. I meant this line: RWByteAddressBuffer DrawArgsBuffer : SV_GroupIndex : register(u0); It&rsquo;s legal to put semantics on globals, I just never saw a SV semantic this way and thought it would give the driver a hint or something. Other than turning up in the shader reflection I don&rsquo;t think they have any other impact. At least as far as I know ;) Thanks for the fast reply.</p>
+<!-- raw HTML omitted -->
+<p>Oh, I didn&rsquo;t even see that! I&rsquo;m pretty sure that&rsquo;s just some kind of search/replace gone badly, and it definitely wasn&rsquo;t intentional. I don&rsquo;t think it will have any effect, but I&rsquo;m definitely going to remove it when I get a chance. Thank you for pointing that out!</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -194,7 +117,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1821 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1786 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2015-02-18 10:00 -0800</p>
 			</footer>
 		</article>
@@ -217,7 +140,7 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

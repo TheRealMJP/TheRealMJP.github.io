@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Shading on The Danger Zone</title>
@@ -6,10 +6,19 @@
     <description>Recent content in Shading on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/shading/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Approximating Subsurface Scattering With Spherical Gaussians</title>
+      <link>https://therealmjp.github.io/posts/sss-sg/</link>
+      <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/sss-sg/</guid>
+      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;quot;wrapped&amp;quot; or &amp;quot;blurred&amp;quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
+    </item>
     
     <item>
       <title>An Introduction To Real-Time Subsurface Scattering</title>

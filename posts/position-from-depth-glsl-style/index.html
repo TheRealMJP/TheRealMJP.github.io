@@ -8,16 +8,13 @@
 <meta itemprop="name" content="Position From Depth in GLSL">
 <meta itemprop="description" content="Commenter &ldquo;Me&rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I previously posted for reconstructing position from depth. So I figured I&rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P
 // deferred shading VERTEX (GEOMETRY) varying vec3 normalv, posv; void main( void ) { normalv = ( gl_NormalMatrix * gl_Normal ).">
-
-
 <meta itemprop="datePublished" content="2011-01-09T01:47:45&#43;00:00" />
 <meta itemprop="dateModified" content="2011-01-09T01:47:45&#43;00:00" />
-<meta itemprop="wordCount" content="323">
+<meta itemprop="wordCount" content="320">
 
 
 
-<meta itemprop="keywords" content="Graphics,Programming," />
-<meta property="og:title" content="Position From Depth in GLSL" />
+<meta itemprop="keywords" content="Graphics,Programming," /><meta property="og:title" content="Position From Depth in GLSL" />
 <meta property="og:description" content="Commenter &ldquo;Me&rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I previously posted for reconstructing position from depth. So I figured I&rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P
 // deferred shading VERTEX (GEOMETRY) varying vec3 normalv, posv; void main( void ) { normalv = ( gl_NormalMatrix * gl_Normal )." />
 <meta property="og:type" content="article" />
@@ -37,7 +34,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Position From Depth in GLSL</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -77,10 +74,7 @@
 				<h1>Position From Depth in GLSL</h1>
 			</header>
 			<div class="content">
-				
-
-<p>Commenter &ldquo;Me&rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I <a href="http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">previously posted</a> for reconstructing position from depth. So I figured I&rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P</p>
-
+				<p>Commenter &ldquo;Me&rdquo; was kind enough to share his GLSL implementation of a deferred point light shader, which makes use of one of the methods I <a href="http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">previously posted</a> for reconstructing position from depth. So I figured I&rsquo;d post it here, for all of you unfortunate enough to be stuck with writing shaders in GLSL. :P</p>
 <pre><code>// deferred shading VERTEX (GEOMETRY)
 varying vec3 normalv, posv;
 
@@ -124,17 +118,12 @@ void main( void ){
     if( dlight &gt; lradius ) discard;
     gl_FragData[0] = vec4( gl_Color.rgb, factor );
 }
-</code></pre>
-
-<hr />
-
+</code></pre><hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p>####
-[Lukas Meindl]( &ldquo;mail@lukasmeindl.at&rdquo;) - <time datetime="2011-03-09 12:46:50">Mar 3, 2011</time></p>
-
-<p>This is a good code basis for a deferred spotlight shader. To make it more understandable I would like to add: - &ldquo;uniform vec2 nfv;&rdquo; should be &ldquo;uniform float farClipDistance&rdquo; - Replace &ldquo;nfv.y&rdquo; by &ldquo;farClipDistance&rdquo;, x is never used and i can&rsquo;t think of a way of using it here. - I would change &ldquo;vec2 tcoord = gl_FragCoord.xy * sic;&rdquo; to &ldquo;vec4 ex_persp_position = gl_FragCoord / gl_FragCoord.w; vec2 texCoord = ex_persp_position.xy * 0.5 + vec2(0.5);&rdquo; This should work- the variable &ldquo;sic&rdquo; can be removed then&hellip;
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="%22mail@lukasmeindl.at%22">Lukas Meindl</a> - <!-- raw HTML omitted -->Mar 3, 2011<!-- raw HTML omitted --></p>
+<p>This is a good code basis for a deferred spotlight shader. To make it more understandable I would like to add: - &ldquo;uniform vec2 nfv;&rdquo; should be &ldquo;uniform float farClipDistance&rdquo; - Replace &ldquo;nfv.y&rdquo; by &ldquo;farClipDistance&rdquo;, x is never used and i can&rsquo;t think of a way of using it here. - I would change &ldquo;vec2 tcoord = gl_FragCoord.xy * sic;&rdquo; to &ldquo;vec4 ex_persp_position = gl_FragCoord / gl_FragCoord.w; vec2 texCoord = ex_persp_position.xy * 0.5 + vec2(0.5);&rdquo; This should work- the variable &ldquo;sic&rdquo; can be removed then&hellip;</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -142,7 +131,7 @@ void main( void ){
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>323 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>320 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-01-08 17:47 -0800</p>
 			</footer>
 		</article>
@@ -165,7 +154,7 @@ void main( void ){
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

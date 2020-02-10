@@ -7,19 +7,16 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="DX11.2 Tiled Resources">
 <meta itemprop="description" content="Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
- TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.">
-
-
+  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.">
 <meta itemprop="datePublished" content="2013-09-07T06:21:28&#43;00:00" />
 <meta itemprop="dateModified" content="2013-09-07T06:21:28&#43;00:00" />
 <meta itemprop="wordCount" content="333">
 
 
 
-<meta itemprop="keywords" content="DirectX,Graphics,Programming," />
-<meta property="og:title" content="DX11.2 Tiled Resources" />
+<meta itemprop="keywords" content="DirectX,Graphics,Programming," /><meta property="og:title" content="DX11.2 Tiled Resources" />
 <meta property="og:description" content="Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
- TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels." />
+  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/dx11-2-tiled-resources/" />
 <meta property="article:published_time" content="2013-09-07T06:21:28+00:00" />
@@ -27,7 +24,7 @@
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="DX11.2 Tiled Resources"/>
 <meta name="twitter:description" content="Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
- TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels."/>
+  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -37,7 +34,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>DX11.2 Tiled Resources</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -78,17 +75,20 @@
 			</header>
 			<div class="content">
 				<p><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dn312084%28v=vs.85%29.aspx#tile">Tiled resources</a> seems to be the big-ticket item for the upcoming DX11.2 update. While the online <a href="http://msdn.microsoft.com/en-us/library/windows/apps/bg182880.aspx#four">documentation</a> has some information about the new functions added to the API, there&rsquo;s currently no information about the <a href="http://msdn.microsoft.com/library/windows/apps/dn280435">two tiers</a> of tiled resource functionality being offered. Fortunately there is a <a href="https://tiledresources.codeplex.com/">sample app</a> available that provides some clues. After poking around a bit last night, these were the differences that I noticed:</p>
-
 <ul>
-<li><p>TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels. In the sample they use this when sampling a residency texture that tells the shader the highest-resolution mip level that can be used when sampling a particular tile. For TIER1 they emulate it with a Gather.</p></li>
-
-<li><p>TIER1 doesn&rsquo;t support sampling from unmapped tiles, so you have to either avoid it in your shader or map all unloaded tiles to dummy tile data (the sample does the latter)</p></li>
-
-<li><p>TIER1 doesn&rsquo;t support packed mips for texture arrays. From what I can gather, packed mips refers to packing multiple mips into a single tile.</p></li>
-
-<li><p>TIER2 supports a new version of Texture2D.Sample that lets you clamp the mip level to a certain value. They use this to force the shader to sample from lower-resolution mip levels if the higher-resolution mip isn&rsquo;t currently resident in memory. For TIER1 they emulate this by computing what mip level would normally be used, comparing it with the mip level available in memory, and then falling back to SampleLevel if the mip level needs to be clamped. There&rsquo;s also another overload for Sample that returns a status variable that you can pass to a new &ldquo;CheckAccessFullyMapped&rdquo; intrinsic that tells you if the sample operation would access unmapped tiles. The docs don&rsquo;t say that these functions are restricted to TIER2, but I would assume that to be the case.</p></li>
+<li>
+<p>TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels. In the sample they use this when sampling a residency texture that tells the shader the highest-resolution mip level that can be used when sampling a particular tile. For TIER1 they emulate it with a Gather.</p>
+</li>
+<li>
+<p>TIER1 doesn&rsquo;t support sampling from unmapped tiles, so you have to either avoid it in your shader or map all unloaded tiles to dummy tile data (the sample does the latter)</p>
+</li>
+<li>
+<p>TIER1 doesn&rsquo;t support packed mips for texture arrays. From what I can gather, packed mips refers to packing multiple mips into a single tile.</p>
+</li>
+<li>
+<p>TIER2 supports a new version of Texture2D.Sample that lets you clamp the mip level to a certain value. They use this to force the shader to sample from lower-resolution mip levels if the higher-resolution mip isn&rsquo;t currently resident in memory. For TIER1 they emulate this by computing what mip level would normally be used, comparing it with the mip level available in memory, and then falling back to SampleLevel if the mip level needs to be clamped. There&rsquo;s also another overload for Sample that returns a status variable that you can pass to a new &ldquo;CheckAccessFullyMapped&rdquo; intrinsic that tells you if the sample operation would access unmapped tiles. The docs don&rsquo;t say that these functions are restricted to TIER2, but I would assume that to be the case.</p>
+</li>
 </ul>
-
 <p>Based on this information it appears that TIER1 offers all of the core functionality, while TIER2 has few extras bring it up to par with <a href="http://www.opengl.org/registry/specs/AMD/sparse_texture.txt">AMD&rsquo;s sparse texture extension</a>.</p>
 
 			</div>
@@ -120,7 +120,7 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

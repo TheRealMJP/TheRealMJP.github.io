@@ -7,22 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Deferred Shadow Maps Sample">
 <meta itemprop="description" content="Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments: sam - Feb 4, 2009
-This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+ Comments:  sam - Feb 4, 2009This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
 1./2. Points taken! 3. That&rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&rsquo;s Fetch4).">
-
-
 <meta itemprop="datePublished" content="2009-01-20T01:24:19&#43;00:00" />
 <meta itemprop="dateModified" content="2009-01-20T01:24:19&#43;00:00" />
-<meta itemprop="wordCount" content="664">
+<meta itemprop="wordCount" content="988">
 
 
 
-<meta itemprop="keywords" content="DirectX,Programming,Xbox 360,XNA," />
-<meta property="og:title" content="Deferred Shadow Maps Sample" />
+<meta itemprop="keywords" content="DirectX,Programming,Xbox 360,XNA," /><meta property="og:title" content="Deferred Shadow Maps Sample" />
 <meta property="og:description" content="Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments: sam - Feb 4, 2009
-This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+ Comments:  sam - Feb 4, 2009This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
 1./2. Points taken! 3. That&rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&rsquo;s Fetch4)." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/deferred-shadow-maps-sample/" />
@@ -31,8 +26,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Deferred Shadow Maps Sample"/>
 <meta name="twitter:description" content="Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments: sam - Feb 4, 2009
-This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT. Alejandro Martinez - Feb 2, 2010
+ Comments:  sam - Feb 4, 2009This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
 1./2. Points taken! 3. That&rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&rsquo;s Fetch4)."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -43,7 +37,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Deferred Shadow Maps Sample</title>
-	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.ab5d8cca1048e025b8243656719da75d57efd2c3fdb6f84172f41a991e92509f.css" integrity="sha256-q12MyhBI4CW4JDZWcZ2nXVfv0sP9tvhBcvQamR6SUJ8=">
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
 </head>
 
 <body id="page">
@@ -83,53 +77,27 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 				<h1>Deferred Shadow Maps Sample</h1>
 			</header>
 			<div class="content">
-				
-
-<p>Got a new sample ready, this one  shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer.  Check it out on <a href="http://www.ziggyware.com/readarticle.php?article_id=235">Ziggyware</a>!</p>
-
-<h2 id="deferredshadowmaps-http-mynameismjp-files-wordpress-com-2009-01-deferredshadowmaps-png-deferredshadowmaps"><img src="http://mynameismjp.files.wordpress.com/2009/01/deferredshadowmaps.png" alt="deferredshadowmaps" title="deferredshadowmaps" /><a href="#deferredshadowmaps-http-mynameismjp-files-wordpress-com-2009-01-deferredshadowmaps-png-deferredshadowmaps" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
+				<p>Got a new sample ready, this one  shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer.  Check it out on <a href="http://www.ziggyware.com/readarticle.php?article_id=235">Ziggyware</a>!</p>
+<h2 id="deferredshadowmapshttpmynameismjpfileswordpresscom200901deferredshadowmapspng-deferredshadowmaps"><img src="http://mynameismjp.files.wordpress.com/2009/01/deferredshadowmaps.png" alt="deferredshadowmaps" title="deferredshadowmaps"><a href="#deferredshadowmapshttpmynameismjpfileswordpresscom200901deferredshadowmapspng-deferredshadowmaps" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-
-<p><a href="http://www.coding4xna.com" title="come4sam@hotmail.com">sam</a> - <time datetime="2009-02-19 02:53:25">Feb 4, 2009</time></p>
-
-<p>This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
-<hr /></p>
-
-<p><a href="http://www.gaspgames.com/www.battletennis.com" title="amartinez1660@gmail.com">Alejandro Martinez</a> - <time datetime="2010-02-02 17:24:58">Feb 2, 2010</time></p>
-
-<p>1./2. Points taken! 3. That&rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&rsquo;s Fetch4). Guess I&rsquo;ll likely stick to linear shadow maps. By the way found this <a href="http://www.mvps.org/directx/articles/linear_z/linearz.htm">http://www.mvps.org/directx/articles/linear_z/linearz.htm</a>, they premultiply in the vertex shader vPos.Z *= vPos.W / farClip. So when the hardware converts to homogenous space (vPos / W) the Z component stays linearized (Z * W) / W. You might find it interesting, however, as you say not too much that can be done with a hardware Depth Buffer in XNA (regarding shadows). Maybe save texCoords and interpolants in pixelShader 3.0 directly using vPos semantic for the shadowMap generation? 4. Maybe I could try it someday, just for the fun of it and understanding the manipulation of heightfields and the like. Thanks again Matt.
-<hr /></p>
-
-<p><a href="http://www.gaspgames.com/www.battletennis.com" title="amartinez1660@gmail.com">Alejandro Martinez</a> - <time datetime="2010-02-02 17:28:06">Feb 2, 2010</time></p>
-
-<p>Forgot something that I found interesting also. The farClip division can be done in the application, right into the camera&rsquo;s viewProjection Matrix. So it only adds one multiply operation.
-<hr /></p>
-
-<p><a href="http://mynameismjp.wordpress.com/" title="mpettineo@gmail.com">mpettineo</a> - <time datetime="2010-02-02 15:41:30">Feb 2, 2010</time></p>
-
-<p>Hi Alejandro. -The reason that a deferred shadow pass *can* be faster is because you&rsquo;ll be efficient with your quad usage. When you rasterize thousands of small triangles, you&rsquo;ll end up with a lot of quads of pixel shaders where <4 are running, but if you render two triangles that cover the entire screen you'll be using all 4 in most cases. Taking the shadow calculations out of your main pixel shader for opaques can also lower your GPR usage, which will increase the number of threads you can have in flight. But like anything related to performance it depends on the hardware and what else is going on in your renderer. I'd suggest doing some profiling if you want solid answers. -I don't think they do 4 shadows at once. It wouldn't make sense, because for any local spot/point lights you wouldn't want to do the shadow calculations for the entire screen. You would instead want to use a scissor rectangle or a bounding volume, much like you would with deferred rendering. Plus if you do it this way it lets you reuse your shadow map memory, since you only need one shadow map in memory at a time. -Non-linear depth typically isn't ideal, since it has a non-uniform distribution of precision. You end up with much of your precision dedicated to the area close to the near clip plane. So if you can help it, it's best to use a linear depth metric. Many people will use non-linear depth because they'll use hardware Z buffers for rendering their shadow maps, since this is generally quicker (most hardware can write Z-only at double speed) and also lets you use the vendor-specific hardware PCF or Fetch4 extensions. But of course in XNA you can't use these things so you're stuck outputting to a floating-point texure, in which case you might as well store linear depth. -I'd imagine the FPS flashlight is really the only case that would work well for screen-space shadows, but shadow maps are already quite good for this case since you don't need to render many objects to the shadow map (narrow view frustum) and because you can usually get away a low-res shadow map. You'd also probably need a decent number of samples to avoid artifacts, in which case you'll start to negate any performance benefits. But of course you don't know for sure until you try it. :P
-<hr /></p>
-
-<p><a href="http://www.gaspgames.com/www.battletennis.com" title="amartinez1660@gmail.com">Alejandro Martinez</a> - <time datetime="2010-02-02 05:17:24">Feb 2, 2010</time></p>
-
-<p>Hi there! Quite advanced tutorials and samples you have here. Learning quite a lot with these, still I don&rsquo;t understand some parts of it. (Feel free to edit/trim/publish, it&rsquo;s a bit long). I have several questions regarding this deferred shadow map sample: - I understand the benefit gain (program-wise) by detaching the shadows from the geometry render. Even turning it off in your example is a simple switch to a 1x1 white-cleared renderTarget!. However I don&rsquo;t see a clear performance gain, in the pixel shader each pixel has to be transformed to light space to calculate the texcoord that will be used to sample from the shadowMap. Is it really faster than doing it in the vertexShader at the geometry pass? - For 2, 3, and 4 shadows it would be needed 2/3/4 lightSpace transforms per pixel, am I right? (I still quite don&rsquo;t get how the Crytek team render four shadows at the same time, if that&rsquo;s what it is they do). - Is there a way to actually bypass that lightspace transformation like the viewSpace reconstruction from depth using a linear Depth? - All shadow maps examples I have seen and the one I have implemented use a non-linear depth buffer, is there an specific benefit/rule to that? - (Crazy idea, just though): Screen Space this and Screen Space that&hellip; Could it be possible to do &ldquo;ScreenSpace Shadows?&rdquo;. With the limited geometry information stored in the depth I believe that it might be possible to create a shadowMap on the fly with the points recovered from the camera depthMap. It may work with not too perpendicular lights? Like a FPS flashlight or a top down game with a sun fairly high sunlight. From your knowledge in the matter, is this possible? Thanks. Alejandro.
-<hr /></p>
-
-<p><a href="http://vectorslaved0tcom" title="moki@mailinator.com">moki</a> - <time datetime="2011-06-21 02:31:11">Jun 2, 2011</time></p>
-
-<p>Sorry to revive an old thread&hellip; Just read elsewhere on the net, Crysis does 4 shadows by putting one lights shadow into each of the color channels of a render target, and doing the shadows deferred in screenspace. I want to get this working in webgl.. researching it now.
-<hr /></p>
-
-<p><a href="http://xomo.info/gaymaletube/">Ian</a> - <time datetime="2014-05-01 13:52:04">May 4, 2014</time></p>
-
-<p>Where&rsquo;s the nearest cash machine? <a href="http://xomo.info/gaydar/">gaydar</a> I want to get fucked right now
-<hr /></p>
-
-<p><a href="http://buycytotec.net/">Joseph</a> - <time datetime="2014-09-28 13:05:41">Sep 0, 2014</time></p>
-
-<p>I&rsquo;ve got a very weak signal <a href="http://buycytotec.net/">http://buycytotec.net/</a> cytotec without prescription a. Policy Information Handout
-<hr /></p>
+<h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><a href="http://www.coding4xna.com" title="come4sam@hotmail.com">sam</a> - <!-- raw HTML omitted -->Feb 4, 2009<!-- raw HTML omitted --></p>
+<p>This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.</p>
+<!-- raw HTML omitted -->
+<p>1./2. Points taken! 3. That&rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&rsquo;s Fetch4). Guess I&rsquo;ll likely stick to linear shadow maps. By the way found this <a href="http://www.mvps.org/directx/articles/linear">http://www.mvps.org/directx/articles/linear</a>_z/linearz.htm, they premultiply in the vertex shader vPos.Z *= vPos.W / farClip. So when the hardware converts to homogenous space (vPos / W) the Z component stays linearized (Z * W) / W. You might find it interesting, however, as you say not too much that can be done with a hardware Depth Buffer in XNA (regarding shadows). Maybe save texCoords and interpolants in pixelShader 3.0 directly using vPos semantic for the shadowMap generation? 4. Maybe I could try it someday, just for the fun of it and understanding the manipulation of heightfields and the like. Thanks again Matt.</p>
+<!-- raw HTML omitted -->
+<p>Forgot something that I found interesting also. The farClip division can be done in the application, right into the camera&rsquo;s viewProjection Matrix. So it only adds one multiply operation.</p>
+<!-- raw HTML omitted -->
+<p>Hi Alejandro. -The reason that a deferred shadow pass *can* be faster is because you&rsquo;ll be efficient with your quad usage. When you rasterize thousands of small triangles, you&rsquo;ll end up with a lot of quads of pixel shaders where &lt;4 are running, but if you render two triangles that cover the entire screen you&rsquo;ll be using all 4 in most cases. Taking the shadow calculations out of your main pixel shader for opaques can also lower your GPR usage, which will increase the number of threads you can have in flight. But like anything related to performance it depends on the hardware and what else is going on in your renderer. I&rsquo;d suggest doing some profiling if you want solid answers. -I don&rsquo;t think they do 4 shadows at once. It wouldn&rsquo;t make sense, because for any local spot/point lights you wouldn&rsquo;t want to do the shadow calculations for the entire screen. You would instead want to use a scissor rectangle or a bounding volume, much like you would with deferred rendering. Plus if you do it this way it lets you reuse your shadow map memory, since you only need one shadow map in memory at a time. -Non-linear depth typically isn&rsquo;t ideal, since it has a non-uniform distribution of precision. You end up with much of your precision dedicated to the area close to the near clip plane. So if you can help it, it&rsquo;s best to use a linear depth metric. Many people will use non-linear depth because they&rsquo;ll use hardware Z buffers for rendering their shadow maps, since this is generally quicker (most hardware can write Z-only at double speed) and also lets you use the vendor-specific hardware PCF or Fetch4 extensions. But of course in XNA you can&rsquo;t use these things so you&rsquo;re stuck outputting to a floating-point texure, in which case you might as well store linear depth. -I&rsquo;d imagine the FPS flashlight is really the only case that would work well for screen-space shadows, but shadow maps are already quite good for this case since you don&rsquo;t need to render many objects to the shadow map (narrow view frustum) and because you can usually get away a low-res shadow map. You&rsquo;d also probably need a decent number of samples to avoid artifacts, in which case you&rsquo;ll start to negate any performance benefits. But of course you don&rsquo;t know for sure until you try it. :P</p>
+<!-- raw HTML omitted -->
+<p>Hi there! Quite advanced tutorials and samples you have here. Learning quite a lot with these, still I don&rsquo;t understand some parts of it. (Feel free to edit/trim/publish, it&rsquo;s a bit long). I have several questions regarding this deferred shadow map sample: - I understand the benefit gain (program-wise) by detaching the shadows from the geometry render. Even turning it off in your example is a simple switch to a 1x1 white-cleared renderTarget!. However I don&rsquo;t see a clear performance gain, in the pixel shader each pixel has to be transformed to light space to calculate the texcoord that will be used to sample from the shadowMap. Is it really faster than doing it in the vertexShader at the geometry pass? - For 2, 3, and 4 shadows it would be needed 2/3/4 lightSpace transforms per pixel, am I right? (I still quite don&rsquo;t get how the Crytek team render four shadows at the same time, if that&rsquo;s what it is they do). - Is there a way to actually bypass that lightspace transformation like the viewSpace reconstruction from depth using a linear Depth? - All shadow maps examples I have seen and the one I have implemented use a non-linear depth buffer, is there an specific benefit/rule to that? - (Crazy idea, just though): Screen Space this and Screen Space that&hellip; Could it be possible to do &ldquo;ScreenSpace Shadows?&quot;. With the limited geometry information stored in the depth I believe that it might be possible to create a shadowMap on the fly with the points recovered from the camera depthMap. It may work with not too perpendicular lights? Like a FPS flashlight or a top down game with a sun fairly high sunlight. From your knowledge in the matter, is this possible? Thanks. Alejandro.</p>
+<!-- raw HTML omitted -->
+<p>Sorry to revive an old thread&hellip; Just read elsewhere on the net, Crysis does 4 shadows by putting one lights shadow into each of the color channels of a render target, and doing the shadows deferred in screenspace. I want to get this working in webgl.. researching it now.</p>
+<!-- raw HTML omitted -->
+<p>Where&rsquo;s the nearest cash machine? <a href="http://xomo.info/gaydar/">gaydar</a> I want to get fucked right now</p>
+<!-- raw HTML omitted -->
+<p>I&rsquo;ve got a very weak signal <a href="http://buycytotec.net/">http://buycytotec.net/</a> cytotec without prescription a. Policy Information Handout</p>
+<!-- raw HTML omitted -->
 
 			</div>
 			<hr class="post-end">
@@ -137,7 +105,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xbox-360">Xbox 360</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>664 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>988 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-01-19 17:24 -0800</p>
 			</footer>
 		</article>
@@ -160,7 +128,7 @@ This sample does not works for me. I see the blank screen. My Video card is GF 9
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2020 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
