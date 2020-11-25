@@ -9,7 +9,7 @@
 <meta itemprop="description" content="A little over a year ago I was looking to overhaul our shadow rendering at work in order to improve overall quality, as well as simplify the workflow for the lighting artists (tweaking biases all day isn&rsquo;t fun for anybody). After doing yet another round of research into modern shadow mapping techniques, I decided to do what I usually do and starting working on sample project that I could use as a platform for experimentation and comparison.">
 <meta itemprop="datePublished" content="2013-09-11T07:45:40&#43;00:00" />
 <meta itemprop="dateModified" content="2013-09-11T07:45:40&#43;00:00" />
-<meta itemprop="wordCount" content="7368">
+<meta itemprop="wordCount" content="7672">
 
 
 
@@ -197,81 +197,153 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22Strikemedown1981@gmail.com%22">Jamie Hayes</a> - <!-- raw HTML omitted -->Sep 5, 2013<!-- raw HTML omitted --></p>
+<p><a href="%22Strikemedown1981@gmail.com%22">Jamie Hayes</a> - <time datetime="2013-09-13 19:41:42">Sep 5, 2013</time></p>
 <p>With regard to SDSM, I have so many questions! With a great big vertex buffer, how would you manage skinning and world space transformations? I&rsquo;m guessing you would need to generate one great big matrix buffer and eat the cost of having blend weights and indices on everything. Dealing with alpha test seems pretty daunting, maybe impossible? Also, handling objects getting added and removed as you would see in a normal game seems like it would be a headache.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[An Idiot]( "superidiot@idiots.com") - <time datetime="2014-02-23 15:16:43">Feb 0, 2014</time>
 <p>I know I&rsquo;m an idiot but there is something very simple I cannot understand about SDSM: Before writing to the view depth buffer, usually one cleans it to a max value (ie 1) so samples lower than that will be rendered. When doing the min/max reduction&hellip; how the max z is found? Shouldn&rsquo;t it return always 1 if a sample is left uncovered/ showing the background leaving a 1 in the depth buffer? Sorry for my stupidity and thanks</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[An Idiot]( "idiot@idiotmail.com") - <time datetime="2014-03-11 18:11:02">Mar 2, 2014</time>
 <p>Thanks a lot Rocko! Now I have SDEVSM working in my game :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[An Idiot]( "idiot@ranersintarsioent.com") - <time datetime="2014-02-24 05:04:59">Feb 1, 2014</time>
 <p>Thanks! I was thinking of something like that. But what confused me is that I didn&rsquo;t saw that in the PS code so I thought that maybe there was a way to do it without a branch. Now, giving it a better look, I can&rsquo;t see also the four fetches one should do. I can only assume that &ldquo;float4 depthSamples = DepthMap.GatherRed(LinearClampSampler, TexCoord);&rdquo; someway does the four fetches and it also ignores values == 1.0? HLSL is quite a mystery for a GLSL user. Thanks for your quick reply.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[A sampling of shadow techniques | Light is beautiful](http://lousodrome.net/blog/light/2013/09/15/a-sampling-of-shadow-techniques/ "") - <time datetime="2013-09-15 03:00:40">Sep 0, 2013</time>
 <p>[…] On his blog, Matt Pettineo writes about his experiments on cascaded shadow maps, including cascade optimization, shadow map filtering and GPU scene submission: A Sampling of Shadow Techniques. […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Alundra]( "segura.mikael@orange.fr") - <time datetime="2014-04-07 04:27:25">Apr 1, 2014</time>
 <p>Hi MJP, SDSM begin to be an old technique, but it&rsquo;s the lastest technique found for shadow (2011). Is SDSM too heavy to use or THIS IS the technique to use nowadays ?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Alundra]( "segura.mikael@orange.fr") - <time datetime="2014-04-07 04:35:08">Apr 1, 2014</time>
 <p>Another thing is : Why ReadBack is faster ?! I don&rsquo;t get it. I have 5 FPS more on your sample disabling GPU submission, normally FPS is lower using a read-back, why this 5 FPS wasted ?!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[dishwasher](http://none "dishwasherblood@gmail.com") - <time datetime="2013-11-03 20:30:13">Nov 0, 2013</time>
 <p>Now it works fine! Thank you very much for such a quick help!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Development resources](http://www.sgc2000.co.uk/2014/03/development-resources/ "") - <time datetime="2014-12-22 06:21:49">Dec 1, 2014</time>
 <p>[…] A sampling of shadow techniques […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[dishwasher](http://none "dishwasherblood@gmail.com") - <time datetime="2013-11-03 07:25:07">Nov 0, 2013</time>
 <p>Actually it seems something is wrong with it, here&rsquo;s an example: LightColor.Initialize(tweakBar, &ldquo;LightColor&rdquo;, &ldquo;SceneControls&rdquo;, &ldquo;Light Color&rdquo;, &ldquo;The color of the light&rdquo;, Float3(10, 8, 5), true, 0.0f, 20.0f, 0,1.0f); Look at the last parameter - 0,1.0f. All the errors ale like that: MinCascadeDistance.Initialize(tweakBar, &ldquo;MinCascadeDistance&rdquo;, &ldquo;Shadows&rdquo;, &ldquo;Min Cascade Distance&rdquo;, &ldquo;The closest depth that is covered by the shadow cascades&rdquo;, 0.0f, 0.0f, 0,1.0f, 0,001.0f); 0,1.0f, 0,001.0f? It looks like something&rsquo;s wrong with generating floats from attrubute strings?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2013-11-03 17:04:52">Nov 0, 2013</time>
 <p>Okay, I think I figured out the problem. I didn&rsquo;t specify the culture when outputting strings for float parameters, and it looks like it was using commas instead of decimal points for your locale. Clearly I am not an experienced C# programmer! I uploaded a new zip with some fixes, so could you download that and give it a try?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Sample Framework Updates | The Danger Zone](http://mynameismjp.wordpress.com/2013/09/16/sample-framework-updates/ "") - <time datetime="2013-09-16 21:54:05">Sep 1, 2013</time>
 <p>[…] may have noticed that my latest sample now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2013-09-14 17:57:50">Sep 6, 2013</time>
 <p>Thank you for the links Christoph! I actually wasn&rsquo;t familiar with that Nvidia extension, and I hadn&rsquo;t seen your presentation either. Sounds very useful indeed!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2013-09-14 17:51:54">Sep 6, 2013</time>
 <p>Hi Jamie! What I did in the demo is definitely not production-ready, and I&rsquo;m not sure if I would even do it exactly the same way if I were going to try to ship with it. For this sample I handled the character by repeating the entire batching process for its meshes, and if you were to do it that way you could handle skinning as long as you also had the bone weight/indices in a combined vertex buffer as well. Or if you could set up system for pre-skinning vertices and writing them out (either via stream-out, or better yet by directly writing to the buffer from the vertex shader) then it would definitely make things easier. In fact if you did that, you could probably stream out vertices from multiple skinned meshes into a the same batch, and then run the culling/batching process on lots of skinned objects simultaneously. Alpha-test would definitely be pretty tricky, although you could always fall back to a DrawIndirect-based approach for anything that&rsquo;s difficult to batch.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[dishwasher](http://none "dishwasherblood@gmail.com") - <time datetime="2013-11-02 14:20:46">Nov 6, 2013</time>
 <p>Sample doesn&rsquo;t build in VS2013: 1&gt; AppSettings.cpp 1&gt;AppSettings.cpp(129): error C2660: &lsquo;SampleFramework11::ColorSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(147): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(174): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(177): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(183): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(186): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(189): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments 1&gt;AppSettings.cpp(192): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(195): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(201): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(204): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(219): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(222): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(225): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(228): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(231): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 10 arguments 1&gt;AppSettings.cpp(234): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 13 arguments 1&gt;AppSettings.cpp(237): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 12 arguments 1&gt;AppSettings.cpp(240): error C2660: &lsquo;SampleFramework11::FloatSetting::Initialize&rsquo; : function does not take 11 arguments SettingsCompiler and SettingsCompilerAttributes compiled successfully.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2013-11-02 16:48:42">Nov 6, 2013</time>
 <p>I just installed VS 2013 on my PC, and the sample builds fine for me. I tried both upgrading the project and not upgrading it, and it compiles either way. Does the code generated in AppSettings.cpp look okay?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2013-09-11 14:38:09">Sep 3, 2013</time>
 <p>Hi Sam, We&rsquo;ve been using EVSM and SDSM with similar cascade techniques for some time now in our game, although we have a lot of little tweaks, fixes, and platform-specific optimizations to make everything work in a production setting. We&rsquo;re not currently doing any GPU-driven submission, but I have plans to implement something specific to PS4 that&rsquo;s even more optimal than what I did in this sample. -Matt</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Christoph Kubisch](http://gravatar.com/crazybutcher "crazybutcher@luxinia.de") - <time datetime="2013-09-14 01:43:23">Sep 6, 2013</time>
 <p>Hi thanks for the article! For the GPU-driven submission OpenGL provides multi-draw-indirect which allows for quite efficent read-back less culling. Been doing research on this topic at NVIDIA, some results were shown at thise years GTC <a href="http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf">http://on-demand.gputechconf.com/gtc/2013/presentations/S3032-Advanced-Scenegraph-Rendering-Pipeline.pdf</a> from slide 35 on.There is <a href="http://www.opengl.org/registry/specs/NV/bindless">http://www.opengl.org/registry/specs/NV/bindless</a>_multi_draw_indirect.txt which allows to source from arbitrary buffer locations, as well as <a href="http://www.opengl.org/registry/specs/ARB/indirect">http://www.opengl.org/registry/specs/ARB/indirect</a>_parameters.txt which means you can batch the jobs efficiently.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Rim]( "remigius@netforge.nl") - <time datetime="2013-09-11 05:18:16">Sep 3, 2013</time>
 <p>Thanks for the treatise, Matt. Although it&rsquo;s been quite a while since I touched DirectX, I still found it educational to read up on the advances in shadowing and if nothing else, the article got me amped to finally give those fancy compute shaders a try for non-graphics stuffs. Cheers!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Sam Martin]( "sam@palgorithm.co.uk") - <time datetime="2013-09-11 03:45:01">Sep 3, 2013</time>
 <p>Hi Matt, This is a great summary of the state of the art and the gpu-driven cascade rendering is really good to see. Are you guys intending on using this approach in production? Cheers, Sam</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Shadow Mapping Summary &#8211; Part 1](http://the-witness.net/news/2013/09/shadow-mapping-summary-part-1/ "") - <time datetime="2013-09-23 17:23:18">Sep 1, 2013</time>
 <p>[…] not going to try to address that here, but just as I was writting this Matt Pettineo released a good overview of some of the different techniques available that is a good starting point. Instead, I’ll […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[fenbf](http://www.bfilipek.com "joebaf@gmail.com") - <time datetime="2014-04-19 04:04:22">Apr 6, 2014</time>
 <p>Impressive! I made similar app for my master thesis: I&rsquo;ve used openGL and tested CSV vs standard shadow map techniques + some additional improvements.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2014-02-23 23:01:51">Feb 0, 2014</time>
 <p>I just ignore any z samples that aren&rsquo;t &lt; 1.0. This keeps you from considering background/sky pixels when computing the max depth, as long as you force your skybox to render at the far clip plane.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2014-02-24 14:44:59">Feb 1, 2014</time>
 <p>GatherRed just returns the the red component of the 4 samples that would be used for bilinear filtering, so basically it gives you a 2x2 grid of depth samples in this case. That file is probably a little confusing because there&rsquo;s actually 4 shaders in there. The two that actually get used in the sample are DepthReductionInitialCS and DepthReductionCS, which are the compute shader versions. The &ldquo;Initial&rdquo; shader is the one that&rsquo;s run first, and actually samples the depth buffer. When MSAA is enabled it loads all N subsamples for a given pixel, and when MSAA is not enabled it just grabs the 1 sample. In both cases it does a check of &ldquo;if(depthSample &lt; 1.0f)&rdquo; to decide if it should use a given depth sample, which is on lines 149 and 161. Taking a look at the code, it looks like the pixel shader version doesn&rsquo;t do the check if MSAA is disabled. This is definitely a bug, which is probably why were you confused. That code path never actually gets taken in the sample (I always had MSAA enabled), so I never noticed it. Sorry about that!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Shadow Sample Update | The Danger Zone](https://mynameismjp.wordpress.com/2015/02/18/shadow-sample-update/ "") - <time datetime="2015-02-18 10:00:21">Feb 3, 2015</time>
 <p>[…] the implementation of MSM is very straightforward, and so I decided to just integrate it into my old shadows sample. I updated the corresponding blog post and re-uploaded the binary + source, so if you’d like […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[An Idiot]( "idiot@idiotmail.com") - <time datetime="2014-03-12 15:42:17">Mar 3, 2014</time>
 <p>Just another comment to deepen my undestanding: When you compute the frustum slices, you take the linear Z min and maxes for the slice and then multiply them with the frustum rays between near and far corners to get the slice corners. However, the Z min and maxes work for for a ray at the center on the frustum and using them directly on the corner gives different planes, that for example, if using a pretty tight near to the geometry may leave parts out. What I did is to get the central ray of the frustum normalized and then use it to project the depths to the corners. ie: nearCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*prevSplitDist); farCornerRay = cornerRay * dot(normalize(cornerRay),centralRay*splitDist); That fixed my problems, but I have no confidence in that I&rsquo;m doing the correct thing. Thanks!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[OpenGL Cascaded Shadow Maps | Make Games, Not War](https://johanmedestrom.wordpress.com/2016/03/18/opengl-cascaded-shadow-maps/ "") - <time datetime="2016-03-25 14:04:25">Mar 5, 2016</time>
 <p>[…] I’d make a simple project in OpenGL for anyone interested. It is based on this example: <a href="https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/">https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/</a> which explains it in great detail. I’ll go through the relevant code and a download link […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-06-16 10:14:41">Jun 4, 2016</time>
 <p>Thanks! The code for the OptimizedPCF path was generously provided by Ignacio Castaño, who didn&rsquo;t provide an implementation for a 9x9 filter. I had been meaning to write it myself, but never got around to it. :(</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Кирилл Грустнёв](https://plus.google.com/111128623163722713524 "simpetar@gmail.com") - <time datetime="2017-10-17 03:27:31">Oct 2, 2017</time>
 <p>Hello, Matt. I do not know whom to ask, so i decided to ask you, as your articles are always very profound and you clarify details that no one clarifies :-) i&rsquo;m implementing now sdsm technique from Andrew Lauritzen article with evsm filtering using opengl 4.5. So i read almost everything about esm, vsm, and other *sm, but cannot understand some points. I also looked through your shadow sample and intel&rsquo;s also (i do not know direcx, really). So the questions: 1. When we used positive and negative exponent factors in evsm, why the first is 42 (this i understand), but the last is 5(this is completely obscured to me). 2. All the articles about shadow mapping say that you should use front face culling when rendering to the shadow map (this should decrease wrong selfshadowing and acne), but both you and andrew lauritzen use NoCull in your samples. Why? 3. In Andrew&rsquo;s sample he &ldquo;normalizes&rdquo; exponent factors with cascade ranges, to make the transition between cascades less noticeable. You do not do that. I have ranges from several meters to 10s of kilometers (flight simulator). Is there any point to do that? 4. When blurring evsm, does it make sense to blur with decreasing kernel size (for example, 7x blur for cascade 0, 5x for 1, 3x for 2 and no blur for the last. Is there any &ldquo;state of the art&rdquo; technique? 5. The same question with light space orientation relative to camera space. I have only sun direction (z-axis), so i can rotate the light space basis around it (xy axes), is there the &ldquo;right way&rdquo; to do that? stick it to camera &ldquo;up&rdquo; vector or to world up vector? 6. Is there any point to do some shear transformation to light space. Could it help to better utilize sm resolution, I didn&rsquo;t see any articles on. Now my lighspace is a box. 7. Everybody uses square shadow maps (1024x1024 for ex.). Is it possible to find better aspect knowing scene parameters. Thank you for your answer :-):-)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Shadow Filtering For Pointlights | kosmonaut games](https://kosmonautblog.wordpress.com/2017/03/25/shadow-filtering-for-pointlights/ "") - <time datetime="2017-03-25 08:15:59">Mar 6, 2017</time>
 <p>[…] Should you be looking for different shadow filtering algorithms, you have come to the wrong place – the right place would be here:https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/ […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2016-06-15 15:37:49">Jun 3, 2016</time>
 <p>Great work! I just curious: SampleShadowMapOptimizedPCF() in Mesh.hlsl does not contain branch for FilterSize_ == 9. Is it by design?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Steve Smith]( "baboon_king@hotmail.com") - <time datetime="2019-02-02 17:47:40">Feb 6, 2019</time>
 <p>This is awesome stuff. I&rsquo;m curious (and this has been driving me nuts for hours now) - but how does your mesh rendering shader have depth/w always biased from 0 to 1? I&rsquo;m trying to follow this in my own code (and even for example the DirectX cascaded shadow maps sample) and these values are *way* different. You&rsquo;re doing some magic here I can&rsquo;t figure out&hellip; help!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2019-02-02 18:15:49">Feb 6, 2019</time>
 <p>Hey Steve! Exactly which depth value are you referring to here? Are you talking the depth of the pixel from the light&rsquo;s point of view, that&rsquo;s used to compare against the shadow map value? In general the range of the result of when calculating z / w is a property of the projection matrix that you&rsquo;re using. In my sample the sun shadows are rasterized using an orthographic projection, where z is calculated as (viewSpaceZ - NearClip) / (FarClip - NearClip), and w is always just 1.0. So it naturally ends up in the [0, 1] range, since any other values would get clipped by the near/far clip planes. Does that answer your question? Feel free to let me know if I&rsquo;m misunderstanding.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Steve Smith]( "baboon_king@hotmail.com") - <time datetime="2019-02-02 18:52:09">Feb 6, 2019</time>
 <p>I did not explain that clearly, apologies. The shadow gen stuff makes sense (and I think I have that all figured out). On the rendering side, you have a super-simple vertex shader that spits out a value (DepthVS) from PositionCS.w. Side by side, my view projection and yours are almost identical, but my w value range appears to be in the order of my near/far clip range (so around 300). The only difference I see is that I&rsquo;m using non-transposed clipspace matrix (which works if you reverse the float4/matrix parameters in the transform mul) but I tried flipping that around and didn&rsquo;t see a difference.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Steve Smith]( "baboon_king@hotmail.com") - <time datetime="2019-02-02 21:17:08">Feb 6, 2019</time>
 <p>Oh dear lord. I was debugging visually, and completely forgot you had full HDR with tone-mapping (I had mine turned off). Hoo boy. Somebody needs more sleep.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2019-02-03 14:16:17">Feb 0, 2019</time>
 <p>Ahh okay, that makes more sense! So yeah: the w component in that case is equivalent to the z component of the view-space vertex position. A perspective projection matrix will typically be setup with the fourth column equal to [0, 0, 1, 0], which ends up setting w = x * 0 + y * 0 + z * 1 + 1 * 0. So you would expect that to be somewhere in the range of [NearClip, FarClip], which is what you&rsquo;re seeing.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Steve Smith]( "baboon_king@hotmail.com") - <time datetime="2019-02-03 16:04:09">Feb 0, 2019</time>
 <p>Thanks. And thanks for the sample too, it&rsquo;s been incredibly useful. I&rsquo;ve not seen samples this well thought out and well executed since I had access to the old Microsoft ATG stuff. So - thank you.</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -279,7 +351,7 @@ for(uint currIdx = ThreadIndex; currIdx &lt; drawCall.NumIndices; currIdx += TGS
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7368 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7672 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2013-09-11 00:45 -0700</p>
 			</footer>
 		</article>

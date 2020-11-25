@@ -7,16 +7,24 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="SG Series Part 2: Spherical Gaussians 101">
 <meta itemprop="description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabIn the previous article, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location.">
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
 <meta itemprop="datePublished" content="2016-10-10T07:08:02&#43;00:00" />
 <meta itemprop="dateModified" content="2016-10-10T07:08:02&#43;00:00" />
-<meta itemprop="wordCount" content="1738">
+<meta itemprop="wordCount" content="1847">
 
 
 
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="SG Series Part 2: Spherical Gaussians 101" />
 <meta property="og:description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabIn the previous article, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location." />
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/" />
 <meta property="article:published_time" content="2016-10-10T07:08:02+00:00" />
@@ -24,7 +32,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SG Series Part 2: Spherical Gaussians 101"/>
 <meta name="twitter:description" content="This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabIn the previous article, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location."/>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -75,24 +87,24 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 			</header>
 			<div class="content">
 				<p><em>This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
-<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><!-- raw HTML omitted -->
-Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><!-- raw HTML omitted -->
-Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><!-- raw HTML omitted -->
-Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><!-- raw HTML omitted --></p>
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
 <p>In the <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">previous article</a>, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location. In this article, I&rsquo;m going cover the basics of Spherical Gaussians, which are a type of spherical radial basis function (SRBF for short). The concepts introduced here will serve as the core set of tools for working with Spherical Gaussians, and in later articles I&rsquo;ll demonstrate how you can use those tools to form an alternative for approximating incoming radiance in pre-computed lightmaps or probes.</p>
 <p>I should point out that this article is still going to be somewhat high-level, in that it won&rsquo;t provide full derivations and background details for all formulas and operations. However it is my hope that the material here will be sufficient to gain a basic understanding of SG&rsquo;s, and also use them in practical scenarios.</p>
 <h2 id="whats-a-spherical-gaussian">What&rsquo;s a Spherical Gaussian?<a href="#whats-a-spherical-gaussian" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>A Spherical Gaussian, or &ldquo;SG&rdquo; for short, is essentially a <a href="https://en.wikipedia.org/wiki/Gaussian_function">Gaussian function</a>[1] that&rsquo;s defined on the surface of a sphere. If you&rsquo;re reading this, then you&rsquo;re probably already familar with how a Gaussian function works in 1D: you compute the distance from the center of the Gaussian, and use this distance as part of a base-e exponential. This produces the characteristic &ldquo;hump&rdquo; that you see when you graph it:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/06/gaussian_1d.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/gaussian_1d.png?w=300" alt="Gaussian_1D"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="/images/converted/sg-series-part-2-spherical-gaussians-101/gaussian_1d.png"><img src="/images/converted/sg-series-part-2-spherical-gaussians-101/gaussian_1d_resized_300.png" alt="Gaussian_1D"></a></p>
+<center><i>A Gaussian in 1D centered at x=0, with a height of 3</i></center>
 <p>You&rsquo;re probably also familiar with how it looks in 2D, since it&rsquo;s very commonly used in image processing as a filter kernel. It ends up looking like what you would get if you took the above graph and revolved it around its axis</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/06/gaussian_2d.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/gaussian_2d.png" alt="Gaussian_2D"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="/images/converted/sg-series-part-2-spherical-gaussians-101/gaussian_2d.png"><img src="/images/converted/sg-series-part-2-spherical-gaussians-101/gaussian_2d.png" alt="Gaussian_2D"></a></p>
+<center><i>A Gaussian filter applied to a 2D image of a white dot, showing that the impulse response is effectively a Gaussian function in 2D</i></center>
 <p>A Spherical Gaussian still works the same way, except that it now lives on the surface of a sphere instead of on a line or a flat plane. If you&rsquo;re having trouble visualizing that, imagine if you took the above image and wrapped it around a sphere like wrapping paper. It ends up looking like this:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/06/sg_sphere.png"><img src="https://mynameismjp.files.wordpress.com/2016/06/sg_sphere.png?w=300" alt="SG_Sphere"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="/images/converted/sg-series-part-2-spherical-gaussians-101/sg_sphere.png"><img src="/images/converted/sg-series-part-2-spherical-gaussians-101/sg_sphere_resized_300.png" alt="SG_Sphere"></a></p>
+<center><i>A Spherical Gaussian visualized on the surface of a sphere</i></center>
 <p>Since an SG is defined on a sphere rather than a line or plane, it&rsquo;s parameterized differently than a normal Gaussian. A 1D Gaussian function always has the following form:</p>
 <p>$$ ae^{\frac{-(x - b)^{2}}{2c^{2}}} $$</p>
 <p>The part that we need to change in order to define the function on a sphere is the &ldquo;(x - b)&rdquo; term. This part of the function essentially makes the Gaussian a function of the cartesian distance between a given point and the center of the Gaussian, which can be trivially extended into 2D using the standard distance formula. To make this work on a sphere, we must instead make our Gaussian a function of the angle between two unit direction vectors. In practice we do this by making an SG a function of the <em>cosine</em> of the angle between two vectors, which can be efficiently computed using a dot product like so:</p>
@@ -138,8 +150,8 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <p>$$ \int_{\Omega} G(\mathbf{v})d\mathbf{v} = 2\pi\frac{a}{\lambda}(1 - e^{-2\lambda}) $$</p>
 <p>Computing an integral will essentially tell us the total &ldquo;energy&rdquo; of an SG, which can be useful for lighting calculations. It can also be useful for <em>normalizing</em> an SG, which produces an SG that integrates to 1. Such a normalized SG is suitable for representing a probability distribution, such as an NDF. In fact, a normalized SG is actually equivalent to a <a href="https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">von Mises-Fisher distribution</a>[4] in 3D!</p>
 <p>An SG integral is actually very cheap to compute&hellip;or at least it would be if we removed the exponential term. It turns out that the \( (1 - e^{-2\lambda}) \) term actually approaches 1 very quickly as the SG&rsquo;s sharpness increases, which means we can potentially drop it with little error as long as we know that the sharpness is high enough. Here&rsquo;s what a graph of \( (1 - e^{-2\lambda}) \) looks like for increasing sharpness:</p>
-<p><a href="https://www.desmos.com/calculator/qqfeojmknn"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_integral_expterm.png?w=300" alt="SG_Integral_ExpTerm"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/qqfeojmknn"><img src="/images/converted/sg-series-part-2-spherical-gaussians-101/sg_integral_expterm_resized_300.png" alt="SG_Integral_ExpTerm"></a></p>
+<center><i>A graph of the exponential term in computing the integral of an SG over a sphere, which approaches 1 as the sharpness increases. The X-axis is sharpness, and the Y-axis is the value of \\( (1 - e^{-2\lambda}) \\).</i></center>
 <p>This all lends itself naturally to HLSL implementations for accurate and approximate versions of an SG integral:</p>
 <div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIntegral</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">sg</span><span class="p">)</span>
 <span class="p">{</span>
@@ -178,20 +190,24 @@ $$ \lambda = \frac{ln(\epsilon) - ln(a)}{cos\theta - 1} $$</p>
 <span class="p">}</span>
 </code></pre></div><h2 id="rotation">Rotation<a href="#rotation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>One last operation I&rsquo;ll discuss is rotation. Rotating an SG is trivial: all you need to do is apply your rotation transform to the SG&rsquo;s axis vector and you have a rotated SG! You can apply the transform using a matrix, a quaternion, or any other means you might have for rotating a vector. This is a welcome change from SH, which requires a very complex transform once you go above L1.</p>
-<p>[1] <a href="https://en.wikipedia.org/wiki/Gaussian_function">Gaussian Function</a><!-- raw HTML omitted -->
-[2] <a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a><!-- raw HTML omitted -->
-[3] <a href="https://en.wikipedia.org/wiki/Error_function">Error Function</a><!-- raw HTML omitted -->
-[4] <a href="https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">von-Mises Fisher Distribtion</a><!-- raw HTML omitted --></p>
+<p>[1] <a href="https://en.wikipedia.org/wiki/Gaussian_function">Gaussian Function</a><br>
+[2] <a href="http://research.microsoft.com/en-us/um/people/johnsny/papers/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a><br>
+[3] <a href="https://en.wikipedia.org/wiki/Error_function">Error Function</a><br>
+[4] <a href="https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">von-Mises Fisher Distribtion</a><br></p>
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p><a href="http://gravatar.com/mriegger" title="mikeriegger@gmail.com">Mike R.</a> - <!-- raw HTML omitted -->Nov 1, 2017<!-- raw HTML omitted --></p>
+<p><a href="http://gravatar.com/mriegger" title="mikeriegger@gmail.com">Mike R.</a> - <time datetime="2017-11-13 23:30:48">Nov 1, 2017</time></p>
 <p>Just wanted say thanks for the awesome explanations, you make everything so clear and easy to understand.</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-12 21:55:16">Oct 3, 2016</time>
 <p>Yes indeed, that was an error on my part. Thank you for pointing that out!</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[ChenA]( "chena.invalid@gmail.com") - <time datetime="2016-10-11 08:04:42">Oct 2, 2016</time>
 <p>\( G_{1}(\mathbf{v})G_{2}(\mathbf{v}) = G(\mathbf{v};\frac{\mu_{m}}{||\mu_{m}||},a_{1}a_{2}e^{\lambda_{m}(||\mu_{m}|| - 1)}) \) is it lost the sharpness λm∥pm∥? and <code>SG SGProduct(in SG x, in SG y) { float3 um = (x.Sharpness * x.Axis + y.Sharpness + y.Axis) / (x.Sharpness + y.Sharpness);</code> is this should be: <code>float3 um = (x.Sharpness * x.Axis + y.Sharpness * y.Axis) / (x.Sharpness + y.Sharpness);</code></p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -199,7 +215,7 @@ $$ \lambda = \frac{ln(\epsilon) - ln(a)}{cos\theta - 1} $$</p>
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1738 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1847 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:08 -0700</p>
 			</footer>
 		</article>

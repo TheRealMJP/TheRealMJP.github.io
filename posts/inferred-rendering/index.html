@@ -9,7 +9,7 @@
 <meta itemprop="description" content="So like I said in my last post, I&rsquo;ve been doing some research into Inferred Rendering. If you&rsquo;re not familiar with the technique, Scott Kircher has the original paper and presentation materials hosted on his website. The main topic of the paper is what they call &ldquo;Discontinuity Sensitive Filtering&rdquo;, or &ldquo;DSF&rdquo; for short. Basically it&rsquo;s standard 2x2 bilinear filtering, except in addition to sampling the texture you&rsquo;re interested in you also sample what they call a a &ldquo;DSF buffer&rdquo; containing depth, an instance ID (semi-unique for each instance rendering on-screen), and a normal ID (a semi-unique value identifying areas where the normals are continuous).">
 <meta itemprop="datePublished" content="2010-01-10T17:30:10&#43;00:00" />
 <meta itemprop="dateModified" content="2010-01-10T17:30:10&#43;00:00" />
-<meta itemprop="wordCount" content="1489">
+<meta itemprop="wordCount" content="1561">
 
 
 
@@ -81,25 +81,25 @@
 </li>
 </ol>
 <p>The second part is what&rsquo;s interesting, so let&rsquo;s talk about.  Basically what they do is they break up the G-Buffer into 2x2 quads.  Then for transparent objects, an output mask is applied so that only one pixel in the quad is actually written to.  Then by rotating the mask, you could render up to 3 layers of transparency into the quad and still have opaques visible underneath.  For a visual, this is what a quad would look like if only one transparent layer was rendered:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/01/transparent1layer.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/transparent1layer.png" alt="" title="Transparent1Layer"></a></p>
+<p><a href="/images/converted/inferred-rendering/transparent1layer.png"><img src="/images/converted/inferred-rendering/transparent1layer.png" alt="" title="Transparent1Layer"></a></p>
 <p>So &ldquo;T1&rdquo; would be from the transparent surface, and &ldquo;O&rdquo; would be from opaque objects below it.  This is what it would look like if you had 3 transparent surfaces overlapping:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/01/transparent3layers.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/transparent3layers.png" alt="" title="Transparent3Layers"></a></p>
+<p><a href="/images/converted/inferred-rendering/transparent3layers.png"><img src="/images/converted/inferred-rendering/transparent3layers.png" alt="" title="Transparent3Layers"></a></p>
 <p>After laying out your G-Buffer, you then fill your L-Buffer (Lighting Buffer) with values just like you would with a standard Light Pre-pass renderer.  After you&rsquo;ve filled your L-Buffer, you re-render your opaque geometry and sample your L-Buffer using a DSF filter so that only the texels belonging to opaque geometry get samples.  Then you render your transparent geometry with blending enabled, each time adjusting your DSF sample positions so that the 4 nearest texels (according to the output mask you used when rendering it to the G-Buffer) are sampled.</p>
 <p>So you can light your transparents just like any other geometry, which is really cool stuff if you have a lot dynamic lights and shadows (which you probably do if you&rsquo;re doing deferred rendering in the first place).  But now come the downsides:</p>
 <ol start="2">
 <li>
 <p>Transparents end up being lit at 1/4 resolution, and opaques underneath transparents will be lit at either 3/4, 2/4, or 1/4 resolution.  How bad this looks mainly depends on whether you have high-frequency normal maps, since the lighting itself is generally low-frequency.  You&rsquo;re also helped a bit by the fact that your diffuse albedo texture will still be sampled at full rate.  Here&rsquo;s a screenshot comparing forward-rendered transparents (left-side), with deferred transparents (right-side):
-<a href="http://mynameismjp.files.wordpress.com/2010/01/comparenm.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/comparenm.png?w=300" alt="" title="CompareNM"></a>
+<a href="/images/converted/inferred-rendering/comparenm.png"><img src="/images/converted/inferred-rendering/comparenm_resized_300.png" alt="" title="CompareNM"></a>
 You can see that aliasing artifacts become visible on the transparent layers, due to the normal maps.  Even more noticable is shadow map aliasing, which becomes noticeably worse on the transparent layers since it&rsquo;s only sampled at 1/4 rate.  Here&rsquo;s a screenshot showing the same comparison, this time with normal maps disabled:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/01/compare.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/compare.png?w=300" alt="" title="Compare"></a>
+<p><a href="/images/converted/inferred-rendering/compare.png"><img src="/images/converted/inferred-rendering/compare_resized_300.png" alt="" title="Compare"></a>
 The aliasing becomes much less visible on the unshadowed areas without normal mapping disabled, since now the normals are much lower-frequency.  However you still have the same problem with shadow map aliasing.</p>
 </li>
 <li>
 <p>The DSF filtering is not cheap.  Or at least, the way I implemented it wasn&rsquo;t cheap.  My code can probably be optimized a bit to reduce instructions, but unless I&rsquo;m missing something fundamental I don&rsquo;t think you could make any significant improvements.  If someone does figure out anything, please let me know!  Anyway when compiling my opaque pixel shader with fxc.exe  (from August 2009 SDK) using ps_3_0, I get a nice 11 instructions (9 math, 2 texture) when no DSF filtering is used.  When filtering is added in, it jumps up to a nasty 64 instructions! (55 math, 9 texure).  For transparents the shader jumps up again (71 math, 9 texture) since some additional math is needed to adjust the filtering in order to sample according to the stipple pattern.  Running the shaders through NVShaderPerf gives me the following:
-<a href="http://mynameismjp.files.wordpress.com/2010/01/cyclesnvidia.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/cyclesnvidia.png" alt="" title="CyclesNvidia"></a>
+<a href="/images/converted/inferred-rendering/cyclesnvidia.png"><img src="/images/converted/inferred-rendering/cyclesnvidia.png" alt="" title="CyclesNvidia"></a>
 Here&rsquo;s what I get with ATI&rsquo;s GPU ShaderAnalyzer:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/01/cyclesati.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/cyclesati.png" alt="" title="CyclesATI"></a>So like I said, it&rsquo;s not definitely not free.  In the paper they mention that they also use a half-sized G-Buffer + L-Buffer which offsets the cost of the extra filtering.  When running my test app on my GTX 275 at half-res G-Buffer there&rsquo;s almost no difference in framerate and at quarter-res it&rsquo;s actually faster to defer the transparents.  Using a full-res G-Buffer/L-Buffer it&rsquo;s quicker to forward-render the transparents, with 4  large point lights and 1 directional light + shadow.  So I&rsquo;d imagine for a full-res G-Buffer/L-Buffer you&rsquo;d need quite a few dynamic lights for it to pay off when going deferred for transparents.  But in my opinion, the decrease in quality when using a lower-res G-Buffer just isn&rsquo;t worth it.  Here&rsquo;s a screenshot showing deferred transparents with half-sized G-Buffer:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/01/halfsizegbuffer.png"><img src="http://mynameismjp.files.wordpress.com/2010/01/halfsizegbuffer.png?w=300" alt="" title="HalfSizeGBuffer"></a></p>
+<p><a href="/images/converted/inferred-rendering/cyclesati.png"><img src="/images/converted/inferred-rendering/cyclesati.png" alt="" title="CyclesATI"></a>So like I said, it&rsquo;s not definitely not free.  In the paper they mention that they also use a half-sized G-Buffer + L-Buffer which offsets the cost of the extra filtering.  When running my test app on my GTX 275 at half-res G-Buffer there&rsquo;s almost no difference in framerate and at quarter-res it&rsquo;s actually faster to defer the transparents.  Using a full-res G-Buffer/L-Buffer it&rsquo;s quicker to forward-render the transparents, with 4  large point lights and 1 directional light + shadow.  So I&rsquo;d imagine for a full-res G-Buffer/L-Buffer you&rsquo;d need quite a few dynamic lights for it to pay off when going deferred for transparents.  But in my opinion, the decrease in quality when using a lower-res G-Buffer just isn&rsquo;t worth it.  Here&rsquo;s a screenshot showing deferred transparents with half-sized G-Buffer:</p>
+<p><a href="/images/converted/inferred-rendering/halfsizegbuffer.png"><img src="/images/converted/inferred-rendering/halfsizegbuffer_resized_300.png" alt="" title="HalfSizeGBuffer"></a></p>
 <p>Notice how bad the shadows look on the transparents, since now the shadow map is being sampled at 1/8th rate.  Even on the opaques you start to lose quite a bit of the normal map detail.</p>
 </li>
 <li>
@@ -114,25 +114,41 @@ Here&rsquo;s what I get with ATI&rsquo;s GPU ShaderAnalyzer:</p>
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://mynameismjp.wordpress.com/2010/02/14/d3d-performance-and-debugging-tools-round-up-pix/" title="">D3D Performance and Debugging Tools Round-Up: PIX « The Danger Zone</a> - <!-- raw HTML omitted -->Feb 0, 2010<!-- raw HTML omitted --></p>
+<p><a href="http://mynameismjp.wordpress.com/2010/02/14/d3d-performance-and-debugging-tools-round-up-pix/" title="">D3D Performance and Debugging Tools Round-Up: PIX « The Danger Zone</a> - <time datetime="2010-02-14 21:17:31">Feb 0, 2010</time></p>
 <p>[&hellip;] With everyone and their mother using a deferred renderer these days, more often than not what’s displayed on the screen is the result of several passes.  This means that when things go wrong, it’s hard to guess the problem since it could have occurred in multiple places.  Fortunately PIX can help us by letting us pick any singular Draw call and see exactly what was drawn to the screen.  All you have to do s capture a frame, find the Draw call in the Event view, and then click on the “Render” tab in the Details view.  Here’s a screenshot I took showing what was drawn to the normal-specular buffer during the G-Buffer pass of my Inferred Rendering Sample: [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Inferred And Deferred &laquo; Sgt. Conker](http://www.sgtconker.com/2010/01/inferred-and-deferred/ "") - <time datetime="2010-01-12 20:56:46">Jan 2, 2010</time>
 <p>[&hellip;] Enter Matt “Advanced Stuffs” Pettineo. [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Mike]( "b1691505@uggsrock.com") - <time datetime="2010-01-15 21:15:13">Jan 5, 2010</time>
 <p>The download links to your SkyDrive files are broken&hellip;</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Garuda]( "garuda_xc@126.com") - <time datetime="2010-02-28 22:02:45">Feb 0, 2010</time>
 <p>Great post! A lot of help Small question, why use &ldquo;return float4(color * Alpha, Alpha);&rdquo; and &ldquo;SrcBlend = ONE;&rdquo; during alpha blend? Is it an optimization trick?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2010-02-28 22:26:40">Feb 0, 2010</time>
 <p>It&rsquo;s called &ldquo;premultiplied alpha&rdquo;. Tom Forsyth has a comprehensive overview here: <a href="http://home.comcast.net/~tom">http://home.comcast.net/~tom</a>_forsyth/blog.wiki.html#[[Premultiplied%20alpha]] Shawn Hargreaves also has a nice overview here: <a href="http://blogs.msdn.com/shawnhar/archive/2009/11/06/premultiplied-alpha.aspx">http://blogs.msdn.com/shawnhar/archive/2009/11/06/premultiplied-alpha.aspx</a></p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Garuda]( "garuda_xc@126.com") - <time datetime="2010-03-01 02:23:34">Mar 1, 2010</time>
 <p>Thanks! Also some confusion in lighting computation. What&rsquo;s specular level &ldquo;((specExponent + 8.0f) / (8.0f * 3.14159265f))&rdquo; about? And why diffuse factor is multiplied to specular factor as &ldquo;specular * NdotL&rdquo; ?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2010-03-02 01:39:42">Mar 2, 2010</time>
 <p>That bit with the specular is a normalization factor. It&rsquo;s there to ensure that energy is conserved for the BRDF. You can derive it if you take the blinn-phong equation, set up an integral around the hemisphere, and solve for 1. The diffuse factor is multiplied in so that the attenuation is applied to the specular, and so that you don&rsquo;t get incorrect specular reflections due to normal maps.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Garuda]( "garuda_xc@126.com") - <time datetime="2010-03-02 02:11:21">Mar 2, 2010</time>
 <p>Thank you! You are a helpful guru~</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Lighting alpha objects in deferred rendering contexts | Interplay of Light](http://interplayoflight.wordpress.com/2013/09/24/lighting-alpha-objects-in-deferred-rendering-contexts/ "") - <time datetime="2013-09-24 05:01:13">Sep 2, 2013</time>
 <p>[…] Use some sort of screen door transparency like the one implemented by Inferred rendering. This is basically opaque rendering in which the “alpha” object is rendered on top of […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -140,7 +156,7 @@ Here&rsquo;s what I get with ATI&rsquo;s GPU ShaderAnalyzer:</p>
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1489 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1561 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-01-10 09:30 -0800</p>
 			</footer>
 		</article>

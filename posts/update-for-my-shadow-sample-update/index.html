@@ -9,7 +9,7 @@
 <meta itemprop="description" content="Recently I was contacted by Christoph Peters (one of the authors of Moment Shadow Mapping) regarding a blog post where I compared EVSM to MSM using my sample app. He noticed that I was incorrectly clamping the maximum exponential warp to 10.0 for the 16-bit variant of EVSM, which can result in values that are greater than what can be stored in a 16-bit floating point texture. Doing this has 2 effects: it causes incorrect results during filtering (clamping the moments can lead to negative variance, causing a reconstruction that resembles a step function), and it reduces the amount of light bleeding.">
 <meta itemprop="datePublished" content="2016-01-25T00:24:56&#43;00:00" />
 <meta itemprop="dateModified" content="2016-01-25T00:24:56&#43;00:00" />
-<meta itemprop="wordCount" content="367">
+<meta itemprop="wordCount" content="368">
 
 
 
@@ -77,9 +77,9 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://gravatar.com/happysde" title="fn1186@gmail.com">happysde</a> - <!-- raw HTML omitted -->Feb 5, 2016<!-- raw HTML omitted --></p>
+<p><a href="http://gravatar.com/happysde" title="fn1186@gmail.com">happysde</a> - <time datetime="2016-02-26 06:14:08">Feb 5, 2016</time></p>
 <p>I suggest a buildfix for VS2015: In Shadows.cpp (119-120), add &ldquo;.AsEnum()&rdquo; in both strings. So the result should be like Float4x4 meshWorld = Float4x4::ScaleMatrix(MeshScales[AppSettings::CurrentScene.AsEnum()]); meshRenderer.SetSceneMesh(context, &amp;models[AppSettings::CurrentScene.AsEnum()], meshWorld);</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -87,7 +87,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/uncategorized">Uncategorized</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>367 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>368 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-01-24 16:24 -0800</p>
 			</footer>
 		</article>

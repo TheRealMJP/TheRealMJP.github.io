@@ -10,7 +10,7 @@
 First things first: what am I talking about? I&rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.">
 <meta itemprop="datePublished" content="2009-03-10T19:06:31&#43;00:00" />
 <meta itemprop="dateModified" content="2009-03-10T19:06:31&#43;00:00" />
-<meta itemprop="wordCount" content="3044">
+<meta itemprop="wordCount" content="3405">
 
 
 
@@ -175,79 +175,149 @@ for (int i = 0; i &lt; 4; i++)
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22ome_daiber@hotmail.com%22">Phil</a> - <!-- raw HTML omitted -->Apr 3, 2010<!-- raw HTML omitted --></p>
+<p><a href="%22ome_daiber@hotmail.com%22">Phil</a> - <time datetime="2010-04-07 21:48:06">Apr 3, 2010</time></p>
 <p>It looks like this technique of using the far bounding frustum coordinates will only work if you are using a perspective projection, is that right? I have a parallel projection, and multiplying the depth by the frustum ray just doesn&rsquo;t seem to make sense.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[ozlael](http://ozlael.egloos.com "") - <time datetime="2010-04-08 18:04:23">Apr 4, 2010</time>
 <p>thank you for your post. can i translate into korean and put on my blog?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2010-04-08 18:17:38">Apr 4, 2010</time>
 <p>Phil: indeed the technique is meant for a perspective projection. For an ortho projection it&rsquo;s unnecessary since you can directly calculate view-space X and Y coordinates based on your clip-space XY and your projection parameters. You can do the same for view-space Z once you&rsquo;ve sampled it from your depth buffer. ozael: absolutely, that&rsquo;s not problem at all.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Real-Time Rendering &middot; 7 Things for February 6](http://www.realtimerendering.com/blog/7-things-for-february-6/ "") - <time datetime="2010-02-06 10:21:51">Feb 6, 2010</time>
 <p>[&hellip;] A month and a half ago I listed some articles about reconstructing the position or linear z-depth in a shader. Here’s another. [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Dave]( "mizrael@yahoo.it") - <time datetime="2009-05-05 13:59:48">May 2, 2009</time>
 <p>Thank you for your beautiful article, it&rsquo;s exactly what I needed! Just 2 things: 1) I need to reconstruct the world space position&hellip; can you explain a bit more the process? What do you mean for &ldquo;rotate the frustm corners by the matrix&rdquo; ? 2) For point lights I use a sphere mesh to approximate the light volume. How can I build the world position from that? I mean, using a full screen quad , I can easily compute the current frustum corner..but with a sphere? Again, thank you my friend!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Reconstructing Position From Depth, Continued &laquo; MJP’s XNA Danger Zone](http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/ "") - <time datetime="2009-05-05 15:12:01">May 2, 2009</time>
 <p>[&hellip;] Reconstructing Position From Depth, Continued May 5, 2009 — mpettineo Picking up where I left off here… [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[realtimecollisiondetection.net - the blog &raquo; Catching up (part 2)](http://realtimecollisiondetection.net/blog/?p=93 "") - <time datetime="2009-06-08 03:52:11">Jun 1, 2009</time>
 <p>[&hellip;] Pettineo has several good posts on his blog. The one about Reconstructing Position From Depth should be useful to [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Reconstructing view-space position from depth | J.Coluna](http://jcoluna.wordpress.com/2011/01/27/reconstructing-view-space-position-from-depth/ "") - <time datetime="2011-01-27 15:17:28">Jan 4, 2011</time>
 <p>[&hellip;] was using screen-aligned quads before, it was easy to compute each pixel view-space position using this. However, as I’m using a mesh now, I had to figure out a way to recreate the position using [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Light Pre Pass in XNA: Basic Implementation &laquo; Michael Quandt](http://mquandt.com/blog/2009/12/light-pre-pass-in-xna-basic-implementation/ "") - <time datetime="2009-12-01 08:52:17">Dec 2, 2009</time>
 <p>[&hellip;] more information on how to reconstruct a position based on a depth value, read this. There are also alternative, and improved methods listed there, which can be used depending on your [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Paul Johnson](http://www.rubicondev.com "paul@rubicondev.com") - <time datetime="2009-10-12 05:39:19">Oct 1, 2009</time>
 <p>:) Thanks. My email&rsquo;s been off over the weekend.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Paul Johnson](http://www.rubicondev.com "paul@rubicondev.com") - <time datetime="2009-10-11 10:24:04">Oct 0, 2009</time>
 <p>Very interesting, thanks. All that&rsquo;s missing to make this perfect is an explanation of how to map a position in view space back into screen/texture space again. My brain melts each time I try to do this and it&rsquo;s stopping me from implementing a better SSAO algorithm than I have now.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2009-10-11 11:53:53">Oct 0, 2009</time>
 <p>Hi Paul. I replied in that thread on the XNA forums, but I&rsquo;ll reply here too. In my SSAO shader I just take the view-space position, transform it by the projection matrix, and then use this function to get a texture coordinate: // Gets the screen-space texel coord from clip-space position float2 CalcSSTexCoord (float4 vPositionCS) { float2 vSSTexCoord = vPositionCS.xy / vPositionCS.w; vSSTexCoord = vSSTexCoord * 0.5f + 0.5f; vSSTexCoord.y = 1.0f - vSSTexCoord.y; vSSTexCoord += 0.5f / g_vTexDimensions; return vSSTexCoord; } g_vTexDimensions would be the dimensions of the texture you&rsquo;re sampling. There might be a cheaper way of doing this, but projecting definitely works.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Greg](http://www.caffeinatedgames.com "greg@caffeinatedgames.com") - <time datetime="2009-07-29 17:52:53">Jul 3, 2009</time>
 <p>Thank you for posting this all together! I can delete my 6 book marks to different parts of it now :) Cheers, Greg</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Prompt](http://www.alvaromartin.net "the.prompt@gmail.com") - <time datetime="2009-07-20 12:05:20">Jul 1, 2009</time>
 <p>I&rsquo;m trying to do that but I have some problems. I described here in the GDNet forum using your technique, maybe you can help me. <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=541689">http://www.gamedev.net/community/forums/topic.asp?topic_id=541689</a> Thanks for all !</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2010-03-24 09:55:07">Mar 3, 2010</time>
 <p>Right, if you store perspective z/w in most cases you&rsquo;ll have inadequate precision in areas closer to the far clip plane. But it&rsquo;s really a distribution of precision issue more than anything, due to the non-linear curve of z/w. My latest blog (<a href="http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/">http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/</a>) demonstrates the sort of error you can expect for different depth formats&hellip;perhaps I&rsquo;ll link it here so that people are aware of this issue. Thanks for bringing it up. :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Light Pre-Pass Round 2 &laquo; MQuandt.Blog](http://mquandt.com/blog/2010/03/light-pre-pass-round-2/ "") - <time datetime="2010-03-11 04:21:04">Mar 4, 2010</time>
 <p>[&hellip;] <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/</a> [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Reconstructing Position from Depth &ndash; Frustum Ray Technique &laquo; MQuandt.Blog](http://mquandt.com/blog/2010/03/reconstructing-position-from-depth-frustum-ray-technique/ "") - <time datetime="2010-03-14 13:03:36">Mar 0, 2010</time>
 <p>[&hellip;] by Crytek in a presentation about Atmospheric Scattering [Wenzel2006], and mentioned by MJP in his article [series] about reconstructing position from [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Attack of the depth buffer &laquo; The Danger Zone](http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/ "") - <time datetime="2010-03-22 23:42:39">Mar 1, 2010</time>
 <p>[&hellip;] we only use depth buffers for visibility and stenciling, as we now make use of the depth buffer to reconstruct world-space or view-space position of our geometry at any given pixel.  This can be a powerful performance optimization, since the [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Orcun]( "madorcun@hotmail.com") - <time datetime="2010-06-23 05:16:19">Jun 3, 2010</time>
 <p>Hi MPJ, I have spend nearly a week while reading your thread in gamedev and trying several ssao implamentations. I&rsquo;m trying to make a ssao protetype in render monkey before integrating it in to the engine that I working on. Currently my engine does not have developer friendly shader management facilities so I&rsquo;m doing my best to make the effect as good as posible bofore integration. I haver read and understood all of the methods that you mentioned hoverever the biggest piece is missing. I can not calculate and feed view frustum corners to vertex shader because of rendermonkey. I&rsquo;m trying to generate them by using screen space quad mesh (which is a simple 3d rectangle with dimensions) vertices and I can not get result. Can you write how to calculate view vectors by using only screen aligned quad in vertex shader. Here is my code which does not work; G-Buffer Vertex Shader: VS_OUTPUT vs_main(VS_INPUT Input) { VS_OUTPUT Output; Output.Position = mul(Input.Position + float4(ModelPosition.xyz, 0.0f), ViewProjectionMatrix); float3 ObjectPosition = mul(Input.Position, ViewMatrix); Output._Position = ObjectPosition; Output.NormalDepth.xyz = mul(Input.Normal, ViewMatrix); Output.NormalDepth.w = ObjectPosition.z; return Output; } G-Buffer Pixel Shader: PS_OUTPUT ps_main( PS_INPUT Input ) { PS_OUTPUT Output; Output.Position = float4(Input.Position, 1.0f); Output.NormalDepth.xyz = Input.NormalDepth.xyz; Output.NormalDepth.w = Input.NormalDepth.w / FarZ; return Output; } SSAO Vertex Shader; VS_OUTPUT vs_main(float4 Position : POSITION, float2 Texcoord : TEXCOORD0) { VS_OUTPUT Output; Output.Position = float4(Position.xy, 0.0f, 1.0f) + float4(-PixelSize.x, PixelSize.y, 0.0f, 0.0f); Output.ScreenTexcoord = Texcoord; Output.ViewVector.x = Position.x * tan(FOV / 2) * (ScreenSize.x / ScreenSize.y); Output.ViewVector.y = Position.y * tan(FOV / 2); Output.ViewVector.z = 1; return Output; } SSAO PixelShader: float3 GetViewPosition(in float2 Texcoord, in float3 ViewVector) { return ViewVector * tex2D(NormalDepthInput, Texcoord).w; } Thanks a lot.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Nik]( "nsmoly@yahoo.com") - <time datetime="2010-03-24 09:49:47">Mar 3, 2010</time>
 <p>Sorry for doubting your article, but I think that the projective transform is not inversible in general - you loose information when you project. Having depth buffer values helps to restore some of the information, but since depth map has a certain resolution then this approach will not work if the camera is far away from the projected object. Most of the object may have very similar depth value in the depth map and so it will look flat after &ldquo;unprojecting&rdquo;. I think you should point this out, since it is misleading to say that projective transforms can be undone in general&hellip;</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mystran]( "mystran@gmail.com") - <time datetime="2010-05-10 04:52:59">May 1, 2010</time>
 <p>The way I wrote this yesterday, instead of using constants for the frustum corners, I just did mul(float4(x,y,1,1), mInvProj) per vertex to get far-plane positions in view-space. Then in pixel shader multiply with stored (floating point) view-z/farPlane. At least visually it looks like it should and saves you from having to work out the frustum coordinates on CPU, so you could draw large number of screen-aligned triangles together, yet still do the unprojection work only once-per-vertex.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Camus]( "camus_mm@hotmail.com") - <time datetime="2011-01-14 02:57:32">Jan 5, 2011</time>
 <p>It works: <a href="http://img3.imageshack.us/img3/6453/versusuu.png">http://img3.imageshack.us/img3/6453/versusuu.png</a> Thanks for open my eyes, behold the linearity.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2011-01-14 22:50:01">Jan 5, 2011</time>
 <p>Messing with your z value like that can (and will) screw up rasterization, early z-cull, and z compression (which is why people don&rsquo;t do it). One workable alternative is to use a floating point depth buffer, and flip the near and far planes of your projection (and also flip your depth test directions). When you do that, the non-linear distribution of precision in a floating point value <em>mostly</em> cancels out the non-linearity of z/w. That helps with precision, but not with the issue of applying a non-uniform bias.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Camus]( "camus_mm@hotmail.com") - <time datetime="2011-01-30 22:08:26">Jan 0, 2011</time>
 <p>Hi mpettineo, again, I just want to point out about the frustum corners method, it is valid only for the current pixel, can&rsquo;t be used directly to read from neighbor samples, because of the interpolation, it can be modified doing a manual lerp: lerp(-corner.x,corner.x,uv.x); lerp(-corner.y,corner.y,uv.y); I was into it the whole week trying to figure out that. Because many people are getting confused with this. Also, as you said, Z/FarPlane, can be used only if it&rsquo;s done in the pixel program, interpolated by the vertex program falls into a nonlinear function with werid results, I don&rsquo;t know why this page is still alive: <a href="http://www.mvps.org/directx/articles/linear_z/linearz.htm">http://www.mvps.org/directx/articles/linear_z/linearz.htm</a> IT IS WRONG!, thanks for your time anyway, has been very helpful :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Camus]( "camus_mm@hotmail.com") - <time datetime="2011-01-13 22:24:59">Jan 4, 2011</time>
 <p>Hi, the second method of render z on view space as depth, can be used to store shadow depth? Because I think it will solve in part the bias problem, since it is lineal the distribution, a constant bias will be enough to fix it, seems too good to be true, I&rsquo;m missing something?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2011-01-13 23:20:20">Jan 4, 2011</time>
 <p>If you&rsquo;re manually writing out shadow depth to a render target, then you can use whatever depth metric you&rsquo;d like. Linear Z/FarClip definitely works for that purpose. It&rsquo;s only an issue if you only want to render to a depth buffer, in which case you don&rsquo;t have a choice but to use z/w.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Camus]( "camus_mm@hotmail.com") - <time datetime="2011-01-14 21:23:25">Jan 5, 2011</time>
 <p>Me again, I figured out how to render to a depth buffer without using z/w. The pixel fragment should write zero as always, the vertex fragment change from this: Out.position = mul(In.position, WorldViewProj); to this: float4 vpos = mul(In.position, WorldViewProj); vpos.z = (vpos.z*vpos.w)/FarPlane; Out.position = vpos; It allows me to perform the depth comparison by hardware, I still don&rsquo;t understand why everybody, even the SDK shadow map sample uses z/w, there is even papers written with the purpose of fixing the z-fighting in shadow map.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Reconstructing Position From Depth &laquo; TepNetwork](http://www.3dgametechnology.com/wp/reconstructing-position-from-depth/ "") - <time datetime="2011-02-22 21:32:45">Feb 2, 2011</time>
 <p>[&hellip;] Matt posted an excellent article about reconstructing position from depth. Check out his article here: <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/</a> [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Kreation&#8217;s Edge &raquo; Deferred Rendering Notes](http://www.kreationsedge.com/?p=710 "") - <time datetime="2010-10-02 16:01:49">Oct 6, 2010</time>
 <p>[&hellip;] by Blizzard / Crytek which makes use of view space rays. MJP wrote an excellent blog on this method here. You can also try accessing the hardware depth buffer directly as [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[XNA 4.0 Light Pre-Pass | J.Coluna](http://jcoluna.wordpress.com/2011/01/18/xna-4-0-light-pre-pass/ "") - <time datetime="2011-01-19 10:34:24">Jan 3, 2011</time>
 <p>[&hellip;] the frustum corners: I’m using the technique that uses the frustum corners and the depth buffer to recompute each pixel’s position in view space, so I compute it here [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Richard Osborne](http://www.cyberkreations.com/kreationsedge "rosborne255@yahoo.com") - <time datetime="2010-08-14 19:53:58">Aug 6, 2010</time>
 <p>@Orcun: checkout this thread, <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=506573">http://www.gamedev.net/community/forums/topic.asp?topic_id=506573</a> The method from Shader x5 book uses a technique that doesn&rsquo;t require the frustum corners and the results are pretty nice. @author, Thanks for taking the time to blog on this subject and providing the XNA example!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Position From Depth 3: Back In The Habit &laquo; The Danger Zone](http://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/ "") - <time datetime="2010-09-05 23:11:57">Sep 0, 2010</time>
 <p>[&hellip;] a lot of people still have trouble with reconstructing position from depth thing, judging by the emails I get and also the threads I see in the gamedev forums made by people [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Camus]( "camus_mm@hotmail.com") - <time datetime="2011-01-13 23:57:41">Jan 4, 2011</time>
 <p>Thank you so much, I will run some tests :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Screen Space Ambient Occlusion | m_panknin;](http://blog.mpanknin.de/?p=829 "") - <time datetime="2012-08-29 02:03:19">Aug 3, 2012</time>
 <p>[&hellip;] article for details. Position reconstruction is done via the frustum corner method as described here. The amount of occlusion contribution of taken samples is based on this tutorial. However I [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Obtaining attention area stage from the level consistency | CodersDiscuss.com](http://codersdiscuss.com/16310/obtaining-attention-area-stage-from-the-level-consistency/ "") - <time datetime="2014-06-03 02:53:23">Jun 2, 2014</time>
 <p>[…] find out about two techniques in this article and by my […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[DEFERRED RENDERING IN MODERN OPENGL – PART 2 &#8211; The Pixel Vault](https://thepixelvault.wordpress.com/2016/03/05/deferred-rendering-in-modern-opengl-part-2/ "") - <time datetime="2016-03-05 09:13:28">Mar 6, 2016</time>
 <p>[…] This implementation is by no means perfect, or even good. Remember i am still a beginner at this and this post was only meant to give you an understanding of how you could go about implementing your own Deferred Renderer. Anyways as for improvements, one thing i am considering is to reconstruct World Space Positions using the Depth Buffer, because this will allow us to remove the Position Buffer from the G-Buffer thus making it smaller. Matt Pettineo from Ready-At-Dawn has some great tutorials about it on his blog. […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -255,7 +325,7 @@ for (int i = 0; i &lt; 4; i++)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3044 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3405 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-03-10 12:06 -0700</p>
 			</footer>
 		</article>

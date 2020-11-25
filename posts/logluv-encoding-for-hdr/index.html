@@ -10,7 +10,7 @@
 Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.">
 <meta itemprop="datePublished" content="2008-12-12T17:00:59&#43;00:00" />
 <meta itemprop="dateModified" content="2008-12-12T17:00:59&#43;00:00" />
-<meta itemprop="wordCount" content="1538">
+<meta itemprop="wordCount" content="1566">
 
 
 
@@ -146,22 +146,30 @@ float3 LogLuvDecode(in float4 vLogLuv)
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://blog.daikonforge.com" title="takuan@daikonforge.com">Takuan</a> - <!-- raw HTML omitted -->Dec 5, 2008<!-- raw HTML omitted --></p>
+<p><a href="http://blog.daikonforge.com" title="takuan@daikonforge.com">Takuan</a> - <time datetime="2008-12-12 14:25:01">Dec 5, 2008</time></p>
 <blockquote>
 <p>I also think it’s something useful for just about anyone trying to do HDR on the 360 through XNA, and I’m hoping some people will stumble upon it.</p>
 </blockquote>
 <p>I didn&rsquo;t exactly stumble on it, I found your blog through GameDev.net, but it is indeed useful!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[matt77hias]( "matthias.moulin@gmail.com") - <time datetime="2018-04-08 03:20:38">Apr 0, 2018</time>
 <p>Thanks!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[matt77hias]( "matthias.moulin@gmail.com") - <time datetime="2018-04-05 11:42:29">Apr 4, 2018</time>
 <p>Two small questions: 1) What is the reasoning behing your &ldquo;Xp_Y_XYZp&rdquo; local variable name? 2) What do the matrices M and inverseM convert to/from? It is not just linear to LogLUV and vice versa since the conversion isn&rsquo;t finished yet?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2018-04-05 21:52:11">Apr 4, 2018</time>
 <ol>
 <li>The code was taken from Christer&rsquo;s blog post, so he&rsquo;s the one who came up with the variable names. If you read through the linked post, he explains how he simplified the math into what&rsquo;s represented in the code. He calls it that because one of the intermediate steps is converting to CIE XYZ, and he folds a dot product into the matrix multiply to produce X, Y, and the dot product result (that he calls &lsquo;XYZ&rsquo;). He also folds in the multiplication of two other constants, to produce what he calls X` and XYZ`, hence the &lsquo;p&rsquo; in the variable name (short for &lsquo;prime&rsquo;, I assume). 2) See above. It&rsquo;s a combination of converting from RGB -&gt; XYZ, and some of the related math for converting to LogLuv.</li>
 </ol>
-<!-- raw HTML omitted -->
+<hr />
+####
+[matt77hias]( "matthias.moulin@gmail.com") - <time datetime="2018-04-11 03:32:15">Apr 3, 2018</time>
 <p>Sorry for bothering you with this again, but I read the article of Christer which started with a linear RGB to XYZ conversion and sequentially added extra operations to the conversion matrix M. I am not very familiar with display formats, so feel free to correct me. The CCIR became the ITU-R, so I presume that &ldquo;CCIR 709&rdquo; is the same as &ldquo;ITU-R Recommendation BT.709&rdquo; (a.k.a. &ldquo;Rec. 709&rdquo; or &ldquo;BT.709&rdquo;)? If this is the case, the used RGB-to-XYZ conversion (cfr. paper by Gregory Ward) is different from the one used in Real-Time Rendering (3th edition), pbrt-v2, pbrt-v3 and Mitsuba (which all use the same coefficients)? Thanks in advance.</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -169,7 +177,7 @@ float3 LogLuvDecode(in float4 vLogLuv)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xbox-360">Xbox 360</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1538 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1566 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2008-12-12 09:00 -0800</p>
 			</footer>
 		</article>

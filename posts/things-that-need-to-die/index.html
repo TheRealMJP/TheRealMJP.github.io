@@ -10,7 +10,7 @@
   Phong/Blinn-Phong - we need more expressive BRDF&rsquo;s for our materials, and these guys are getting in the way.">
 <meta itemprop="datePublished" content="2011-12-06T09:54:34&#43;00:00" />
 <meta itemprop="dateModified" content="2011-12-06T09:54:34&#43;00:00" />
-<meta itemprop="wordCount" content="1810">
+<meta itemprop="wordCount" content="1896">
 
 
 
@@ -110,29 +110,49 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22prayingmantis@toothfairy.com%22">Mantis</a> - <!-- raw HTML omitted -->Dec 4, 2011<!-- raw HTML omitted --></p>
+<p><a href="%22prayingmantis@toothfairy.com%22">Mantis</a> - <time datetime="2011-12-08 09:48:28">Dec 4, 2011</time></p>
 <p>Now, picture this; what if instead of the above, we made better games? Picture if Bethesda diverted $50k from their &ldquo;artists&rdquo; to the QA department; who knows, the main quest might work half the time and the PS3 port might be stable for more than about 20 hours!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Mantis]( "prayingmantis@toothfairy.com") - <time datetime="2011-12-08 09:49:41">Dec 4, 2011</time>
 <p>Not that better graphics are a bad thing, obviously.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[default_ex]( "default_ex@live.com") - <time datetime="2011-12-08 13:57:23">Dec 4, 2011</time>
 <p>A really good solution to most of these problems is to develop a new color space, one which can carry energy information (like xyY) but is additive in nature (like RGB). Think about it, how many of these effects are energy dependent but how much we substitute energy with luminance: HDR, inscatter, lens flare, self-illumination. Though I think specular work is the saddest of all our rendering tech so far. Specular light in the real world is just reflection of light energy, shape deformed by the surface geometry. Yet we continue the travesty of only conveying the light color, never conveying the light source (bulb) itself in the specular reflection.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[djmips](http://gravatar.com/djmips "david.c.galloway@gmail.com") - <time datetime="2011-12-08 15:55:30">Dec 4, 2011</time>
 <p>How about just get rid of lens flares period? I never liked them in games or in movies&hellip; Why do they have to show up in first person views especially? I&rsquo;ve never had my eyes flare like that. :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2011-12-12 01:20:16">Dec 1, 2011</time>
 <p>Nice additions Nathan! I&rsquo;ve always wanted to experiment with Sample Distribution Shadow Maps, although I worry about temporal aliasing as you adjust the split depths. Calculating the adjusted split depths on the GPU also concerns me, as it limits your ability to cull on the CPU. However I really like the general approach, and definitely agree that we need to make better use of shadow resolution and not just use wide filtering kernels (especially if we want plausible soft shadows)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[default_ex]( "default_ex@live.com") - <time datetime="2011-12-12 11:44:18">Dec 1, 2011</time>
 <p>Even something like a pixel shader version of smart filtering (<a href="http://web.archive.org/web/20070624082603/http://www.hiend3d.com/smartflt.html">http://web.archive.org/web/20070624082603/http://www.hiend3d.com/smartflt.html</a>) would be a massive improvement on shadow mapping. The blocky unfiltered shadow maps convey the shape of the shadow well enough, just need to enhance that shape to fit screen resolution. I&rsquo;ve tried using HQX filters recently, but that tends to introduce stray pixels at the better defined portions of the shadow map, which is likely a flaw in my implementation.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Rim]( "remigius@netforge.nl") - <time datetime="2011-12-06 02:12:11">Dec 2, 2011</time>
 <p>&ldquo;I’ve just never been a big fan of SSAO.&rdquo; I did a paper ages ago concluding SSAO likely wouldn&rsquo;t take off as a common technique. Boy was I wrong, so I&rsquo;ll agree with you here out of spite :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[u2bleank](http://u2bleank.tumblr.com/ "dtoyou@bleank.com") - <time datetime="2011-12-07 04:32:16">Dec 3, 2011</time>
 <p>11. Simple shader for blending operations</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Nathan Reed](http://reedbeta.com/ "nathaniel.reed@gmail.com") - <time datetime="2011-12-10 17:40:56">Dec 6, 2011</time>
 <p>I&rsquo;d like to add: 11. Shadow Aliasing. The trend has been to blur the $%#! out of the shadow maps to hide it, but that&rsquo;s not always desirable. There&rsquo;s <a href="http://visual-computing.intel-research.net/art/publications/sdsm/">some interesting work</a> on that front from Andrew Lauritzen, always a heavy hitter. 12. Visible polygonization of shapes that should be smooth&mdash;especially at silhouette edges. We have hardware tessellation now; let&rsquo;s use it! 13. Characters whose only hair options are bald, short or tight buns/ponytails/dreadlocks. There has been some great <a href="http://dl.acm.org/citation.cfm?id=1837102">work</a> lately on hair simulation and rendering which has yet to be put to use in a game, to my knowledge.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[What I&#8217;ve been working on for the past 2 years | The Danger Zone](http://mynameismjp.wordpress.com/2013/06/11/what-ive-been-working-on/ "") - <time datetime="2013-06-11 23:48:51">Jun 2, 2013</time>
 <p>[…] most out of next-gen hardware. By my count we’ve crossed off around 8 or so of the things on my list, and hopefully the entire industry will collectively figure out how to make all of them extinct. […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Louis Castricato](http://wirezapp.net "ljcrobotic@yahoo.com") - <time datetime="2011-12-19 03:45:31">Dec 1, 2011</time>
 <p>We could just replace ssao with ssdo, or hbao. Both produce much better results and still maintain great framerates. Also, I implemented the improved fog in under 45min. New record =P</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -140,7 +160,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1810 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1896 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-12-06 01:54 -0800</p>
 			</footer>
 		</article>

@@ -9,7 +9,7 @@
 <meta itemprop="description" content="Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!">
 <meta itemprop="datePublished" content="2010-03-07T05:42:44&#43;00:00" />
 <meta itemprop="dateModified" content="2010-03-07T05:42:44&#43;00:00" />
-<meta itemprop="wordCount" content="1537">
+<meta itemprop="wordCount" content="1591">
 
 
 
@@ -74,17 +74,17 @@
 				<p>Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer.  While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!):</p>
 <p><strong>1. View driver time and GPU idle time per frame</strong></p>
 <p>When doing graphics in Windows, something you always need to be wary of is spending too much time sitting around in the driver instead of giving the GPU enough work to do. With PerfHUD instead of looking at the number of Draw/SetRenderState/SetTexture calls and guessing their impact (although PerfHUD will show you these values if you want), you get a nice sweet graph that shows you your driver time, GPU idle time, and total frame time.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/driveridletime.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/driveridletime.png" alt="" title="DriverIdleTime"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/driveridletime.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/driveridletime.png" alt="" title="DriverIdleTime"></a></p>
 <p>These graphics make it very obvious whether your app is CPU-bound or GPU-bound, and if you are CPU-bound you can tell whether it&rsquo;s because you&rsquo;re spending too much time in the driver.</p>
 <p><strong>2. View memory usage</strong></p>
 <p>Want to know how much memory your app is using? PerfHUD tells you.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/memory.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/memory.png" alt="" title="Memory"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/memory.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/memory.png" alt="" title="Memory"></a></p>
 <p><strong>3. View shader utilization stats</strong></p>
 <p>The default PerfHUD layout includes a graph showing you which percentage of unified shaders are being used for different shader types. This lets you know if you&rsquo;re spending a lot of time in vertex, geometry, or pixel shaders.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/shaderusage.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/shaderusage.png" alt="" title="ShaderUsage"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/shaderusage.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/shaderusage.png" alt="" title="ShaderUsage"></a></p>
 <p><strong>4. View GPU pipeline usage states</strong></p>
 <p>The default layout also has a graph showing you how much you&rsquo;re using the input assembler, shader units, texture units, and ROP&rsquo;s:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/unitusage.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/unitusage.png" alt="" title="UnitUsage"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/unitusage.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/unitusage.png" alt="" title="UnitUsage"></a></p>
 <p><strong>5. Customize the graphs</strong></p>
 <p>Above I used the term &ldquo;default layout&rdquo; a few times. I do this because the initial layout you get isn&rsquo;t fixed, and you can customize it. You can add new graphs, move them, remove them, and customize the data shown on a graph. This lets pick and choose from the various performance counters available, and also change how the data is displayed. For instance you can select ranges, or switch between frame percentage or raw time.</p>
 <p><strong>6. Run instant global experiments</strong></p>
@@ -96,16 +96,16 @@
 <p>You can also show wireframes, depth complexity (which shows your overdraw), and also highlight different pixel shader profiles.</p>
 <p><strong>7. View textures and render targets for a draw call</strong></p>
 <p>This is something you can do in PIX so it&rsquo;s not that smile, but I&rsquo;m mentioning this because PerfHUD makes it easier to view all of the textures and render targets at the same time. In PIX you have to look at the debug state and open a new tab in the Details view for each texture/RT, which is kinda annoying. Also note that when you do this the current state of the backbuffer is shown on the screen, with the current Draw call highlighted in orange. You don&rsquo;t see anything in my picture since the app doesn&rsquo;t draw anything to the backbuffer until the final step.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/texturesrt.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/texturesrt.png" alt="" title="TexturesRT"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/texturesrt.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/texturesrt.png" alt="" title="TexturesRT"></a></p>
 <p><strong>8. View dependencies for a Draw call</strong></p>
 <p>This is actually a pretty neat debugging feature. PerfHUD basically gives you a list of all previous Draw calls whose results are used by the current Draw call. It will also show which future Draw calls use the results from the current Draw call.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/dependencies.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/dependencies.png" alt="" title="Dependencies"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/dependencies.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/dependencies.png" alt="" title="Dependencies"></a></p>
 <p><strong>9. View and modify states for a Draw call</strong></p>
 <p>PIX is really good at letting you see the current device state at a certain point in a frame, but PerfHUD takes this a step further by letting you modify them and instantly view the results.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/modifystate.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/modifystate.png" alt="" title="ModifyState"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/modifystate.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/modifystate.png" alt="" title="ModifyState"></a></p>
 <p><strong>10. View and modify shaders</strong></p>
 <p>PerfHUD doesn&rsquo;t let you debug shaders like PIX can, but it does let you modify a shader and see the live changes in your app. You can also load up any shader from file, compile it, and replace that shader.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/shaders.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/shaders.png" alt="" title="Shaders"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/shaders.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/shaders.png" alt="" title="Shaders"></a></p>
 <p><strong>11. Replace textures with special debugging textures</strong></p>
 <p>In the Frame Debugger, you can replace a specific texture with one of the following:</p>
 <ul>
@@ -123,7 +123,7 @@
 </li>
 </ul>
 <p>Here&rsquo;s a screenshot showing the mipmap visualization texture applied as the diffuse albedo texture for all meshes:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/mipmapvisualization.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/mipmapvisualization.png" alt="" title="MipmapVisualization"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/mipmapvisualization.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/mipmapvisualization.png" alt="" title="MipmapVisualization"></a></p>
 <p><strong>12. View comprehensive performance statistics</strong></p>
 <p>The  Frame Profiler is easily the coolest part about PerfHUD. It presents you with a whole slew of information about what&rsquo;s going on with the GPU for different parts of a frame, and makes it easy to figure out which parts of your frame are the most expensive for different parts of the GPU pipeline. In fact, PerfHUD will automatically figure out the most expensive draw calls and indicate it for you. I&rsquo;m not going to go through each feature in detail since I want this post to stay readable, but I&rsquo;ll give you a list:</p>
 <ul>
@@ -147,7 +147,7 @@
 </li>
 </ul>
 <p>The following image shows the frame profiler in action. The graph is showing the bottleneck percentage per Draw call, and the selected Draw call is in the shadowmap generation pass. As you&rsquo;d expect, the call is primarily bound by the input assembler stage since the shaders are so simple. You can also see that PerfHUD grouped all of the other shadow map generation Draw calls into the same state bucket.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/03/profiler.png"><img src="http://mynameismjp.files.wordpress.com/2010/03/profiler.png" alt="" title="Profiler"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/profiler.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-perfhud/profiler.png" alt="" title="Profiler"></a></p>
 <p><strong>Useful Tips:</strong></p>
 <ol>
 <li>
@@ -176,21 +176,33 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://blog.thelazydeveloper.com/2011/03/28/using-nvidia-perfhud-with-xna-4-0/" title="">Using Nvidia PerfHUD with XNA 4.0 | The Stolen Journals</a> - <!-- raw HTML omitted -->Mar 1, 2011<!-- raw HTML omitted --></p>
+<p><a href="http://blog.thelazydeveloper.com/2011/03/28/using-nvidia-perfhud-with-xna-4-0/" title="">Using Nvidia PerfHUD with XNA 4.0 | The Stolen Journals</a> - <time datetime="2011-03-28 13:32:10">Mar 1, 2011</time></p>
 <p>[&hellip;] the PerfHUD performance profiling overlay. There’s a good overview of the interface by MJP, here. Tweet This entry was posted in Uncategorized. Bookmark the permalink. ← Acronym [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Performance Tools: PerfHUD &laquo; Sgt. Conker](http://www.sgtconker.com/2010/03/performance-tools-perfhud/ "") - <time datetime="2010-03-06 23:51:48">Mar 6, 2010</time>
 <p>[&hellip;] Matt &ldquo;Perf Analyzer&rdquo; Pettineo has a new post about analyzing Direct3D performance using NVIDIA PerfHUD, where he goes into great deal about each feature of the tool. Read all about it on his blog. [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Pete](http://amapplease.blogspot.com "ultrahead@msn.com") - <time datetime="2010-03-07 02:25:58">Mar 0, 2010</time>
 <p>Great info! You should also check &ldquo;Nexus&rdquo;: <a href="http://developer.nvidia.com/object/nexus.html">http://developer.nvidia.com/object/nexus.html</a></p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Popcorn]( "corbin@skymo.com") - <time datetime="2010-03-21 14:39:28">Mar 0, 2010</time>
 <p>xna will set SoftwareVertexProcessing mode when perfhud is being used due to perfhud requirement for Reference device setting how do you work around that? I get 1 frame every 30 to 40 seconds with my app perfhud is unusable for me</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Intermission #8–What’s gone wrong? - Dark Genesis](http://xna-uk.net/blogs/darkgenesis/archive/2010/07/16/intermission-8-what-s-gone-wrong.aspx "") - <time datetime="2011-02-23 08:40:18">Feb 3, 2011</time>
 <p>[&hellip;] of the Direct X SDK)     NVIDIA PERFHud (part of the Nvidia PerfSDK) – Useful Post here on how to get the most of this in XNA     AMD PerfTools     The [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[ozlael](http://ozlael.egloos.com "") - <time datetime="2011-03-26 03:49:14">Mar 6, 2011</time>
 <p>Always thank you for useful article. Can i copy this post to my blog and translate into korean?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Chris]( "Christian.Schlager@gmail.com") - <time datetime="2010-10-18 00:52:13">Oct 1, 2010</time>
 <p>In XNA 4.0 the member GraphicsDeviceInformation.DeviceType is gone. When I try to start my test game with PerfHUD it says: No suitable graphics card found. Unable to create the graphics device. What can I do? Thanks :)</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -198,7 +210,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1537 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1591 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-03-06 21:42 -0800</p>
 			</footer>
 		</article>

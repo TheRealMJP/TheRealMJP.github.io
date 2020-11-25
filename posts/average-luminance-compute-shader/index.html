@@ -10,7 +10,7 @@
 In the old days of DX9, the average luminance calculation was usually done repeatedly downscaling a luminance texture as if generating mipmaps.">
 <meta itemprop="datePublished" content="2011-08-10T09:31:03&#43;00:00" />
 <meta itemprop="dateModified" content="2011-08-10T09:31:03&#43;00:00" />
-<meta itemprop="wordCount" content="1340">
+<meta itemprop="wordCount" content="1470">
 
 
 
@@ -83,39 +83,69 @@ In the old days of DX9, the average luminance calculation was usually done repea
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://twitter.com/ElMarcel" title="ElMarcel@twitter.example.com">Daan Nijs (@ElMarcel)</a> - <!-- raw HTML omitted -->Aug 3, 2011<!-- raw HTML omitted --></p>
+<p><a href="http://twitter.com/ElMarcel" title="ElMarcel@twitter.example.com">Daan Nijs (@ElMarcel)</a> - <time datetime="2011-08-10 15:47:16">Aug 3, 2011</time></p>
 <p>OK, I get it now,, thanks for the clarification!. That&rsquo;s actual pretty clever, I guess it makes very bright pixels have less of an impact on the average, as well as better temporal stability.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Daan Nijs (@ElMarcel)](http://twitter.com/ElMarcel "ElMarcel@twitter.example.com") - <time datetime="2011-08-10 06:54:33">Aug 3, 2011</time>
 <p>this might be nitpicking, but you&rsquo;re saying you&rsquo;re rendering log(luminance). Wouldn&rsquo;t GenerateMips give you an incorrect result, as you can&rsquo;t simply lerp between log values?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2011-08-10 09:15:34">Aug 3, 2011</time>
 <p>Mykhailo: indeed it might! But as I said earlier I suspect that shared memory access is the primary bottleneck, so I wouldn&rsquo;t expect too much of a gain. Daan: the formula for geometric mean is exp(avg(log(luminance))). So if you render out log(luminance) and generate mips, the last mip level is equal to avg(log(luminance)). Then you just take the exp() of the value you get when sampling the lowest mip level and you have the geometric mean.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Tiago Costa]( "tiago.costav@gmail.com") - <time datetime="2011-08-10 05:27:12">Aug 3, 2011</time>
 <p>Nice post. Every 0.1ms count =D Specially when using VSync.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Mykhailo Parfeniuk (@sopyer)](http://twitter.com/sopyer "sopyer@twitter.example.com") - <time datetime="2011-08-10 05:25:26">Aug 3, 2011</time>
 <p>Just quick thought: would not gather4 instruction improve performance of your code?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Tiago Costa]( "tiago.costav@gmail.com") - <time datetime="2011-08-10 08:39:47">Aug 3, 2011</time>
 <p>@Daan I use GenerateMips to calculate average luminance in DX 10 and it works correctly&hellip;</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2011-08-14 11:00:35">Aug 0, 2011</time>
 <p>I ran this on my personal computer, and got about 312FPS (At the most) (single GTX 460, i7 920 @ 4.1GHz, 3GB of RAM) Not bad but, it stays around 4.2ms. Sadly it doesn&rsquo;t change much between the methods, infact it goes up with your implementation, about 0.2ms</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Peter Kristof]( "peter.kristof@gmail.com") - <time datetime="2013-01-06 17:45:01">Jan 0, 2013</time>
 <p>Actually, I take it back. You do need the GroupMemoryBarrierWithGroupSync() to avoid potential R/W hazards among different warps.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Implementing a Physically Based Camera: Automatic Exposure | Placeholder Art](http://placeholderart.wordpress.com/2014/12/15/implementing-a-physically-based-camera-automatic-exposure/ "") - <time datetime="2014-12-15 05:35:34">Dec 1, 2014</time>
 <p>[…] exponential feedback loop to smooth the results of scene metering. I first saw this used in the Average luminance calculation using a compute shader1 post by MJP, which was originally from a SIGGRAPH paper about visual adaption […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Anoop Thomas](http://anooprthomas.blogspot.com "anoop.r.thomas@gmail.com") - <time datetime="2013-09-04 17:49:14">Sep 3, 2013</time>
 <p>I recently implemented the both pixel shader and compute shader versions for calculating luminance. For the pixel shader version, I use the downscale 2*2 method with a single bilinear tap all the way down to a single pixel (GenerateMipMaps might be doing the same process). For the compute shader, i use the parallel sum method with 2 passes and then took the average using the resolution. If i use a resolution that is not the power of 2, I end up with an incorrect average (when compared to the compute shader). I have verified that the compute shader version returns the right average, and the pixel shader version starts to introduce errors when downscaling from an odd height or odd width ( for eg, downscaling from 5*3, 5*2, or 4*3). Can you suggest a method to get the right average from the Pixel shader version?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[auto stereo](http://www.crashcarreview.org ".t.homaslim63@gmail.com") - <time datetime="2012-03-23 01:00:30">Mar 5, 2012</time>
 <p>Pretty! This has been a really wonderful article. Many thanks for supplying this info.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Peter Kristof]( "peter.kristof@gmail.com") - <time datetime="2013-01-05 16:02:33">Jan 6, 2013</time>
 <p>You can use GroupMemoryBarrier() inside the parallel reduction&rsquo;s for loop in ReductionCS(). I see 2-35% speedups on different AMD architectures with that for slightly different implementation with no explicit vectorization. Thanks for the articles and samples, much appreciated!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[CryZe]( "cryze92@gmail.com") - <time datetime="2012-09-12 01:48:31">Sep 3, 2012</time>
 <p>Wouldn&rsquo;t the float4&rsquo;s cause bank conflicts on NVidia hardware? Each subsequent 32-bit is stored in the next memory bank. So the 4 floats of a float4 would be stored on 4 different banks. So when the hardware wants to load all gsm[i].x values, only 4 of them can directly be accessed by the half warp. So it would cause a 4-way bank conflict. I don&rsquo;t think the hardware coalesces the memory automatically.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2012-09-12 11:31:04">Sep 3, 2012</time>
 <p>Yes it would definitely have bank conflicts on both Nvidia and AMD hardware. The first (scalar) version of the reduction that I wrote avoided bank conflicts, since it used the techniques illustrated the CUDA parallel reduction whitepaper. But then it appeared that on my AMD hardware the benefit of vectorization outweighed the cost of bank conflicts, so I just stopped there. In hindsight it probably would have been best to leave in the scalar version as an option, since I would suspect that would perform better on Nvidia hardware and the new GCN-based AMD hardware.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[腕時計 定番](http://www.watchsrealize.com/ "blsdrge@gmail.com") - <time datetime="2013-11-01 00:33:43">Nov 5, 2013</time>
 <p>アルマーニ 楽天</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Automatic Exposure | Krzysztof Narkowicz](https://knarkowicz.wordpress.com/2016/01/09/automatic-exposure/ "") - <time datetime="2016-01-09 07:53:56">Jan 6, 2016</time>
 <p>[…] of the screen [Hen14]. Additionally we could also use a compute shader for computing averages [Pet11]. This is usually simpler and more efficient than repeated texture […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -123,7 +153,7 @@ In the old days of DX9, the average luminance calculation was usually done repea
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1340 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1470 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-08-10 02:31 -0700</p>
 			</footer>
 		</article>

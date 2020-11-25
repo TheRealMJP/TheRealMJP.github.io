@@ -9,7 +9,7 @@
 <meta itemprop="description" content="I recently collaborated with fellow DX MVP&rsquo;s Jason Zink and Jack Hoxley to write a D3D11-focused book entitled Practical Rendering and Computation with Direct3D 11, which just came up for sale on Amazon today. I wrote the HLSL and Deferred Rendering chapters in particular. All of the code samples are up on the Hieroglyph 3 CodePlex site, if you want to get an idea of the content. Or you can just take my word for it that it&rsquo;s awesome.">
 <meta itemprop="datePublished" content="2011-08-05T06:04:11&#43;00:00" />
 <meta itemprop="dateModified" content="2011-08-05T06:04:11&#43;00:00" />
-<meta itemprop="wordCount" content="535">
+<meta itemprop="wordCount" content="621">
 
 
 
@@ -75,33 +75,57 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22%22">Jason Zink</a> - <!-- raw HTML omitted -->Aug 0, 2011<!-- raw HTML omitted --></p>
+<p><a href="%22%22">Jason Zink</a> - <time datetime="2011-08-07 21:15:01">Aug 0, 2011</time></p>
 <p>Hi Tiago, I wrote the chapter on water simulation and can give you a little bit of background on it. It is based on a paper written by James F. O&rsquo;Brien and Jessica K. Hodgins titled &ldquo;Dynamic Simulation of Splashing Fluids&rdquo;. I actually implemented this technique before DX11 hardware was available, but it makes efficient use of the compute shader functionality. The sample program implements a 16x16 grid of tiles of 16x16 groups of water tiles, and still runs at good rates. On my laptop, which has a 8600M GT, it runs at approximately 80 fps. Since this is a DX10 level card, that&rsquo;s not too bad. On my main dev machine which has a 5700 AMD card, it runs at ~650 fps. Although you don&rsquo;t need to take my word for it - you can download the code and check it out for yourself! That was a big part of the reason that we chose to use an open source project for our samples - so that people could see what they are getting, and also to keep updating the code base after the book was finished up.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+Tiago Costa - <time datetime="2011-08-08 07:53:13">Aug 1, 2011</time>
 <p>Hi JasonZ! Sadly I won&rsquo;t have access to my dev machine until next week, so I can&rsquo;t try the demos&hellip; Anyway I already ordered the book =D</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+Jason Zink - <time datetime="2011-08-08 08:21:21">Aug 1, 2011</time>
 <p>That&rsquo;s great - I look forward to hearing any feedback (good or bad) on the book, and of course also on the Hieroglyph codebase and samples!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[smasherprog](http://nolimitsdesigns.com "smasherprog@gmail.com") - <time datetime="2011-08-08 05:09:36">Aug 1, 2011</time>
 <p>Where is this code available at to download? I would like to take a look at the examples.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[smasherprog](http://nolimitsdesigns.com "smasherprog@gmail.com") - <time datetime="2011-08-08 05:10:31">Aug 1, 2011</time>
 <p>Opps, just woke up and realized it is on the Hieroglyph 3 CodePlex site. Never mind.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2011-08-04 22:37:52">Aug 4, 2011</time>
 <p>congrats, Mr. Big Author man! :) accomplishing something like that must feel really rewarding. gonna give it a look at the source code first :p then i&rsquo;ll take your word for it. perhaps. probably. always liked your samples/code.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2011-08-05 02:13:30">Aug 5, 2011</time>
 <p>Cheers! Congrats and neat to hear Jolly Jack is still at it :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Daniel](http://twitter.com/_Eclectus_ "_Eclectus_@twitter.example.com") - <time datetime="2011-08-05 05:09:30">Aug 5, 2011</time>
 <p>Congratulations MJP - Finishing something like this is to be admired. I continue to follow your work with interest!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Tiago Costa]( "") - <time datetime="2011-08-07 13:26:14">Aug 0, 2011</time>
 <p>Congrats! I would like to know if the articles about terrain and water simulation use techniques that provide good performance/quality? Or are those articles focused on teaching basic terrain/water rendering?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2011-08-07 16:30:28">Aug 0, 2011</time>
 <p>Hi Tiago, I&rsquo;m going to ask the authors of those sections so that I can get an accurate answer for you.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[TiagoVCosta](http://tiagovcosta.wordpress.com "tiago.costav@gmail.com") - <time datetime="2011-08-23 04:03:59">Aug 2, 2011</time>
 <p>Just received my copy :D Check out this hands-on photo: <a href="http://img829.imageshack.us/img829/728/imag0200o.jpg">http://img829.imageshack.us/img829/728/imag0200o.jpg</a></p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2011-08-24 03:07:43">Aug 3, 2011</time>
 <p>You do realize that the spine of the book reads: &ldquo;Practical Rendering &amp; Computation with Direct 3D 1&rdquo;. Yes that&rsquo;s right &ldquo;Direct3D 1&rdquo;. Looks like one the digits in 11 has been cropped :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[TiagoVCosta](http://tiagovcosta.wordpress.com "tiago.costav@gmail.com") - <time datetime="2011-08-24 03:35:44">Aug 3, 2011</time>
 <p>LOL, I didn&rsquo;t noticed that before :D</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -109,7 +133,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>535 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>621 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-08-04 23:04 -0700</p>
 			</footer>
 		</article>

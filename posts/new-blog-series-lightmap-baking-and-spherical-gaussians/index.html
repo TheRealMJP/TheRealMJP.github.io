@@ -9,7 +9,7 @@
 <meta itemprop="description" content="So nearly year and a half ago myself and Dave Neubelt gave a presentation at SIGGRAPH where we described the approach that we developed for approximating incoming radiance using Spherical Gaussians in both our lightmaps and 3D probe grids. We had planned on releasing a source code demo as well as course notes that would serve as a full set of implementation details, but unfortunately those efforts were sidetracked by other responsibilities.">
 <meta itemprop="datePublished" content="2016-10-10T07:05:10&#43;00:00" />
 <meta itemprop="dateModified" content="2016-10-10T07:05:10&#43;00:00" />
-<meta itemprop="wordCount" content="399">
+<meta itemprop="wordCount" content="414">
 
 
 
@@ -71,25 +71,27 @@
 				<h1>New Blog Series: Lightmap Baking and Spherical Gaussians</h1>
 			</header>
 			<div class="content">
-				<p><img src="https://mynameismjp.files.wordpress.com/2016/09/white_room_small.png" alt="white_room_small"></p>
+				<p><img src="/images/converted/new-blog-series-lightmap-baking-and-spherical-gaussians/white_room_small.png" alt="white_room_small"></p>
 <p>So nearly year and a half ago myself and Dave Neubelt gave a <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pdf">presentation at SIGGRAPH</a> where we described the approach that we developed for approximating incoming radiance using Spherical Gaussians in both our lightmaps and 3D probe grids. We had planned on releasing a source code demo as well as course notes that would serve as a full set of implementation details, but unfortunately those efforts were sidetracked by other responsibilities. We had actually gotten pretty far on a demo, and it started to seem pretty silly to let a whole year go by without releasing it. So I&rsquo;ve cleaned it up, and put it on GitHub for all to learn from and/or make fun of. So if you&rsquo;re just interested in seeing the code or running the demo, then go ahead and download it:</p>
 <p><a href="https://github.com/TheRealMJP/BakingLab">https://github.com/TheRealMJP/BakingLab</a></p>
 <p>For those looking for some in-depth written explanation, I&rsquo;ve also decided to write a series of blog posts that should hopefully shed some light on the basics of using SG&rsquo;s in rendering. The first post provides background material by explaining  common approaches to storing pre-computing lighting data in lightmaps and/or probes. The second post focuses on explaining the basics of Spherical Gaussians, and demonstrating some of their more useful properties. The third post explains how the various SG properties can be used to compute diffuse lighting from an SG light source. The fourth post goes even deeper and covers methods for approximating the specular contribution from an SG light source. The fifth post explores some approaches for using SG&rsquo;s to create a compact approximation of a lighting environment, and compares the results with spherical harmonics. Finally, the sixth posts discusses features present in the the lightmap baking demo that we&rsquo;ve released on GitHub.</p>
-<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><!-- raw HTML omitted -->
-Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><!-- raw HTML omitted -->
-Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><!-- raw HTML omitted -->
-Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><!-- raw HTML omitted --></p>
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
 <p>Enjoy, and please leave a comment if you have questions, concerns, or corrections!</p>
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="https://icedmaster.wordpress.com/2017/11/22/6697/" title="">Randomly generated stuff</a> - <!-- raw HTML omitted -->Nov 3, 2017<!-- raw HTML omitted --></p>
+<p><a href="https://icedmaster.wordpress.com/2017/11/22/6697/" title="">Randomly generated stuff</a> - <time datetime="2017-11-22 18:28:50">Nov 3, 2017</time></p>
 <p>[…] <a href="https://mynameismjp.wordpress.com/2016/10/09/new-blog-series-lightmap-baking-and-spherical-gaussians">https://mynameismjp.wordpress.com/2016/10/09/new-blog-series-lightmap-baking-and-spherical-gaussians</a>… […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Doug Chism]( "dougchism@hotmail.com") - <time datetime="2016-10-11 05:31:40">Oct 2, 2016</time>
 <p>Wow, was planning to research this in the near future due to our indirect specular being rather lousy for higher roughness values using env-probes. This is going to be sure excellent reading this week, thank you immensely.</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -97,7 +99,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>399 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>414 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:05 -0700</p>
 			</footer>
 		</article>

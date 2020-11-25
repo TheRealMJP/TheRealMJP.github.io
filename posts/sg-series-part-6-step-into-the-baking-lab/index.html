@@ -7,16 +7,24 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="SG Series Part 6: Step Into The Baking Lab">
 <meta itemprop="description" content="This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabGet the code on GitHub: https://github.">
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
 <meta itemprop="datePublished" content="2016-10-10T07:13:58&#43;00:00" />
 <meta itemprop="dateModified" content="2016-10-10T07:13:58&#43;00:00" />
-<meta itemprop="wordCount" content="5014">
+<meta itemprop="wordCount" content="5165">
 
 
 
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="SG Series Part 6: Step Into The Baking Lab" />
 <meta property="og:description" content="This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabGet the code on GitHub: https://github." />
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/" />
 <meta property="article:published_time" content="2016-10-10T07:13:58+00:00" />
@@ -24,7 +32,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SG Series Part 6: Step Into The Baking Lab"/>
 <meta name="twitter:description" content="This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabGet the code on GitHub: https://github."/>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -74,14 +86,14 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 				<h1>SG Series Part 6: Step Into The Baking Lab</h1>
 			</header>
 			<div class="content">
-				<p><img src="https://mynameismjp.files.wordpress.com/2016/09/bakinglab_post_intro.png" alt="bakinglab_post_intro"></p>
+				<p><img src="/images/converted/sg-series-part-6-step-into-the-baking-lab/bakinglab_post_intro.png" alt="bakinglab_post_intro"></p>
 <p><em>This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
-<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><!-- raw HTML omitted -->
-Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><!-- raw HTML omitted -->
-Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><!-- raw HTML omitted -->
-Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><!-- raw HTML omitted --></p>
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
 <p>Get the code on GitHub: <a href="https://github.com/TheRealMJP/BakingLab">https://github.com/TheRealMJP/BakingLab</a> (pre-compiled binaries available <a href="https://github.com/TheRealMJP/BakingLab/releases">here</a>)</p>
 <p>Back in early 2014, myself and David Neubelt started doing serious research into using Spherical Gaussians as a compact representation for our pre-computed lighting probes. One of the first things I did back then was to create a testbed application that we could use to compare various lightmap representations (SH, H-basis, SG, etc.) and quickly experiment with new ideas. As part of that application I implemented my first path tracer, which was directly integrated into the app for A/B comparisons. This turned out to be extremely useful, since having quick feedback was really helpful for evaluating quality and also for finding and fixing bugs. Eventually we used this app to finalize the exact approach that we would use when integrating SG&rsquo;s into The Order: 1886.</p>
 <p>A year later in 2015, Dave and I created another test application for experimenting with improvements that we were planning for future projects. This included things like a physically based exposure model utilizing real-world camera parameters, using the <a href="https://en.wikipedia.org/wiki/Academy_Color_Encoding_System">ACES</a>[1] RRT/ODT for tone mapping, and <a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">using real-world units</a>[2] for specifying lighting intensities. At some point I integrated an improved version of SG baking into this app that would progressively compute results in the background while the app remained responsive, allowing for quick &ldquo;preview-quality&rdquo; feedback after adjusting the lighting parameters. Once we started working on our <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pdf">SIGGRAPH presentation</a>[3] from the 2015 physically based shading course, it occurred to us that we should really package up this new testbed and release it alongside the presentation to serve as a working implementation of the concepts we were going to cover. But unfortunately this slipped through the cracks: the new testbed required a lot of work in order to make it useful, and both Dave and I were really pressed for time due to multiple new projects ramping up at the office.</p>
@@ -115,7 +127,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 
 <p>While it&rsquo;s not as great as a true progressive bake, it&rsquo;s still better than having no preview at all.</p>
 <p>The app supports a few settings that control some of the bake parameters, such as the number of samples evaluated per-texel and the overall lightmap resolution. The &ldquo;Scene&rdquo; group in the UI also has a few settings that allow toggling different components of the final render, such as the direct or indirect lighting or the diffuse/specular components. Under the &ldquo;Debug&rdquo; setting you can also toggle a neat visualizer that shows a visual representation of the raw data stored in the lightmap. It looks like this:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2016/08/sg_debug_visualizer.png?w=1024" alt="SG_Debug_Visualizer"></p>
+<p><img src="/images/converted/sg-series-part-6-step-into-the-baking-lab/sg_debug_visualizer_resized_1024.png" alt="SG_Debug_Visualizer"></p>
 <h2 id="ground-truth-path-tracer">Ground Truth Path Tracer<a href="#ground-truth-path-tracer" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>The integrated path tracer is primarily there so that you can see how close or far off you are when computing environment diffuse or specular from a light map. It was also a lot of fun to write - I recommend doing it sometime if you haven&rsquo;t already! Just be careful: it may make you depressed to see how poorly your real-time approximation holds up when compared with a proper offline render. :-)</p>
 <p>The ground truth renderer works in a similar vein to the lightmap baker: it kicks off multiple background threads that each grab work groups of 16x16 pixels that are contiguous in screen space. The renderer makes N passes over each pixel, where each pass adds an additional sample that&rsquo;s weighted and summed with the previous results. This gives you a true progressive render, where the result starts out noisy and  (very) gradually converges towards a noise-free image:</p>
@@ -140,7 +152,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <h2 id="exposure-and-depth-of-field">Exposure and Depth of Field<a href="#exposure-and-depth-of-field" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>As I mentioned earlier, the app implements a physically based exposure system that attempts to models the behavior and parameters of a real-world camera. Much of the implementation was based on the code from Padraic Hennessy&rsquo;s <a href="https://placeholderart.wordpress.com/2014/11/16/implementing-a-physically-based-camera-understanding-exposure/">excellent series of articles</a>[12], which was in turn inspired by Sébastien Lagarde and Charles de Rousiers&rsquo;s <a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">SIGGRAPH presentation from 2014</a>[2]. When the &ldquo;Exposure Mode&rdquo; setting is set to the &ldquo;Manual (SBS)&rdquo; or &ldquo;Manual (SOS)&rdquo; modes, the final exposure value applied before tone mapping will be computed based on the combination of aperture size, ISO rating, and shutter speed. There is also a &ldquo;Manual (Simple)&rdquo; mode available where a single value on a log2 scale can be used instead of the 3 camera parameters.</p>
 <p>Mostly for fun, I integrated a post-process depth of field effect that uses the same camera parameters (along with focal length and film size) to compute per-pixel circle of confusion sizes. The effect is off by default, and can be toggled on using the &ldquo;Enable DOF&rdquo; setting. Polygonal and circular bokeh shapes are supported using the technique suggested by Tiago Sousa in his <a href="http://advances.realtimerendering.com/s2013/Sousa_Graphics_Gems_CryENGINE3.pptx">2013 SIGGRAPH presentation</a>[13]. Depth of field is also implemented in the ground truth renderer, which is capable of achieving true multi-layer effects by virtue of using a ray tracer.</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/09/dof_gt.png"><img src="https://mynameismjp.files.wordpress.com/2016/09/dof_gt.png" alt="dof_gt"></a></p>
+<p><a href="/images/converted/sg-series-part-6-step-into-the-baking-lab/dof_gt.png"><img src="/images/converted/sg-series-part-6-step-into-the-baking-lab/dof_gt.png" alt="dof_gt"></a></p>
 <h2 id="tone-mapping">Tone Mapping<a href="#tone-mapping" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Several tone mapping operators are available for experimentation:</p>
 <ul>
@@ -153,65 +165,101 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <h2 id="debug-settings">Debug Settings<a href="#debug-settings" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>At the bottom of the settings UI are a group of debug options that can be selected. I already mentioned the bake data visualizer previously, but it&rsquo;s worth mentioning again because it&rsquo;s really cool. There&rsquo;s also a &ldquo;luminance picker&rdquo;, which will enable a text output showing you the luminance and illuminance of the surface under the mouse cursor. This was handy for validating the physically based sun and sky model, since I could use the picker to make sure that the lighting values matched what you would expect from real-world conditions. The &ldquo;View Indirect Specular&rdquo; option causes both the real-time renderer and the ground truth renderer to only show the indirect specular component, which can be useful for gauging the accuracy of specular computed from the lightmap. After that there&rsquo;s a pair of buttons for saving or loading light settings. This will serialize the settings that control the lighting environment (sun direction, sky mode, area light position, etc.) to a file, which can be loaded in whenever you like. The &ldquo;Save EXR Screenshot&rdquo; is fairly self-explanatory: it lets you save a screenshot to an EXR file that retains the HDR data. Finally there&rsquo;s an option to show the current sun intensity that&rsquo;s used for the real-time directional light.</p>
 <h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<p>[1] <a href="https://en.wikipedia.org/wiki/Academy_Color_Encoding_System">Academy Color Encoding System</a><!-- raw HTML omitted -->
-[2] <a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">Moving Frostbite to PBR (course notes)</a><!-- raw HTML omitted -->
-[3] <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pdf">Advanced Lighting R&amp;D at Ready At Dawn Studios</a><!-- raw HTML omitted -->
-[4] <a href="https://embree.github.io/">Embree: High Performance Ray Tracing Kernels</a><!-- raw HTML omitted -->
-[5] <a href="http://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf">Correlated Multi-Jittered Sampling</a><!-- raw HTML omitted -->
-[6] <a href="http://www.valvesoftware.com/publications/2006/SIGGRAPH06_Course_ShadingInValvesSourceEngine.pdf">Shading in Valve’s Source Engine</a><!-- raw HTML omitted -->
-[7] <a href="https://www.cg.tuwien.ac.at/research/publications/2010/Habel-2010-EIN/">Efficient Irradiance Normal Mapping</a><!-- raw HTML omitted -->
-[8] <a href="http://www.rorydriscoll.com/2009/01/07/better-sampling/">Better Sampling</a><!-- raw HTML omitted -->
-[9] <a href="http://cgg.mff.cuni.cz/projects/SkylightModelling/">Adding a Solar Radiance Function to the Hosek Skylight Model</a><!-- raw HTML omitted -->
-[10] <a href="https://en.wikipedia.org/wiki/Exposure_value">Exposure value</a><!-- raw HTML omitted -->
-[11] <a href="http://www.reedbeta.com/blog/2014/06/04/artist-friendly-hdr-with-exposure-values/">Artist-Friendly HDR With Exposure Values</a><!-- raw HTML omitted -->
-[12] <a href="https://placeholderart.wordpress.com/2014/11/16/implementing-a-physically-based-camera-understanding-exposure/">Implementing a Physically Based Camera: Understanding Exposure</a><!-- raw HTML omitted -->
-[13] <a href="http://advances.realtimerendering.com/s2013/Sousa_Graphics_Gems_CryENGINE3.pptx">CryENGINE 3 Graphics Gems</a><!-- raw HTML omitted -->
-[14] <a href="http://filmicgames.com/archives/75">Filmic Tonemapping Operators</a><!-- raw HTML omitted -->
-[15] <a href="http://www.gdcvault.com/play/1012351/Uncharted-2-HDR">Uncharted 2: HDR Lighting</a><!-- raw HTML omitted -->
-[16] <a href="https://twitter.com/jimhejl/status/633777619998130176">Jim Hejl on Twitter</a><!-- raw HTML omitted -->
-[17] <a href="https://github.com/ampas/aces-dev">Academy Color Encoding System Developer Resources</a><!-- raw HTML omitted --></p>
+<p>[1] <a href="https://en.wikipedia.org/wiki/Academy_Color_Encoding_System">Academy Color Encoding System</a><br>
+[2] <a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">Moving Frostbite to PBR (course notes)</a><br>
+[3] <a href="http://blog.selfshadow.com/publications/s2015-shading-course/rad/s2015_pbs_rad_slides.pdf">Advanced Lighting R&amp;D at Ready At Dawn Studios</a><br>
+[4] <a href="https://embree.github.io/">Embree: High Performance Ray Tracing Kernels</a><br>
+[5] <a href="http://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf">Correlated Multi-Jittered Sampling</a><br>
+[6] <a href="http://www.valvesoftware.com/publications/2006/SIGGRAPH06_Course_ShadingInValvesSourceEngine.pdf">Shading in Valve’s Source Engine</a><br>
+[7] <a href="https://www.cg.tuwien.ac.at/research/publications/2010/Habel-2010-EIN/">Efficient Irradiance Normal Mapping</a><br>
+[8] <a href="http://www.rorydriscoll.com/2009/01/07/better-sampling/">Better Sampling</a><br>
+[9] <a href="http://cgg.mff.cuni.cz/projects/SkylightModelling/">Adding a Solar Radiance Function to the Hosek Skylight Model</a><br>
+[10] <a href="https://en.wikipedia.org/wiki/Exposure_value">Exposure value</a><br>
+[11] <a href="http://www.reedbeta.com/blog/2014/06/04/artist-friendly-hdr-with-exposure-values/">Artist-Friendly HDR With Exposure Values</a><br>
+[12] <a href="https://placeholderart.wordpress.com/2014/11/16/implementing-a-physically-based-camera-understanding-exposure/">Implementing a Physically Based Camera: Understanding Exposure</a><br>
+[13] <a href="http://advances.realtimerendering.com/s2013/Sousa_Graphics_Gems_CryENGINE3.pptx">CryENGINE 3 Graphics Gems</a><br>
+[14] <a href="http://filmicgames.com/archives/75">Filmic Tonemapping Operators</a><br>
+[15] <a href="http://www.gdcvault.com/play/1012351/Uncharted-2-HDR">Uncharted 2: HDR Lighting</a><br>
+[16] <a href="https://twitter.com/jimhejl/status/633777619998130176">Jim Hejl on Twitter</a><br>
+[17] <a href="https://github.com/ampas/aces-dev">Academy Color Encoding System Developer Resources</a><br></p>
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22laurens@bamtang.com%22">dev</a> - <!-- raw HTML omitted -->Jan 2, 2019<!-- raw HTML omitted --></p>
+<p><a href="%22laurens@bamtang.com%22">dev</a> - <time datetime="2019-01-08 15:33:47">Jan 2, 2019</time></p>
 <p>thanks for the great article, sorry about the beginner question but I wanted to know if there are some considerations we need to know if we want to add more lights to the scene,</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2017-06-25 22:30:38">Jun 0, 2017</time>
 <p>Does your FBX file have a secondary UV set? The demo requires that the scene have a second UV set that has a unique UV parameterization for the whole scene, since it uses it for the generated lightmap.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2018-08-08 10:12:59">Aug 3, 2018</time>
 <p>Hello, Thanks for providing the baking lab source code and these articles! Does the baking lab contain any sample code for how one could have a dynamic mesh lit from the lightmaps?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2018-08-08 21:38:43">Aug 3, 2018</time>
 <p>Unfortunately it does not: it only shows how to bake 2D lightmaps for suitable static geometry. Each texel of the lightmap bakes the incoming lighting for a hemisphere surrounding the surface normal of the mesh, which means that the information is only useful if being applied to that particular surface. For dynamic meshes, you typically want to bake a set of spherical probes (containing lighting from all directions, and not just on a hemisphere) throughout the entire area that your meshes might be moving. A simple way to do this is to place all of probes within cells of a 3D grid that surrounds your scene, which makes it simple to figure out which probe(s) to sample from, and also makes it simple to interpolate between neighboring probes. It&rsquo;s also possible to use less regular representations that are more sparse in areas with less lighting/geometry complexity, or that rely on hand-placed probes. This can save you memory and/or baking time, but can make probe lookups and interpolation more costly. Either way baking the probe itself is very similar to the code in the sample for baking a hemisphere, with the major difference being that you need to shoot rays in all directions and adjust your monte carlo weights accordingly. You also have to choose a basis that can represent lighting on a sphere, for instance spherical harmonics or a set of SG&rsquo;s oriented about the unit sphere. Part 5 of the article talks a bit about working with these representations, and the tradeoffs involved.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2017-03-05 16:38:06">Mar 0, 2017</time>
 <p>Hi Steven, Sorry that I took so long to reply to your question. The answer here is &ldquo;yes&rdquo;, since samples at the extreme edges of the hemisphere can potentially result in a negative contribution when projected onto the basis vectors. HL2 basis is exactly like spherical harmonics in this regard, except that the way the basis vectors are oriented results in ideal projections for a hemisphere since each basis vector has the same projection onto the local Z axis (normal) of the baking point. In fact, HL2 is pretty much exactly the same as L1 SH, except it has different weighting and the basis vectors are rotated (in SH the linear cosine lobes are lined up with the major X/Y/Z axes). This is actually noted in Habel&rsquo;s paper from 2010 where they introduce H-basis: <a href="https://www.cg.tuwien.ac.at/research/publications/2010/Habel-2010-EIN/Habel-2010-EIN-paper.pdf">https://www.cg.tuwien.ac.at/research/publications/2010/Habel-2010-EIN/Habel-2010-EIN-paper.pdf</a> (see section 2.1)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Steven]( "steven.brekelmans@gmail.com") - <time datetime="2017-02-11 08:36:23">Feb 6, 2017</time>
 <p>First of all thank you for the great series. I have a question about the HL2Baker - when the sample is projected onto the three basis vectors in AddSample(), there&rsquo;s no clamp for rejecting samples that point *away* from the basis. Doesn&rsquo;t this effectively remove power from the accumulation for that basis since the dot product would be negative?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-30 12:53:06">Oct 0, 2016</time>
 <p>Hey Max, I&rsquo;m glad you enjoyed the articles! The incorrect luminance calculation was an oversight on my part. I must have copy-pasted the formula from some older code without double-checking that I was using the correct weights for computing relative luminance from linear sRGB values. I&rsquo;ve corrected the code in that shader, and also fixed a few other places where I was using the incorrect formula. Thank you for pointing that out!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Rim]( "remigius@netforge.nl") - <time datetime="2016-10-12 23:49:36">Oct 3, 2016</time>
 <p>Great stuff as always Matt, posts like this make me want to do 3D graphics again :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-13 09:49:20">Oct 4, 2016</time>
 <p>Thank you Rim, nice to hear from you again! There&rsquo;s always time for a little graphics on the side. ;)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Max]( "msomeone@gmail.com") - <time datetime="2016-10-29 06:49:41">Oct 6, 2016</time>
 <p>Thank you for writing this awesome articles series and releasing BakingLab! I`m very curious why in illuminance computation in Mesh.hlsl shader there are 0.299f, 0.587f, 0.114f weight, not rec.709\sRGB relative luminance weights? Is it somehow related to usage of Hosek&rsquo;s sky model?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2017-04-27 11:17:14">Apr 4, 2017</time>
 <p>Hey! So pretty much the entire pipeline works in the a space such that intensity is scaled down by the 2^-10 factor, with all inputs (environment maps, light sources) appropriately scaled down to match that space. This includes the average luminance calculation and exposure calculations. There&rsquo;s no need to ever &ldquo;restore&rdquo; back to the physical intensity range, since you get the correct final results by keeping the scene radiance and exposure values in the same 2^-10 space. Does that make sense? Sorry that the code is a bit confusing when it comes to that scale factor, I probably should have added a few more comments explaining what was going on with that. -Matt</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[olej]( "olejpoland@gmail.com") - <time datetime="2016-11-12 18:15:53">Nov 6, 2016</time>
 <p>Hey Matt, First of all thanks for all your hard work and sharing it with us :). Your contributions are invaluable to the graphics programming community. As some unfamiliar with offline rendering middlewares, I was wondering why use Embree for ground truth reference? I remember you mentioning that your bake farms on The Order used OptiX. I would guess that a GPU raytracer would converge way faster then a CPU one, especially when you are limited to a single machine. What are your reasons for this choice and what library would you recommend to someone wanting to write a reference GI preview for a game engine?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[User1]( "mendele@yandex.ru") - <time datetime="2017-04-27 02:31:32">Apr 4, 2017</time>
 <p>Hello MJP! Thanks for sharing. My question is regarding average luminance calculation. LuminanceReductionInitialCS takes as input a back buffer with luminance scaled down with 2^-10, and operates on that values without restoring actual luminance. But restoring gives wrong results (everything becomes too dark). What&rsquo;s the logic behind that? Thanks.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Sze](http://divrgents.com "awu.chen.dev@gmail.com") - <time datetime="2017-06-21 17:06:07">Jun 3, 2017</time>
 <p>Hi MJP, Thank you so much for providing this extensive blog and the source code. I am running into problems bringing in an external .fbx file into the project. I&rsquo;ve tried modifying the Model filenames as well as creating an entirely new fbx file in the BakingLab.cpp however it&rsquo;s giving me errors &ldquo;block offset if out of range&rdquo; or &ldquo;DirectX Error: The parameter is incorrect&rdquo; It will be amazing if you can let me know how I should proceed with bringing in external fbx files. Thanks again.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-11-12 18:51:57">Nov 6, 2016</time>
 <p>I haven&rsquo;t seen any concrete numbers in a while, but I would imagine that OptiX on a high-end GPU will have higher throughput than running Embree on a high-end consumer CPU. However I find Embree much easier to work with, which is why I use it for non-work projects. The Embree API is very clean with few entrypoints, and it&rsquo;s very simple to use it to build an acceleration structure from triangle meshes. From there you can just cast arbitrary rays however you&rsquo;d like, which makes it very easy to fit into your renderer. I would also consider it to be pretty fast and well-optimized, even if it can&rsquo;t match the throughput of a GPU-based ray tracer. The OptiX API is also nice, but it&rsquo;s much more complex than Embree. This is becase OptiX isn&rsquo;t just a ray-tracing kernel: it&rsquo;s also a framework for writing a complete renderer. The framework is important because it abstracts away some of the details of CUDA and the underlying GPU architecture, which is inherently less flexible than pure CPU code. This allows you to write a ray-generation program that runs persistently while the GPU traces the rays and runs separate programs whenever a ray intersects a triangle. They also have an API that they call &ldquo;OptiX Prime&rdquo;, which is just the ray-tracing kernel. I haven&rsquo;t used it myself, but I would imagine it might be tricky to use in a way that plays nicely with a GPU. Either way, if you use it then you&rsquo;ve effectively restricted yourself to Nvidia hardware. At work we don&rsquo;t care as much since we can just keep buying Nvidia GPU&rsquo;s, but that&rsquo;s not a great option for a public demo. At work we also run Linux on the bake farm PC&rsquo;s, which helps avoid some annoying issues that can pop up when using CUDA on a Windows PC. However we&rsquo;ve still had plenty of issues with drivers, overheating, running out of memory, and lack of debugging support. I think for your purposes Embree would be just fine. Like I just explained it&rsquo;s much easier to integrate, especially when you consider that you can natively debug your code. If you want to make it as fast as you can then you can consider using ISPC to vectorize your code.You may also want to look into AMD&rsquo;s FireRays, which can use Embree as a back-end or run on the GPU: <a href="http://gpuopen.com/firerays-2-0-open-sourcing-and-customizing-ray-tracing/">http://gpuopen.com/firerays-2-0-open-sourcing-and-customizing-ray-tracing/</a> I haven&rsquo;t looked at it myself, but I would imagine that the API is heavier than Embree&rsquo;s due to the need to abstract away multiple back-ends.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[郭叉叉 (@guoxx_)](http://twitter.com/guoxx_ "guoxx_@twitter.example.com") - <time datetime="2017-06-19 05:33:33">Jun 1, 2017</time>
 <p>Amazing articles. Thanks for sharing those experience and source code. I have one question about the relative luminance calculation, the equation used is well described in BT.709 standard. But I think it&rsquo;s working with radiometry unit. Since the luminance unit is used for light, relative luminance shouldn&rsquo;t use another equation? For example, there is a light with color temperature and randiant power defined, we can construct a spectrum data and luminous efficiency base on color temperature, after photometric curve weighted, RGB value with photometry unit is used for lighitng, then luminance is stored in backbuffer. If we apply the equation from BT.709. does photometric curve applied twice since curve is already applied when we convert light units from radiometry to photometry? I think the correct way is luminance = r * integral_of_srgb_r_responce_curve + g * integral_of_srgb_g_responce_curve + b * integral_of_srgb_b_responce_curve Please point it out if I made any mistake.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-25 15:46:31">Oct 2, 2016</time>
 <p>Hey Stephen, thank you for the kind words! Yes, you could absolutely save off the &ldquo;Lightmap&rdquo; resource as a file and then re-load later. In fact there&rsquo;s a helper function in Textures.h called &ldquo;SaveTextureAsDDS&rdquo; that you could use to do this, and it will save the save the entire texture array as a DDS file containing uncompressed fp16 data.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Wumpf](http://wumpfblog.wordpress.com "r_andreas2@web.de") - <time datetime="2016-10-15 03:32:56">Oct 6, 2016</time>
 <p>Thank you so much for this article series! Haven&rsquo;t done much graphics stuff for quite some time - all those cross references will keep me busy for a while :). I especially enjoyed how you&rsquo;ve described the practical considerations of the production environment in Part 5. It must have been quite annoying to drop the accurate fitting algorithm for the (albeit creative) hack to make it run on a large scale within the time constraints.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Stephen Keefer](https://www.facebook.com/app_scoped_user_id/10155402927081038/ "keefer.stephen@gmail.com") - <time datetime="2016-10-25 10:13:39">Oct 2, 2016</time>
 <p>Very nice article and description! Excellent sample application and makes me wanna incorporate this into my editor. I am curious about a few things Am I correct in assuming that, if you were to save &ldquo;Lightmap&rdquo; resource view from &ldquo;MeshBakerStatus&rdquo; after the progress reaches 100%, you could then reuse this in next launch (or in game), assuming light parameters are the same.</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -219,7 +267,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5014 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5165 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:13 -0700</p>
 			</footer>
 		</article>

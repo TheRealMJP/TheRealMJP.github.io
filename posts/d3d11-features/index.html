@@ -9,7 +9,7 @@
 <meta itemprop="description" content="D3D11 came with a whole bunch of new big-ticket features that received plenty of attention and publicity. Things like tessellation, compute shaders, and multithreaded command submission have the subject of many presentations, discussion, and sample apps. However D3D11 also came with a few other features that allow more &ldquo;traditional&rdquo; rendering approaches to benefit from the increased programmability of graphics hardware. Unfortunately most of them have gone relatively unnoticed, which isn&rsquo;t surprising when you consider that most of them have little or no documentation, (much like some of the cool stuff that came in D3D10.">
 <meta itemprop="datePublished" content="2010-11-15T02:24:48&#43;00:00" />
 <meta itemprop="dateModified" content="2010-11-15T02:24:48&#43;00:00" />
-<meta itemprop="wordCount" content="1188">
+<meta itemprop="wordCount" content="1244">
 
 
 
@@ -86,20 +86,28 @@
 <p>So overall it looks like it gets you about halfway back to the performance you get with no depth output, which is pretty nice (especially considering how easy it is to use). In addition to that, I also used a read-only depth-stencil buffer for the soft particles so that I could keep depth testing active.</p>
 <p>If you want to run it yourself or check out the code, I uploaded the code + binaries here: <a href="https://mynameismjp.files.wordpress.com/2010/11/depthsprites.zip">https://mynameismjp.files.wordpress.com/2010/11/depthsprites.zip</a></p>
 <p>I&rsquo;ll also leave you off with a picture of my totally sweet fire/smoke effect. I should quit my job and become an effects artist.</p>
-<h2 id="httpmynameismjpfileswordpresscom201011depthsprites-2010-11-14-16-40-46-18png-depthsprites-2010-11-14-16-40-46-18httpmynameismjpfileswordpresscom201011depthsprites-2010-11-14-16-40-46-18png"><a href="http://mynameismjp.files.wordpress.com/2010/11/depthsprites-2010-11-14-16-40-46-18.png"><img src="http://mynameismjp.files.wordpress.com/2010/11/depthsprites-2010-11-14-16-40-46-18.png" alt="" title="DepthSprites 2010-11-14 16-40-46-18"></a><a href="#httpmynameismjpfileswordpresscom201011depthsprites-2010-11-14-16-40-46-18png-depthsprites-2010-11-14-16-40-46-18httpmynameismjpfileswordpresscom201011depthsprites-2010-11-14-16-40-46-18png" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h2 id="imagesconvertedd3d11-featuresdepthsprites-2010-11-14-16-40-46-18png-depthsprites-2010-11-14-16-40-46-18imagesconvertedd3d11-featuresdepthsprites-2010-11-14-16-40-46-18png"><a href="/images/converted/d3d11-features/depthsprites-2010-11-14-16-40-46-18.png"><img src="/images/converted/d3d11-features/depthsprites-2010-11-14-16-40-46-18.png" alt="" title="DepthSprites 2010-11-14 16-40-46-18"></a><a href="#imagesconvertedd3d11-featuresdepthsprites-2010-11-14-16-40-46-18png-depthsprites-2010-11-14-16-40-46-18imagesconvertedd3d11-featuresdepthsprites-2010-11-14-16-40-46-18png" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://recreationstudios.blogspot.com" title="mccarthp@gmail.com">Patrick</a> - <!-- raw HTML omitted -->Nov 0, 2010<!-- raw HTML omitted --></p>
+<p><a href="http://recreationstudios.blogspot.com" title="mccarthp@gmail.com">Patrick</a> - <time datetime="2010-11-14 19:18:54">Nov 0, 2010</time></p>
 <p>Great post! It looks like the conservative depth is quite useful. I&rsquo;ll have to look more into it. I wrote a simple Compute Shader in SlimDX a couple months ago that used an Unordered Access View to draw primitives like lines and circles. UAVs are very powerful. It&rsquo;s located here, for anyone interested: <a href="http://recreationstudios.blogspot.com/2010/04/simple-compute-shader-example.html">http://recreationstudios.blogspot.com/2010/04/simple-compute-shader-example.html</a></p>
-<!-- raw HTML omitted -->
+<hr />
+#### 
+[Daniel](http://talden.com "dwrightnow@gmail.com") - <time datetime="2010-11-14 21:37:13">Nov 0, 2010</time>
 <p>Pure awesome information. Don&rsquo;t forget about texture cube arrays being new! Jk - not really sure what those are useful for. Oh and your smoke effect - don&rsquo;t quit your day job =)</p>
-<!-- raw HTML omitted -->
+<hr />
+#### 
+[Direct3D 11 Conservative Depth Output Details and Demo - 3D Tech News, Pixel Hacking, Data Visualization and 3D Programming - Geeks3D.com](http://www.geeks3d.com/20101220/direct3d-11-conservative-depth-output-details-and-demo/ "") - <time datetime="2010-12-20 00:29:02">Dec 1, 2010</time>
 <p>[&hellip;] You can find the complete article (covering also other lesser-known D3D11 features) as well as the demo HERE. [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+#### 
+[Jeremy](http://www.jshopf.com/blog "jshopf@gmail.com") - <time datetime="2010-11-16 06:29:15">Nov 2, 2010</time>
 <p>I agree, the &ldquo;small&rdquo; features are great: <a href="http://www.jshopf.com/blog/?p=166">http://www.jshopf.com/blog/?p=166</a>. Granted I wrote that before there was were dx11 drivers available..</p>
-<!-- raw HTML omitted -->
+<hr />
+#### 
+[Linear Depth | The Devil In The Details](http://dev.theomader.com/linear-depth/ "") - <time datetime="2013-12-23 02:05:12">Dec 1, 2013</time>
 <p>[…] loose the early Z unless you use the variant SV_DepthGreater, or SV_DepthLessEqual. Check out this blog post for more details. In most cases though I would argue that non linear depth is just […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -107,7 +115,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1188 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1244 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-11-14 18:24 -0800</p>
 			</footer>
 		</article>

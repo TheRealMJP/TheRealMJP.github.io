@@ -7,16 +7,22 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads">
 <meta itemprop="description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!">
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption">
 <meta itemprop="datePublished" content="2018-04-02T06:29:17&#43;00:00" />
 <meta itemprop="dateModified" content="2018-04-02T06:29:17&#43;00:00" />
-<meta itemprop="wordCount" content="3786">
+<meta itemprop="wordCount" content="3866">
 
 
 
 <meta itemprop="keywords" content="Graphics,DX12," /><meta property="og:title" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads" />
 <meta property="og:description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!" />
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/" />
 <meta property="article:published_time" content="2018-04-02T06:29:17+00:00" />
@@ -24,7 +30,10 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Breaking Down Barriers - Part 2: Synchronizing GPU Threads"/>
 <meta name="twitter:description" content="This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!"/>
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -136,17 +145,17 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 </div>
 
 <p><em>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
-<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><!-- raw HTML omitted --></p>
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
 <p>Welcome to part 2 of the series! In the <a href="../breaking-down-barriers-part-1-whats-a-barrier/">previous article</a>, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU. One such use case that I brought up was to ensure that the many threads kicked off by a Draw or Dispatch call don&rsquo;t overlap with previous Draw/Dispatch&rsquo;s threads when there&rsquo;s some kind of dependency between the two calls. In this article I&rsquo;m going to dive into the specifics of how GPU&rsquo;s handle this kind of synchronization, and also discuss the high-level performance implications of these approaches.</p>
 <h2 id="programming-the-mjp-3000">Programming the MJP-3000<a href="#programming-the-mjp-3000" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>To explain the basics of GPU thread synchronization, I&rsquo;m going to walk through some examples using a completely fictional architecture: the MJP-3000. This made-up GPU is much simpler than real graphics hardware, which will (hopefully) make it easier to demonstrate high-level concepts without getting lost in the weeds. I also don&rsquo;t want to give the impression that what I describe is <em>exactly</em> how real GPU&rsquo;s do things, especially since many of those details aren&rsquo;t publicly available. However the commands and behavior are still loosely based on real-world GPU&rsquo;s, since otherwise the example wouldn&rsquo;t be very useful!</p>
 <p>With the prologue out of the way, let&rsquo;s have a look at the amazing feat of engineering that is the MJP-3000:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2017/01/gpu-overview1.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/gpu-overview1.png" alt="gpu-overview"></a></p>
+<p><a href="/images/converted/breaking-down-barriers-part-2-synchronizing-gpu-threads/gpu-overview1.png"><img src="/images/converted/breaking-down-barriers-part-2-synchronizing-gpu-threads/gpu-overview1.png" alt="gpu-overview"></a></p>
 <p>The interesting parts here are the <strong><a href="https://fgiesen.wordpress.com/2011/07/02/a-trip-through-the-graphics-pipeline-2011-part-2/">command processor</a></strong> on the left, and the <strong>shader cores</strong> in the middle. The command processor is the brains of the operation, and its job is to read commands (the green blocks) from a <strong>command buffer</strong> and coordinate the <strong>shader cores</strong>. The command processor reads commands one at time from the command buffer, always in the exact order they&rsquo;re submitted. When the command processor encounters the appropriate commands, it can add a group of threads to the <strong>thread queue</strong> immediately to the right of the command processor. The 16 shader cores pull threads from this queue in a first-in first-out (FIFO) scheme, after which the shader program for that thread is actually executed on the shader core. The cores are all identical, and completely independent of each other. This means that together they can simultaneously run 16 threads of the same shader program, or they can each run a thread from a completely different program. The shader cores can also read or write to arbitrary locations in device memory, which is on the right. Since the cores are independent and can all access memory, you can think of the array like a 16-core CPU. The major difference is that unlike a CPU they can&rsquo;t tell themselves what to do, since they instead rely on the command processor to enqueue work for them. The <strong>Current Cycle Count</strong> in the top-left corner shows how many GPU cycles have executed for a particular example, which will help us keep track of how long it took for a particular example to complete execution.</p>
 <p>For some reason, the designers of the MJP-3000 decided that their hardware could only run compute shaders. I suppose they felt that it would make things a lot simpler to only focus on the one shader stage that doesn&rsquo;t rely on a complicated rasterization pipeline. Because of that, the command processor only has 1 command that actually kicks off threads to run on the shader cores: <strong>DISPATCH</strong>. The DISPATCH command specifies two things: how many threads need to run, and what shader program should be executed. When a DISPATCH command is encountered by the command processor, the threads from that dispatch are immediately placed in the thread queue, where they are grabbed by waiting shader cores. Since there are 16 cores, only 16 threads can be executing at any given time. Any threads that aren&rsquo;t running on the shader cores stay in the thread queue until a core finishes a different thread and pulls the waiting thread out of the queue. The command processor can parse a DISPATCH command and enqueue its threads in 1 cycle, and the shader cores can dequeue a thread from the thread queue in 1 cycle.</p>
 <h2 id="dispatches-and-flushes">Dispatches and Flushes<a href="#dispatches-and-flushes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -544,7 +553,7 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 
 <p>Things didn&rsquo;t go as well this time around. We still got a bit of overlap between A and C, but that was immediately followed by 300 cycles where half of our shader cores were idle. This happened because our FLUSH command ends up waiting for dispatch C to finish, since the flush works by waiting for the thread queue to become completely empty. We could re-arrange things so that dispatch C gets kicked off <em>after</em> the flush, but this is not ideal either because there would still be a bit of idle time during the tail end of dispatch A, and also a long period of half-idle cores when dispatch C is running.</p>
 <p>Lucky for us, there&rsquo;s a new driver update for the MJP-3000 that should be able to help us out. MJP xPerience 3D Nocturnal<strong>™</strong> Driver v5.444.198754 adds support for two new commands that can be parsed and executed by the command processor. The first one is called SIGNAL_POST_SHADER, and the other is called WAIT_SIGNAL. The first command is pretty fancy: it tells the command processor to write a signal value to an address in memory (often called a <em>fence</em> or <em>label</em>) once all shaders have completed. The cool part is that it&rsquo;s a &ldquo;deferred&rdquo; write: the write is actually performed by the thread queue once it determines that all previously-queued threads have run to completion. This allows the command processor to move on to other commands while previous dispatches are still executing. The other command, WAIT_SIGNAL, tells the command processor to stall and wait for a memory address to be signaled. This can be used in conjunction with SIGNAL_POST_SHADER to wait for a particular dispatch to complete, but with the added bonus that the command processor can kick off more work in between those steps. To help visualize this process, let&rsquo;s update the GPU diagram with a new component:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2017/01/label-overview.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/label-overview.png" alt="label-overview"></a></p>
+<p><a href="/images/converted/breaking-down-barriers-part-2-synchronizing-gpu-threads/label-overview.png"><img src="/images/converted/breaking-down-barriers-part-2-synchronizing-gpu-threads/label-overview.png" alt="label-overview"></a></p>
 <p>Once a SIGNAL_POST_SHADER command is executed, any pending labels will show up as a colored block in a new area under the thread queue. The number on the block shows the current status of the label: &ldquo;0&rdquo; means it hasn&rsquo;t been signaled yet, and &ldquo;1&rdquo; means that it&rsquo;s in the signaled state and any dependent waits will be released.</p>
 <p>Let&rsquo;s now try out our new commands with the previous example:</p>
 
@@ -679,23 +688,37 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22jorge@iryoku.com%22">IRYOKU</a> - <!-- raw HTML omitted -->Apr 5, 2018<!-- raw HTML omitted --></p>
+<p><a href="%22jorge@iryoku.com%22">IRYOKU</a> - <time datetime="2018-04-13 05:40:38">Apr 5, 2018</time></p>
 <p>This was an amazing article, thanks for sharing!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Baggers]( "techsnuffle@gmail.com") - <time datetime="2018-04-04 00:35:44">Apr 3, 2018</time>
 <p>Once again awesome articles, I can tell I&rsquo;m going to be referring to these for years :) A few tiny niggles - missing link between two shader cores. Row 1 column 3 (0 indexed) - &ldquo;group of treads&rdquo; in first paragraph after first mjp-3000 diagram - &ldquo;dispatch B might read from dispatch B’s output buffer before the threads of dispatch A have finished!&rdquo; should that be &ldquo;might read from dispatch A’s output&rdquo;?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2018-04-04 14:05:10">Apr 3, 2018</time>
 <p>Thank you for the kind words, and for pointing out those issues! I&rsquo;ve fixed the two typos, and I&rsquo;ll fix the image one I&rsquo;m on my home PC.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2018-04-03 18:48:55">Apr 2, 2018</time>
 <p>Most GPU&rsquo;s will actually have multiple threads &ldquo;sharing&rdquo; a shader core. The hardware scheduler will cycle through those threads at a relatively fast rate compared to CPU&rsquo;s, which allows the hardware to hide the latency of memory operations. The basic idea is that if one thread stalls waiting for memory, the hardware can switch to another thread that can (hopefully) get some work done. The main difference from CPU&rsquo;s is that there&rsquo;s usually a finite limit of how many threads can be committed to a shader core, which is commonly referred to as &ldquo;occupancy&rdquo;. When a CPU switches threads, the current context is saved off to memory, which is usually backed by a very generous cache hierarchy. GPU threads however have *tons* of registers that live in very large register files, and very small caches. This usually makes it impractical to save off those registers to memory for a context switch, especially at the rate at which GPU&rsquo;s switch threads. So instead most GPU&rsquo;s will statically partition a core&rsquo;s register file among all threads currently running on that core, with the number of registers being dependent on the complexity of the shader program being run. So if the core has 256 registers and the program needs 64 registers, then you can have a max 4 of threads committed to a core at any given time. This is why shader authors often try to optimize for register usage, since less registers means higher occupancy and more ability for the hardware to hide latency. This is a good slide deck that covers some of these details: <a href="http://bps10.idav.ucdavis.edu/talks/03-fatahalian">http://bps10.idav.ucdavis.edu/talks/03-fatahalian</a>_gpuArchTeraflop_BPS_SIGGRAPH2010.pdf It also talks about how GPU&rsquo;s actually use SIMD for their shader cores, which is something that I left out of my made-up GPU in order to keep things simpler. But the fact that GPU threads are always executed on SIMD units in groups of 32 or 64 also has a bearing on register usage and occupancy, since it effectively means that your register count can actually be 32x or 64x larger! So for instance if you take AMD&rsquo;s GCN architecture, each CU on the GPU has 4 SIMD units, and each SIMD has a register file with 256 registers. AMD works with &ldquo;wavefronts&rdquo; of 64 threads, which means that each SIMD has 64x256 32-bit registers (64KB). If you take the PS4&rsquo;s GPU with 18 CU&rsquo;s, that adds up to 4.5 MB of registers!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Rim]( "remigius@netforge.nl") - <time datetime="2018-04-10 10:42:49">Apr 2, 2018</time>
 <p>Another very nice read indeed. I recently followed a course on the computational complexity of scheduling algorithms and this got me wondering, isn&rsquo;t optimizing your command submission and locking schedule really difficult (as in NP-hard) for anything but trivial scenarios? There&rsquo;ll probably be heuristics that are good enough in practice, but I&rsquo;m curious what you think, if you care to comment of course.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[nikitablack](http://nikitablack.github.io/ "nikita_chernyi@mail.ru") - <time datetime="2018-04-03 01:10:22">Apr 2, 2018</time>
 <p>The article is amazing. Thank you for sharing the knowledge in accessible manner. You told that in your amazing MJP-3000 GPU you have 16 cores and hence 16 threads. Does that holds for real-world GPUs that one core can spawn only one thread (on PC we can span infinite number of threads even on a single core).</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Breaking Down Barriers &#8211; Part 3: Multiple Command Processors &#8211; The Danger Zone](https://mynameismjp.wordpress.com/2018/06/17/breaking-down-barriers-part-3-multiple-command-processors/ "") - <time datetime="2019-03-05 13:45:35">Mar 2, 2019</time>
 <p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Breaking Down Barriers &#8211; Part 1: What&#8217;s a Barrier? &#8211; The Danger Zone](https://mynameismjp.wordpress.com/2018/03/06/breaking-down-barriers-part-1-whats-a-barrier/ "") - <time datetime="2019-03-05 13:44:28">Mar 2, 2019</time>
 <p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -703,7 +726,7 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3786 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3866 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-04-01 23:29 -0700</p>
 			</footer>
 		</article>

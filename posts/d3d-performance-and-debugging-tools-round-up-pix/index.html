@@ -9,7 +9,7 @@
 <meta itemprop="description" content="So at this point just everybody knows about knows about PIX. I mean it comes with the DirectX SDK, for crying out loud. This handy little program started its like as the Performance Investigator for Xbox (original Xbox, that is) and today is useful performance and debugging tool for both Windows and the Xbox 360. Since it&rsquo;s a DirectX tool, most of the information you can gather from it is hardware-independent.">
 <meta itemprop="datePublished" content="2010-02-15T05:17:18&#43;00:00" />
 <meta itemprop="dateModified" content="2010-02-15T05:17:18&#43;00:00" />
-<meta itemprop="wordCount" content="1266">
+<meta itemprop="wordCount" content="1267">
 
 
 
@@ -75,28 +75,28 @@
 <p>If you&rsquo;re an XNA programmer I&rsquo;d recommend checking out my in-depth <a href="http://mynameismjp.wordpress.com/samples-tutorials-tools/pix-with-xna-tutorial/">PIX With XNA article</a>, especially if you&rsquo;re new to D3D in general. For rest of you, here&rsquo;s a summary of what I think are the most useful things you can do with PIX:</p>
 <p><strong>1. View the results of a Draw call</strong></p>
 <p>With everyone and their mother using a deferred renderer these days, more often than not what&rsquo;s displayed on the screen is the result of several passes.  This means that when things go wrong, it&rsquo;s hard to guess the problem since it could have occurred in multiple places.  Fortunately PIX can help us by letting us pick any singular Draw call and see exactly what was drawn to the screen.  All you have to do s capture a frame, find the Draw call in the Event view, and then click on the &ldquo;Render&rdquo; tab in the Details view.  Here&rsquo;s a screenshot I took showing what was drawn to the normal-specular buffer during the G-Buffer pass of my <a href="http://mynameismjp.wordpress.com/2010/01/10/inferred-rendering/">Inferred Rendering Sample</a>:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewdraw1.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewdraw1.png" alt="" title="PIXViewDraw"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewdraw1.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewdraw1.png" alt="" title="PIXViewDraw"></a></p>
 <p><strong>2.  View device state at any point in frame</strong></p>
 <p>Ever have a problem where something wasn&rsquo;t drawing, and it turned out you left alpha-testing enabled or something silly like that? I know it&rsquo;s happened to me. If it happens again, you can help diagnose the problem by using PIX to view the state of your device at the time of a Draw call (or at any other point in the frame, for that matter).  To do it you capture a frame, find the Draw call or other Event you&rsquo;re interested in, and then find the device in your Objects view (filtering by Type can help). Then you just right-click on the device, click &ldquo;View Device&rdquo;, and have a look at the tab that appears in the Details view.  It looks something like this:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixdevstate.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixdevstate.png" alt="" title="PIXDevState"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixdevstate.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixdevstate.png" alt="" title="PIXDevState"></a></p>
 <p><strong>3. View mesh data for a draw call</strong></p>
 <p>Doing this lets you see what your vertex data looks like before and after your vertex shader (also before and after your geometry shader, if you&rsquo;re using D3D10 or D3D11). Just capture a frame, click on the Draw event, and click on the Mesh tab in the Details view.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewmesh.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewmesh.png" alt="" title="PIXViewMesh"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewmesh.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewmesh.png" alt="" title="PIXViewMesh"></a></p>
 <p><strong>4. Debug shaders</strong></p>
 <p>I don&rsquo;t I need to mention why this is useful. With PIX you can step through both the compiled assembly and HLSL code for your shader.  The easiest way to start debugging is to view the pixel history of a pixel by right-clicking on it in the Render tab, and then click on the links displayed for a Draw event.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixdebugshader.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixdebugshader.png" alt="" title="PIXDebugShader"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixdebugshader.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixdebugshader.png" alt="" title="PIXDebugShader"></a></p>
 <p><strong>5. View textures, render targets, buffers, depth/stencil surfaces, and vertex declarations</strong></p>
 <p>You can view the contents of all of these things just by finding them in the Objects view and right-clicking. Like everything else in PIX, what&rsquo;s displayed will reflect the current state of the object based on the event you&rsquo;ve selected in the Event view.  For vertex buffers you&rsquo;ll also need to specify the  vertex format using an HLSL-like syntax, which is really easy to do.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixviewbuffer.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixviewbuffer.png" alt="" title="PIXViewBuffer"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewbuffer.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixviewbuffer.png" alt="" title="PIXViewBuffer"></a></p>
 <p><strong>6. View a CPU/GPU timing graph (Vista/Win7 only)</strong></p>
 <p>If you select the &ldquo;Statistics for each frame&rdquo; option when starting your experiment, one of the things you&rsquo;ll get is a timeline showing your CPU and GPU work for the frames captured.  This let&rsquo;s you easily view whether the GPU is idling or hard at work (which makes it simple to determine if you&rsquo;re CPU or GPU-bound). It also can show you where GPU work is done in relation to a frame being submitted by the CPU, so you can tell if the CPU is working one or more frames ahead of the GPU.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixtiminggraph.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixtiminggraph.png" alt="" title="PIXTimingGraph"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixtiminggraph.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixtiminggraph.png" alt="" title="PIXTimingGraph"></a></p>
 <p><strong>7. Record performance counter values for a frame, and show them on a HUD</strong></p>
 <p>PIX has a number of counters available that let you keep track of things like the number of Draw calls or the number of SetTexture calls in a frame.  When you create a new experiment and you select the &ldquo;Statistics for each frame&rdquo; option, it will let you pick from a selection countersets provided by PIX.  To see which counters are included in a counterset or to make your own, click the &ldquo;More Options&rdquo; button, click the &ldquo;Set Counters&rdquo; action, and then click on &ldquo;Customize&rdquo;.  In this dialog you can pick through all of the D3D counters provided by PIX, or add in any of the standard Windows Performance Counters installed on your system. Also note that vendor&ndash;specific tools like NVPerkKit will install plugins for PIX that let you add in hardware-specific counters.</p>
 <p>If you enable the HUD for your experiment, you&rsquo;ll get something that looks like this when running your app:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixhud.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixhud.png?w=1024" alt="" title="PIXHUD"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixhud.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixhud_resized_1024.png" alt="" title="PIXHUD"></a></p>
 <p>Either way once you close your app and you&rsquo;re viewing the experiment results, the Events view will display the value of all active counters for each frame.</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/02/pixevents.png"><img src="http://mynameismjp.files.wordpress.com/2010/02/pixevents.png?w=1024" alt="" title="PIXEvents"></a></p>
+<p><a href="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixevents.png"><img src="/images/converted/d3d-performance-and-debugging-tools-round-up-pix/pixevents_resized_1024.png" alt="" title="PIXEvents"></a></p>
 <p><strong>Useful Tips:</strong></p>
 <ol>
 <li>
@@ -118,9 +118,9 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://www.sgtconker.com/2010/02/tools-and-fools/" title="">Tools And Fools « Sgt. Conker</a> - <!-- raw HTML omitted -->Feb 1, 2010<!-- raw HTML omitted --></p>
+<p><a href="http://www.sgtconker.com/2010/02/tools-and-fools/" title="">Tools And Fools « Sgt. Conker</a> - <time datetime="2010-02-15 11:15:53">Feb 1, 2010</time></p>
 <p>[&hellip;] Start with PIX. [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -128,7 +128,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1266 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1267 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-02-14 21:17 -0800</p>
 			</footer>
 		</article>

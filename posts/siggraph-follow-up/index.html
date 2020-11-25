@@ -10,7 +10,7 @@
  Full description of our Cook-Torrance and Cloth BRDF&rsquo;s, including a handy optimization for the GGX Smith geometry term (for which credit belongs to Steve McAuley) Analysis of our specular antialiasing solution Plenty of details regarding the material scanning process HLSL sample code for the Cook-Torrance BRDF&rsquo;s as well as the specular AA roughness modification Lots of beautiful LaTeX equations  If you did attend, I really appreciate you coming and I hope that you found it interesting.">
 <meta itemprop="datePublished" content="2013-07-29T06:15:04&#43;00:00" />
 <meta itemprop="dateModified" content="2013-07-29T06:15:04&#43;00:00" />
-<meta itemprop="wordCount" content="2097">
+<meta itemprop="wordCount" content="2168">
 
 
 
@@ -115,23 +115,37 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://palgorithm.co.uk" title="sam@palgorithm.co.uk">Sam Martin</a> - <!-- raw HTML omitted -->Jul 1, 2013<!-- raw HTML omitted --></p>
+<p><a href="http://palgorithm.co.uk" title="sam@palgorithm.co.uk">Sam Martin</a> - <time datetime="2013-07-29 15:25:56">Jul 1, 2013</time></p>
 <p>This really is an exceptionally useful set of resources you&rsquo;ve put together here. I saw your talk at siggraph and was very impressed. It&rsquo;s clearly had a lot of love and effort put into it!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Simon Brown]( "") - <time datetime="2014-05-08 04:23:04">May 4, 2014</time>
 <p>Gah, cannot type, I mean 1/(2*kappa) in course notes and 1/kappa in example project&hellip;</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Simon Brown]( "") - <time datetime="2014-05-08 02:20:31">May 4, 2014</time>
 <p>Great resource! I&rsquo;m a bit confused by a difference between the course notes and sample code when computing effective roughness using existing roughness and kappa. The Han et el paper and course notes lists sigmap=sqrt(sigma*sigma + 2/kappa), but the sample code consistently uses sigmap=sqrt(sigma*sigma + 1/kappa) in GenerateMaps.hlsl and Mesh.hlsl. Is this a typo or the application of some errata? Thanks!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2014-04-27 11:31:27">Apr 0, 2014</time>
 <p>Hi Kostas, I&rsquo;m glad you&rsquo;ve found it useful! I prefer to keep the division by Pi in the diffuse term, as opposed to baking that into the light intensity and then multiplying the specular term by Pi. For me that just fits with my mental model of how I think about the diffuse BRDF. In practice I don&rsquo;t think it should matter as long as you&rsquo;re careful with multiplying your Pi factor through, so that you have the right relative intensity between your diffuse and specular. -Matt</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Readings on Physically Based Rendering | Interplay of Light](http://interplayoflight.wordpress.com/2013/12/30/readings-on-physically-based-rendering/ "") - <time datetime="2013-12-30 05:14:44">Dec 1, 2013</time>
 <p>[…] Pettineo’s follow up to the very interesting The Order: 1886 Siggraph 2013 presentation expands on some PBR topics and […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Kostas Anagnostou](http://interplayoflight.wordpress.com "kostas.anagnostou@gmail.com") - <time datetime="2014-04-27 04:27:23">Apr 0, 2014</time>
 <p>Hi Matt, thanks for the great presentation and following write-up as well as the sample application which is extremely useful! A quick question, in the sample&rsquo;s implementation of the BRDFs, the division by Pi is still applied even for punctual lights. Shouldn&rsquo;t it be removed by the Pi in the lighting equation for punctual lights? (or I am reading something wrong?).</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2014-05-09 13:24:40">May 5, 2014</time>
 <p>Hi Simon, I think that&rsquo;s just a typo that we never noticed. Thank you for pointing it out! -Matt</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Notes on Anti-Aliasing : Texture filtering (part 3) &laquo; Mehdi NS](https://mehdins.wordpress.com/2017/08/29/notes-on-anti-aliasing-texture-filtering-part-3/ "") - <time datetime="2017-08-28 19:07:47">Aug 1, 2017</time>
 <p>[…] implementation details, the reference is MJP specularAA project, in which the main specular anti aliasing techniques used in games are […]</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -139,7 +153,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2097 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2168 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2013-07-28 23:15 -0700</p>
 			</footer>
 		</article>

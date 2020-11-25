@@ -7,16 +7,22 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Breaking Down Barriers - Part 3: Multiple Command Processors">
 <meta itemprop="description" content="This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!">
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption">
 <meta itemprop="datePublished" content="2018-06-18T02:14:52&#43;00:00" />
 <meta itemprop="dateModified" content="2018-06-18T02:14:52&#43;00:00" />
-<meta itemprop="wordCount" content="3587">
+<meta itemprop="wordCount" content="3681">
 
 
 
 <meta itemprop="keywords" content="Graphics,DX12," /><meta property="og:title" content="Breaking Down Barriers - Part 3: Multiple Command Processors" />
 <meta property="og:description" content="This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!" />
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/" />
 <meta property="article:published_time" content="2018-06-18T02:14:52+00:00" />
@@ -24,7 +30,10 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Breaking Down Barriers - Part 3: Multiple Command Processors"/>
 <meta name="twitter:description" content="This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!"/>
+Part 1 - What&rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -136,26 +145,26 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 </div>
 
 <p><em>This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:</em></p>
-<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><!-- raw HTML omitted -->
-<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><!-- raw HTML omitted --></p>
+<p><a href="../breaking-down-barriers-part-1-whats-a-barrier/">Part 1 - What&rsquo;s a Barrier?</a><br>
+<a href="../breaking-down-barriers-part-2-synchronizing-gpu-threads/">Part 2 - Synchronizing GPU Threads</a><br>
+<a href="../breaking-down-barriers-part-3-multiple-command-processors/">Part 3 - Multiple Command Processors</a><br>
+<a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4 - GPU Preemption</a><br>
+<a href="../breaking-down-barriers-part-5-back-to-the-real-world/">Part 5 - Back To The Real World</a><br>
+<a href="../breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/">Part 6 - Experimenting With Overlap and Preemption</a><br></p>
 <p>Welcome to Part 3 of the series! In this article, I&rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</p>
 <h2 id="flushing-performance-down-the-drain">Flushing Performance Down The Drain<a href="#flushing-performance-down-the-drain" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Looking back on our fictional GPU that we discussed in Part 2, it&rsquo;s fair to say to its synchronization capabilities are sufficient to obtain correct results from a sequence of compute jobs with coarse-grained dependencies between those jobs. However, the tool that we used to resolve those dependencies (a global GPU-wide barrier that forces all pending threads to finish executing, also known as a &ldquo;flush&rdquo;) is a <em>very</em> blunt instrument. It&rsquo;s bad enough that we&rsquo;re unable to represent dependencies at the sub-dispatch level (in other words, only some of threads from one dispatch depend on only some of threads from another dispatch), but it can also force us into situations where non-dependent dispatches still can&rsquo;t overlap with other. This can be really bad when you&rsquo;re talking about GPU&rsquo;s that require thousands of threads to fill all of their executions units, particularly if your dispatches tend towards low thread counts and high execution times. If you recall from Part 2, we discovered that the cost of each GPU-wide barrier was tied to the corresponding decrease in utilization, and long-running threads can result in cores sitting idle for a long period of time.</p>
 <p>In Part 2 we did discuss one way that the MJP-3000 could extract some extra overlap from a sequence of dispatches. Specifically, we talked about a case with two dependent dispatches, and a third dispatch that was independent of the first two.  By splitting the barrier into two steps ( SIGNAL_POST_SHADER and WAIT_SIGNAL), we could effectively sync only a single dispatch&rsquo;s threads instead of waiting for all executing threads to finish. It worked in that case, but it&rsquo;s still very limited tool. In that example we relied on our advance knowledge of dispatch C&rsquo;s thread count and execution time to set up the command buffer in a way that would maximize overlap. But this may not be practical in the real-world, where thread count and execution time might vary from frame-to-frame. That technique also doesn&rsquo;t scale up to more complex dependency graphs, since we&rsquo;re always going to be limited by the fact that there&rsquo;s only 1 command processor that can wait for something to finish, and then kick off more threads.</p>
 <p>To give you a better idea of what I&rsquo;m talking about, let&rsquo;s switch to an example that&rsquo;s more grounded in reality. In real engines performing graphics work on GPU&rsquo;s, it&rsquo;s very common to have <strong>chains</strong> of draws or dispatches where each one depends on the previous step. For instance, imagine a bloom pass that requires several downsampling steps, followed by several blur passes, followed by several upscale passes. So you might end up with around 6-8 different dispatches, with a barrier between each one:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2017/01/bloom_timeline.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/bloom_timeline.png" alt="bloom_timeline"></a></p>
+<p><a href="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_timeline.png"><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_timeline.png" alt="bloom_timeline"></a></p>
 <p>Now, let&rsquo;s say we would like to overlap this with a large dispatch that takes about an equal amount of time. Overlapping it with a single step is pretty simple: we just need to make sure that a bloom dispatch and the large dispatch end up on the same side of a barrier, and they will overlap with each other. So for instance we could dispatch the large shader, then dispatch the first downscale, and then issue a barrier. However, this might not be ideal if the GPU has a setup similar to our fictional GPU, where our barriers are implemented in terms of commands that require waiting for all previously-launched shaders to finish executing. If  that&rsquo;s the case, then the first barrier after the long dispatch might cause a long period with no overlap:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2017/01/bloom_timeline_overlap.png"><img src="https://mynameismjp.files.wordpress.com/2017/01/bloom_timeline_overlap.png" alt="bloom_timeline_overlap"></a></p>
+<p><a href="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_timeline_overlap.png"><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_timeline_overlap.png" alt="bloom_timeline_overlap"></a></p>
 <p>This is better than nothing, but not great. Really we want the long dispatch to fully overlap one of the barriers, since the associated cache flushes and other actions are periods where the shader units would otherwise be completely idle. We can achieve this with split barriers, but we could only do this once if our SIGNAL_POST_SHADER instruction is limited to signaling after all previously-queued threads have completed:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2017/01/bloom_timeline_overlap_split.png" alt="bloom_timeline_overlap_split"></p>
+<p><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_timeline_overlap_split.png" alt="bloom_timeline_overlap_split"></p>
 <p>Things could get even more complicated if we wanted to overlap our bloom with a <em>different</em> chain of dispatches. For example, we might have a depth of field technique that needs 4-5 dispatches that are all dependent on the previous dispatch, but are otherwise independent from the bloom dispatches. By interleaving the dispatches from both techniques it would be possible to achieve some overlap, but it would be complex and difficult to balance. In both cases we&rsquo;re really being held back by the limitations of our barrier implementation, and our lives would be much easier if we could submit each pass as a set of completely independent commands that aren&rsquo;t affected by each other&rsquo;s sync operations.</p>
 <h2 id="two-command-processors-are-better-than-one">Two Command Processors Are Better Than One<a href="#two-command-processors-are-better-than-one" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>After much, much complaining from the programmers writing software for the MJP-3000 about how much performance they were losing to sync points, the hardware engineers at MJP Industries finally had enough. When designing the all-new MJP-4000, they decided that the simplest way to handle multiple independent command streams would be to go ahead and copy/paste the front-end of the GPU! The logical hardware layout now looks like this:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2017/01/multi_queue_overview.png" alt="multi_queue_overview"></p>
+<p><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/multi_queue_overview.png" alt="multi_queue_overview"></p>
 <p>As you can see, there&rsquo;s now two command processors attached to two separate thread queues. This naturally gives the hardware the ability to handle two command buffers at once, with two different processors available for performing the flush/wait operations required for synchronization. The MJP-4000 still has the same number of shader cores as the 3000 (16), which means we haven&rsquo;t actually increased the theoretical maximum throughput of the GPU. However the idea is that by using dual command processors we can reduce the amount of time that those shader cores sit idle, therefore improving the overall throughput of the jobs that it runs.</p>
 <p>Looking at the diagram, you might (rightfully) wonder &ldquo;how exactly do the two front-ends share the shader cores?&rdquo; On real GPU&rsquo;s there are several possible ways to handle that, which we will touch on a bit in a later article. But for now, let&rsquo;s assume that the dual thread queues use a very simple scheme for sharing the cores:</p>
 <ul>
@@ -352,34 +361,52 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 <p>If we were to try to draw an analogy to the CPU world, the closest match to our multi-queue setup would probably be <a href="https://en.wikipedia.org/wiki/Simultaneous_multithreading">Simultaneous Multithreading</a>, or <strong>SMT</strong> for short. You may also know this as <a href="https://en.wikipedia.org/wiki/Hyper-threading">Hyper-Threading</a>, which is the Intel marketing name for this feature. The basic idea is pretty similar: it allows CPU&rsquo;s to issue instructions from two different threads simultaneously, but they share most of the resources required for actually executing those instructions. The end goal of SMT is also to improve overall utilization by reducing idle time, although in the case of CPU&rsquo;s the idle time that they&rsquo;re avoiding mainly comes from stalls that occur during cache misses or page faults. <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>  If we squint like we did in Part 2 and look at our command buffer streams as instruction streams, then the analogy holds fairly well. From this point of view it&rsquo;s possible to think of a GPU as a kind of meta-processor, where the GPU executes various high-level instructions that in turn launch threads consisting of lower-level instructions!</p>
 <h2 id="syncing-across-queues">Syncing Across Queues<a href="#syncing-across-queues" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>In our hypothetical scenario, Chain 1 and Chain 2 were considered to be completely independent: they didn&rsquo;t have to know or care about each other at all. Those chains may have been from different sub-systems in a game, or from two completely different programs sharing a single GPU. However it&rsquo;s fairly common for a single application to have two different chains of dispatches that start from a single point, and whose final results are needed by another single dispatch. As a more concrete example, let&rsquo;s return to the post-processing chain that we discussed at the beginning of the article. Let&rsquo;s say that after we finish rendering our main pass to a render target, we have two different post-processing operations that need to happen: bloom and depth of field (DOF). We already discussed how the bloom pass consists of scaling and blur passes that are all dependent on the previous step, and the DOF pass works in a very similar way. After both of these passes continue, we want to have a single shader that samples the bloom and DOF output, composites them onto the screen, and then tone maps from HDR-&gt;SDR to get the final result. If we were to build a dependency graph for these operations, it would look something like this:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2018/06/bloom_dof_taskgraph.png" alt="Bloom_DOF_TaskGraph"></p>
+<p><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_dof_taskgraph.png" alt="Bloom_DOF_TaskGraph"></p>
 <p>From the graph it&rsquo;s clear that the bloom/DOF chains are independent while they&rsquo;re executing, but they need to be synchronized at the start and end of the chains to make sure that everything works correctly. This implies that if we were to run the two chains as two separate command buffers submitted to the dual front-ends of the MJP-4000, we would need some kind of cross-queue synchronization in order to ensure correct results. Conceptually this is similar to our need for a barrier to ensure that all threads of a dispatch complete executing a dependent dispatch, except in this case we need to ensure that multiple <em>chains</em> have completed. If we were to use such a barrier to synchronize our post-processing chain, it would look something like this:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2018/06/bloom_dof_combined2.png" alt="Bloom_DOF_Combined2"></p>
+<p><img src="/images/converted/breaking-down-barriers-part-3-multiple-command-processors/bloom_dof_combined2.png" alt="Bloom_DOF_Combined2"></p>
 <p>There are a few ways that this kind of cross-queue barrier could be implemented on a GPU, but the MJP-4000 takes a simple approach by re-purposing the SIGNAL_POST_SHADER and WAIT_SIGNAL instructions. Both command processors can access the same set of labels (indicated by the labels area being shared on the logical layout diagram), which gives them the basic functionality needed to wait for each other when necessary. For our bloom/DOF case we could have the DOF chain write a label when its finished, and the main command stream could wait on that label before continuing on to the tone mapping dispatch.</p>
 <h2 id="next-up">Next Up<a href="#next-up" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>In <a href="../breaking-down-barriers-part-4-gpu-preemption/">Part 4</a>, we&rsquo;ll discuss how having multiple command processors can be useful for scenarios where multiple applications are sharing the same GPU.</p>
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p>[]( &ldquo;<a href="mailto:pursue_zhao@163.com">pursue_zhao@163.com</a>&rdquo;) - <!-- raw HTML omitted -->Dec 3, 2018<!-- raw HTML omitted --></p>
+<p>[]( &ldquo;<a href="mailto:pursue_zhao@163.com">pursue_zhao@163.com</a>&rdquo;) - <time datetime="2018-12-12 19:51:44">Dec 3, 2018</time></p>
 <p>Hi, there is a niggle that for the figure of MJP-4000 work flow, at 608 cy, the threads remaining of C should be 20, not 28, and the following illustration may not be right.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2018-06-25 21:51:51">Jun 1, 2018</time>
 <p>dude, is it based on documented source or Plato&rsquo;s Cave?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2019-01-09 13:57:47">Jan 3, 2019</time>
 <p>Thank you for explaining that, Apollo. What you&rsquo;re describing is exactly what I was trying to show in the diagram, but as you pointed out it&rsquo;s doing a poor job of conveying that since it&rsquo;s not actually showing where different commands are processed by the command processor. I&rsquo;m going to re-visit that diagram, and re-work it to make it (hopefully) easier to understand.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Apollo](http://aiellis.com "apolloiellis@gmail.com") - <time datetime="2019-01-09 06:18:56">Jan 3, 2019</time>
 <p>Anonymous had a good question. The second downsample has to wait for the WAITSIGNAL, since it is dependent on the first downsample writes. It can’t just run. So the graph wouldn’t look like this, unless the blue bar is the WAITSIGNAL, in which case the long dispatch would have to finish first, as he said, before another POSTSHADER signal can be used. Also in this case the diagram is not showing the POSTSHADER signal which must have been at the beginning of the dispatch since, the long dispatch ran immediately i.e at the beginning.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "pursue_zhao@163.com") - <time datetime="2018-12-12 18:48:46">Dec 3, 2018</time>
 <p>Hi MJP, I understand why now. For other guys may have the same question, I would like to post my answer here. The small blue barrier is split barrier. The first downscale is before SIGNAL_POST_SHADER and long dispatch and the second downscale is before WAIT_SIGNAL, so that the previous downscale and long dispatch can overlap and save time. But if another split barrier is added between downscale and Blur H, then its SIGNAL_POST_SHADER will wait long dispatch to complete coz long dispatch is previously-queued, so that this split barrier will be the same with a FLUSH.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "pursue_zhao@163.com") - <time datetime="2018-12-12 18:10:02">Dec 3, 2018</time>
 <p>Hi, thanks so much for your nice sharing. You mentioned in the bloom example that split barrier could only be used once if SIGNAL_POST_SHADER is limited to signaling after all previous-queued threads have completed. My question is that does the small blue barrier mean SIGNAL_POST_SHADER, and why it can be used only once ?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2019-05-21 07:23:16">May 2, 2019</time>
 <p>Thanks for the great series here! This clause is missing its end: &ldquo;There are a few ways that this kind of cross-queue barrier,&rdquo;</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2019-05-21 11:36:05">May 2, 2019</time>
 <p>Thank you for pointing that out!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Breaking Down Barriers &#8211; Part 1: What&#8217;s a Barrier? &#8211; The Danger Zone](https://mynameismjp.wordpress.com/2018/03/06/breaking-down-barriers-part-1-whats-a-barrier/ "") - <time datetime="2019-03-05 13:44:30">Mar 2, 2019</time>
 <p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Breaking Down Barriers &#8211; Part 2: Synchronizing GPU Threads &#8211; The Danger Zone](https://mynameismjp.wordpress.com/2018/04/01/breaking-down-barriers-part-2-synchronizing-gpu-threads/ "") - <time datetime="2019-03-05 13:44:57">Mar 2, 2019</time>
 <p>[…] 1 – What’s a Barrier? Part 2 – Synchronizing GPU Threads Part 3 – Multiple Command Processors Part 4 – GPU Preemption Part 5 – Back To The Real World Part 6 – Experimenting […]</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
@@ -399,7 +426,7 @@ Part 1 - What&rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multi
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3587 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3681 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-06-17 19:14 -0700</p>
 			</footer>
 		</article>

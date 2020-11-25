@@ -18,7 +18,13 @@
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</guid>
       <description>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIn the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
     </item>
     
     <item>
@@ -28,7 +34,13 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</guid>
       <description>This is Part 5 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
     </item>
     
     <item>
@@ -38,7 +50,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</guid>
       <description>This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome back!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -48,7 +63,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</guid>
       <description>This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -58,7 +76,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</guid>
       <description>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -68,7 +89,13 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</guid>
       <description>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIf you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
     </item>
     
   </channel>

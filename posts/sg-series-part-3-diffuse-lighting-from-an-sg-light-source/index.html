@@ -7,16 +7,24 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="SG Series Part 3: Diffuse Lighting From an SG Light Source">
 <meta itemprop="description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabA Big Gaussian In The Sky In the previous post we covered a few of the universal properties of SG&rsquo;s.">
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
 <meta itemprop="datePublished" content="2016-10-10T07:08:51&#43;00:00" />
 <meta itemprop="dateModified" content="2016-10-10T07:08:51&#43;00:00" />
-<meta itemprop="wordCount" content="1866">
+<meta itemprop="wordCount" content="2300">
 
 
 
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source" />
 <meta property="og:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabA Big Gaussian In The Sky In the previous post we covered a few of the universal properties of SG&rsquo;s." />
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/" />
 <meta property="article:published_time" content="2016-10-10T07:08:51+00:00" />
@@ -24,7 +32,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source"/>
 <meta name="twitter:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&rsquo;sPart 6 - Step Into The Baking LabA Big Gaussian In The Sky In the previous post we covered a few of the universal properties of SG&rsquo;s."/>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -75,12 +87,12 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
 			</header>
 			<div class="content">
 				<p><em>This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:</em></p>
-<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><!-- raw HTML omitted -->
-Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><!-- raw HTML omitted -->
-Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><!-- raw HTML omitted -->
-Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><!-- raw HTML omitted -->
-Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><!-- raw HTML omitted --></p>
+<p>Part 1 - <a href="../sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/">A Brief (and Incomplete) History of Baked Lighting Representations</a><br>
+Part 2 - <a href="../sg-series-part-2-spherical-gaussians-101/">Spherical Gaussians 101</a><br>
+Part 3 - <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">Diffuse Lighting From an SG Light Source</a><br>
+Part 4 - <a href="../sg-series-part-4-specular-lighting-from-an-sg-light-source/">Specular Lighting From an SG Light Source</a><br>
+Part 5 - <a href="../sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/">Approximating Radiance and Irradiance With SG&rsquo;s</a><br>
+Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The Baking Lab</a><br></p>
 <h2 id="a-big-gaussian-in-the-sky">A Big Gaussian In The Sky<a href="#a-big-gaussian-in-the-sky" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>In the <a href="https://mynameismjp.wordpress.com/2016/10/09/sg-series-part-2-spherical-gaussians-101/">previous post</a> we covered a few of the universal properties of SG&rsquo;s. Now that we have a few tools on our utility belt, let&rsquo;s discuss an example of how we can actually use those properties to our advantage in a rendering scenario. Let&rsquo;s say we have a surface point <strong>x</strong> being lit by a light source <strong>L</strong>, with the light source being represented by an SG named <strong>GL</strong>. Recall from the previous article that the equation for computing the outgoing radiance towards the eye for a surface with a Lambertian diffuse BRDF looks like the following:</p>
 <p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} L_{i}(\mathbf{i}, \mathbf{x})cos(\theta_{i})d\Omega $$</p>
@@ -108,20 +120,20 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <span class="p">}</span>
 </code></pre></div><h2 id="error-analysis">Error Analysis<a href="#error-analysis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Not too bad, eh? Of course it&rsquo;s worth taking a closer look at our cosine lobe approximation, since that&rsquo;s definitely going to introduce some error. Perhaps the best way to do this is to look at the graphs of a real cosine lobe and our SG approximation side-by-side:</p>
-<p><a href="https://www.desmos.com/calculator/pecunlgzhe"><img src="https://mynameismjp.files.wordpress.com/2016/09/sg_cosine_approximation_alt.png" alt="sg_cosine_approximation_alt"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/pecunlgzhe"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sg_cosine_approximation_alt.png" alt="sg_cosine_approximation_alt"></a></p>
+<center><i>Comparison of a clamped cosine cosine lobe (red) with an SG approximation (blue)</i></center>
 <p>Just from looking at the graph it&rsquo;s fairly obvious that an SG isn&rsquo;t necessarily a great fit for a cosine lobe. First of all, the amplitude actually goes above 1, which might seem a bit weird at first glance. However it&rsquo;s necessary to ensure that the area under the curve remains somewhat consistent with the cosine lobe, since there would otherwise be a loss of energy. The other weirdness stems from the fact that an SG never actually hits 0 anywhere on the sphere, hence the long &ldquo;tail&rdquo; on the graph of the SG. This essentially means that if the SG were integrated against a punctual light source, the lighting would &ldquo;wrap&rdquo; around the sphere past the point where N dot L is equal to 0. The situation actually isn&rsquo;t all that different from an SH representation of a cosine lobe, which also extends past π/2:</p>
-<p><a href="https://www.desmos.com/calculator/dbxrgxb95k"><img src="https://mynameismjp.files.wordpress.com/2016/09/sh_sg_cosine_approximation.png" alt="sh_sg_cosine_approximation"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/dbxrgxb95k"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sh_sg_cosine_approximation.png" alt="sh_sg_cosine_approximation"></a></p>
+<center><i>L1 (green) and L2 (purple) SH approximation of a clamped cosine lobe compared with an SG approximation (blue) and the actual clamped cosine (red).</i></center>
 <p>In the SH case the approximation actually goes negative, which is arguably worse than the long tail of the SG approximation. The L1 approximation is particularly bad in this regard. If at this point you&rsquo;re trying to imagine what these approximations look like on a sphere, let me save you the trouble by providing an image:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/07/sg_sh_cosine_sphere.png"><img src="https://mynameismjp.files.wordpress.com/2016/07/sg_sh_cosine_sphere.png" alt="SG_SH_Cosine_Sphere"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sg_sh_cosine_sphere.png"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sg_sh_cosine_sphere.png" alt="SG_SH_Cosine_Sphere"></a></p>
+<center><i>From left to right: actual clamped cosine lobe, SG cosine approximation, L2 SH cosine approximation</i></center>
 <p>Now that we&rsquo;ve finished analyzing the approximation of a cosine lobe, we need to take a look at the actual results of computing diffuse lighting from an SG light source. Let&rsquo;s start off by graphing the results of computing irradiance using an SG inner product, and compare it against what we get by using brute-force numerical integration to compute the result of multiplying the SG with an actual clamped cosine (<em>not</em> the approximate SG cosine lobe that we use for the inner product):</p>
-<p><a href="https://www.desmos.com/calculator/mxpq29ybam"><img src="https://mynameismjp.files.wordpress.com/2016/09/sglight_irradiance_graph.png" alt="sglight_irradiance_graph"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/mxpq29ybam"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_irradiance_graph.png" alt="sglight_irradiance_graph"></a></p>
+<center><i>The resulting irradiance from an SG light source (with sharpness of 4.0) as a function of the angle between the light source and the surface normal. The red graph is the result of using numerical integration to compute the integral of the SG light source multiplied with a clamped cosine, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG.</i></center>
 <p>As you might expect, the inner product approximation has some error when compared with the &ldquo;ground truth&rdquo; provided by numerical integration. It&rsquo;s worth pointing out that this error is purely a consequence of approximating the clamped cosine lobe as an SG: the inner product provides the exact result of the integral, and thus shouldn&rsquo;t introduce any error on its own. Despite this error, the resulting irradiance isn&rsquo;t hugely far off from our ground truth. The biggest difference is for the angles facing away from the light, where the SG inner product version has a stronger tail. Visualizing the resulting diffuse on a sphere gives us the following:</p>
-<p><a href="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse.png"><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse.png" alt="SGLight_Diffuse"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_diffuse.png"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_diffuse.png" alt="SGLight_Diffuse"></a></p>
+<center><i>The left sphere shows the resulting diffuse lighting from an SG light source with a sharpness of 4.0, where the irradiance was computed using monte carlo importance sampling. The right sphere shows the resulting diffuse lighting from computing irradiance using an SG inner product with an approximation of a cosine lobe.</i></center>
 <h2 id="acheaperapproximation">A Cheaper Approximation<a href="#acheaperapproximation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>As an alternative to representing the cosine lobe with an SG and computing the inner product, we can consider a cheaper approximation. One advantage of working with SG&rsquo;s is that each lobe is always symmetrical about its axis, which is also where its value is the highest. We also discussed earlier how we can compute the integral of an SG over the sphere, which gives us its total energy. This suggests that if we want to be frugal with our shader cycles, we can pull terms out of the integral over the sphere/hemisphere and only evaluate them for the SG axis direction. This obviously introduces error, but that error may be acceptable if the term we pull out is relatively &ldquo;smooth&rdquo;. If we apply this approximation to computing irradiance and diffuse lighting, we get this:</p>
 <p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} G_{L}(\mathbf{i};\mathbf{\mu},\lambda,a)cos(\theta_{i})d\Omega $$</p>
@@ -140,8 +152,8 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
     <span class="k">return</span> <span class="n">SGIrradiancePunctual</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div><p>If we overlay the graph of our super-cheap irradiance approximation on the graph we were looking at earlier, we get this:</p>
-<p><a href="https://www.desmos.com/calculator/mfsufusbqk"><img src="https://mynameismjp.files.wordpress.com/2016/09/sglight_irradiance_approximation2.png" alt="sglight_irradiance_approximation"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/mfsufusbqk"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_irradiance_approximation2.png" alt="sglight_irradiance_approximation"></a></p>
+<center><i>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The green graph was computed by pulling the cosine term out of the integral, and multiplying it with the result of integrating the SG light about the sphere.</i></center>
 <p>The result shouldn&rsquo;t be a surprise: it&rsquo;s just a scaled version of the standard clamped cosine.It&rsquo;s pretty obvious just by looking that this particular optimization will introduce quite a bit of error, particularly where theta is greater than π/2. But it is cheap, since we&rsquo;ve effectively turned an SG into a point light. This is makes it a useful tool for cases where we may want to approximate the convolution of an SG light source with a BRDF or some other function that isn&rsquo;t easily represented as an SG.</p>
 <h2 id="a-more-accurate-approximation">A More Accurate Approximation<a href="#a-more-accurate-approximation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>So it&rsquo;s nice to have a cheap option, but what if we want more accuracy than our inner product approximation? Fortunately for us, <a href="http://www.selfshadow.com/">Stephen Hill</a> was able to formulate another alternative approximation that directly fits a curve to the integral of a cosine lobe with an SG. His implementation is actually formulated for a normalized SG (where the integral about the sphere is equal to 1.0), but we can easily account for this by computing the integral and scaling the result by that value:</p>
@@ -175,29 +187,39 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
     <span class="k">return</span> <span class="n">result</span> <span class="o">*</span> <span class="n">ApproximateSGIntegral</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">)</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div><p>The result is very close to the ground truth, which is very cool considering that it might actually be cheaper than our inner product approximation!</p>
-<p><a href="https://www.desmos.com/calculator/ke219swxv3"><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_irradiance_fitted.png" alt="SGLight_Irradiance_Fitted"></a></p>
-<!-- raw HTML omitted -->
+<p><a href="https://www.desmos.com/calculator/ke219swxv3"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_irradiance_fitted.png" alt="SGLight_Irradiance_Fitted"></a></p>
+<center><i>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The orange graph was computed using Stephen Hill's fitted curve approximation.</i></center>
 <p>If we once again visualize the result on the sphere and compare with our previous results, we get the following:</p>
-<p><img src="https://mynameismjp.files.wordpress.com/2016/07/sglight_diffuse_fitted.png" alt="SGLight_Diffuse_Fitted"></p>
-<!-- raw HTML omitted -->
+<p><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_diffuse_fitted.png" alt="SGLight_Diffuse_Fitted"></p>
+<center><i>The left sphere shows the resulting diffuse lighting from an SG light source with a sharpness of 4.0, where the irradiance was computed using an SG inner product with an approximation of a cosine lobe. The middle sphere shows the resulting diffuse lighting from computing irradiance using monte carlo importance sampling. The right sphere shows the resulting diffuse lighting from Stephen Hill's fitted approximation.</i></center>
 <h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>[1] <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2009/12/sg.pdf">All-Frequency Rendering of Dynamic, Spatially-Varying Reflectance</a></p>
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<p><a href="%22stefan.dyulgerov@gmail.com%22">Stefan Dyulgerov</a> - <!-- raw HTML omitted -->Oct 1, 2017<!-- raw HTML omitted --></p>
+<p><a href="%22stefan.dyulgerov@gmail.com%22">Stefan Dyulgerov</a> - <time datetime="2017-10-09 07:08:04">Oct 1, 2017</time></p>
 <p>Hey, great article and nicely explained. 1. Can you update the links to the wang paper, since john snyders web site is reworked 2. Can you point a link to the SGIrradianceFitted, since the selfshadow is also updated.</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2017-10-09 14:38:29">Oct 1, 2017</time>
 <p>Hi Stefan, I updated the link to Wang et al.&lsquo;s paper. Thank you for pointing that out! As for Stephen Hill&rsquo;s fitted SG irradiance approximation, the link that I currently have in there just points to his home page, which is still the same. He hasn&rsquo;t formally published his approximation anywhere, so I don&rsquo;t have anything else to link to at the moment.</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[Wumpf](http://wumpfblog.wordpress.com "r_andreas2@web.de") - <time datetime="2016-10-13 00:24:24">Oct 4, 2016</time>
 <p>In the second code listening &ldquo;SGDiffusePunctual&rdquo; should call &ldquo;SGIrradiancePunctual&rdquo; not &ldquo;ApproximateSGIrradiance&rdquo;, right? :) Great article series! :)</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-13 09:46:50">Oct 4, 2016</time>
 <p>Yes, that&rsquo;s right. I had renamed that function in the original source code, and neglected to properly update the code embedded in the article. Thank you for pointing that out, and also for the kind words. :)</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-10-10 23:00:15">Oct 1, 2016</time>
 <p>Hi Matt, I definitely see how that could be confusing, now that you&rsquo;ve pointed it out. I changed the text a bit to explicitly state that the graph represents the numerical integration of the SG light multiplied with the clamped cosine, so hopefully it will be a bit more clear for other readers. Either way I really appreciate the feedback! I should also thank you for writing such an amazing book, and making the complete source code available for reference! Without it I&rsquo;m not sure if I would have gotten my own little path tracer working in the demo. :)</p>
-<!-- raw HTML omitted -->
+<hr />
+###
+[Matt Pharr](http://pharr.org/matt "matt.pharr@gmail.com") - <time datetime="2016-10-10 14:39:11">Oct 1, 2016</time>
 <p>(Great series!) I was initially confused by your graph comparing numerical integration with the SG inner product&ndash;&ldquo;shouldn&rsquo;t numerical integration give the same result, since the inner product is exact and in closed form?&rdquo; I asked myself; it wasn&rsquo;t clear that you were comparing the integration of two different functions. I eventually figured out that you were numerically integrating the SG light model with the actual clamped cosine and comparing that to the inner product of the SG light and the SG clamped cosine (I think!); it might be nice to clarify the text/caption about that part of it. (On to part 4!)</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -205,7 +227,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1866 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2300 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-10-10 00:08 -0700</p>
 			</footer>
 		</article>

@@ -9,7 +9,7 @@
 <meta itemprop="description" content="Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage. However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index. With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option.">
 <meta itemprop="datePublished" content="2010-07-07T08:42:23&#43;00:00" />
 <meta itemprop="dateModified" content="2010-07-07T08:42:23&#43;00:00" />
-<meta itemprop="wordCount" content="630">
+<meta itemprop="wordCount" content="683">
 
 
 
@@ -71,7 +71,7 @@
 				<h1>MSAA Sample Pattern Detector</h1>
 			</header>
 			<div class="content">
-				<p><a href="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png"><img src="http://mynameismjp.files.wordpress.com/2010/07/samplepattern1.png" alt="" title="SamplePattern"></a></p>
+				<p><a href="/images/converted/msaa-sample-pattern-detector/samplepattern1.png"><img src="/images/converted/msaa-sample-pattern-detector/samplepattern1.png" alt="" title="SamplePattern"></a></p>
 <p>Recently I&rsquo;ve been experimenting with AA techniques, and one of the avenues I was pursuing required me to read back subsamples and use them to compute coverage.  However I quickly ran into the problem that I didn&rsquo;t know the sample position for a given subsample index.  With FEATURE_LEVEL_10_1 and FEATURE_LEVEL_11 there are standard MSAA patterns you can use, but unfortunately I&rsquo;m still stuck on a 10-level GPU so that wasn&rsquo;t an option.  After some thinking I realized that it wouldn&rsquo;t be too hard to write an app that could determine the sample positions within a reasonable degree of accuracy, so that&rsquo;s what I did!  The basic process is like this:</p>
 <ol>
 <li>Create a 1x1 render target with the desired MSAA sample count + quality</li>
@@ -84,21 +84,33 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22castano@gmail.com%22">castano</a> - <!-- raw HTML omitted -->Jul 3, 2010<!-- raw HTML omitted --></p>
+<p><a href="%22castano@gmail.com%22">castano</a> - <time datetime="2010-07-07 09:31:52">Jul 3, 2010</time></p>
 <p>You could achieve the same thing in OpenGL with the explicit_multisample extension: <a href="http://www.opengl.org/registry/specs/NV/explicit">http://www.opengl.org/registry/specs/NV/explicit</a>_multisample.txt float pos[2]; glGetMultisamplefvNV(GL_SAMPLE_POSITION, index, pos);</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[James Bird](http://www.jb101.co.uk/ "james.anthony.bird@gmail.com") - <time datetime="2010-08-04 01:54:17">Aug 3, 2010</time>
 <p>I have also recently been experimenting with anti-aliassing techniques on DirectX 10. At the 2009 GDC, there was a talk called the &ldquo;A to Z of DX10 Performance&rdquo;. On the topic of &ldquo;Resolving MSAA Buffers&rdquo;, the slides advise not to create the back buffer with MSAA, but I cannot figure out why. I can only assume that this is so that the graphics programmer has explicit control over when they perform an MSAA resolve (as this operation isn&rsquo;t free), but I suspect there could be other reasons. I was wondering if you knew anything about this, and if so, if you could share your thoughts?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2010-08-05 10:00:26">Aug 4, 2010</time>
 <p>There&rsquo;s certainly a lot of cases where you might want to have a custom MSAA resolve&hellip;for instance if you use HDR you can get significantly better results if you tonemap the subsamples individually. However I think they&rsquo;re saying that because pretty much any DX10 game is going to be doing some sort of post-processing, and thus will want to render their geometry to a render target texture and not the back buffer. In that case there&rsquo;s no reason to make the back buffer MSAA, since you only need MSAA when rendering scene geometry.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2014-06-01 02:01:39">Jun 0, 2014</time>
 <p>I re-hosted the zip file here at wordpress, and updated the link.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2014-07-24 03:06:25">Jul 4, 2014</time>
 <p>Thanks! Great tool =)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Stairway To (Programmable Sample Point) Heaven | The Danger Zone](https://mynameismjp.wordpress.com/2015/09/13/programmable-sample-points/ "") - <time datetime="2015-09-13 19:31:44">Sep 0, 2015</time>
 <p>[…] the samples would be located. Without that, you either had to use shader intrinsics or resort to wackier methods for figuring out the sample positions. In theory it also gives you a very limited ability to […]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[somemail256](http://ndotl.wordpress.com "somemail256@gmail.com") - <time datetime="2014-05-31 08:44:06">May 6, 2014</time>
 <p>The link says &ldquo;service unavailable&rdquo;&hellip; can you please reupload it?</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -106,7 +118,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>630 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>683 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-07-07 01:42 -0700</p>
 			</footer>
 		</article>

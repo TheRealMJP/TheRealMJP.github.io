@@ -9,7 +9,7 @@
 <meta itemprop="description" content="A long while ago I was looking into morphological antialiasing (MLAA) to see if I could somehow make it practical for a GPU that isn&rsquo;t the latest monster from Nvidia or ATI. With MLAA most people talk about how nicely it cleans up edges (which it certainly does), but for me the really cool part is how it&rsquo;s completely orthogonal to the technique used to render the image. It could have been rasterized and forward rendered, it could be the product of a deferred rendering, or it could even be ray-traced: in all cases the algorithm works the same.">
 <meta itemprop="datePublished" content="2010-08-16T08:57:37&#43;00:00" />
 <meta itemprop="dateModified" content="2010-08-16T08:57:37&#43;00:00" />
-<meta itemprop="wordCount" content="1247">
+<meta itemprop="wordCount" content="1269">
 
 
 
@@ -88,7 +88,7 @@
 </li>
 </ol>
 <p>To &ldquo;calculate pixel coverage&rdquo;, all I do is read all 4 depth subsamples and compare them (with a small tolerance) with the depth value from the non-MSAA pass.  The idea is to try to figure out which depth subsamples came from rasterizing the same triangle that was rasterized in the non-MSAA pass.  Then, using knowledge of the points in the sample pattern, I come up with a sample location where it&rsquo;s likely that we&rsquo;ll a color on the other side of the triangle edge.  The method I use to do this is really simple: if a subsample fails the equivalence test, add a vector from the pixel center to the sample location to a summed offset vector. Then after all subsamples are compared, average the offsets and take a single bilinear sample at that offset.  Check out the diagram below for a visual representation:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/08/offset.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/offset.png" alt="" title="Offset"></a></p>
+<p><a href="/images/converted/deferred-msaa/offset.png"><img src="/images/converted/deferred-msaa/offset.png" alt="" title="Offset"></a></p>
 <p>As I see it, this approach has these things going for it:</p>
 <ol start="2">
 <li>
@@ -105,24 +105,30 @@
 </li>
 </ol>
 <p>For comparison, here&rsquo;s a screenshot from my sample app (click for full size):</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/08/comparison.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/comparison.png" alt="" title="Comparison"></a></p>
+<p><a href="/images/converted/deferred-msaa/comparison.png"><img src="/images/converted/deferred-msaa/comparison.png" alt="" title="Comparison"></a></p>
 <p>That particular shot shows off the weakness of both standard MSAA and my approach.  If you look at the high-contrast area whether the tank overlaps with the bright sky, you can see how standard MSAA totally fails to do anything about the edge aliasing.  This is because the MSAA resolve is done on the HDR pixel values, and tone mapping is a non-linear operation.  However in the darker areas towards the bottom MSAA does just fine.  In contrast (pun not intended), deferred MSAA holds up really well in the silhouettes. The AA quality is surprisingly pretty decent for a edge filtering-based approach, and since it&rsquo;s done after tone mapping there&rsquo;s no non-linearity to worry about. However if you look carefully down in the tank, you&rsquo;ll spot edges that don&rsquo;t get the AA treatment at all. This is because the depth values are similar enough to pass the comparison test, despite coming from different triangles.  You can see it most clearly in the grate on the front of the tank.  The sample app has a tweakable threshold value for the depth comparison, and setting it lower causes more edges to be properly distinguished. However it also starts to cause false positives in triangles nearly parallel to the camera.  The image below shows the same scene with a default threshold, and with a low threshold:</p>
-<p><a href="http://mynameismjp.files.wordpress.com/2010/08/threshold.png"><img src="http://mynameismjp.files.wordpress.com/2010/08/threshold.png" alt="" title="Threshold"></a></p>
+<p><a href="/images/converted/deferred-msaa/threshold.png"><img src="/images/converted/deferred-msaa/threshold.png" alt="" title="Threshold"></a></p>
 <p>Even with a low threshold, some edges are still missed since only the normal or material properties will change between two triangles and not the depth.  For those cases more information would be required, such as the scene normals or an ID buffer.  But you could probably make the case that edges with depth discontinuities are more likely to have high contrast, and the high-contrast areas are where AA makes the biggest difference.</p>
 <p>Aside from the quality issues, the other obvious concern with this approach is performance.  Even with depth only, an MSAA prepass isn&rsquo;t going to be cheap on a lot of hardware.  It makes more sense if the depth prepass isn&rsquo;t wasted and only used for the post process&hellip;for instance it&rsquo;s certainly possible to do downscale the MSAA depth buffer with a MAX operation and use it to pre-populate the non-MSAA depth buffer.  However it may be hard to get this to play nice with early z-cull, depending on the hardware.  You could also possibly lay out your G-Buffer for light prepass with MSAA enabled, but then you might have trouble using depth values to reconstruct position.</p>
 <p>You can get the sample code and binaries here: <a href="https://mynameismjp.files.wordpress.com/2016/11/dmsaa1.zip">https://mynameismjp.files.wordpress.com/2016/11/dmsaa1.zip</a>.  This one requires a D3D_FEATURE_LEVEL_11_0-capable device.</p>
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22maxest@gct-game.net%22">maxest</a> - <!-- raw HTML omitted -->Aug 3, 2011<!-- raw HTML omitted --></p>
+<p><a href="%22maxest@gct-game.net%22">maxest</a> - <time datetime="2011-08-03 11:16:02">Aug 3, 2011</time></p>
 <p>One question: what does 4xMSAA mean? In DX9 you don&rsquo;t have access to subsamples, right? So by 4xMSAA you simply mean creating a 4x bigger 1-sample render target?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[directtovideo](http://directtovideo.wordpress.com "smaash@yahoo.com") - <time datetime="2010-08-16 02:47:26">Aug 1, 2010</time>
 <p>This is actually quite similar actually to what I did here: <a href="http://directtovideo.wordpress.com/2009/11/13/deferred-rendering-in-frameranger/">http://directtovideo.wordpress.com/2009/11/13/deferred-rendering-in-frameranger/</a> (see the end of the post) I do this: - render the gbuffers to non-MSAA, light them and composite them and so on. - render a pass to a MSAA RGBA8 colour target. pass up depth, normal, object ID and material ID from the vertex shader. In the fragment shader, read the GBuffer depth+normals and calculate weights, and use these weights to perform a bilateral upsample of the colour buffer. - finally resolve that MSAA colour buffer with a stretchrect. As an optimisation - perform an edge detect pass on the gbuffers to lay down stencil to mask out pixels in the MSAA pass. The result is pretty nice actually, and it works on DX9. As you said, it&rsquo;s a lot nicer if you use normal and ID information too - depth doesnt give you great results. Normal is probably the most important feature.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2016-08-31 22:04:37">Aug 3, 2016</time>
 <p>Sorry about that, I re-uploaded the file and updated the link.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2016-08-30 03:55:57">Aug 2, 2016</time>
 <p>links dead :(</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -130,7 +136,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1247 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1269 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2010-08-16 01:57 -0700</p>
 			</footer>
 		</article>

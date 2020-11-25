@@ -10,7 +10,7 @@
 As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space.">
 <meta itemprop="datePublished" content="2009-05-05T20:09:33&#43;00:00" />
 <meta itemprop="dateModified" content="2009-05-05T20:09:33&#43;00:00" />
-<meta itemprop="wordCount" content="1632">
+<meta itemprop="wordCount" content="1765">
 
 
 
@@ -131,41 +131,73 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/" title="">Scintillating Snippets: Reconstructing Position From Depth « MJP’s XNA Danger Zone</a> - <!-- raw HTML omitted -->May 2, 2009<!-- raw HTML omitted --></p>
+<p><a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/" title="">Scintillating Snippets: Reconstructing Position From Depth « MJP’s XNA Danger Zone</a> - <time datetime="2009-05-05 15:14:43">May 2, 2009</time></p>
 <p>[&hellip;] Answers to extra credit questions here Posted in DirectX, Programming, XNA. 2 Comments [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Phil]( "phil.teschner@gmail.com") - <time datetime="2009-05-06 13:07:11">May 3, 2009</time>
 <p>I don&rsquo;t think your solution for arbitrary geometry works. You alluded to the problems yourself in your previous post. Interpolationg (xyz / z) per-vertex doesn&rsquo;t work as it is not a linear operation. You have to do the division in the pixel shader for this to work.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2009-11-17 17:56:58">Nov 2, 2009</time>
 <p>You need to do this: wsPos = mul(float4(wsPos, 1.0f), InvertView); If you don&rsquo;t convert to a float4 and set w = 1.0, then your view-space position won&rsquo;t get transformed by the translation part of your inverse view matrix (in other words, it will only get rotated).</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Icaton](http://www.wailingninja.com "guldbran@gmail.com") - <time datetime="2009-11-17 05:08:57">Nov 2, 2009</time>
 <p>Hi! I have a problem getting the last technique to work. VSPositionFromDepth gets the position in view space right? So in order to obtain the reconstructed world space position, I multiply the resulting value with an inverse view matrix like this: //View space position float3 wsPos = VSPositionFromDepth(tex, input.vsPos); //Transform to world space //wsPos = mul(wsPos, InvertView); Where the texcoords are: input.ssPos.xy /= input.ssPos.w; //Transforming from [-1,1]-&gt;[1,-1] to [0,1]-&gt;[1,0] float2 tex = (0.5f * (float2(input.ssPos.x, -input.ssPos.y) + 1)) - halfPixel; Where SsPos equals csPos in the example. Well&hellip;the problem is that it doesn&rsquo;t work, the ws positionons are incorrect. Any ideas of what I&rsquo;m doing wrong?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Game Rendering &raquo; Position Reconstruction](http://www.gamerendering.com/2009/12/07/position-reconstruction/ "") - <time datetime="2009-12-07 10:34:14">Dec 1, 2009</time>
 <p>[&hellip;] “Reconstructing Position From Depth, Continued” <a href="http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/">http://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/</a> Please [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Default Ex]( "defaultex@live.com") - <time datetime="2009-08-30 20:22:20">Aug 0, 2009</time>
 <p>Forgot to mention in that last one, you alike the first one multiply view space depth (negated if your not using floating point buffers) then add camera position.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Default Ex]( "defaultex@live.com") - <time datetime="2009-08-30 20:20:05">Aug 0, 2009</time>
 <p>A heads up to those using the first technique, it expects coordinates in the 0 to 1 range. Which should have been apparent with the texCoord parameter. My own world space arbitrary implementation: float3 GetFrustumRay(in float2 screenPosition) { float2 sp = sign(screenPosition); return float3(Camera.FrustumRay.x * sp.x, Camera.FrustumRay.y * sp.y, Camera.MaxDepth); } The Camera.FrustumRay is calculated in the application using the following: Vector2 frustumRay = new Vector2(); frustumRay.Y = (float)Math.Tan(Math.PI / 3.0 / 2.0) * camera.Viewport.MaxDepth; frustumRay.X = -(frustumRay.Y * camera.Viewport.AspectRatio);</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Josh]( "") - <time datetime="2009-06-20 23:11:28">Jun 6, 2009</time>
 <p>Phil was correct. I tried doing the calculation in the vertex shader for my code, and it introduced very nasty visual artifacts. When I moved the calculation to the fragment shader, it produced the correct results.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[mpettineo](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2009-07-20 09:55:34">Jul 1, 2009</time>
 <p>Yup, you guys are right. For a while I was trying to figure out why I wasn&rsquo;t getting artifacts&hellip;and then I realized that in code I was calculating the ray in the pixel shader too. Whoops. :-D Thanks everyone for pointing it out, much appreciated.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[GALOP1N]( "galopin@gmail.com") - <time datetime="2010-03-27 05:18:24">Mar 6, 2010</time>
 <p>Hi, I have a clever solution for you. It allows reconstruction of the view position in only two mul and no computation at all in the application. First you need to output the depth in view space of your image. You can choose a R32F a G16R16F or anything you want. Second, when you need to retrieve the pixel position in view space. Like in a full screen post process, draw a quad with those vertices (-1,-1) (-1,1) (1,1) (1,-1). If you need it in a real geometry, just send the xyw of the projected position and divide xy by w in the pixel shader Let&rsquo;s go with some math now: 1. we have a well know projection matrix with lot of zero and some value A 0 0 0 0 B 0 0 0 0 C -1 0 0 D 0 let&rsquo;s write the process to transform a view space position to projection space ( Vw == 1 ) Px = Vx * A + Vy * 0 + Vz * 0 + 1 * 0 Py = Vx * 0 + Vy * B + Vz * 0 + 1 * 0 Pw = Vx * 0 + Vy * 0 - 1 * Vz + 1 * 0 Now let&rsquo;s reconstruct Vx. What we know in your fragment program is the interpolated pixel position in projected space ( Px/Pw ). let&rsquo;s call it Ix for InterpolatedX so: Px/Pw = Ix Vx * A / -Vz = Ix Vx = Ix * Vz * ( -1 / A) if we do the same for Vy we got Vy = Iy * Vz * ( -1 / B). Let&rsquo;s write this in a HLSL form. // Vertex part out.position = in.position; out.projpos.xy = in.position.xy; out.magiccoef = -1.f / float2( gProj(0][0], gProj[1][1] // Pixel part float3 viewposition; viewposition.z = tex2D( /***/ ).x; viewposition.xy = viewposition.zz * in.magiccoef.xy * in.projpos.xy; You know have your view space position, you can transform it to World space with a transform with the inverse view or keep it this way and do your math in view space. Voilà :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Attack of the depth buffer &laquo; The Danger Zone](http://mynameismjp.wordpress.com/2010/03/22/attack-of-the-depth-buffer/ "") - <time datetime="2010-03-22 23:42:46">Mar 1, 2010</time>
 <p>[&hellip;] by the distance to the far-clip plane.  Position was reconstructed using the method decribed here. For formats marked “Perspective Z/W”, the depth was calculated by interpolating the z [&hellip;]</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Tiago]( "tjcostinha@gmail.com") - <time datetime="2010-06-12 02:26:49">Jun 6, 2010</time>
 <p>Some more questions lol: -g_matCameraWorld is the inverse of view matrix or inverse of world-view matrix? -g_vCameraPosWS is the camera position multiplied by the world matrix or simply the camera position vector? -How do I calculate vFrustumRayWS? float3 vFrustumRayWS = vPositionWS.xyz * (g_fFarClip/-vPositionWS.z);</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[n00body](http://n00body.squarespace.com/ "n00body.else@gmail.com") - <time datetime="2010-05-24 09:08:53">May 1, 2010</time>
 <p>Interesting trick, GALOP1N. On the whole, this actually seems like it would be cheaper than the prevalent method from Crytek. The &ldquo;magiccoef&rdquo; can be calculated outside the shaders, but is still significantly cheaper to do than the frustum corner. Then the actual stored depth needn&rsquo;t be normalized &amp; negated, so that is another savings. Of course, anything relying on the depth being in the range [0,1] might be affected, but that will be situation-specific. I&rsquo;m gonna try using this from now on, and see how well it holds up. Thanks. :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Sebastian Scholle (@sscholle)](http://twitter.com/sscholle "sscholle@twitter.example.com") - <time datetime="2015-06-29 01:44:31">Jun 1, 2015</time>
 <p>where can i find a GLSL example of this code?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[irvingpliy.tblog.com](http://irvingpliy.tblog.com "inessteel@gmail.com") - <time datetime="2013-07-14 16:29:01">Jul 0, 2013</time>
 <p>This is a really good tip especially to those fresh to the blogosphere. Short but very accurate information… Appreciate your sharing this one. A must read article!</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[obama care taxes](http://beauctqa.blogspace.fr "marvin-burrow@gmail.com") - <time datetime="2013-07-31 03:00:24">Jul 3, 2013</time>
 <p>I rarely leave comments, but after looking at a bunch of responses on Reconstructing Position From Depth, Continued | The Danger Zone. I do have a couple of questions for you if you don&rsquo;t mind. Is it simply me or does it appear like some of these remarks look as if they are left by brain dead folks? :-P And, if you are posting at other online sites, I&rsquo;d like to follow you. Would you post a list of every one of your shared sites like your Facebook page, twitter feed, or linkedin profile?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[hyuk jae lee]( "oiloveyouio@naver.com") - <time datetime="2016-09-05 07:29:36">Sep 1, 2016</time>
 <p>hi! I am a student studying in Korea. I do not speak English well There was wondering Why do you need four frustum corner?</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -173,7 +205,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1632 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1765 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-05-05 13:09 -0700</p>
 			</footer>
 		</article>

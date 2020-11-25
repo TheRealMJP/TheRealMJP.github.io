@@ -10,7 +10,7 @@
 If you&rsquo;ve ever implemented a deferred renderer, you know that one of the important points is keeping your G-Buffer small enough as to be reasonable in terms of bandwidth and your number of render targets. Thanks to that constant struggle between good and evil, people have come up with some reasonable clever approaches towards packing necessary attributes in your G-Buffer.">
 <meta itemprop="datePublished" content="2009-06-17T16:36:06&#43;00:00" />
 <meta itemprop="dateModified" content="2009-06-17T16:36:06&#43;00:00" />
-<meta itemprop="wordCount" content="761">
+<meta itemprop="wordCount" content="776">
 
 
 
@@ -106,13 +106,17 @@ float3 SphericalToCartesian(float2 spherical)
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="%22defaultex@live.com%22">Default Ex</a> - <!-- raw HTML omitted -->Aug 6, 2009<!-- raw HTML omitted --></p>
+<p><a href="%22defaultex@live.com%22">Default Ex</a> - <time datetime="2009-08-29 01:16:12">Aug 6, 2009</time></p>
 <p>Oh wow, this technique does something I&rsquo;ve been spending even more instructions than this cost to produce. Hard edges (90 degree or more) sort of soften up through this technique when used with Linear filtering. Not to the point where it breaks the hard edge, but just enough to where it&rsquo;s easier on the eyes.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[n00body](http://n00body.squarespace.com/ "n00body.else@gmail.com") - <time datetime="2009-08-23 08:45:12">Aug 0, 2009</time>
 <p>You should check out the work this guy is doing: <a href="http://aras-p.info/texts/CompactNormalStorage.html">http://aras-p.info/texts/CompactNormalStorage.html</a> He has come up with a variety of ways to store view-space normals, including a novel use of sphere mapping. For each technique, he has images of their error from the original, plus lists of compiled code and instruction counts. Definitely check it out. ;)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Tomat]( "tomat1979@gmail.com") - <time datetime="2009-06-23 04:05:49">Jun 2, 2009</time>
 <p>there will be a bug then you represent float3(0.0, 0.0, some_z) like vectors. and one will have a workaround for this, which also cost shaders instructions. :)</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -120,7 +124,7 @@ float3 SphericalToCartesian(float2 spherical)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/xna">XNA</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>761 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>776 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2009-06-17 09:36 -0700</p>
 			</footer>
 		</article>

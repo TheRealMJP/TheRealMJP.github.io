@@ -9,7 +9,7 @@
 <meta itemprop="description" content="For profiling GPU performance on the PC, there aren&rsquo;t too many options. AMD&rsquo;s GPU PerfStudio and Nvidia&rsquo;s Parallel Nsight can be pretty handy due to their ability to query hardware performance counters and display the data, but they only work on each vendor&rsquo;s respective hardware. You also might want to integrate some GPU performance numbers into your own internal profiling systems, in which case those tools aren&rsquo;t going to be of much use.">
 <meta itemprop="datePublished" content="2011-10-13T08:59:37&#43;00:00" />
 <meta itemprop="dateModified" content="2011-10-13T08:59:37&#43;00:00" />
-<meta itemprop="wordCount" content="681">
+<meta itemprop="wordCount" content="717">
 
 
 
@@ -71,7 +71,7 @@
 				<h1>GPU Profiling in DX11 with Queries</h1>
 			</header>
 			<div class="content">
-				<p><a href="http://mynameismjp.files.wordpress.com/2011/10/queryprofiling_64bit-2011-10-13-01-55-52-65.png"><img src="http://mynameismjp.files.wordpress.com/2011/10/queryprofiling_64bit-2011-10-13-01-55-52-65.png?w=1024" alt="" title="QueryProfiling_64bit 2011-10-13 01-55-52-65"></a></p>
+				<p><a href="/images/converted/profiling-in-dx11-with-queries/queryprofiling_64bit-2011-10-13-01-55-52-65.png"><img src="/images/converted/profiling-in-dx11-with-queries/queryprofiling_64bit-2011-10-13-01-55-52-65_resized_1024.png" alt="" title="QueryProfiling_64bit 2011-10-13 01-55-52-65"></a></p>
 <p>For profiling GPU performance on the PC, there aren&rsquo;t too many options. AMD&rsquo;s GPU PerfStudio and Nvidia&rsquo;s Parallel Nsight can be pretty handy due to their ability to query hardware performance counters and display the data, but they only work on each vendor&rsquo;s respective hardware. You also might want to integrate some GPU performance numbers into your own internal profiling systems, in which case those tools aren&rsquo;t going to be of much use.</p>
 <p>To get around this, it&rsquo;s possible to use D3D11 timestamp queries to get coarse-grained timing info for different parts of the frame. It&rsquo;s a ways off from the kind of info you get from the vendor-specific tools, but it&rsquo;s a lot better than nothing. It&rsquo;s also pretty easy to implement. To profile a portion of your frame, you need a trio of ID3D11Query objects. Two of them need to have the type D3D11_QUERY_TIMESTAMP, and are used to get the GPU timestamp at the start and end of the block you want to profile. The third needs to have the type D3D11_QUERY_TIMESTAMP_DISJOINT, and it tells you whether your timestamps are invalid as well as the frequency used for converting from ticks to seconds. In practice it goes like this:</p>
 <p>When starting a profiling block:</p>
@@ -95,19 +95,29 @@
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p><a href="http://gravatar.com/djmips" title="david.c.galloway@gmail.com">djmips</a> - <!-- raw HTML omitted -->Feb 3, 2012<!-- raw HTML omitted --></p>
+<p><a href="http://gravatar.com/djmips" title="david.c.galloway@gmail.com">djmips</a> - <time datetime="2012-02-08 13:47:39">Feb 3, 2012</time></p>
 <p>What I have been doing is one disjoint query per frame (start and end) and many matched timestamp tokens in the frame. It seems to work fine but sometimes I do get weird values for the disjoint frequency on some older nVidia cards. Is there anything wrong with my approach?</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[RebelMoogle](http://www.yojimbo.de "chaos.yoji@gmail.com") - <time datetime="2011-12-12 12:42:49">Dec 1, 2011</time>
 <p>There&rsquo;s a little snag I hit: I changed the ID3D11Queryptr in the ProfileData struct in the Profiler class to ID3D11Query*, which resulted in not fully initialized arrays, thus containing garbage and breaking the program. If like me, anyone else is to lazy to write a few typedefs, here&rsquo;s what I did: I have changed the struct constructer to the following: struct ProfileData { ID3D11Query* DisjointQuery[QueryLatency]; ID3D11Query* TimestampStartQuery[QueryLatency]; ID3D11Query* TimestampEndQuery[QueryLatency]; BOOL QueryStarted; BOOL QueryFinished; ProfileData() : QueryStarted(FALSE), QueryFinished(FALSE) { ZeroMemory(DisjointQuery, sizeof(ID3D11Query) * QueryLatency); ZeroMemory(TimestampStartQuery, sizeof(ID3D11Query) * QueryLatency); ZeroMemory(TimestampEndQuery, sizeof(ID3D11Query) * QueryLatency); } }; Other than that it works beautifully. ( I changed the code so that you can just drop it into any program without needing the SampleFramework11, if anyone wants it. :) )</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[3dcgi](http://3dcgi.com "tmartin@ieee.org") - <time datetime="2012-04-01 17:29:34">Apr 0, 2012</time>
 <p>I don&rsquo;t know about Nvidia, but AMD has a perf API that can be integrated into your engine so you can get PerfStudio like counter data without using PerfStudio. <a href="http://developer.amd.com/tools/GPUPerfAPI/Pages/default.aspx">http://developer.amd.com/tools/GPUPerfAPI/Pages/default.aspx</a></p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[Ben]( "forltiko@gmail.com") - <time datetime="2011-10-13 02:34:21">Oct 4, 2011</time>
 <p>You need a new test scene :)</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[]( "") - <time datetime="2011-10-16 22:45:25">Oct 0, 2011</time>
 <p>You can also do this with D3D9 btw. NVIDIA support timestap queries since GeForce4 I think. ATI since 2xxx IIRC.</p>
-<!-- raw HTML omitted -->
+<hr />
+####
+[kore3d]( "kore3d@gmail.com") - <time datetime="2013-05-25 03:51:36">May 6, 2013</time>
 <p>Timestamp and Disjoint doesn&rsquo;t work with lower feature levels (i.e. 9.3) at the D3D11. Lower levels support events and occlussions only.</p>
-<!-- raw HTML omitted -->
+<hr />
 
 			</div>
 			<hr class="post-end">
@@ -115,7 +125,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx">DirectX</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/programming">Programming</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/uncategorized">Uncategorized</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>681 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>717 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2011-10-13 01:59 -0700</p>
 			</footer>
 		</article>

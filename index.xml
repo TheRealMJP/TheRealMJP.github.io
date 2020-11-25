@@ -55,10 +55,9 @@
       <guid>https://therealmjp.github.io/publications/</guid>
       <description>Breaking Down Barriers: An Introduction To GPU Synchronization – from the Advanced Graphics Techniques tutorial session at GDC 2019
 Slides
-Advanced Lighting R&amp;amp;D at Ready At Dawn Studios – from the Physically Based Shading in Theory and Practice course at SIGGRAPH 2015
+ Advanced Lighting R&amp;amp;D at Ready At Dawn Studios – from the Physically Based Shading in Theory and Practice course at SIGGRAPH 2015
 Course Page Slides (pptx) Slides (pdf)
-Rendering The Alternate History of The Order: 1886 – from the Advances in Real-Time Rendering in Games course at SIGGRAPH 2015
-Course Page Slides (pptx)</description>
+ Rendering The Alternate History of The Order: 1886 – from the Advances in Real-Time Rendering in Games course at SIGGRAPH 2015</description>
     </item>
     
     <item>
@@ -87,7 +86,13 @@ This site is mainly here for my blog, where I mostly post about things related t
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/</guid>
       <description>This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIn the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.</description>
     </item>
     
     <item>
@@ -97,7 +102,13 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-5-back-to-the-real-world/</guid>
       <description>This is Part 5 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so far, thanks for hanging in there!</description>
     </item>
     
     <item>
@@ -107,7 +118,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/</guid>
       <description>This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome back!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -117,7 +131,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-3-multiple-command-processors/</guid>
       <description>This is Part 3 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to Part 3 of the series!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -127,7 +144,10 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-2-synchronizing-gpu-threads/</guid>
       <description>This is Part 2 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionWelcome to part 2 of the series!</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption</description>
     </item>
     
     <item>
@@ -137,7 +157,13 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/</guid>
       <description>This is Part 1 of a series about GPU synchronization and preemption. You can find the other articles here:
-Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - Multiple Command ProcessorsPart 4 - GPU PreemptionPart 5 - Back To The Real WorldPart 6 - Experimenting With Overlap and PreemptionIf you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
+Part 1 - What&amp;rsquo;s a Barrier?
+Part 2 - Synchronizing GPU Threads
+Part 3 - Multiple Command Processors
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+If you&amp;rsquo;ve done any amount of D3D12 or Vulkan programming, then you&amp;rsquo;ve probably spent a good bit of that time grappling with barriers.</description>
     </item>
     
     <item>
@@ -147,7 +173,11 @@ Part 1 - What&amp;rsquo;s a Barrier?Part 2 - Synchronizing GPU ThreadsPart 3 - M
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-6-step-into-the-baking-lab/</guid>
       <description>This is part 6 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabGet the code on GitHub: https://github.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -157,7 +187,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/</guid>
       <description>This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the two previous articles I showed workable approaches for approximating the diffuse and specular result from a Spherical Gaussian light source.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -167,7 +201,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-4-specular-lighting-from-an-sg-light-source/</guid>
       <description>This is part 4 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the previous article, we explored a few ways to compute the contribution of an SG light source when using a diffuse BRDF.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -177,7 +215,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/</guid>
       <description>This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabA Big Gaussian In The Sky In the previous post we covered a few of the universal properties of SG&amp;rsquo;s.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -187,7 +229,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-2-spherical-gaussians-101/</guid>
       <description>This is part 2 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabIn the previous article, I gave a quick rundown of some of the available techniques for representing a pre-computed distribution of radiance or irradiance for each lightmap texel or probe location.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -197,7 +243,11 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart
       
       <guid>https://therealmjp.github.io/posts/sg-series-part-1-a-brief-and-incomplete-history-of-baked-lighting-representations/</guid>
       <description>This is part 1 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
-Part 1 - A Brief (and Incomplete) History of Baked Lighting RepresentationsPart 2 - Spherical Gaussians 101Part 3 - Diffuse Lighting From an SG Light SourcePart 4 - Specular Lighting From an SG Light SourcePart 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;sPart 6 - Step Into The Baking LabFor part 1 of this series, I&amp;rsquo;m going to provide some background material for our research into Spherical Gaussians.</description>
+Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
+Part 2 - Spherical Gaussians 101
+Part 3 - Diffuse Lighting From an SG Light Source
+Part 4 - Specular Lighting From an SG Light Source
+Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description>
     </item>
     
     <item>
@@ -763,8 +813,9 @@ First things first: what am I talking about? I&amp;rsquo;m talking about someth
       
       <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
       <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments:  sam - Feb 4, 2009This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
-1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+ Comments:  sam - Feb 4, 2009
+This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
+#### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 20101./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
     </item>
     
     <item>

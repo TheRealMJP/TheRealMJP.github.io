@@ -65,8 +65,9 @@ Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on 
       
       <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
       <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments:  sam - Feb 4, 2009This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
-1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+ Comments:  sam - Feb 4, 2009
+This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
+#### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 20101./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
     </item>
     
     <item>
