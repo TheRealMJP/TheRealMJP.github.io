@@ -336,7 +336,7 @@
 6. More hardware to test on</p>
 <p>These things have some big implications on what you store in the G-Buffer, forward shading efficiency, and the cost of a z prepass. That last one is important, since it&rsquo;s mandatory for light indexed deferred but optional for traditional deferred. While it can still be cheaper overall to have a z prepass before your G-Buffer pass (as it was in my case), that could change depending on how your vertex processing costs.</p>
 <p>So for now, my conclusion is that Light Indexed Deferred is at least in the realm of practical for most cases. Personally I consider even 256 to be a LOT of lights, so I&rsquo;m not too worried about scaling up to thousands of lights anytime soon. But if anyone has access to different GPU&rsquo;s, I would love to get some more numbers so that I can post them here. So if you happen to have a 7970 or GTX 680 lying around, feel free to download my sample and take down some numbers. Originally the number of lights was hard-coded to 128 in the binary, but I uploaded a new version that lets you toggle through the number of lights that I used for my test runs.</p>
-<p>You can find the code and binary on CodePlex: <a href="http://mjp.codeplex.com/releases/view/85279#DownloadId=363173">http://mjp.codeplex.com/releases/view/85279#DownloadId=363173</a></p>
+<p>You can find the code and binary on GitHub: <a href="https://github.com/TheRealMJP/DX11Samples/releases/tag/v1.0">https://github.com/TheRealMJP/DX11Samples/releases/tag/v1.0</a></p>
 <p>Here are a few numbers for a GTX 680 contributed by Sander van Rossen:</p>
 <table>
 <thead>
