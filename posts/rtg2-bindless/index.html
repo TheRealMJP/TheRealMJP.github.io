@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="Read My Chapter in Ray Tracing Gems II!">
+<meta itemprop="description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR.">
+<meta itemprop="datePublished" content="2021-08-22T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-08-22T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="827">
+<meta itemprop="image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png">
+
+
+
+<meta itemprop="keywords" content="Graphics,Ray Tracing,DirectX 12," /><meta property="og:title" content="Read My Chapter in Ray Tracing Gems II!" />
+<meta property="og:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/rtg2-bindless/" />
+<meta property="og:image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png" />
+<meta property="article:published_time" content="2021-08-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-08-22T00:00:00+00:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png"/>
+
+<meta name="twitter:title" content="Read My Chapter in Ray Tracing Gems II!"/>
+<meta name="twitter:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Read My Chapter in Ray Tracing Gems II!</title>
+	<link rel="stylesheet" href="https://therealmjp.github.io/css/style.min.9ae64a8094d0d100100f0725503238784f798a59c57003700be4d8b0645124e9.css" integrity="sha256-muZKgJTQ0QAQDwclUDI4eE95ilnFcANwC+TYsGRRJOk=">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://therealmjp.github.io/">The Danger Zone</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://therealmjp.github.io/posts/">Posts</a>
+				<a href="https://therealmjp.github.io/about/">About</a>
+				<a href="https://therealmjp.github.io/publications/">Publications</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="img-btn" class="hdr-btn" title="Featured Image"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></button><span class="hdr-social hide-in-mobile"><a href="https://github.com/TheRealMJP" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/mynameismjp" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="mailto:mpettineo@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://therealmjp.github.io/posts/">Posts</a></li>
+			<li><a href="https://therealmjp.github.io/about/">About</a></li>
+			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
+		</ul>
+	</div>
+
+
+	<div class="bg-img"></div>
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Aug 22, 2021</span></div>
+				<h1>Read My Chapter in Ray Tracing Gems II!</h1>
+			</header>
+			<div class="content">
+				<p><figure><img src="/images/rtg2-bindless/rtg2-bindless.png" alt="comparison of computing irradiance from a directional light with L1 SH and L2 SH projections"></figure></p>
+
+<p><a href="https://www.realtimerendering.com/raytracinggems/rtg2/index.html">Ray Tracing Gems II</a> was released a few weeks ago, and like the first one it's free to <a href="https://link.springer.com/content/pdf/10.1007%2F978-1-4842-7185-8.pdf">download as a PDF</a> from the publisher's website. There are 50 articles in this thing written by over 80 authors, so I think it's safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.</p>
+
+<p>Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you'd expect is all about using bindless techniques in the context of DXR. I had already written a simple <a href="https://github.com/TheRealMJP/DXRPathTracer">open source path tracer</a> in DXR which uses bindless for all SRV's, so it seemed like a natural fit for me to write full article that dives into all of the details required to make that happen. I also wasn't aware of a comprehensive article or tutorial explaining the ins and outs of bindless in D3D12, and I thought my article could help fill that niche. Hopefully I was successful! If you do end up reading it, feel free to let me know if you have any thoughts or have any lingering questions that I can help clear up.</p>
+
+<p>I also wanted to use this blog post as an opportunity to emphasize a few things in an informal way, just in case they don't fully come through in the article:</p>
+
+<ul>
+<li>Bindless is great, it really is! There are downsides of course (mostly on the tooling and debugging side of things), but I firmly believe the pros outweigh the cons. I don't really see any future for the older binding models.</li>
+<li>It's hard to oversell how bad of an experience it is dealing with multiple root signatures and descriptor tables/ranges compared to bindless.  Once you go bindless a lot of that complexity just disappears, which could end up being a good thing for people that are new to D3D12/Vulkan or graphics programming in general.</li>
+<li>On a related note: just don't bother with local root signatures in DXR, at least for binding descriptor tables. Ray tracing is inherently global, and it makes so much sense to have global access to all of your resources/descriptors.</li>
+<li>In the article I mention how the indirection offered by using descriptor indices can let you do some really cool things. Basically as long as you keep your descriptor index persistent, you're free to update the descriptor located at the index without having to also go and update whatever data structures have that index in it. Got a ring buffer system where you swap to a different buffer when the contents are updated by the CPU? Just update the descriptor when you do that and everything keeps working great! Same goes for updating textures due to streaming in new mips, or swapping between aliased render target textures as part of an adaptive resolution system.</li>
+<li>Bindless is awesome for CPU performance and really helps unlock the original dream of low CPU overhead that was promised by D3D12 and Vulkan. Once you've moved all of your &quot;binding&quot; out of API functions and into your own user-managed memory you can do things <em>much</em> more quickly, and you can really fly through your draw calls. Combine that with multithreaded command buffer recoding and you can do a ton of draws and dispatches with very low latency.</li>
+</ul>
+
+<p>Finally, I want to finish with a note addressing Shader Model 6.6 and the new &quot;dynamic resource binding&quot; feature. When I started working on the article it was March of 2020, since RTG II was originally supposed to be released that year. At the time the idea of a new HLSL feature that makes it simple and trivial to access bindless descriptors was little more than some <a href="https://github.com/microsoft/DirectXShaderCompiler/issues/1067">hopes and dreams in a GitHub issue</a>, and I thought the situation would be the same by the time the release date rolled around. I did not expect the book release to be pushed back, I <em>really</em> did not expect for Shader Model 6.6 to be <a href="https://devblogs.microsoft.com/directx/in-the-works-hlsl-shader-model-6-6/">announced</a> before the year end, and I <em>definitely</em> did not expect for the D3D team to release an awesome new <a href="https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/">Agility SDK</a> that allowed for SM 6.6 to be deployed to end user machines without waiting for Windows updates. But of course all of those things happened, when meant by the time the chapter came out people were already using dynamic resources in their code. It's too bad, but it was of course bound to happen eventually. For those not using the latest-and-greatest the article should still help with spelling out the right HLSL and root signature incantations required for pre-SM6.6 bindless, and those that are on the bleeding edge can simply ignore that part and make use of the other content. On the plus side: dynamic resources are really really great. They fix a lot of little rough edges that show up when doing bindless the old way, and take an even further step towards simplifying and reducing the number of root signatures.</p>
+
+<p>Thanks for reading!</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/ray-tracing">Ray Tracing</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-12">DirectX 12</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>827 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-08-21 17:00 -0700</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://therealmjp.github.io/posts/sss-sg/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Approximating Subsurface Scattering With Spherical Gaussians</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+        repo="TheRealMJP/TheRealMJP.github.io"
+        issue-term="title"
+        label="comments"
+        theme="photon-dark"
+        crossorigin="anonymous"
+        async>
+</script></div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+</body>
+
+</html>

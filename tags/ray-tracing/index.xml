@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ray Tracing on The Danger Zone</title>
+    <link>https://therealmjp.github.io/tags/ray-tracing/</link>
+    <description>Recent content in Ray Tracing on The Danger Zone</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 22 Aug 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://therealmjp.github.io/tags/ray-tracing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Read My Chapter in Ray Tracing Gems II!</title>
+      <link>https://therealmjp.github.io/posts/rtg2-bindless/</link>
+      <pubDate>Sun, 22 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/rtg2-bindless/</guid>
+      <description>Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With DirectX Raytracing&amp;quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR.</description>
+    </item>
+    
+  </channel>
+</rss>
