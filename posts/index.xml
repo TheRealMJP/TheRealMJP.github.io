@@ -5,8 +5,93 @@
 		<description>Recent content in Posts on The Danger Zone</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Sun, 22 Aug 2021 00:00:00 +0000</lastBuildDate>
+		<lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate>
 		<atom:link href="https://therealmjp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Linking DXIL Binaries Using DXC</title>
+			<link>https://therealmjp.github.io/posts/dxil-linking/</link>
+			<pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://therealmjp.github.io/posts/dxil-linking/</guid>
+			<description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&#39;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&#39;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
+			<content:encoded><![CDATA[<p>While doing some research for a different blog post, I happened to discover that <a href="https://github.com/microsoft/DirectXShaderCompiler/">DXC</a> is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/using-shader-linking">thing you could do</a> for D3D11 with the old fxc-based compiler stack, but I wasn't aware that DXC could now do it as well. It turns out that the new <code>lib_6_x</code> targets aren't just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader. Unfortunately there doesn't seem to be any documentation that I can find for this feature, my only reference for getting this to work was <a href="https://github.com/microsoft/DirectXShaderCompiler/blob/master/tools/clang/unittests/HLSL/LinkerTest.cpp">the unit tests</a> from the DXC repo. To help out with that, I'll briefly explain the basics of how it works.</p>
+
+<p>As I mentioned above, if you're going to link things then you're going to want to compile to a library target rather than one of the shader stage targets (<code>ps_6_x</code>, <code>vs_6_x</code>, etc.). Let's say we want to create a full pixel shader where we can call into an external function that we can link in later. You would first want to setup an entry point like this in a file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Entry.hlsl
+</span><span class="c1"></span>
+<span class="c1">// This is the function we&#39;re going to link to
+</span><span class="c1"></span><span class="n">float4</span> <span class="nf">LibFunc</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+
+<span class="c1">// This is the entry point for our pixel shader
+</span><span class="c1"></span><span class="p">[</span><span class="n">shader</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;</span><span class="s">pixel</span><span class="s">&#34;</span><span class="p">)</span><span class="p">]</span>
+<span class="n">float4</span> <span class="n">PSMain</span><span class="p">(</span><span class="n">in</span> <span class="n">PSInput</span> <span class="n">input</span><span class="p">)</span> <span class="o">:</span> <span class="n">SV_Target0</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">LibFunc</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>You would then want to compile this with the <code>lib_6_6</code> target (or the equivalent of whatever shader model you're targetting) in order to produce a binary DXIL blob containing the compiled bytecode. For the implementation of <code>LibFunc()</code> we'll now want to setup another file with this code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Func.hlsl
+</span><span class="c1"></span>
+<span class="n">export</span> <span class="n">float4</span> <span class="nf">LibFunc</span><span class="p">(</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">float4</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>Note the <code>export</code> keyword. By default the compiler won't give your functions external linkage when compiling to a lib, so you'll want to add that keyword for any functions that you want to link to (you can also pass <code>-default-linkage external</code> when compiling but that's quite a hammer). You would once again compile this to the <code>lib_6_6</code> target to get another DXIL binary.</p>
+
+<p>To link these two binaries together, you'll want to create an instance of <code>IDxcLinker</code>, register your libraries with it, and then instruct it to create a new linked binary containing a complete pixel shader:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">IDxcBlob</span><span class="o">*</span> <span class="n">entryLib</span> <span class="o">=</span> <span class="n">CompileLib</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;</span><span class="s">Entry.hlsl</span><span class="s">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s">&#34;</span><span class="s">lib_6_6</span><span class="s">&#34;</span><span class="p">)</span><span class="p">;</span>
+<span class="n">IDxcBlob</span><span class="o">*</span> <span class="n">funcLib</span> <span class="o">=</span> <span class="n">CompileLib</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;</span><span class="s">Func.hlsl</span><span class="s">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s">&#34;</span><span class="s">lib_6_6</span><span class="s">&#34;</span><span class="p">)</span><span class="p">;</span>
+
+<span class="n">IDxcLinker</span><span class="o">*</span> <span class="n">linker</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+<span class="n">CheckHResult</span><span class="p">(</span><span class="n">DxcCreateInstance</span><span class="p">(</span><span class="n">CLSID_DxcLinker</span><span class="p">,</span> <span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">linker</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+<span class="n">CheckHResult</span><span class="p">(</span><span class="n">linker</span><span class="o">-</span><span class="o">&gt;</span><span class="n">RegisterLibrary</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;</span><span class="s">EntryLib</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">entryLib</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="n">CheckHResult</span><span class="p">(</span><span class="n">linker</span><span class="o">-</span><span class="o">&gt;</span><span class="n">RegisterLibrary</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;</span><span class="s">FuncLib</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">funcLib</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">wchar</span><span class="o">*</span> <span class="n">names</span><span class="p">[</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="sa">L</span><span class="s">&#34;</span><span class="s">EntryLib</span><span class="s">&#34;</span><span class="p">,</span> <span class="sa">L</span><span class="s">&#34;</span><span class="s">FuncLib</span><span class="s">&#34;</span> <span class="p">}</span><span class="p">;</span>
+
+<span class="n">IDxcOperationResult</span><span class="o">*</span> <span class="n">result</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+<span class="n">CheckHResult</span><span class="p">(</span><span class="n">linker</span><span class="o">-</span><span class="o">&gt;</span><span class="n">Link</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;</span><span class="s">PSMain</span><span class="s">&#34;</span><span class="p">,</span> <span class="sa">L</span><span class="s">&#34;</span><span class="s">ps_6_6</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">ArraySize_</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+
+<span class="n">IDxcBlob</span><span class="o">*</span> <span class="n">fullShader</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+
+<span class="n">HRESULT</span> <span class="n">status</span> <span class="o">=</span> <span class="n">S_OK</span><span class="p">;</span>
+<span class="n">CheckHResult</span><span class="p">(</span><span class="n">result</span><span class="o">-</span><span class="o">&gt;</span><span class="n">GetStatus</span><span class="p">(</span><span class="o">&amp;</span><span class="n">status</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">SUCCEEDED</span><span class="p">(</span><span class="n">status</span><span class="p">)</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">result</span><span class="o">-</span><span class="o">&gt;</span><span class="n">GetResult</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fullShader</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+    <span class="n">IDxcBlobEncoding</span><span class="o">*</span> <span class="n">linkerErrorMsg</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="n">result</span><span class="o">-</span><span class="o">&gt;</span><span class="n">GetErrorBuffer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">linkerErrorMsg</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="n">OutputErrorMessage</span><span class="p">(</span><span class="n">linkerErrorMsg</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>That's really it! If the operation succeeds, then <code>fullShader</code> will contain a complete DXIL binary that you can use to create a PSO the usual way. I haven't done any testing yet to see if linking is actually any faster than doing a full compile, but if it is faster then it could potentially be an avenue for reducing the compile times for excessive shader permutations.</p>
+
+<p>One major limitation to be aware of is that resources can <em>not</em> be a parameter or return value for exported functions. This is a real bummer, since it will require workarounds for real code. The only way to coordinate on resources right now is to either use the fancy new <a href="https://microsoft.github.io/DirectX-Specs/d3d/HLSL_ShaderModel6_6.html#dynamic-resource">dynamic resources functionality</a> from Shader Model 6.6, or have the lib that uses the resource declare it globally. You can also declare the same resource in both libs, in which case things will merge correctly as long as they use the exact same register assignment:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Entry.hlsl
+</span><span class="c1"></span>
+<span class="n">Texture2D</span> <span class="nl">MyTex</span> <span class="p">:</span> <span class="k">register</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span><span class="p">;</span>
+
+<span class="n">float4</span> <span class="nf">LibFunc</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+
+<span class="p">[</span><span class="n">shader</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;</span><span class="s">pixel</span><span class="s">&#34;</span><span class="p">)</span><span class="p">]</span>
+<span class="n">float4</span> <span class="n">PSMain</span><span class="p">(</span><span class="n">in</span> <span class="n">PSInput</span> <span class="n">input</span><span class="p">)</span> <span class="o">:</span> <span class="n">SV_Target0</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">LibFunc</span><span class="p">(</span><span class="p">)</span> <span class="o">+</span> <span class="n">MyTex</span><span class="p">[</span><span class="n">uint2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">]</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Func.hlsl
+</span><span class="c1"></span>
+<span class="n">Texture2D</span> <span class="nl">MyTex</span> <span class="p">:</span> <span class="k">register</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span><span class="p">;</span>
+
+<span class="n">export</span> <span class="n">float4</span> <span class="nf">LibFunc</span><span class="p">(</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">float4</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">MyTex</span><span class="p">[</span><span class="n">uint2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="p">]</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>Happy linking!</p>
+]]></content:encoded>
+		</item>
 		
 		<item>
 			<title>Read My Chapter in Ray Tracing Gems II!</title>
@@ -9822,7 +9907,7 @@ public class EventHandler2 : EventHandler
 			<description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
  Comments:  sam - Feb 4, 2009
 This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
-#### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 20101./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
+#### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 2010 1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
 			<content:encoded><![CDATA[<p>Got a new sample ready, this one  shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer.  Check it out on <a href="http://www.ziggyware.com/readarticle.php?article_id=235">Ziggyware</a>!</p>
 <h2 id="deferredshadowmapsimagesconverteddeferred-shadow-maps-sampledeferredshadowmapspng-deferredshadowmaps"><img src="/images/converted/deferred-shadow-maps-sample/deferredshadowmaps.png" alt="deferredshadowmaps" title="deferredshadowmaps"></h2>
 <h3 id="comments">Comments:</h3>

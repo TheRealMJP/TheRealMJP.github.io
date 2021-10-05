@@ -6,10 +6,19 @@
     <description>Recent content in Graphics on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 22 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linking DXIL Binaries Using DXC</title>
+      <link>https://therealmjp.github.io/posts/dxil-linking/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/dxil-linking/</guid>
+      <description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&#39;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&#39;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
+    </item>
     
     <item>
       <title>Read My Chapter in Ray Tracing Gems II!</title>
