@@ -5,8 +5,472 @@
 		<description>Recent content in Posts on The Danger Zone</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate>
+		<lastBuildDate>Mon, 11 Oct 2021 00:00:00 +0000</lastBuildDate>
 		<atom:link href="https://therealmjp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>The Shader Permutation Problem - Part 1: How Did We Get Here?</title>
+			<link>https://therealmjp.github.io/posts/shader-permutations-part1/</link>
+			<pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://therealmjp.github.io/posts/shader-permutations-part1/</guid>
+			<description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&#39;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&#39;t believe me, just go ahead and search for &amp;quot;unreal compiling shaders meme&amp;quot; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
+			<content:encoded><![CDATA[<p>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It's such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don't believe me, just go ahead and search for &quot;unreal compiling shaders meme&quot; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</p>
+
+<p><figure><img src="/images/shaders/compiling_shaders.png" alt="compiling shaders narcos meme"></figure></p>
+
+<p>If people are making memes about an issue then you know it's pretty bad, and the shader permutation situation can indeed be pretty bad. It's frustrating because collectively we <em>have</em> put a lot of effort into fixing or mitigating the problem, and yet it still hasn't really gone away. It's also frustrating because I've seen people trivialize it with suggestions like &quot;just don't make so many shaders!&quot; or &quot;just use branching!&quot; which I think misses a lot of the nuance and context of the problem. To help with those latter two, I thought I would spend some time talking about why permutations continue to be a problem and also give a little bit of history on how we got to this point. In <a href="../shader-permutations-part2">part 2</a> I'll then talk a bit about the various options we have available that can help us to get out of this mess, and expand on what's good and bad about them.</p>
+
+<h3 id="whats-a-few-shaders-among-friends">What's A Few Shaders Among Friends?</h3>
+
+<p>To start, let's go over a bit of background on the problem. When I talk about &quot;shader permutations&quot; (also sometimes called &quot;shader variants&quot;), what I'm referring to is taking a pile of shader code and compiling it N times with different options. In most cases these permutations are tied directly to features that are supported by the shader, often by writing the code in an &quot;uber-shader&quot; style with many different features that can be turned on and off independently. As a super-simple example let's look at a little HLSL pixel shader that uses preprocessor macros to turn different features on and off:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ENABLE_NORMAL_MAP, ENABLE_EMISSIVE_MAP, ENABLE_AO_MAPPING are
+</span><span class="c1"></span><span class="c1">// macros whose values are defined via compiler command line options
+</span><span class="c1"></span><span class="k">static</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">EnableNormalMap</span> <span class="o">=</span> <span class="n">ENABLE_NORMAL_MAP</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">EnableEmissiveMap</span> <span class="o">=</span> <span class="n">ENABLE_EMISSIVE_MAP</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">EnableAOMap</span> <span class="o">=</span> <span class="n">ENABLE_AO_MAPPING</span><span class="p">;</span>
+
+<span class="n">float4</span> <span class="nf">PSMain</span><span class="p">(</span><span class="n">in</span> <span class="n">PSInput</span> <span class="n">input</span><span class="p">)</span> <span class="o">:</span> <span class="n">SV_Target0</span>
+<span class="p">{</span>
+    <span class="n">float3</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">VtxNormal</span><span class="p">)</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">EnableNormalMap</span><span class="p">)</span>
+        <span class="n">normal</span> <span class="o">=</span> <span class="n">ApplyNormalMap</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">input</span><span class="p">.</span><span class="n">TangentFrame</span><span class="p">,</span> <span class="n">input</span><span class="p">.</span><span class="n">UV</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="n">float3</span> <span class="n">albedo</span> <span class="o">=</span> <span class="n">input</span><span class="p">.</span><span class="n">Albedo</span><span class="p">;</span>
+    <span class="n">float3</span> <span class="n">ambientAlbedo</span> <span class="o">=</span> <span class="n">albedo</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">EnableAOMap</span><span class="p">)</span>
+        <span class="n">ambientAlbedo</span> <span class="o">*</span><span class="o">=</span> <span class="n">SampleAOMap</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">UV</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="n">float3</span> <span class="n">lighting</span> <span class="o">=</span> <span class="n">CalcLighting</span><span class="p">(</span><span class="n">albedo</span><span class="p">,</span> <span class="n">ambientAlbedo</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">EnableEmissiveMap</span><span class="p">)</span>
+        <span class="n">lighting</span> <span class="o">+</span><span class="o">=</span> <span class="n">SampleEmissiveMap</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">UV</span><span class="p">)</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">float4</span><span class="p">(</span><span class="n">lighting</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">)</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>We have 3 features that can be enabled or disabled here, and if all of those features are independent we need to compile 2^3 = 8 permutations. You can hopefully see the problem already: each new feature we add means we <em>double</em> the permutation count! We can also generalize this a bit to non-binary features that have more than 2 different states, in which case the formular for computing the total number of permtuations looks something like this:</p>
+
+<p><span  class="math">\[ NumPermutations = NumStates_{featureA} * NumStates_{featureB} * NumStates_{featureC} ... \]</span></p>
+
+<p>With that kind of exponential growth it's not hard to imagine how the total permutation count can get up into the thousands or <a href="https://aras-p.info/blog/2017/02/05/Every-Possible-Scalability-Limit-Will-Be-Reached/">millions</a> as you add more and more features. That's pretty obviously not great when you start thinking about the impact this could have on developer workflow. As you add more and more features and more and more shader code to implement those features, you get this kind of cascading effect where you're asking the compiler to churn through this big monolith shader program and over and over again. That's a lot of wasted work of parsing and optimizing the same code over and over again, and unless you've got threadrippers and/or a local network of machines to distribute compilation across it can turn into hours of time for each change to the shader code. This is really not where you want to be if you're trying to rapidly iterate on optimizations or new features, and you <em>especially</em> don't want to pass that on to content creators that need to cook all of the necessary data for the game to run.</p>
+
+<p>Speaking of content creators, yet another source of unbounded shader growth comes from engines that allow users to create their own custom shaders that are bound to materials. Some expose this by allowing users to hand-author shaders in a shader language, while others allow you to create &quot;<a href="https://docs.unrealengine.com/4.27/en-US/RenderingAndGraphics/Materials/Editor/">shader graphs</a>&quot; using a visual node-based interface. Depending on how the renderer is setup, these can potentially serve as an additional multiplier on top of the permutation count that comes from the engine itself. For example a shader graph might only allow you to generate shading parameters (such as color, normals, roughness, etc.) while the engine combines that with hand-written shader permutations that implement the actual lighting calculations. If you have 100 permutations for the lighting phase and 100 shader graphs for a project...well guess what, you now have 10k shaders.</p>
+
+<p>The thing is that the time spent compiling isn't even the entire problem, it's just one part of it. Compiling all of those shaders can start to generate a lot of binary data, especially if you generate debug info. You may start running into issues with storing all of that data, or loading it and keeping it in memory at runtime. But wait, it gets worse! Recent PC and mobile graphics APIs like D3D and Vulkan actually implement a two-step compilation pipeline. Some people are surprised to learn this when they start with graphics, but offline shader compilers like dxc, fxc, and glslc actually generate some kind of intermediate bytecode rather than machine code that can be run on the GPU shader cores. GPUs actually have wildly different ISAs under the hood, with the instructions often changing from one hardware generation to the next even within the same vendor. To handle this setup, the driver will employ some kind of JIT compiler that takes your DXBC, DXIL or SPIR-V and converts it into the final ISA that the shader core can execute. The full pipeline typically goes something like this:</p>
+
+<ul>
+<li>The shader source code is compiled offline by a shader compiler, such as fxc, <a href="https://github.com/microsoft/DirectXShaderCompiler">dxc</a>, or <a href="https://github.com/google/shaderc/tree/main/glslc">glslc</a>
+
+<ul>
+<li>The output of this step is a hardware-agnostic intermediate bytecode format, either DXBC (fxc), DXIL (dxc), or SPIR-V (dxc or glslc)</li>
+</ul></li>
+<li>The compiled bytecode is loaded into memory by the engine</li>
+<li>The engine creates a <a href="https://blog.mecheye.net/2021/06/the-missing-guide-to-modern-graphics-apis-2-psos/">Pipeline State Object</a> (PSO) by passing the required state as well as the compiled bytecode for any required shader stages
+
+<ul>
+<li>During this step, the driver runs its own JIT compiler that converts the bytecode into its own hardware-specific ISA that runs on the physical shader cores</li>
+</ul></li>
+<li>The engine binds a PSO to a command buffer, and issues draw/dispatch commands that used the shaders referenced by the PSO</li>
+<li>The command buffer is submitted to the GPU, where the shader program actually gets executed</li>
+</ul>
+
+<p>It's easy to focus on that first step when thinking about the downsides of permutation explosion, but in reality those other remaining steps can all be affected as well. Having more permutations often means invoking that JIT compile step more times, which can really add up. Keep in mind this is usually not a simple translation that's happening here: most drivers will boot up a full-fledged optimizing compiler (often LLVM) and then run your bytecode through that in order to produce the final ISA. This can really catch you off guard if you're just expecting to quickly create all your PSOs in the background as you stream in a new chunk of the world: you have to anticipate that creating those PSOs is going to consume considerable time and CPU resources which in turn affects your your effective load times. Even worse, the amount of time can vary depending on the vendor, exact GPU architecture, the exact driver version, the other states and shader stages you've provided in the PSO description, and even whether or not this is the first time creating that exact PSO on the system!<sup class="footnote-ref" id="fnref:1"><a class="footnote" href="#fn:1">1</a></sup> It's true that <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12pipelinestate-getcachedblob">D3D12</a> and <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineCache.html">Vulkan</a> both provide mechanisms for manual caching of PSOs by the application, however these APIs tend to be <a href="https://zeux.io/2019/07/17/serializing-pipeline-cache/">complex</a> and still don't help your &quot;first boot&quot; loading times. Valve has even gone so far as to integrate a <a href="https://www.guru3d.com/news-story/steam-enables-shader-pre-caching.html">distributed caching system</a> into Steam that works for OpenGL and Vulkan, which actually says a lot about how bad of a problem this can be!</p>
+
+<p>Even once you've got your PSOs created, the downsides of unchecked permutation explosion continue. To use those PSOs, you need to bind them prior to a draw or dispatch on a command buffer. This binding step consumes CPU time: issuing many draws with a single PSO can be significantly cheaper than switching PSO between each draw. The end result is that the CPU time required for generating command buffers goes up as you increase your shader/PSO count. Having many PSOs can also prevent you from using techiniques such as instancing or batching to combine things into a single draw or dispatch, which also increases CPU time. But that's not all: unless you're using <a href="https://developer.nvidia.com/blog/new-vulkan-device-generated-commands/">Nvidia-specific extensions</a>, both D3D12 and Vulkan are incapable of changing PSOs from the GPU in the middle of a ExecuteIndirect or DrawIndirect/DispatchIndirect call.<sup class="footnote-ref" id="fnref:3"><a class="footnote" href="#fn:3">2</a></sup> This means that if you're looking to use <a href="http://advances.realtimerendering.com/s2015/aaltonenhaar_siggraph2015_combined_final_footer_220dpi.pdf">fancy GPU-driven techniques</a> for culling and computing LOD on the GPU, you will need at <em>minimum</em> a number of ExecuteIndirect/DrawIndirect calls that is equal to the number of PSOs used by those draws. Too many PSOs/shaders can also pose issues for ray tracing, since large shader tables can lead to divergence and inefficient hardware utilization.</p>
+
+<p>Finally, there's the execution of the shader program on the GPU itself. Modern GPUs have a lot of tricks in them to keep performance acceptable even in the presence of many draw calls, and many shader switches. However, in the general case they are still going to achieve higher performance when you can feed them larger batches of work to do that don't require switching states and shaders. As a consequence, your GPU performance can be reduced as a result of switching shaders too often. The same goes for your CPU performance: switching shaders/PSOs often involves more expensive operations in the driver that are required to reconfigure the necessary state bits on the GPU, and also handle downstream impacts of switching shaders (such as the low-level representation of the resource bindings used by the shaders). Therefore if you really want to burn through lots of draw calls in a few milliseconds of CPU time, you'll want to aim for as few PSOs and PSO switches as you can.</p>
+
+<h3 id="the-monolithic-shader-program">The Monolithic Shader Program</h3>
+
+<p>In my earlier example where I shared a simple pixel shader with permutations, you may have noticed how each permutation required compiling the entire shader program all the way through. This idea is probably a bit weird if you're not used to shader programming: after all, that's not really how we do things for our CPU code. For a language like C or C++ we will typically compile much more modular sections of code into separate compilation units, and then link everything together through function calls and global variables. Or we might go even further and compile our code into completely separate executables (DLLs or SOs) that can be dynamically loaded and called into at runtime, giving us further flexibility in how we structure things. Why can't we do things like that with shaders? Why do shaders have to be so <em>monolithic</em> instead of being modular? To answer that, let's step back in time a bit.</p>
+
+<p>If you look back to the start of shader programs, they started out small. Not in the metaphorical sense of &quot;small ideas and limited use cases&quot; (which is true, but not what I'm talking about here) but in the very literal sense of &quot;they were very very short&quot;. The original <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-sm1">Shader Model 1.0</a> introduced with D3D8 had a hard limit of 128 instructions for vertex shaders, and the <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx9-graphics-reference-asm-ps-1-x">pixel shaders</a> were basically just directly exposing the (very limited) register combiner and texture functionality of the hardware of that time. At that point you would have been crazy to think of a shader as anything other than a tiny little self-contained program or routine: they were only a handful of instructions! It wasn't even until D3D9 and later that people authored them in an actual high-level shader language instead of hand-writing &quot;assembly&quot;.</p>
+
+<p>The thing about shaders is that we never really shook that kind of &quot;small self-contained program&quot; mentality. For years we basically just extended it further and further: first with higher instruction counts, then with more features, then with fancier compilers. But all along the way we kept the model where a shader program is monolithic and completely self-contained. This is not entirely just legacy decisions either: along the way we benefited from some of the halo effects that come from this really simple model. Shaders never needed a linker since there was nothing to link, and there was never a need to have a standard ABI for calling between separately-compiled binaries. In fact there's historically been no function calls at all within a compiled shader program! Why do that when you can instead just ruthlessly rip through the shader code and inline <em>everything</em> until you're left with nothing but a linear stream of instructions. If you're coming from a C++ background you're probably used to seeing the optimizer pull some heroics in certain places, but shaders can be on another level due to the simplicity of the language: after all there's no constructors, no side effects, and general memory writes weren't even added until Shader Model 5.0! Let's look at another simple HLSL pixel shader to show you what I mean by this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">float3</span> <span class="nf">ComputeLighting</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">Light</span> <span class="n">light</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">light</span><span class="p">.</span><span class="n">Dir</span><span class="p">)</span><span class="p">)</span> <span class="o">*</span> <span class="n">albedo</span> <span class="o">*</span> <span class="n">light</span><span class="p">.</span><span class="n">Color</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">float</span> <span class="nf">PSMain</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="nl">albedo</span> <span class="p">:</span> <span class="n">ALBEDO</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="nl">normal</span> <span class="p">:</span> <span class="n">NORMAL</span><span class="p">)</span> <span class="o">:</span> <span class="n">SV_Target0</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ComputeLighting</span><span class="p">(</span><span class="n">albedo</span><span class="p">,</span> <span class="n">normalize</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span><span class="p">,</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">Light</span><span class="p">)</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>If you were expecting the compiler to emit instructions for <code>ComputeLighting</code> independently, you would probably expect it to perform the chain of multiplication using float3 vectors, resulting in 6 total multiplications after the saturated dot product is computed. You would also expect <code>PSMain</code> to receive that float3 result, ignore the Y/Z components, and then return the X component. In reality shader compilers have never worked this way: instead they would fully inline/flatten the function call and dead-strip like their life depended on it, resulting in generated assembly that was more equivalent to this code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">float</span> <span class="nf">PSMain</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="nl">albedo</span> <span class="p">:</span> <span class="n">ALBEDO</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="nl">normal</span> <span class="p">:</span> <span class="n">NORMAL</span><span class="p">)</span> <span class="o">:</span> <span class="n">SV_Target0</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">light</span><span class="p">.</span><span class="n">Dir</span><span class="p">)</span><span class="p">)</span> <span class="o">*</span> <span class="n">albedo</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">light</span><span class="p">.</span><span class="n">Color</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>This is not really magic or anything, and you can see a C or C++ compiler do the same thing in similar places. But with shaders it's different because you're almost guaranteed to get that optimized and inlined result due to the simplicity of the programming model. This is really really great if you once again go back to the earlier SM 2.0 era of shaders: you really needed to penny pinch your instructions to avoid hitting instruction limits, and when you were running these programs across thousands of pixels each little add or multiply could really add up quickly. The &quot;flatten everything!&quot; style of code-gen also suited earlier programmable GPUs particularly well, since they either couldn't do dynamic flow control or they were very very bad at it. Thus it was to your advantage to be able to take shader code written in a branchy or loopy style and convert that into something completely flattened and unrolled whereever possible.</p>
+
+<p>Modern GPUs can still benefit from these kinds of agressive micro-optimizations. Sure a recent GPU can do an awful lot more MADDs per second than a GPU from 2005, but extra math can still add up when you're doing it for millions of pixels every frame. They're also significantly <a href="https://bartwronski.com/2021/01/18/is-this-a-branch/">better at actual branching and loops</a> then they used to be (at least as long as the flow control is &quot;uniform&quot;, which means that all threads within a wave/subgroup take the same path), but flow control is never 100% free. Once again a few extra instructions for iterating a loop control variable and checking the condition can add up if it's done many times, and you might be better off letting the compiler unroll that for you. Flow control can also inhibit certain kinds of optimizations that compilers like to do where they overlap memory or math instructions from unrelated code in order to extract additional <a href="https://en.wikipedia.org/wiki/Instruction-level_parallelism">instruction level parallelism</a> (or <a href="https://anteru.net/blog/2018/even-more-compute-shaders/">ILP</a> for short), which can potentially decrease the latency of a wave in isolation.</p>
+
+<p>Even if you ignore the optimization aspect, there's still the fact that GPU shader cores are traditionally not really setup to handle true function calls or dynamic dispatch. For various reasons, these shader cores tend to use a simple <a href="https://anteru.net/blog/2018/intro-to-compute-shaders/">register-only</a> <a href="https://courses.cs.washington.edu/courses/cse558/11wi/lectures/05_gpuArchShaderCores_BPS_2011.pdf">SIMD execution model</a> with no true stack. This naturally makes it trickier to have the concept of a standard ABI, and things get especially tricky if you want to support diverging function calls within a wave. Shader cores also typically use a model where waves must statically allocate all of the registers they will ever need for the entire duration of the program, as opposed to a more dynamic model that might involve spilling to the stack. Keeping that register count low is good for <a href="https://interplayoflight.wordpress.com/2020/11/11/what-is-shader-occupancy-and-why-do-we-care-about-it/">occupancy</a> (which is yet another reason why aggressive micro-optimization can help), and so it's important you only allocate what you truly need. This means you have a problem to solve if you want to let a program jump out to arbitrary code: the wave has to statically allocate sufficient registers <em>before</em> it can call into some function. Even if you know all of the possible places that the shader might jump to, everybody will be limited to the occupancy of the worst-case target. <sup class="footnote-ref" id="fnref:2"><a class="footnote" href="#fn:2">3</a></sup> These are not necessarily unsolveable problems, but they help explain why it's been easier not to rock the boat and just stick with a monolithic shader program.</p>
+
+<h3 id="are-we-too-focused-on-microoptimization">Are We Too Focused On Micro-Optimization?</h3>
+
+<p>If we pull back the camera a bit, one of the broad themes we see in the rush to over-permute our shaders is a focus on micro-optimization. If your goals include &quot;I want to let the compiler generate its idea of the best possible shader program for a given feature set&quot;, then you're pretty much guaranteed to end up with permutation hell once you have a non-trivial feature set. In a way this is pretty natural: gating a new feature behind a permutation lets you look at things more in isolation, and give you peace of mind that whatever crazy thing you do in that shader is going to have zero impact on the 99% of materials that don't use it. In my experience that freedom can significantly lower the barrier of entry for new features: I don't mind saying &quot;yes&quot; to an artist's feature request if I know it's wrapped up in a preprocessor macro. This kind of thinking can also naturally come out of situations where you're optimizing some existing problematic material that your artists came up with, where you end up wanting to add a permutation that unrolls some loop or strips out a pointless texture fetch.</p>
+
+<p>Broadly speaking, I think that breaking out of permutation jail requires a shift in mindset. Instead of looking at things one material at a time and focusing on lost cycles here and there, you need to pull back and look at GPU performance holistically. No wave of a shader program runs in isolation: we need to keep occupancy high and I$ pressure low while also reducing stalls from having too many shader switches or draw batches. We can't overlook techniques that require spilling to memory or splitting things up into multiple passes if in the aggregate those techniques end up boosting utilization and throughput. Perhaps it's ok if our simplest material is a little bit slower if we can ensure that all of our shaders end up faster overall. We also need to think more globally about the effects of our shaders on the full development pipeline: what's the cost to productivity if we add another permutation and double the shader count?</p>
+
+<p>It's funny too because the micro-heavy approach is in some ways very counter-productive to the goals of getting &quot;better&quot; generated programs. Having so many permutations can actually make it much more difficult for a programmer to do actual hand-optimization of the shader source code, both because of the added iteration times but also because there's just too many possible permutations to focus on! Some of the heavy optimizations performed by compilers can also be surprisingly bad for overall performance. In particular aggressive unrolling and overlapping of instructions tends to eat up registers very quickly, which can result in reduced occupancy. In other words these optimizations might have a small reduction to the latency of a single wave but can be actively harmful to the GPU's efforts to boost overall throughput by cycling through different active waves. This can be quite frustrating to deal with, since sometimes it feels like you have to trick the compiler into generating code that uses fewer registers. You can't even totally blame the compiler really since it doesn't really have the full picture: it doesn't know what else will be happening on the GPU at the time the shader executes, and it also doesn't know the expected latency of a memory operation (maybe it was in cache, or maybe it wasn't!).</p>
+
+<p>With all that said, it's a lot easier to just say &quot;take a global approach to GPU performance&quot; than it is to pull it off in practice. You likely need excellent tooling and test cases to make sure you're getting data that isn't misleading, and you also need to analyze quite a few stats to make informed decisions. Think for a moment about what you might need to consider in terms of your global GPU performance when deciding whether or not to split off another permutation of a shader, or perhaps unroll a loop in that shader. Off the top of my head, I can come up with a non-comprehensive list of considerations that's pretty long:</p>
+
+<ul>
+<li>Time Spent Compiling From Source
+
+<ul>
+<li>How fast or slow is the compiler itself?
+
+<ul>
+<li>Do various compile options affect compilation time?</li>
+<li>Does the speed change over time with newer versions?</li>
+</ul></li>
+<li>Can we compile on multiple threads?
+
+<ul>
+<li>If so, how many cores are available on the local machine?</li>
+</ul></li>
+<li>Can we distribute across multiple machines?
+
+<ul>
+<li>If so, how many remote machines are typically available?</li>
+<li>What is the latency of sending over code and spinning up compilation on a remote machine?</li>
+<li>Are those remote machines available to people who aren't on in a central office on the same LAN?</li>
+</ul></li>
+<li>How does compilation and optimization time scale with shader code length and number of emitted instructions?</li>
+<li>How much does shader compilation negatively effect the productivity of graphics programmers?
+
+<ul>
+<li>Can programmers compile only a subset of permutations when testing a change, or do they need to compile all of them?</li>
+<li>How quick is a change + compile + measure loop for optimizing shaders?</li>
+</ul></li>
+<li>How much does shader compilation affect the productivity of non-programmers?
+
+<ul>
+<li>Do material artists need to recompile many shaders when creating or editing materials?</li>
+<li>Are compilation results cached across the team, or does everybody have to recompile the same shaders?</li>
+</ul></li>
+</ul></li>
+<li>Time Spent Generating Hardware ISA
+
+<ul>
+<li>Can this happen ahead-of-time (consoles), or do we need to JIT compile at runtime (PC)?</li>
+<li>How fast is the JIT compile?
+
+<ul>
+<li>Does that speed change over time or with different drivers?</li>
+<li>What kind of caching is available?</li>
+</ul></li>
+</ul></li>
+<li>Number of shaders and PSOs loaded at runtime
+
+<ul>
+<li>How much memory do they consume? Can you even measure it?</li>
+<li>How quickly can your code, the runtime, and the driver switch PSOs in terms of CPU time?
+
+<ul>
+<li>Does that time vary based on the bindings used for the shader?</li>
+</ul></li>
+<li>How does switching shaders affect GPU performance?</li>
+</ul></li>
+<li>Length and size of individual shaders
+
+<ul>
+<li>How does this affect runtime memory consumption?</li>
+<li>How does it affect PSO creation time?</li>
+<li>Does it increase pressure on the shader instruction cache, degrading performance?</li>
+<li>Does having long shaders that sample many textures increase L1/L2 cache thrashing, reducing performance?</li>
+<li>Does having a longer shader give the compiler more opportunities to dead-strip unnecessary instructions, and interleave memory and math operations?</li>
+</ul></li>
+<li>Number of individual passes required to render a frame
+
+<ul>
+<li>How much memory bandwidth do we consume by writing out intermediate results vs. keeping them resident in registers?</li>
+</ul></li>
+<li>Register pressure and occupancy
+
+<ul>
+<li>How many registers do our shaders consume, and what is the resulting occupancy?</li>
+<li>Is lower occupancy reducing performance by not giving the hardware the ability to hide long latency memory access?</li>
+<li>Is high occupancy reducing performance by causing L1 cache thrashing?</li>
+<li>Can register usage and occupancy be calculated with offline tools, and are there any tools available for analyzing and optimizing register usage?</li>
+</ul></li>
+<li>ILP of the shader programs
+
+<ul>
+<li>Can the shader program hide latency of memory access by executing ALU-heavy instructions while waiting for memory operations to complete?</li>
+<li>Can multiple ALU instructions execute in a pipelined manner, increasing IPC?</li>
+<li>How many registers are utilized for latency hiding and pipelining?</li>
+<li>Does hiding latency require unrolling loops, increasing the size and register usage of the shader program?</li>
+</ul></li>
+<li>Number of features required for creating content
+
+<ul>
+<li>What functionality do artists need to create content quickly and at a satisfying quality level?</li>
+<li>What features are needed for gameplay functionality? For example, changing colors based on team or building certain kinds of UI into the material.</li>
+<li>Do content creators have the ability to write their own shaders for game-specific purposes, either by hand-writing HLSL or using a shader graph?</li>
+</ul></li>
+</ul>
+
+<p>It's...a lot. This list doesn't even consider the non-technical aspects of working with and art team to explain to them the trade-offs in terms of their workflow and what kind of features they can use. Don't let anybody ever tell you that this stuff is easy!</p>
+
+<h3 id="coming-up-in-part-2">Coming Up in Part 2</h3>
+
+<p>In the <a href="../shader-permutations-part2">final part</a> of this series, I'm going to look at a list of techniques we can employ that potentially help us to dig ourselves at out of the hole that we created.</p>
+<div class="footnotes">
+
+<hr>
+
+<ol>
+<li id="fn:1">The PC GPU vendors all implement driver-side caches for the native ISA produced as part of creating a PSO, which can cause cold boots to take significantly longer than subsequent runs.
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+<li id="fn:3">Metal can actually change the PSO within an <a href="https://developer.apple.com/documentation/metal/indirect_command_buffers">indirect command buffer</a>, which is very cool!
+ <a class="footnote-return" href="#fnref:3"><sup>[return]</sup></a></li>
+<li id="fn:2">Dynamic branching can have a similiar performance issue, where a block of code with high register usage can lower occupancy for the entire program even if that branch is never taken! This is another contributor to (over-)using permutations instead of runtime branches.
+ <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
+</ol>
+</div>
+]]></content:encoded>
+		</item>
+		
+		<item>
+			<title>The Shader Permutation Problem - Part 2: How Do We Fix It?</title>
+			<link>https://therealmjp.github.io/posts/shader-permutations-part2/</link>
+			<pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://therealmjp.github.io/posts/shader-permutations-part2/</guid>
+			<description>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
+If you&#39;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
+			<content:encoded><![CDATA[<p><figure><img src="/images/shaders/dune_trees.png" alt="dune screenshot showing Paul's prescience abilitoes"></figure></p>
+
+<p><center><em>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions</em></center></p>
+
+<p>If you've read <a href="../shader-permutations-part1">the previous article</a> then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode. In my opinion nothing I'm going to mention here is a silver bullet on its own: each technique comes with a set of trade-offs to be carefully evaluated in the context of an engine and the games that run on it. Regardless, it's inspiring to see smart and resourceful people come up with clever approaches that help to sidestep some of the issues that I've brought up the previous article.</p>
+
+<h3 id="only-compile-what-you-need">Only Compile What You Need</h3>
+
+<!---
+TODO: Get LE2 shader/PSO info
+-->
+
+<p>This is the simplest, oldest, and perhaps least-effective way to reduce permutation counts. The general idea is that out of your 2^N possible permutations, some subset of them are either redundant, invalid, or will never actually get used. Therefore you will reduce the set of shaders that you need to compile and load if you can strip out the unnecessary permutations. In many cases the reduction in shader permutation count can be substantial, and can be the difference between &quot;completely untenable&quot; and &quot;we can ship this&quot;. Ideally this process is something you would do offline, perhaps as part of a content processing pipeline that has knowledge of what meshes and materials are going to be used in each scene. But there have also been games/engines that have done it at runtime, essentially deferring compilation of a permutation until the scene is loaded. Either way there are some pretty obvious downsides:</p>
+
+<ul>
+<li>Determining your set of shaders offline requires your offline process to have a pretty complete understanding of both the content and how it interacts with your shader pipeline. Making changes to how that works may also require you to recompile and invoke the content processing pipeline again, as opposed to recompiling the runtime code and running the app again</li>
+<li>Offline approaches may make editors and other tooling more complicated, since you now have to deal with an on-the-fly combination of mesh + material</li>
+<li>On a related note, some engines are setup where they treat their shaders more like code and less like content. For instance, they might want to compile shaders using the same build system used for C++ code since it already handles dependencies and includes correctly. Moving to a system where the shaders are compiled as part of the content pipeline can potentially be a large shift.</li>
+<li>If you wait until runtime to compile your shaders, you now have to either make the user wait for compilation to complete or do something else to hide the compilation time. This might involve having QA generate a cache of shaders to ship with the game, or it might even involve <a href="https://dolphin-emu.org/blog/2017/07/30/ubershaders/">using a slow and generic shader until your specialized permutation finishes compiling in the background</a>. Platforms that don't allow you to invoke the shader compiler at runtime can also make this approach a non-starter, at least without some kind of two-step process that discovers the shaders and then compiles an offline cache to ship with the app.</li>
+<li>The amount of shaders that you generate is content-dependent, and the count could vary wildly depending on the scene/game/material setup/etc.</li>
+<li>In the worst case this degenerates to compiling your full set of permutations, except that you may end up with a more complicated pipeline for generating those permutations.</li>
+<li>It doesn't do anything to reduce your loaded shader/PSO count at runtime. If you need to rely on a small number of PSOs to implement some technique (for example, GPU-driven rendering) then this approach won't help you.</li>
+</ul>
+
+<p>For our engine at Ready At Dawn, we have used the offline variant of this approach with some success. When our content processing pipeline encounters a mesh, it looks at the assigned material as well as properties of the mesh itself to figure out the final shader permutation that will be required. A request to compile that shader is then kicked off, and the final bytecode is ready to load in the game. In our case the reduction is quite substantial: just our &quot;generic&quot; base material + shader set supports an unfathomable number of possible permutations, and the vast majority go unused. For the entirety Lone Echo 2 we end up compiling around 5000 pixel shaders out of a possible set of millions, and typically have around 900-1000 PSOs loaded at runtime (with about 50% of them being used in any particular frame). Unfortunately the full set of shaders to compile is still quite large, so a global change can take quite some time to churn through before the full game is rebuilt. To mitigate this we make use of distributed shader compilation that is run on idle machines. One silver lining is that it's quite simple to build only the set of shaders required for a particular area of the game, since the shaders are compiled as part of processing a particular chunk of the game world. This can make iteration times lower for global shader changes, but still quite far from instant. To handle tooling issues where the mesh + material combination is not known at runtime, we use &quot;generic&quot; un-permuted versions of our shaders that branch on constant buffer values for all features. As a bonus these shaders also support full real-time parameter editing, and have additional dev-only features for debugging. These shaders are <em>huge</em> though since they support every possible feature, and can be quite slow!</p>
+
+<h3 id="runtime-specialization">Run-Time Specialization</h3>
+
+<p><a href="https://www.khronos.org/registry/vulkan/specs/1.1-khr-extensions/html/chap10.html#pipelines-specialization-constants">Vulkan</a> and <a href="https://developer.apple.com/documentation/metal/using_function_specialization_to_build_pipeline_variants">Metal</a> both support an interesting feature called <em>specialization constants</em>, or &quot;spec constants&quot; for short (Metal calls the feature &quot;function specialization&quot;). The basic idea goes like this:</p>
+
+<ul>
+<li>You compile your shader with a global uniform value (basically like a value in a constant buffer) that's used in your shader code</li>
+<li>When creating the PSO, you pass a value for that uniform that will be constant for all draws and dispatches using the PSO</li>
+<li>The driver somehow ensures that the value you passed is used in the shader program. This might include:
+
+<ul>
+<li>Treating the value as a &quot;push constant&quot;, basically a small uniform/constant buffer that gets set from the command buffer</li>
+<li>Patching a value into the compiled intermediate bytecode or vendor-specific ISA</li>
+<li>Treating the value as a compile-time constant when the driver does its JIT compile and performing full optimizations (including constant folding and dead code elimination) based on that value</li>
+</ul></li>
+</ul>
+
+<p>It's a pretty neat concept, since it potentially lets you avoid having to do a lot of your own compiling and instead rely on the driver's backend compiler to do a lot of the work for you. If you have a lot of specializations it won't necessarily allow you to reduce your PSO count, but it can be pretty nice in a similar way to the &quot;Compile What You Need&quot; strategy if you don't use your full set of possible permutations at runtime. A good example is using them to implement quality levels based on user settings: you're not going to need both the low-quality and high-quality PSOs at once, so you can use a spec constant to choose when you create the PSO. It should be noted though that spec constants also share one of the main issues with &quot;Compile What You Need&quot;: it won't reduce your runtime PSO count. You can potentially ship and load fewer shader binaries which is an improvement, but you can still run into the same problems that PSOs can cause with batching and ray tracing.</p>
+
+<p>The other main issue with this approach (aside from lack of support in D3D12 and consoles) is that you don't really know which approach the driver is going to take when it handles your spec constant. Sure it makes sense that it will dead-strip as much as it can since it's doing that as part of its JIT compile anyway, but drivers have complicated trade-offs to deal with when it comes to doing their back-end compilation. If they take too long when initially creating your PSO then games can have slow loading times, and both devs and customers will complain. Doing further optimization on a background thread is possible, but drivers are limited in how much of the CPU they can use for this (particularly in D3D12) and it surely makes things more complicated for both the driver and developer. The worst part is that you could end up having wildly varying results (and thefore performance) based on the vendor and driver version. Sure in some ways you just have to be zen about hoping that PC drivers will do whatever they need to in the background to make things fast, but do you really want to set up your entire shader pipeline on the assumption that you'll get as good results as if you compiled the shader permutations beforehand? Do you really want to do that on mobile where drivers are even <em>more</em> constrained in their CPU usage?</p>
+
+<p>One interesting variant on this approach could be to have the app manually invoke the shader compiler (or some slimmed-down version of it) to patch in the spec constant and optimize based on its value. I'm not sure if this would be significantly faster than invoking the full compiler toolchain again, but perhaps it could be speedier since you wouldn't need to parse anything. This approach would work on any API as long as the compiler can run on-target, and you would have the peace of mind of knowing that the optimization and dead-stripping is for sure happening. It would also put any trade-offs regarding background compilation in the hands of the app developers, which would certainly be more consistent with the overall spirit of the &quot;explicit&quot; APIs.</p>
+
+<h3 id="cached-material-evaluation">Cached Material Evaluation</h3>
+
+<p>A lot of what goes into our shader permutations is typically related to combining and building shading parameters in various ways. It's quite common to build the &quot;look&quot; of one material by sampling multiple textures with different UV values, either to add varying levels of detail or to create meta-materials from simpler &quot;building blocks&quot;. A broad feature set for doing these operations can naturally result in a lot of shader code, which can in turn lead to shader permutations. Or alternatively an engine might allow technical artists to completely define their own logic by authoring shader graphs, in which case there are potentially unlimited numbers of compiled shaders that could be generated. If you can somehow pull this process out of your pixel shader, then you can perhaps reduce the number of shader variants that are needed for your draws. There are a few ways you might do this:</p>
+
+<ul>
+<li>Use Substance Designer or a <a href="https://blog.selfshadow.com/publications/s2013-shading-course/rad/s2013_pbs_rad_notes.pdf">custom material pipeline</a> to do offline compositing and generating of your textures
+
+<ul>
+<li>Even with this you generally still want to combine tiling maps together at runtime since &quot;flattening&quot; them would consume considerably more memory</li>
+</ul></li>
+<li>Use an offline system combined with runtime virtual texturing to full generate a unique set of composited textures for all surfaces in the game (basically the Megatexture approach)
+
+<ul>
+<li>There are plenty of well-documented issues with this approach, such as disk space, streaming/transcoding cost, lack of fine texture detail, etc.</li>
+</ul></li>
+<li>Use a runtime virtual texturing system that composites/generates pages on-the-fly
+
+<ul>
+<li>More complex, you may still need permutations for the process that does the VT page generation</li>
+</ul></li>
+</ul>
+
+<p>The end goal of these techniques is to end up with simpler pixel shaders that can just sample one set of textures without needing to do anything fancy with them. This won't help you for the portions of the shader that <em>don't</em> deal with generating shading parameters, but it can potentially cut things down quite a bit.</p>
+
+<h3 id="replace-permutations-with-branching-and-looping">Replace Permutations with Branching and Looping</h3>
+
+<p>On modern GPUs flow control is <a href="https://bartwronski.com/2021/01/18/is-this-a-branch/">no longer the problem that it used to be</a>. Having divergent branching and looping within a wave is still a problem due to the SIMD execution model used on GPUs, but if all threads go down the same path it can be quite efficient. Therefore if you've got a material flag that enables a feature for an entire draw call, it could make a lot of sense to stick that value in a uniform/constant buffer and branch on it in the shader at runtime. This kind of branching is usually referred to as &quot;uniform branching&quot; or &quot;static branching&quot; since it guarantees that you're not going to have any divergence. The idea here is that we can rethink a lot of the permutation decisions that we made 10 years ago and (hopefully) reduce our total shader count after sprinkling in a lot of these static branches. If that branch is totally uniform then the shader process will legitimately skip over the instructions in the branch when the flag is disabled, and it may not even cost very many cycles to do this if the code has a dedicated scalar unit for performing those operations.</p>
+
+<p>The poster child for this approach is the past two Doom games from id: <a href="http://advances.realtimerendering.com/s2016/Siggraph2016_idTech6.pdf">Doom 2016</a> and <a href="https://advances.realtimerendering.com/s2020/RenderingDoomEternal.pdf">Doom: Eternal</a>. In their presentations they mention that they use a forward-rendering ubershader that only results in ~100 shaders and ~350 PSOs. This is of course more than a handful but a distributed compilation system can probably tear through that many shaders in no time, making it very attractive from an iteration point of view. Personally I get quite jealous when thinking of how much simpler my life would be with only that many shaders to deal with, and I really doubt I'm the only one! Their games run really well and look great so it's a pretty strong proof-of-concept that this approach can work.</p>
+
+<p>With that said, I personally still think it can be quite difficult to achieve a low permutation count in the general case. In <a href="../shader-permutations-part1">part 1</a> we discussed why this is tricky to get right, so I won't go into detail again. But the main gist of it is that it can be difficult to know where you should leave a branch or loop and where you should permute/unroll. On consoles you can make pretty informed decisions by looking at a single GPU in isolation (and make use of the excellent tooling), but on PC and mobile you are in a much much tougher spot. But on the positive side having fewer permutations means fewer total programs to optimize by hand, which can potentially pay off in big ways. In particular it's a lot more reasonable to try to make sure that all of your permutations have a reasonable register count and occupancy...at least assuming that you have the tools available to determine these things. There are also some things that really do require permutations since they are static properties of the shader itself, and thus can't be replaced with branching. In particular this includes the set of inputs or outputs of a shader (interpolants, render targets), usage of discard, per-sample execution, and forced early-z.</p>
+
+<p>I think what would truly help in using this approach is to have a lot of discipline and focus in your material/shader feature set. The less features you need to support, the easier it's going to be to make sensible decisions about where you should permute. I would imagine you would have to get used to saying &quot;no&quot; to a lot of feature requests, since every feature added can potentially affect the performance of your ordinary baseline materials unless it's gated behind a permutation. For those of us with very broad material feature sets it seems difficult to get to that point without being very disruptive to existing workflows, and/or without giving up things that make a significant contribution to the look of a game.</p>
+
+<p>Another thing that could really help is good automated processes for helping to figure out which permutations are truly worth it vs. just leaving in a branch. Unfortunately the testing space for this is quite large: you can have N different materials and M different video cards with a huge amount of permutation options, so it's not feasible to test exhaustively. But perhaps reasonable subsets can be derived that give a decent level of confidence.</p>
+
+<p>One last thing I would like to note is that you have to watch out for drivers taking your handful of shaders and permuting them behind your back. Drivers have been known to peek at values from constant/uniform buffers and use them to silently flatten branches and unroll loops. This can lead you to think that your shaders are well-optimized...until you run them on a driver that <em>doesn't</em> do this and the performance is worse. It's tougher for drivers to do this in D3D12 and Vulkan since there are more avenues to load data into shaders, but it's still feasible if the driver is sufficiently motivated.</p>
+
+<h3 id="deferred-rendering-and-other-techniques-for-splitting-up-shading">Deferred Rendering, and Other Techniques For Splitting Up Shading</h3>
+
+<p>When people first learn about deferred rendering, there's usually a lot of focus on how it helps to achieve greater dynamic lighting counts by decoupling the lighting process from your geometry. While this was true at the time it became popular, IMO the real secret weapon of deferred is that it's a way of chopping up a mesh's rendering process into at least two different distinct phases. In effect this is really a way of <em>modularizing</em> your shader code, despite the fact that individual shader programs are still monolithic. You can conceptually think of most deferred techniques as splitting up a single gigantic pixel shader function into two separate functions: one that calculates the parameters that feed into the lighting phase (surface normals, albedo, roughness, etc.) and another that takes those parameters and computes how much light reflects off the surface given a collection of lighting sources. With this mental model you can even think of the G-Buffer as being a sort of &quot;ABI&quot; that allows your first phase to pass its arguments to the second, except in this case it does so by writing out many megabytes of per-pixel data to a collection of render target textures.</p>
+
+<p>The effect on permutation count can be significant, since it effectively causes us to split our pixel shader into two feature groups instead of one. Let's see what our <a href="../shader-permutations-part1/#whats-a-few-shaders-among-friends">permutated pixel shader from part 1</a> looks like before and after converting to deferred:</p>
+
+<p><span  class="math">\[ PShader(NormalMap[Off, On] * LightType[Point, Spot, Area] * Shadows[Off, On]) \]</span></p>
+
+<p><span  class="math">\[ GBuffer(NormalMap[Off, On]) + Lighting(LightType[Point, Spot, Area] * Shadows[Off, On]) \]</span></p>
+
+<p>Splitting up our shader turned one of those multiplies into an add, causing us to drop from 12 pixel shader permuations down to 8. Saving 4 shaders might not sound like a lot, but keep in mind the delta can be <em>significantly</em> larger as the number of features grow. In practice this can be a huge win for permutation counts, and the modularization can have all kinds of other halo effects. For example you can potentially optimize the code for your G-Buffer and Lighting phases separately without having to consider interactions, and the peak register usage will often be lower as a result of splitting things into smaller shaders with fewer steps. Shader compilers may also be able to chew through your shaders more quickly since they are smaller, since optimization time can grow non-linearly with code length.</p>
+
+<p>In practice there <a href="https://software.intel.com/content/www/us/en/develop/articles/deferred-rendering-for-current-and-future-rendering-pipelines.html">all</a> <a href="http://jcgt.org/published/0002/02/04/">kinds</a> of <a href="https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/">flavors</a> of <a href="http://filmicworlds.com/blog/visibility-buffer-rendering-with-material-graphs/">deferred</a>, and even more ways of splitting things up the final rendering pipeline into separate phases with distinct shader programs. For instance, it's completely possible to only pull out shadow map evaluation into its own deferred passes that only requires a depth buffer, while keeping everything else in a combined forward pixel shader. Or going in the other direction, with deferred you have the option to either do all lighting in a single combined draw or dispatch, vs. further splitting the lighting passes into multiple sub-steps. Doing 1 pass per light source can allow for trivial shader specialization based on the properties of the light source while avoiding combinatorial issues, while doing separate passes for things like sampling ambient diffuse lighting can also provide opportunities for using async compute.</p>
+
+<p>But of course, everything is a trade-off. One thing that most deferred renderers need to do at some point in the frame is write out results to memory and then read them back into registers<sup class="footnote-ref" id="fnref:1"><a class="footnote" href="#fn:1">1</a></sup>. In the more classic deferred setups this happens when the G-Buffer is written out to render target textures, and then gets read back in during a lighting pass. If you were to compare that to a modern forward renderer you would likely see that the &quot;G-Buffer&quot; still exists in the forward pipeline, it just ends up sitting in registers that store the values passed between two phases of the same shader program. When you think about things in those terms deferred might not sound so appealing! After all, isn't it better to keep data in ultra-fast registers rather than spilling them out to memory and then reading them back in again? But of course things are much more complicated than that when it comes to performance and renderer design, as we discussed in part 1 when we <a href="../shader-permutations-part1/#are-we-too-focused-on-microoptimization">talked about taking a global approach to GPU performance</a>. Perhaps using more bandwidth and memory ends up being a net negative, or perhaps the shorter/higher-occupancy shader programs enabled by modularization win out in the end. Perhaps letting the compiler optimize across a giant forward pixel shader enables some serious wins, or perhaps the I$ misses add up and limit your performance. Or perhaps you end up designing your deferred renderer in a way such that you can analyze the properties of your G-Buffer on per-tile basis, and use that analysis to manually propogate optimizations into the deferred shader, thus gaining back many of the benefits that the compiler's optimizer might have afforded you. Or maybe your forward renderer completely dies due to pixel shader quad overdraw caused by tiny triangles, whereas the deferred renderer handles it more gracefully. It's clearly not a straighforward proposition, and the continued success of deferred certainly suggests that it can win out in many cases.</p>
+
+<h3 id="offline-linking">Offline Linking</h3>
+
+<p>In part 1 we discussed how the <a href="../shader-permutations-part1/#the-monolithic-shader-program">monolithic shader compilation model</a> contributed to permutation explosions. If you can't compile and optimize portions of a shader program individually, then permututations that only affect that portion end up requiring the entire program to be recompiled. What if there was some hot new technology from the 1970's that would let us compile separate binaries and then &quot;link&quot; them together into one combined shader program? That would be be pretty neat, right? 😉</p>
+
+<p>The good news is that DXIL and SPIR-V support this sort of thing! For D3D12/DXIL all of the functionality to compile and link libraries is present in <a href="https://github.com/microsoft/DirectXShaderCompiler">dxc</a>, either via the command line or through its API. See my <a href="../dxil-linking">recent post about it</a> for more details on how it works in practice. The story for SPIR-V though is a little more complicated. <a href="https://github.com/KhronosGroup/SPIRV-Tools">SPIR-V Tools</a> has a utility for doing the linking, provided you have some compiled SPIR-V that's been generated with the appropriate <a href="https://www.khronos.org/registry/SPIR-V/specs/unified1/SPIRV.html#Linkage_Type">linkage type</a>. At the time of writing however, neither dxc nor glslang are capable of generating SPIR-V with the appropriate declarations. Therefore if you want to write HLSL or GLSL and link the results together, there doesn't seem to be a working option for doing that. However I've been told that other projects that generate SPIR-V through other means (such as <a href="https://github.com/EmbarkStudios/rust-gpu">rust-gpu</a>) have been able to successfully link using the SPIR-V tools. Either way it's cool that in both cases the linking happens in open-source toolchains using documented IL representations. <sup class="footnote-ref" id="fnref:2"><a class="footnote" href="#fn:2">2</a></sup></p>
+
+<p>There's a big question mark when it comes to linking: for compiling a zillion permutations, would it actually reduce the compile times? I don't have any data to draw even some basic conclusions from, so I think we'll have to wait for someone to do some more comprehensive testing. Ultimately the situation might not be straightforward depending on the inputs to compiling and linking. There's also the potential for a linking step to make the compilation pipeline more complicated, just like it does for C/C++. In particular it might convert what was once a straightforward parallel operation into a tree with dependencies and sync points.</p>
+
+<p>The other thing that's both good and bad is that linking doesn't really change the runtime situation at all. Since the linking can happen fully offline and outside of the API, the API and driver don't really have to know or care that things were linked together (although there's always some possibility that linking generates new bytecode patterns that can cause drivers to choke). This means there's no need to wait for new API or driver support, which is a good thing. It also means there's no reason to expect a significant delta in performance between a linked and fully-compiled program, at least assuming there's a post-link optimization step (not doing one would introduce some interesting trade-offs). But it also means that it won't do anything to reduce the number of shaders and PSOs that have to loaded at runtime, which is not-so-great. Therefore it won't be a cure if your engine has a case of PSO-itis.</p>
+
+<h3 id="true-function-calls-and-dynamic-dispatch">True Function Calls and Dynamic Dispatch</h3>
+
+<p>Having a runtime function call combined with dynamic dispatch is potentially more interesting than a linking step, but it's also much more of a radical change. While linking can happen offline with no driver input, dynamic dispatch for sure requires the driver and the hardware to be on board. The &quot;stuff everything in a statically-allocated chunk of registers&quot; model used by most GPUs certainly doesn't lend itself to true dynamic dispatch, and it's easy to imagine that various constraints on the programming might be necessary to keep performance from falling off a cliff.</p>
+
+<p>The good news is that on PC we sort-of have this right now! The bad news is that it's <em>very</em> constrained, and only works for ray tracing. I'm less familar with the specifics for Vulkan, but in <a href="https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html">D3D12/DXR</a> it works by essentially having a sort of &quot;run-time linker&quot; step. Basically you compile a bunch of functions into a DXIL binary using a &quot;lib&quot; target (just like you would for offline linking), and then at runtime you assemble all of your pieces together into a combined state object. Later on when you call DispatchRays the driver is able to dynamically execute the right hit/miss/anyhit/etc. shader since it was linked into the state object. There <em>is</em> a <a href="https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html#callable-shaders">callable shaders feature</a> that can be used without any actual ray tracing, however it still needs to be used from within a ray generation shader that was kicked off from DispatchRays. In other words: it's usable right now for compute-like shaders, but currently can't be used within the graphics pipeline. With any luck this could change in the future! <sup class="footnote-ref" id="fnref:3"><a class="footnote" href="#fn:3">3</a></sup></p>
+
+<p>Currently I'm not aware of anyone that has tried using DXR callable shaders to replace permutations, or at least that has published their findings. Personally I have not experimented with them, so I'm not yet sure how they might work out in practice. With that said, we can still probably make some reasonable assumptions based on what we know about how they work and what kind of implications they might have on usage and performance:</p>
+
+<ul>
+<li>They currently require a runtime &quot;link&quot; step where all possible callables are assembled into a single state object and associated shader table, either by creating a new one or by calling AddToStateObject to append additional shader binaries. This has implications on streaming, since loading in new callable shaders may require modifying a global state object being used for rendering. Either way you need to be careful where you interact with state objects since it can involve a JIT compile, just like creating a normal PSO.</li>
+<li>We probably should not expect any magic workarounds for static register allocation: if a callable shader requires many registers, we can likely expect for the occupancy of the entire batch to suffer. It's possible that GPUs could diverge from this model in the future, but that could come with all kinds of potential pitfalls (it's not like they're going to start spilling to a stack when executing thousands of pixel shader waves).</li>
+<li>The way the state object spec is setup gives drivers some room to do transformations if necessary. Since the full set of call targets is known when creating or modifing a state object, it's feasible that the driver might make a decision to &quot;flatten&quot; a CallShader into a branch with inlined function calls.</li>
+<li>There are some subtle implications depending on whether this kind of functionality is implemented as a function call from the same wave, or whether it implies that a wave is launched that runs the function being called. In particular the DXR model implies the latter, since hit shaders can set their own resource context and bindings via a local root signature. There can also be implications around how divergence is handled (different threads in the same wave calling different functions), and whether or not threads are allowed to be &quot;re-packed&quot; into a full wave. For replacing existing permutations I would expect the function calls to be completely uniform, and thus a simpler &quot;run the function in the same thread&quot; approach is sufficient and probably more desirable. Having a resource context is also not necessary as long as bindless is being used.</li>
+</ul>
+
+<p>We'll have to watch this area closely in the future. With any luck this kind of functionality can be extended to graphics pipelines and standard compute shaders, which could be a very compelling option for those of us that are juggling too many permutations. Metal is also currently ahead of the curve on this front by offering <a href="https://developer.apple.com/videos/play/wwdc2021/10229/">function pointers</a> that can be called from any shader stage. Perhaps this can serve as inspiration for PC and Android!</p>
+
+<h3 id="summary">Summary</h3>
+
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Pros</th>
+<th>Cons</th>
+<th>Platforms</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Compile What You Need</td>
+<td>Less offline compiling, no changes needed to renderer</td>
+<td>No reduction in PSOs, might not reduce shader count enough, may need offline analysis</td>
+<td>Any</td>
+</tr>
+
+<tr>
+<td>Run-Time Specialization</td>
+<td>Significantly less offline compiling, no changes needed to renderer</td>
+<td>May add to PSO creation time, driver might not optimize as much as you want</td>
+<td>Vulkan, Metal</td>
+</tr>
+
+<tr>
+<td>Cached Material Evaluation</td>
+<td>Less offline compiling and lower PSO counts, could speed up GPU performance</td>
+<td>Complex and potentially invasive to the renderer, only affects shading parameter generation</td>
+<td>Any</td>
+</tr>
+
+<tr>
+<td>Runtime Branching And Looping</td>
+<td>Significantly less offline compiling and lower PSO counts</td>
+<td>Potential performance implications, may put serious contraints on material features, no shader graphs</td>
+<td>Any</td>
+</tr>
+
+<tr>
+<td>Deferred Rendering</td>
+<td>Less offline compiling and PSOs, more modular code, could be better for GPU performance</td>
+<td>Very invasive to the renderer, may not be a good fit for certain hardware and use cases</td>
+<td>Any</td>
+</tr>
+
+<tr>
+<td>Offline Linking</td>
+<td>Potentially quicker offline compiling, no changes needed to renderer</td>
+<td>May not be faster to compile, doesn't reduce PSOs, may reduce GPU performance if not optimized post-link</td>
+<td>D3D12, Vulkan, Metal</td>
+</tr>
+
+<tr>
+<td>Dynamic Function Calls</td>
+<td>Significantly less offline compiling and PSO counts, opens the door to other new techniques</td>
+<td>Likely worse for GPU performance, requires changes to how your engine handles shaders and PSOs</td>
+<td>D3D12 + Vulkan (Compute-Only), Metal (Full Support)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="final-thoughts">Final Thoughts</h3>
+
+<p>That's it for the series! I hope it was an enjoyable read, and that it helped to give some additional context regarding the ongoing battle against shader combinatorial explosion. Please leave a comment or reach out on Twitter if you have any additional thoughts or insights, or if you take issue with anything I've written here.</p>
+
+<p>I'd also like to quickly think everyone that read these posts early and provided valuable feedback and insight:</p>
+
+<ul>
+<li><a href="https://blog.mecheye.net/">Jasper St. Pierre</a></li>
+<li><a href="https://www.reedbeta.com/">Nathan Reed</a></li>
+<li><a href="https://twitter.com/jhaberstro">Jedd Haberstro</a></li>
+<li><a href="https://alextardif.com/">Alex Tardiff</a></li>
+<li><a href="https://twitter.com/rcalocao">Rolando Caloca</a></li>
+<li><a href="https://www.jeremyong.com/">Jeremy Ong</a></li>
+<li><a href="https://www.sebastiansylvan.com/">Sebastian Sylvan</a></li>
+<li><a href="https://twitter.com/gavkar">Gokhan Avkarogullari</a></li>
+<li>Joel de Vahl</li>
+<li><a href="http://www.palgorithm.co.uk/">Sam Martin</a></li>
+<li><a href="https://twitter.com/frogblast">Richard Schreyer</a></li>
+<li><a href="https://www.selfshadow.com/">Stephen Hill</a></li>
+</ul>
+<div class="footnotes">
+
+<hr>
+
+<ol>
+<li id="fn:1">Many mobile GPUs have fast on-chip framebuffer memory that can be accessed through special mechanisms. This can allow deferred renderers to keep their G-Buffer entirely in on-chip memory rather than slower off-chip memory, potentially changing the trade-offs that are mentioned here.
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+<li id="fn:2">D3D11 and fxc actually added support for <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/using-shader-linking">offline linking</a> in the Win 8 era. Unfortunately it was rather complicated, and I'm not sure if it ever got heavy usage.
+ <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
+<li id="fn:3">D3D11 actually launched with a pseudo-dynamic-linking feature that was called <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/overviews-direct3d-11-hlsl-dynamic-linking">Dynamic Shader Linkage</a> in D3D11. It was a <a href="https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm#7.19.1%20Overview">noble effort</a>, and had some really interesting and forward-looking ideas. In particular it tried to save the developer from having to somehow know the right magic conditions for when to permute and when not to, and it did this by essentially kicking that decision up the driver. In order to do this though it had some pretty wacky syntax. Basically you would define interfaces with methods, and then declare N classes that implemented those interfaces and their methods. This let the offline compiler (fxc) figure out all the possibilities for what implementation might be invoked at each call site into an interface, and then it could present the driver's backend compiler with a precompiled set of possibilities for the callee with full optimization applied across the function boundary. At runtime you would then use some rather complicated APIs to choose which class implementation would ultimately get used when you bound a shader. In hindsight it's not too hard to see why this failed. The class/interface HLSL additions was quite a departure from previous shader code, and rendered it incompatible when trying to use it across platforms. It also doesn't really solve the issue of needing to compile N shaders, since that permutation loop was really just getting moved inside of the shader compiler (it wasn't actually compiling the class implementation methods separately). On top of that, it doesn't really guarantee that the driver won't just end up creating N full permutations of your shader program at runtime. This certainly would have been the easiest path forward for them, and may have been the best option for various reasons.
+ <a class="footnote-return" href="#fnref:3"><sup>[return]</sup></a></li>
+</ol>
+</div>
+]]></content:encoded>
+		</item>
 		
 		<item>
 			<title>Linking DXIL Binaries Using DXC</title>

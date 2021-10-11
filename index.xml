@@ -6,10 +6,29 @@
     <description>Recent content on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 11 Oct 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://therealmjp.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Shader Permutation Problem - Part 1: How Did We Get Here?</title>
+      <link>https://therealmjp.github.io/posts/shader-permutations-part1/</link>
+      <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/shader-permutations-part1/</guid>
+      <description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&#39;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&#39;t believe me, just go ahead and search for &amp;quot;unreal compiling shaders meme&amp;quot; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
+    </item>
+    
+    <item>
+      <title>The Shader Permutation Problem - Part 2: How Do We Fix It?</title>
+      <link>https://therealmjp.github.io/posts/shader-permutations-part2/</link>
+      <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/shader-permutations-part2/</guid>
+      <description>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
+If you&#39;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
+    </item>
     
     <item>
       <title>Linking DXIL Binaries Using DXC</title>
