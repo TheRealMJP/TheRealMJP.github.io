@@ -8,21 +8,18 @@
 <meta itemprop="name" content="A Quick Overview of MSAA">
 <meta itemprop="description" content="Previous article in the series: Applying Sampling Theory to Real-Time Graphics
 Updated 1/27/2016 - replaced the MSAA partial coverage image with a new image that illustrates subsamples being written to, as suggested by Simon Trümpler.
-MSAA can be a bit complicated, due to the fact that it affects nearly the entire rasterization pipeline used in GPU’s. It’s also complicated because really understanding why it works requires at least a basic understanding of signal processing and image resampling.">
-<meta itemprop="datePublished" content="2012-10-25T07:03:27&#43;00:00" />
-<meta itemprop="dateModified" content="2012-10-25T07:03:27&#43;00:00" />
-<meta itemprop="wordCount" content="5648">
-
-
-
+MSAA can be a bit complicated, due to the fact that it affects nearly the entire rasterization pipeline used in GPU’s. It’s also complicated because really understanding why it works requires at least a basic understanding of signal processing and image resampling."><meta itemprop="datePublished" content="2012-10-25T07:03:27+00:00" />
+<meta itemprop="dateModified" content="2012-10-25T07:03:27+00:00" />
+<meta itemprop="wordCount" content="5644">
 <meta itemprop="keywords" content="DirectX 11,Graphics," /><meta property="og:title" content="A Quick Overview of MSAA" />
 <meta property="og:description" content="Previous article in the series: Applying Sampling Theory to Real-Time Graphics
 Updated 1/27/2016 - replaced the MSAA partial coverage image with a new image that illustrates subsamples being written to, as suggested by Simon Trümpler.
 MSAA can be a bit complicated, due to the fact that it affects nearly the entire rasterization pipeline used in GPU’s. It’s also complicated because really understanding why it works requires at least a basic understanding of signal processing and image resampling." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/msaa-overview/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/msaa-overview/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2012-10-25T07:03:27+00:00" />
 <meta property="article:modified_time" content="2012-10-25T07:03:27+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="A Quick Overview of MSAA"/>
 <meta name="twitter:description" content="Previous article in the series: Applying Sampling Theory to Real-Time Graphics
@@ -68,6 +65,8 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
 			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
 		</ul>
 	</div>
+
+
 
 
 	<main class="site-main section-inner animated fadeIn faster">
@@ -235,23 +234,23 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
 [Beware of SV_Coverage &#8211; Yosoygames](http://www.yosoygames.com.ar/wp/2017/02/beware-of-sv_coverage/ "") - <time datetime="2017-02-28 11:54:09">Feb 2, 2017</time>
 <p>[…] Neither GL spec, docs, MSDN docs and other readings warned me about these gotchas. MJP’s blogposts were very useful, but that’s it. And they weren’t very specific to […]</p>
 <hr />
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>The rasterization process on a modern GPU can actually be quite a bit more complicated than this, but those details aren&rsquo;t particularly relevant to the scope of this article. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>The rasterization process on a modern GPU can actually be quite a bit more complicated than this, but those details aren&rsquo;t particularly relevant to the scope of this article.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>This mask is directly available to ps_5_0 pixel shaders in DX11 via the SV_Coverage system value. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>This mask is directly available to ps_5_0 pixel shaders in DX11 via the SV_Coverage system value.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p>The gamma-space rendering commonly used in the days before HDR would actually produce gradients that weren&rsquo;t completely smooth, although later GPU&rsquo;s supported performing the resolve in linear space. Either way the results were pretty close to being perceptually smooth, at least compared to the results that can occur with HDR rendering. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p>The gamma-space rendering commonly used in the days before HDR would actually produce gradients that weren&rsquo;t completely smooth, although later GPU&rsquo;s supported performing the resolve in linear space. Either way the results were pretty close to being perceptually smooth, at least compared to the results that can occur with HDR rendering.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
-<p>These animations were captured from the sample application that I&rsquo;m going to discuss in the next article. So if you&rsquo;d like to see live results without compression, you can download the sample app from <a href="http://mynameismjp.wordpress.com/2012/10/28/msaa-resolve-filters/">that article</a>. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:4">
+<p>These animations were captured from the sample application that I&rsquo;m going to discuss in the next article. So if you&rsquo;d like to see live results without compression, you can download the sample app from <a href="http://mynameismjp.wordpress.com/2012/10/28/msaa-resolve-filters/">that article</a>.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 			</div>
 			<hr class="post-end">
@@ -259,7 +258,7 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/directx-11">DirectX 11</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5648 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5644 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-10-25 00:03 -0700</p>
 			</footer>
 		</article>
@@ -282,14 +281,14 @@ MSAA can be a bit complicated, due to the fact that it affects nearly the entire
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

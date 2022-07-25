@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="D3D Performance and Debugging Tools Round-Up: PerfHUD">
-<meta itemprop="description" content="Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!">
-<meta itemprop="datePublished" content="2010-03-07T05:42:44&#43;00:00" />
-<meta itemprop="dateModified" content="2010-03-07T05:42:44&#43;00:00" />
+<meta itemprop="description" content="Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!"><meta itemprop="datePublished" content="2010-03-07T05:42:44+00:00" />
+<meta itemprop="dateModified" content="2010-03-07T05:42:44+00:00" />
 <meta itemprop="wordCount" content="1591">
-
-
-
 <meta itemprop="keywords" content="DirectX,Programming,XNA," /><meta property="og:title" content="D3D Performance and Debugging Tools Round-Up: PerfHUD" />
 <meta property="og:description" content="Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/d3d-performance-and-debugging-tools-round-up-perfhud/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2010-03-07T05:42:44+00:00" />
 <meta property="article:modified_time" content="2010-03-07T05:42:44+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="D3D Performance and Debugging Tools Round-Up: PerfHUD"/>
 <meta name="twitter:description" content="Officially, Nvidia&rsquo;s PerfHUD is a performance-monitoring and debugging application for use with Nvidia GPU&rsquo;s. Unofficially, it&rsquo;s pure awesomeness for a graphics programmer. While I personally find PIX to be a more useful tool when it comes to debugging, the fact that PerfHUD gives you hardware-specific details makes it infinitely more useful for profiling. At work I find myself using it every time there&rsquo;s a performance issue on the PC. Here&rsquo;s some of the things I like to do with it (warning, it&rsquo;s a long list!"/>
@@ -62,6 +59,8 @@
 			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
 		</ul>
 	</div>
+
+
 
 
 	<main class="site-main section-inner animated fadeIn faster">
@@ -155,19 +154,17 @@
 </li>
 <li>
 <p>PerfHUD is totally usable for XNA apps. In fact, all of those screenshots are from my InferredRendering sample. To run an app with PerfHUD you have to query for the PerfHUD adapter on startup, and use it if it&rsquo;s available. The user guide gives sample code for doing this in DX9, and it&rsquo;s even easier with XNA.In your constructor, add a handler for the GraphicsDeviceManager.PreparingDeviceSettings event:</p>
-<pre><code>graphics.PreparingDeviceSettings += graphics\_PreparingDeviceSettings;
-
+<pre tabindex="0"><code>graphics.PreparingDeviceSettings += graphics\_PreparingDeviceSettings;
 </code></pre><p>Then in your event handler, use this code:</p>
-<pre><code>foreach (GraphicsAdapter adapter in GraphicsAdapter.Adapters)
+<pre tabindex="0"><code>foreach (GraphicsAdapter adapter in GraphicsAdapter.Adapters)
 {
-    if (adapter.Description.Contains(&quot;PerfHUD&quot;))
+    if (adapter.Description.Contains(&#34;PerfHUD&#34;))
     {                    
         e.GraphicsDeviceInformation.Adapter = adapter;
         e.GraphicsDeviceInformation.DeviceType = DeviceType.Reference;
         break;
     }
 }
-
 </code></pre></li>
 <li>
 <p>Be careful using PerfHUD when your app is running in windowed mode. Closing the window can cause it to crash.</p>
@@ -233,14 +230,14 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

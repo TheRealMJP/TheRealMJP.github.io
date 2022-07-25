@@ -6,10 +6,15 @@
     <description>Recent content in Graphics on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Oct 2021 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Mon, 25 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GPU Memory Pools in D3D12</title>
+      <link>https://therealmjp.github.io/posts/gpu-memory-pool/</link>
+      <pubDate>Mon, 25 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/gpu-memory-pool/</guid>
+      <description>Basics of GPU Memory Integrated/UMA GPUs Dedicated/NUMA GPUs How It Works In D3D12 Common Patterns in D3D12 Textures And The Two-Step Upload Working With The COPY Queue Allocating Staging Memory What About Buffers? What About DirectStorage? Results From My Testing App CPU Write Performance CPU Read Performance GPU Read Performance, Normal Access GPU Read Performance, Non-Coalesced Access GPU Read Performance, Various Buffer Sizes Conclusion When the monkey&amp;rsquo;s paw granted our wish for lower-level/explicit graphics APIs, one of the consequences was that we were much more directly exposed to the fact that GPUs can have their own separate set of physical memory.</description>
+    </item>
     
     <item>
       <title>The Shader Permutation Problem - Part 1: How Did We Get Here?</title>
@@ -17,7 +22,7 @@
       <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-permutations-part1/</guid>
-      <description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&#39;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&#39;t believe me, just go ahead and search for &amp;quot;unreal compiling shaders meme&amp;quot; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
+      <description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&amp;rsquo;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&amp;rsquo;t believe me, just go ahead and search for &amp;ldquo;unreal compiling shaders meme&amp;rdquo; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
     </item>
     
     <item>
@@ -26,8 +31,7 @@
       <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-permutations-part2/</guid>
-      <description>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
-If you&#39;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
+      <description>_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&amp;rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
     </item>
     
     <item>
@@ -36,7 +40,7 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/dxil-linking/</guid>
-      <description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&#39;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&#39;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
+      <description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&amp;rsquo;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&amp;rsquo;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
     </item>
     
     <item>
@@ -45,8 +49,8 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Sun, 22 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/rtg2-bindless/</guid>
-      <description>Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
-Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With DirectX Raytracing&amp;quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR.</description>
+      <description>Ray Tracing Gems II was released a few weeks ago, and like the first one it&amp;rsquo;s free to download as a PDF from the publisher&amp;rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&amp;rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &amp;ldquo;Using Bindless Resources With DirectX Raytracing&amp;rdquo;, which as you&amp;rsquo;d expect is all about using bindless techniques in the context of DXR.</description>
     </item>
     
     <item>
@@ -55,7 +59,7 @@ Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With
       <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/sss-sg/</guid>
-      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;quot;wrapped&amp;quot; or &amp;quot;blurred&amp;quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
+      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;ldquo;wrapped&amp;rdquo; or &amp;ldquo;blurred&amp;rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&amp;rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
     </item>
     
     <item>
@@ -64,7 +68,7 @@ Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With
       <pubDate>Sun, 06 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/sss-intro/</guid>
-      <description>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what&#39;s commonly used to shade skin and other materials in recent games.</description>
+      <description>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what&amp;rsquo;s commonly used to shade skin and other materials in recent games.</description>
     </item>
     
     <item>
@@ -73,7 +77,7 @@ Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-fp16/</guid>
-      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
+      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&amp;rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
     </item>
     
     <item>
@@ -118,7 +122,10 @@ Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU.</description>
     </item>
     
     <item>
@@ -131,7 +138,10 @@ Part 4 - GPU Preemption</description>
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</description>
     </item>
     
     <item>
@@ -144,7 +154,10 @@ Part 4 - GPU Preemption</description>
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU.</description>
     </item>
     
     <item>
@@ -264,7 +277,7 @@ Part 5 - Approximating Radiance and Irradiance With SG&amp;rsquo;s</description
       <guid>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</guid>
       <description>https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever. In place of the old system, both API&amp;rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory.</description>
+To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
     </item>
     
     <item>
@@ -311,7 +324,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       
       <guid>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</guid>
       <description>Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&amp;rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
-  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
+TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
     </item>
     
     <item>
@@ -321,7 +334,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       
       <guid>https://therealmjp.github.io/posts/siggraph-follow-up/</guid>
       <description>So I&amp;rsquo;m hoping that if you&amp;rsquo;re reading this, you&amp;rsquo;ve already attended or read the slides from my presentation about The Order: 1886 that was part of the Physically Based Shading Course at SIGGRAPH last week. If not, go grab them and get started! If you haven&amp;rsquo;t read through the course notes already there&amp;rsquo;s a lot of good info there, in fact there&amp;rsquo;s almost 30 pages worth! The highlights include:
- Full description of our Cook-Torrance and Cloth BRDF&amp;rsquo;s, including a handy optimization for the GGX Smith geometry term (for which credit belongs to Steve McAuley) Analysis of our specular antialiasing solution Plenty of details regarding the material scanning process HLSL sample code for the Cook-Torrance BRDF&amp;rsquo;s as well as the specular AA roughness modification Lots of beautiful LaTeX equations  If you did attend, I really appreciate you coming and I hope that you found it interesting.</description>
+Full description of our Cook-Torrance and Cloth BRDF&amp;rsquo;s, including a handy optimization for the GGX Smith geometry term (for which credit belongs to Steve McAuley) Analysis of our specular antialiasing solution Plenty of details regarding the material scanning process HLSL sample code for the Cook-Torrance BRDF&amp;rsquo;s as well as the specular AA roughness modification Lots of beautiful LaTeX equations If you did attend, I really appreciate you coming and I hope that you found it interesting.</description>
     </item>
     
     <item>
@@ -400,7 +413,7 @@ There&amp;rsquo;s going to be an author meet-up/book signing a the CRC Press SIG
       
       <guid>https://therealmjp.github.io/posts/things-that-need-to-die/</guid>
       <description>Lately I&amp;rsquo;ve been thinking about things in graphics that have long worn out their welcome, and I started a list of techniques that I hope will be nowhere in sight once everyone moves on to next-gen console hardware (or starts truly exploiting high-end PC hardware). Here they are, in no particular order:
-  Phong/Blinn-Phong - we need more expressive BRDF&amp;rsquo;s for our materials, and these guys are getting in the way.</description>
+Phong/Blinn-Phong - we need more expressive BRDF&amp;rsquo;s for our materials, and these guys are getting in the way. Phong is just plain bad, as it doesn&amp;rsquo;t even produce realistic streaks at glancing angles (due to using the reflection vector and not the halfway vector like with microfacet-based BRDF&amp;rsquo;s).</description>
     </item>
     
     <item>

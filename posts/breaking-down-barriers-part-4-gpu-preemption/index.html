@@ -10,30 +10,36 @@
 Part 1 - What&rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption">
-<meta itemprop="datePublished" content="2018-07-04T00:57:43&#43;00:00" />
-<meta itemprop="dateModified" content="2018-07-04T00:57:43&#43;00:00" />
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU."><meta itemprop="datePublished" content="2018-07-04T00:57:43+00:00" />
+<meta itemprop="dateModified" content="2018-07-04T00:57:43+00:00" />
 <meta itemprop="wordCount" content="2985">
-
-
-
 <meta itemprop="keywords" content="Graphics,DX12," /><meta property="og:title" content="Breaking Down Barriers - Part 4: GPU Preemption" />
 <meta property="og:description" content="This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
 Part 1 - What&rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption" />
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-4-gpu-preemption/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2018-07-04T00:57:43+00:00" />
 <meta property="article:modified_time" content="2018-07-04T00:57:43+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Breaking Down Barriers - Part 4: GPU Preemption"/>
 <meta name="twitter:description" content="This is Part 4 of a series about GPU synchronization and preemption. You can find the other articles here:
 Part 1 - What&rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption"/>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -74,6 +80,8 @@ Part 4 - GPU Preemption"/>
 			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
 		</ul>
 	</div>
+
+
 
 
 	<main class="site-main section-inner animated fadeIn faster">
@@ -161,7 +169,7 @@ Part 4 - GPU Preemption"/>
 <p>To properly accommodate high-priority applications using the GPU, what we really want is some form of <strong><a href="https://en.wikipedia.org/wiki/Preemption_(computing)">preemption</a></strong>. We essentially want to be able to interrupt an app&rsquo;s workload that&rsquo;s being executed by the GPU, so that we can sneak in the high-priority work without having to wait for the GPU to go idle. With the older architecture of the MJP-3000, the GPU can only be working on one command buffer at a time, and the command processor always executes that entire command buffer to completion. Therefore the easiest way to do this would be to have the OS or driver try to split an app&rsquo;s submission into multiple smaller command buffers. This would effectively give the driver finer granularity to work with in its submission queue, and could potentially allow a high-priority submission to get in earlier:</p>
 <p><a href="/images/converted/breaking-down-barriers-part-4-gpu-preemption/multi_app_preemption.png"><img src="/images/converted/breaking-down-barriers-part-4-gpu-preemption/multi_app_preemption.png" alt="multi_app_preemption"></a></p>
 <p>This time the driver has split up the red app&rsquo;s workload into 5 command buffers, and the green app&rsquo;s workload into 4 command buffers. Having more command buffers means that the driver&rsquo;s queue is much deeper than before: at worst it now has 7 pending submissions simultaneously queued. However this also gives the driver more opportunities to switch to a higher-priority submission. This time around the blue submission is treated as high priority, which causes the driver to immediately move it to the top of the submission queue, which also displaces the other submissions. Thanks to the smaller command buffer size, the blue submission only needs to sit in the queue for a little bit before it has a chance to run on the GPU. This reduces the latency compared to the earlier case, where each app just submitted a single combined command buffer.</p>
-<p>With the setup I just described, we effectively have <strong>command buffer-level preemption</strong><em>.</em> This means that our preemption granularity is tied to our command buffer granularity, and the preemption latency of a high-priority task is tied to the length of execution of any single command buffer. That last part might make you want to ask, &ldquo;how can the OS or driver know how long a particular command buffer will take?&quot;. And of course the short answer is that &ldquo;it can&rsquo;t&rdquo;. Even a command buffer with a single command can potentially take a very long time to completely execute through the entire pipeline, since that one command might be &ldquo;dispatch 5 billion threads&rdquo;. Or it might be &ldquo;dispatch 1024 threads of a really long shader program that takes 10 milliseconds to finish&rdquo;. This leaves the driver with an impossible task, since the best it can do is use heuristics in an attempt to chop up an app&rsquo;s command stream into bite-sized chunks.</p>
+<p>With the setup I just described, we effectively have <strong>command buffer-level preemption</strong><em>.</em> This means that our preemption granularity is tied to our command buffer granularity, and the preemption latency of a high-priority task is tied to the length of execution of any single command buffer. That last part might make you want to ask, &ldquo;how can the OS or driver know how long a particular command buffer will take?&rdquo;. And of course the short answer is that &ldquo;it can&rsquo;t&rdquo;. Even a command buffer with a single command can potentially take a very long time to completely execute through the entire pipeline, since that one command might be &ldquo;dispatch 5 billion threads&rdquo;. Or it might be &ldquo;dispatch 1024 threads of a really long shader program that takes 10 milliseconds to finish&rdquo;. This leaves the driver with an impossible task, since the best it can do is use heuristics in an attempt to chop up an app&rsquo;s command stream into bite-sized chunks.</p>
 <p>The other problem with this approach is that it can potentially lead to lower throughput even when no preemption occurs. For instance, imagine if a GPU needed to completely flush at the end of every command buffer. In that case, splitting things up into lots of small command buffers would lead to lots of otherwise unnecessary sync points where multiple draws or dispatches can&rsquo;t overlap with each other. Another issue to consider is how to handle GPU state that can be set by the command buffer. The fictional MJP series of GPU doesn&rsquo;t really have much state to speak of, since it only handles compute shaders. But on a real GPU that supports a full D3D/GL/Vulkan rasterization pipeline there&rsquo;s all kinds of state that&rsquo;s modifed by individual commands. These include things like the viewport transform, bound render targets, depth buffer states, and the currently-bound shader programs for each stage. If the hardware is not capable of saving and restoring these states when switching command buffers, it may fall to the the driver to generate additional commands for restoring the expected rendering state. This can potentially add both GPU <em>and</em> CPU overhead for each command buffer switch, adding a further complication to the decision regarding how finely to chop up command buffers.</p>
 <h2 id="having-the-hardware-help-us-out">Having the Hardware Help Us Out<a href="#having-the-hardware-help-us-out" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>If we really want to avoid latency for high-priority jobs, we&rsquo;ll have to do better than a driver-managed command buffer queue in software. Fortunately, there&rsquo;s a few possible ways that we could do better with some changes to the GPU hardware. Probably the most obvious option would be to modify the command processor so that it can support switching to a different command buffer before its current stream has finished. If it were able to do this in between individual commands, then we would call this <strong>command-level preemption</strong>. This sounds nice in theory, but depending on the specifics of the GPU it can get a bit complicated. You&rsquo;d have to be careful to ensure that any of your synchronization commands will continue to work if preemption occurs between the dispatch and the following wait/flush command. On top of that, you would still have the same issues regarding saving and restoring GPU state when preemption occurs. Even if you get this working, your preemption latency is still going to depend on the maximum length of a wait/flush command, which in turn is going to be dictated by the maximum length of a single Draw or Dispatch. This means that if your high-priority command buffer gets submitted right as the GPU is cranking through an expensive full-screen pass (for instance, the tiled lighting compute shader in a deferred renderer), the high-priority submission might end up waiting a while before it can run.</p>
@@ -345,14 +353,14 @@ Part 4 - GPU Preemption"/>
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

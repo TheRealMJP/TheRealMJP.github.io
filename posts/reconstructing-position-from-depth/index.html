@@ -7,20 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Scintillating Snippets: Reconstructing Position From Depth">
 <meta itemprop="description" content="There are times I wish I&rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&rsquo;s that I still get about it. Wouldn&rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&rsquo;re right, it would be!
-First things first: what am I talking about? I&rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.">
-<meta itemprop="datePublished" content="2009-03-10T19:06:31&#43;00:00" />
-<meta itemprop="dateModified" content="2009-03-10T19:06:31&#43;00:00" />
+First things first: what am I talking about? I&rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value."><meta itemprop="datePublished" content="2009-03-10T19:06:31+00:00" />
+<meta itemprop="dateModified" content="2009-03-10T19:06:31+00:00" />
 <meta itemprop="wordCount" content="3405">
-
-
-
 <meta itemprop="keywords" content="DirectX,Programming,XNA," /><meta property="og:title" content="Scintillating Snippets: Reconstructing Position From Depth" />
 <meta property="og:description" content="There are times I wish I&rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&rsquo;s that I still get about it. Wouldn&rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&rsquo;re right, it would be!
 First things first: what am I talking about? I&rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/reconstructing-position-from-depth/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/reconstructing-position-from-depth/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2009-03-10T19:06:31+00:00" />
 <meta property="article:modified_time" content="2009-03-10T19:06:31+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Scintillating Snippets: Reconstructing Position From Depth"/>
 <meta name="twitter:description" content="There are times I wish I&rsquo;d never responded to this thread over at GDnet, simply because of the constant stream of PM&rsquo;s that I still get about it. Wouldn&rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it? You&rsquo;re right, it would be!
@@ -67,6 +64,8 @@ First things first: what am I talking about? I&rsquo;m talking about something 
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -77,7 +76,7 @@ First things first: what am I talking about? I&rsquo;m talking about something 
 				<p>There are times I wish I&rsquo;d never responded to <a href="http://www.gamedev.net/community/forums/topic.asp?topic_id=474166&amp;PageSize=25&amp;WhichPage=1">this thread</a> over at GDnet, simply because of the constant stream of PM&rsquo;s that I still get about it.  Wouldn&rsquo;t it be nice if I could just pull out all the important bits, stick it on some blog, and then link everyone to it?  You&rsquo;re right, it would be!</p>
 <p>First things first: what am I talking about?  I&rsquo;m talking about something that finds great use for deferred rendering: reconstructing the 3D position of a previously-rendered pixel (either in view-space or world-space) from a single depth value.  In practice, it&rsquo;s really not terribly complicated.  You intrinsically know (or can figure out) the 2D position of any pixel when you&rsquo;re shading it, which means that if you can sample a depth value you can get the whole 3D position.  However it&rsquo;s still easy to get tripped up due to the fact that there&rsquo;s several ways to go about it, coupled with the fact that many beginners aren&rsquo;t very proficient at debugging their shaders.</p>
 <p>Let&rsquo;s talk about the first way to do it: storing post-projection z/w, combining it with x/w and y/w, transforming by the inverse of the projection matrix, and dividing by w.  In HLSL it looks something like this&hellip;</p>
-<pre><code>// Depth pass vertex shader
+<pre tabindex="0"><code>// Depth pass vertex shader
 output.vPositionCS = mul(input.vPositionOS, g_matWorldViewProj);
 output.vDepthCS.xy = output.vPositionCS.zw;
 
@@ -105,7 +104,7 @@ float3 VSPositionFromDepth(float2 vTexCoord)
 }
 </code></pre><p>For many this is the preferred approach since it works with hardware depth buffers.  It also may seem natural to some: we get depth by projection, we get position by un-projecting.  But what if we don&rsquo;t have access to a hardware depth buffer?  If you&rsquo;re targeting the PC and D3D9,  sampling from a depth buffer as if it were a texture is not straightforward since it requires driver hacks.  If you&rsquo;re using XNA, it&rsquo;s not possible at all since the framework generally attempts to main cross-plaftorm compatibility between the PC and the Xbox 360.  In these cases, we can simply render out a depth buffer ourselves using the vertex and pixel shader bits I posted above.  But is this really a good idea?  z/w is non-linear, and most of the precision will be dedicated to areas very close to the near-clip plane.</p>
 <p>A different approach would be to render out normalized view-space z as our depth.  Since it&rsquo;s view-space it&rsquo;s linear which means we get uniform precision distribution, and this also means we don&rsquo;t need to bother with projection or unprojection to reconstruct position.  Instead we can take the approach of <a href="http://ati.amd.com/developer/siggraph06/Wenzel-Real-time_Atmospheric_Effects_in_Games.pdf" title="CryTek">CryTek</a> and multiply the depth value with a ray pointing from the camera to the far-clip plane.  In HLSL it goes something like this:</p>
-<pre><code>// Shaders for rendering linear depth
+<pre tabindex="0"><code>// Shaders for rendering linear depth
 
 void DepthVS(   in float4 in_vPositionOS    : POSITION,
                 out float4 out_vPositionCS  : POSITION,
@@ -160,7 +159,7 @@ float3 VSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayVS)
 	return fPixelDepth * vFrustumRayVS;
 }
 </code></pre><p>As you can see the reconstruction is quite nice with linear depth, we only need a single multiply instead of the 4 MADD&rsquo;s and a divide needed for unprojection.  If you&rsquo;re curious on how to get the frustum corner position I use, it&rsquo;s rather easy with a little trig.  <a href="http://www.lighthouse3d.com/opengl/viewfrustum/index.php?defvf">This tutorial</a> walks you through it.  Or if you&rsquo;re using XNA, there&rsquo;s a super-convient BoundingFrustum class that can take care of it for you.  My code for getting the positions looks something like this:</p>
-<pre><code>Matrix viewProjMatrix = viewMatrix * projMatrix;
+<pre tabindex="0"><code>Matrix viewProjMatrix = viewMatrix * projMatrix;
 BoundingFrustum frustum = new BoundingFrustum(viewProjMatrix);
 frustum.GetCorners(frustumCornersWS);
 Vector3.Transform(frustumCornersWS, ref viewMatrix, frustumCornersVS);
@@ -348,14 +347,14 @@ for (int i = 0; i &lt; 4; i++)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

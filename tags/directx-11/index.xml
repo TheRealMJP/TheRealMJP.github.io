@@ -6,11 +6,7 @@
     <description>Recent content in DirectX 11 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Feb 2014 06:58:04 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/directx-11/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 04 Feb 2014 06:58:04 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/directx-11/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Weighted Blended Order-Independent Transparency</title>
       <link>https://therealmjp.github.io/posts/weighted-blended-oit/</link>

@@ -7,20 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="LogLuv Encoding for HDR">
 <meta itemprop="description" content="Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere. What can I say&hellip;I like it! I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.
-Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360.">
-<meta itemprop="datePublished" content="2008-12-12T17:00:59&#43;00:00" />
-<meta itemprop="dateModified" content="2008-12-12T17:00:59&#43;00:00" />
+Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360."><meta itemprop="datePublished" content="2008-12-12T17:00:59+00:00" />
+<meta itemprop="dateModified" content="2008-12-12T17:00:59+00:00" />
 <meta itemprop="wordCount" content="1566">
-
-
-
 <meta itemprop="keywords" content="Programming,Xbox 360,XNA," /><meta property="og:title" content="LogLuv Encoding for HDR" />
 <meta property="og:description" content="Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere. What can I say&hellip;I like it! I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.
 Designing an effective and performant HDR implementation for my game&rsquo;s engine was a step that was complicated a bit by a few of the quirks of running XNA on the Xbox 360." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/logluv-encoding-for-hdr/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/logluv-encoding-for-hdr/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2008-12-12T17:00:59+00:00" />
 <meta property="article:modified_time" content="2008-12-12T17:00:59+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="LogLuv Encoding for HDR"/>
 <meta name="twitter:description" content="Okay so this marks the third time I&rsquo;ve posted this blog entry somewhere. What can I say&hellip;I like it! I also think it&rsquo;s something useful for just about anyone trying to do HDR on the 360 through XNA, and I&rsquo;m hoping some people will stumble upon it.
@@ -67,6 +64,8 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -106,7 +105,7 @@ Designing an effective and performant HDR implementation for my game&rsquo;s eng
 <p>This left me with option #3.  I wasn&rsquo;t a fan of this approach initially, as my original design plan called for things to be simple and straightforward whenever possible.  I didn&rsquo;t really want to have two versions of my material shaders to support encoding, nor did I want to integrate decoding into the other parts of the pipeline that needed it.  But unfortunately, I wasn&rsquo;t really left with any other options after I found there were <a href="https://connect.microsoft.com/feedback/ViewFeedback.aspx?FeedbackID=343887&amp;SiteID=226">no plans</a> to bring the support for the 360&rsquo;s special fp10 backbuffer format to XNA (which would have conveniently solved my problems on the 360).  So, I started doing my research.  Naturally the first place I looked was to actual released commercial game.  Why?  Because usually when a technique is used in a shipped game, it means it&rsquo;s gone though the paces and has been determined to actually be feasible and practical in game environment.  Which of course naturally led me to consider NAO32.</p>
 <p>NAO32 is a format that gained some fame in the dev community when ex-Ninja Theory programmer Marco Salvi shared some details on the technique over on the beyond3D forums.  Used in the game Heavenly Sword, it allowed for multisampling to be used in conjuction with HDR on a platform (PS3) whose GPU didn&rsquo;t support multisampling of floating-point surfaces (The RSX is heavily based on Nvidia G70).  In this technique, color is stored in the <a href="http://www.anyhere.com/gward/papers/jgtpap1.pdf">LogLuv format</a> using a standard R8G8B8A8 surface.  Two components are used to store X and Y at 8-bit precision, and the other two are used to store the log of luminance at 16-bit precision.  Having 16 bits for luminance allows for a wide dynamic range to be stored in this format, and storing the log of the luminance allows for linear filtering in multisampling or texture sampling.  Since he first explained it other games have also used it, such as Naughty Dog&rsquo;s Uncharted.  It&rsquo;s likely that it&rsquo;s been used in many other PS3 games, as well.</p>
 <p>My actual shader implementation was helped along quite a bit by <a href="http://realtimecollisiondetection.net/blog/?p=15">Christer Ericson&rsquo;s blog post</a>, which described how to derive optimized shader code for encoding RGB into the LogLuv format.  Using his code as a starting point, I came up with the following HLSL code for encoding and decoding:</p>
-<pre><code>// M matrix, for encoding
+<pre tabindex="0"><code>// M matrix, for encoding
 
 const static float3x3 M = float3x3(
     0.2209, 0.3390, 0.4184,
@@ -200,14 +199,14 @@ float3 LogLuvDecode(in float4 vLogLuv)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

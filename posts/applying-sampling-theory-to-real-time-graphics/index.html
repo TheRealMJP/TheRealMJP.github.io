@@ -8,21 +8,18 @@
 <meta itemprop="name" content="Applying Sampling Theory To Real-Time Graphics">
 <meta itemprop="description" content="Previous article in the series: Signal Processing Primer
 Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
-Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling.">
-<meta itemprop="datePublished" content="2012-10-22T06:59:09&#43;00:00" />
-<meta itemprop="dateModified" content="2012-10-22T06:59:09&#43;00:00" />
-<meta itemprop="wordCount" content="4763">
-
-
-
+Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling."><meta itemprop="datePublished" content="2012-10-22T06:59:09+00:00" />
+<meta itemprop="dateModified" content="2012-10-22T06:59:09+00:00" />
+<meta itemprop="wordCount" content="4761">
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="Applying Sampling Theory To Real-Time Graphics" />
 <meta property="og:description" content="Previous article in the series: Signal Processing Primer
 Computer graphics is a field that constantly deals with discrete sampling and reconstruction of signals, although you might not be aware of it yet. This article focuses on the ways in which sampling theory can be applied to some of the common tasks routinely performed in graphics and 3D rendering.
 Image Scaling The concepts of sampling theory can are most easily applicable to graphics in the form of image scaling." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/applying-sampling-theory-to-real-time-graphics/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/applying-sampling-theory-to-real-time-graphics/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2012-10-22T06:59:09+00:00" />
 <meta property="article:modified_time" content="2012-10-22T06:59:09+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Applying Sampling Theory To Real-Time Graphics"/>
 <meta name="twitter:description" content="Previous article in the series: Signal Processing Primer
@@ -70,6 +67,8 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -114,7 +113,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 <p>A box function is commonly used for generating mip maps, although it’s possible to use any suitable reconstruction filter when downscaling the source image. The generation is also commonly implemented recursively, so that each mip level is generated from the mip level preceding it. This makes the process computationally cheap, since a simple linear filter can be used at each stage in order to achieve the same results as a wide box filter applied to the highest-resolution image. At runtime the pixel shader selects the appropriate mip level by calculating the <em>gradients</em> of the texture coordinate used for sampling, which it does by comparing texture coordinate used for one pixel to the texture coordinate used in the neighboring pixels of a 2x2 quad. These gradients, which are equal to the partial derivatives of the texture coordinates with respect to X and Y in screen space, are important because they tell us the relationship between a given 2D image and the rate at which we’ll sample that image in screen space. Smaller gradients mean that the sample points are close together, and thus we’re using a high sampling rate. Larger gradients result from the sample points being further apart, which we can interpret to mean that we’re using a low sampling rate. By examining these gradients we can calculate the highest-resolution mip level that would provide us with an image size less than or equal to our sampling rate. The following image shows a simple example of mip selection:</p>
 <p><a href="/images/converted/applying-sampling-theory-to-real-time-graphics/mip_selection.png"><img src="/images/converted/applying-sampling-theory-to-real-time-graphics/mip_selection.png" alt="" title="Mip_Selection"></a></p>
 <center><i>Using texture coordinate gradients to select a mip level for a 4x4 texture.</i></center>
-<p>In the image, the two red rectangles represent texture-mapped quads of different sizes rasterized to a 2D grid of pixels_._ For the topmost quad, the a value of 0.25 will be computed as the partial derivative for the U texture coordinate with respect to the X dimension, and the same value will be computed as the partial derivative for the V texture coordinate with respect to the Y dimension. The larger of the two gradients is then used to select the appropriate mip level based on the size of the texture. In this case, the length of the gradient will be 0.25 which means that the 0th (4x4) mip level will be selected. For the lower quad the size of the gradient is doubled, which means that the 1st mip level will be selected instead. Quality can be further improved through the use of _trilinear filtering,_ which linearly interpolates between the results of bilinearly sampling the two closest mip levels based on the gradients. Doing so prevents visible seams on a surface at the points where a texture switches to the next mip level.</p>
+<p>In the image, the two red rectangles represent texture-mapped quads of different sizes rasterized to a 2D grid of pixels_._ For the topmost quad, the a value of 0.25 will be computed as the partial derivative for the U texture coordinate with respect to the X dimension, and the same value will be computed as the partial derivative for the V texture coordinate with respect to the Y dimension. The larger of the two gradients is then used to select the appropriate mip level based on the size of the texture. In this case, the length of the gradient will be 0.25 which means that the 0th (4x4) mip level will be selected. For the lower quad the size of the gradient is doubled, which means that the 1st mip level will be selected instead. Quality can be further improved through the use of <em>trilinear filtering,</em> which linearly interpolates between the results of bilinearly sampling the two closest mip levels based on the gradients. Doing so prevents visible seams on a surface at the points where a texture switches to the next mip level.</p>
 <p>One problem that we run into with mipmapping is when an image needs to be downscaled more in one dimension than in the other. This situation is referred to as <em>anisotropy</em>, due to the differing sampling rates with respect to the U and V axes of the texture. This happens all of the time in 3D rendering, particularly when a texture is mapped to a ground plane that’s nearly parallel with the view direction. In such a case the plane will be projected such that the V gradients grow more quickly than the U gradients as distance from the camera increases, which equates to the sampling rate being lower along the V axis. When the gradient is larger for one axis than the other, 3D hardware will use the larger gradient for mip selection since using the smaller gradient would result in aliasing due to undersampling. However this has the undesired effect of over-filtering along the other axis, thus producing a “blurry” result that’s missing details. To help alleviate this problem, graphics hardware supports <em>anisotropic filtering</em>. When this mode is active, the hardware will take up to a certain number of “extra” texture samples along the axis with the larger gradient. This allows the hardware to “reduce” the maximum gradient, and thus use a higher-resolution mip level. The final result is equivalent to using a rectangular reconstruction filter in 2D space as opposed to a box filter. Visually such a filter will produce results such that aliasing is prevented, while details are still perceptible. The following images demonstrate anisotropic filtering on a textured plane:</p>
 <p><a href="/images/converted/applying-sampling-theory-to-real-time-graphics/anisotropy_1x.png"><img src="/images/converted/applying-sampling-theory-to-real-time-graphics/anisotropy_1x.png" alt="" title="Anisotropy_1x"></a><a href="/images/converted/applying-sampling-theory-to-real-time-graphics/anisotropy_16x.png"><img src="/images/converted/applying-sampling-theory-to-real-time-graphics/anisotropy_16x.png" alt="" title="Anisotropy_16x"></a></p>
 <center><i>A textured plane without anisotropic filtering, and the same plane with 16x anistropic filtering. The light grey grid lines demonstrate the distribution of pixels, and thus the rate of pixel shading in screen space. The red lines show the U and V axes of the texture mapped to plane. Notice the lack of details in the grain of the wood on the left image, due to over-filtering of the U axis in the lower-resolution mip levels.</i></center>
@@ -157,7 +156,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 <hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p>[]( &ldquo;&quot;) - <time datetime="2013-10-13 10:55:23">Oct 0, 2013</time></p>
+<p><a href="%22%22"></a> - <time datetime="2013-10-13 10:55:23">Oct 0, 2013</time></p>
 <p>&gt; In the animation the camera is moving to the right at a constant speed Actually, that&rsquo;s not true. According to the wikipedia description of the gif, it&rsquo;s the acceleration that&rsquo;s constant, not the speed. (Which makes much more sense!)</p>
 <hr />
 ####
@@ -179,7 +178,7 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4763 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4761 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2012-10-21 23:59 -0700</p>
 			</footer>
 		</article>
@@ -202,14 +201,14 @@ Image Scaling The concepts of sampling theory can are most easily applicable to 
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

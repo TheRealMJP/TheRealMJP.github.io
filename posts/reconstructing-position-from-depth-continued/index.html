@@ -7,20 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Reconstructing Position From Depth, Continued">
 <meta itemprop="description" content="Picking up where I left off here&hellip;
-As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space.">
-<meta itemprop="datePublished" content="2009-05-05T20:09:33&#43;00:00" />
-<meta itemprop="dateModified" content="2009-05-05T20:09:33&#43;00:00" />
+As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space."><meta itemprop="datePublished" content="2009-05-05T20:09:33+00:00" />
+<meta itemprop="dateModified" content="2009-05-05T20:09:33+00:00" />
 <meta itemprop="wordCount" content="1765">
-
-
-
 <meta itemprop="keywords" content="DirectX,Programming,XNA," /><meta property="og:title" content="Reconstructing Position From Depth, Continued" />
 <meta property="og:description" content="Picking up where I left off here&hellip;
 As I mentioned, you can also reconstruct a world-space position using the frustum ray technique. The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera. You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/reconstructing-position-from-depth-continued/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2009-05-05T20:09:33+00:00" />
 <meta property="article:modified_time" content="2009-05-05T20:09:33+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Reconstructing Position From Depth, Continued"/>
 <meta name="twitter:description" content="Picking up where I left off here&hellip;
@@ -67,6 +64,8 @@ As I mentioned, you can also reconstruct a world-space position using the frustu
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -76,7 +75,7 @@ As I mentioned, you can also reconstruct a world-space position using the frustu
 			<div class="content">
 				<p>Picking up where I left off <a href="http://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">here</a>&hellip;</p>
 <p>As I mentioned, you can also reconstruct a world-space position using the frustum ray technique.  The first step is that you need your frustum corners to be rotated so that they match the current orientation of your camera.  You can do this by transforming the frustum corners by a &ldquo;camera world matrix&rdquo;, which is a matrix representing the camera&rsquo;s position and orientation in world-space.  If you don&rsquo;t have this available you can just invert your view matrix.  I&rsquo;ll demonstrate doing it right in the vertex shader for the sake of simplicity, but you&rsquo;d probably want to do it ahead of time in your application code.</p>
-<pre><code>// Vertex shader for rendering a full-screen quad
+<pre tabindex="0"><code>// Vertex shader for rendering a full-screen quad
 void QuadVS (   in float3 in_vPositionOS                : POSITION,
                 in float3 in_vTexCoordAndCornerIndex    : TEXCOORD0,
                 out float4 out_vPositionCS              : POSITION,
@@ -99,7 +98,7 @@ void QuadVS (   in float3 in_vPositionOS                : POSITION,
     out_vFrustumCornerWS = mul(vFrustumCornerVS, g_matCameraWorld);
 }
 </code></pre><p>So what we&rsquo;ve done here is we&rsquo;ve <em>rotated</em> (not translated, since vFrusumCornerVS is only a float3) the view-space frustum corner so that it&rsquo;s now matches the camera&rsquo;s orientation.  However it&rsquo;s still centered around &lt;0,0,0&gt; and not the camera&rsquo;s world-space position, so when we reconstruct position we&rsquo;ll also add the camera&rsquo;s world-space position:</p>
-<pre><code>// Pixel shader function for reconstructing world-space position
+<pre tabindex="0"><code>// Pixel shader function for reconstructing world-space position
 float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 {
     float fPixelDepth = tex2D(DepthSampler, vTexCoord).r;
@@ -107,7 +106,7 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 }
 </code></pre><p>And there it is. Easy peasy, lemon squeezy.</p>
 <p>The other bit I hinted at was using this same technique with arbitray geometry, for example  the bounding volumes for a local light source.  For this we once again need a ray that points from the camera position through the pixel position to the far-clip plane.  We can do this in the pixel shader by using the view-space position of the pixel.</p>
-<pre><code>void VSBoundingVolume(  in float3 in_vPositionOS       : POSITION,
+<pre tabindex="0"><code>void VSBoundingVolume(  in float3 in_vPositionOS       : POSITION,
                         out float4 out_vPositionCS     : POSITION,
                         out float3 out_vPositionVS    : TEXCOORD0 )
 {
@@ -117,10 +116,10 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
     out_vPositionVS = mul(in_vPositionOS, g_matWorldView);
 }
 </code></pre><p>Then in our pixel shader, we calculate the ray and reconstruct position like this:</p>
-<pre><code>float3 VSPositionFromDepth(float2 vTexCoord, float3 vPositionVS)
+<pre tabindex="0"><code>float3 VSPositionFromDepth(float2 vTexCoord, float3 vPositionVS)
 {
     // Calculate the frustum ray using the view-space position.
-    // g_fFarCip is the distance to the camera's far clipping plane.
+    // g_fFarCip is the distance to the camera&#39;s far clipping plane.
     // Negating the Z component only necessary for right-handed coordinates
     float3 vFrustumRayVS = vPositionVS.xyz * (g_fFarClip/-vPositionVS.z);
     return tex2D(DepthSampler, vTexCoord).x * vFrustumRayVS;
@@ -228,14 +227,14 @@ float3 WSPositionFromDepth(float2 vTexCoord, float3 vFrustumRayWS)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

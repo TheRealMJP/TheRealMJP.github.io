@@ -7,20 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Fun With Compiled Content">
 <meta itemprop="description" content="EDIT: I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere. So here it is.
-Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure? Of course it would!">
-<meta itemprop="datePublished" content="2009-01-18T21:36:14&#43;00:00" />
-<meta itemprop="dateModified" content="2009-01-18T21:36:14&#43;00:00" />
+Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure? Of course it would!"><meta itemprop="datePublished" content="2009-01-18T21:36:14+00:00" />
+<meta itemprop="dateModified" content="2009-01-18T21:36:14+00:00" />
 <meta itemprop="wordCount" content="977">
-
-
-
 <meta itemprop="keywords" content="Programming,XNA," /><meta property="og:title" content="Fun With Compiled Content" />
 <meta property="og:description" content="EDIT: I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere. So here it is.
 Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure? Of course it would!" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/fun-with-compiled-content/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/fun-with-compiled-content/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2009-01-18T21:36:14+00:00" />
 <meta property="article:modified_time" content="2009-01-18T21:36:14+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Fun With Compiled Content"/>
 <meta name="twitter:description" content="EDIT: I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere. So here it is.
@@ -67,6 +64,8 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -76,28 +75,28 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
 			<div class="content">
 				<p>EDIT:  I realized it was probably a much smarter idea to just zip up the code along with the designer code and upload it somewhere.  So <a href="http://members.gamedev.net/MJP/ContentBrowser.zip">here it is</a>.</p>
 <p>Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that would show all the pre-compiled content of a certain Type, with it all listed in a nice tree showing the directory structure?  Of course it would!  Only a crazy person would think otherwise.  Well the good news is I already did this, so feel free to plunder the code for your own use.</p>
-<pre><code>public partial class ContentBrowser : Form
+<pre tabindex="0"><code>public partial class ContentBrowser : Form
 
 {
     private static Dictionary&lt;string, TreeNode&gt; contentTrees = new Dictionary&lt;string, TreeNode&gt;();
     private static string contentDirectory;
     private static ContentManager contentManager;
 
-    private static string[] contentTypes = {    &quot;Texture&quot;,
-                                                &quot;Texture2D&quot;,
-                                                &quot;Texture3D&quot;,
-                                                &quot;TextureCube&quot;,
-                                                &quot;SpriteFont&quot;,
-                                                &quot;Model&quot;,
-                                                &quot;Effect&quot;    };
+    private static string[] contentTypes = {    &#34;Texture&#34;,
+                                                &#34;Texture2D&#34;,
+                                                &#34;Texture3D&#34;,
+                                                &#34;TextureCube&#34;,
+                                                &#34;SpriteFont&#34;,
+                                                &#34;Model&#34;,
+                                                &#34;Effect&#34;    };
 
     /// &lt;summary&gt;
     /// Traverses the specified content directory for all loadable content, and stores
     /// it as static data for use when an instance of the Form is created.
     /// &lt;/summary&gt;
-    /// &lt;param name=&quot;services&quot;&gt;IServiceProvider implementation, contains IGraphicsDeviceService&lt;/param&gt;
-    /// &lt;param name=&quot;contentDirectory&quot;&gt;The content directory to traverse&lt;/param&gt;
-    /// &lt;param name=&quot;ownerWindow&quot;&gt;Owner window for the status dialog&lt;/param&gt;
+    /// &lt;param name=&#34;services&#34;&gt;IServiceProvider implementation, contains IGraphicsDeviceService&lt;/param&gt;
+    /// &lt;param name=&#34;contentDirectory&#34;&gt;The content directory to traverse&lt;/param&gt;
+    /// &lt;param name=&#34;ownerWindow&#34;&gt;Owner window for the status dialog&lt;/param&gt;
     public static void Initialize(ServiceContainer services, string contentDirectory, IWin32Window ownerWindow)
     {
         ContentBrowser.contentDirectory = contentDirectory;
@@ -109,7 +108,7 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
         Form notificationDialog = new Form();
         notificationDialog.FormBorderStyle = FormBorderStyle.FixedDialog;
         notificationDialog.Size = new Size(350, 150);
-        notificationDialog.Text = &quot;JSMapEditor&quot;;
+        notificationDialog.Text = &#34;JSMapEditor&#34;;
         notificationDialog.StartPosition = FormStartPosition.CenterScreen;
         notificationDialog.ShowInTaskbar = false;
         notificationDialog.ShowIcon = false;
@@ -118,7 +117,7 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
         Label statusLabel = new Label();
         statusLabel.Size = new Size(200, 50);
         statusLabel.Location = new System.Drawing.Point(100, 50);
-        statusLabel.Text = &quot;Loading Content&quot;;
+        statusLabel.Text = &#34;Loading Content&#34;;
         notificationDialog.Controls.Add(statusLabel);           
         notificationDialog.Show(ownerWindow);
 
@@ -143,9 +142,9 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
 
             if (loadTime &gt; 300)
             {
-                statusLabel.Text = &quot;Loading Content&quot;;
+                statusLabel.Text = &#34;Loading Content&#34;;
                 for (int i = 1; i &lt;= count % 4; i++)
-                    statusLabel.Text += &quot;.&quot;;
+                    statusLabel.Text += &#34;.&#34;;
                 count++;
                 loadTime -= 300;
             }
@@ -166,7 +165,7 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
         // Recursively build the content tree
         foreach (string contentType in contentTypes)
         {
-            TreeNode rootNode = new TreeNode(&quot;Content\\&quot;);
+            TreeNode rootNode = new TreeNode(&#34;Content\\&#34;);
             BuildContentTree(rootNode, contentManager.RootDirectory, contentType);
             contentTrees.Add(contentType, rootNode);
         }
@@ -175,9 +174,9 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
     /// &lt;summary&gt;
     /// Builds the tree by looking for acceptable content.  Recursively calls itself
     /// to traverse subdirectories
-    /// &lt;param name=&quot;parentNode&quot;&gt;The TreeNode representing the current directory&lt;/param&gt;
-    /// &lt;param name=&quot;directory&quot;&gt;The current direcotry to traverse&lt;/param&gt;
-    /// &lt;param name=&quot;contentType&quot;&gt;The name of the content Type to look for&lt;/param&gt;
+    /// &lt;param name=&#34;parentNode&#34;&gt;The TreeNode representing the current directory&lt;/param&gt;
+    /// &lt;param name=&#34;directory&#34;&gt;The current direcotry to traverse&lt;/param&gt;
+    /// &lt;param name=&#34;contentType&#34;&gt;The name of the content Type to look for&lt;/param&gt;
     /// &lt;/summary&gt;
     private static void BuildContentTree(TreeNode parentNode, string directory, string contentType)
     {
@@ -186,17 +185,17 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
         foreach (string subdirectory in subdirectories)
         {
             string relativePath = subdirectory.Substring(directory.Length + 1);
-            TreeNode directoryNode = new TreeNode(relativePath + &quot;\\&quot;);
+            TreeNode directoryNode = new TreeNode(relativePath + &#34;\\&#34;);
             BuildContentTree(directoryNode, subdirectory, contentType);
             if (directoryNode.Nodes.Count &gt; 0)
                 parentNode.Nodes.Add(directoryNode);
         }
 
         // Check out all the .xnb files, see if we can load them as the target type
-        string[] contentFiles = Directory.GetFiles(directory, &quot;*.xnb&quot;);
+        string[] contentFiles = Directory.GetFiles(directory, &#34;*.xnb&#34;);
         foreach (string contentFile in contentFiles)
         {
-            string loadName = Path.GetDirectoryName(contentFile) + &quot;\\&quot;
+            string loadName = Path.GetDirectoryName(contentFile) + &#34;\\&#34;
                             + Path.GetFileNameWithoutExtension(contentFile);
             if (TryLoadContent(loadName, contentType))
             {
@@ -211,8 +210,8 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
     /// Checks whether the filename is valid by attempting to
     /// load it with the ContentManager.
     /// &lt;/summary&gt;
-    /// &lt;param name=&quot;contentFile&quot;&gt;The filename to check&lt;/param&gt;
-    /// &lt;param name=&quot;contentType&quot;&gt;The name of the content Type to check the content against&lt;/param&gt;
+    /// &lt;param name=&#34;contentFile&#34;&gt;The filename to check&lt;/param&gt;
+    /// &lt;param name=&#34;contentType&#34;&gt;The name of the content Type to check the content against&lt;/param&gt;
     /// &lt;returns&gt;True if successful&lt;/returns&gt;
     private static bool TryLoadContent(string contentFile, string contentType)
     {
@@ -239,8 +238,8 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
     /// &lt;summary&gt;
     /// Creates an instance of ContentBrowser
     /// &lt;/summary&gt;
-    /// &lt;param name=&quot;value&quot;&gt;The default content filename&lt;/param&gt;
-    /// &lt;param name=&quot;contentType&quot;&gt;The type of content to browse&lt;/param&gt;
+    /// &lt;param name=&#34;value&#34;&gt;The default content filename&lt;/param&gt;
+    /// &lt;param name=&#34;contentType&#34;&gt;The type of content to browse&lt;/param&gt;
     public ContentBrowser(String value, Type contentType)
     {
         InitializeComponent();
@@ -254,7 +253,7 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
     /// &lt;summary&gt;
     /// Called when the Form is closed
     /// &lt;/summary&gt;
-    /// &lt;param name=&quot;e&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&#34;e&#34;&gt;&lt;/param&gt;
     protected override void OnClosed(EventArgs e)
     {
         contentTree.Nodes.Clear();
@@ -262,13 +261,13 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
     }
 
     /// &lt;summary&gt;
-    /// Event handler for the TreeView's mouse clicks
+    /// Event handler for the TreeView&#39;s mouse clicks
     /// &lt;/summary&gt;
-    /// &lt;param name=&quot;sender&quot;&gt;contentTree&lt;/param&gt;
-    /// &lt;param name=&quot;e&quot;&gt;Event args&lt;/param&gt;
+    /// &lt;param name=&#34;sender&#34;&gt;contentTree&lt;/param&gt;
+    /// &lt;param name=&#34;e&#34;&gt;Event args&lt;/param&gt;
     private void contentTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
     {
-        // Tag != null means it's a content node
+        // Tag != null means it&#39;s a content node
         if (e.Node.Tag != null)
         {
             selectedContentFile = (string)e.Node.Tag;
@@ -278,10 +277,10 @@ Wouldn&rsquo;t it be neat to be able to have a dialog you could pop up that woul
 }
 </code></pre><p>Okay so a few notes on usage&hellip;it uses the string array &ldquo;contentTypes&rdquo; to know which types to check for.  You should fill this out with whatever Type&rsquo;s you&rsquo;re loading from the ContentManager.  The static Initialize method should either be called when your app starts up, and you&rsquo;ll need to do it before you can actually create an instance of ContentBrowser.  It shows a little loading dialog while it&rsquo;s working, so you have something to show the user while it&rsquo;s happening.  You could take that out, if you wanted.</p>
 <p>I also made a UITypeEditor so that you can have this dialog to set a property in a PropertyGrid:</p>
-<pre><code>/// &lt;summary&gt;
+<pre tabindex="0"><code>/// &lt;summary&gt;
 /// Used to allow the user to browse for content in the PropertyGrid
 /// &lt;/summary&gt;
-/// &lt;typeparam name=&quot;T&quot;&gt;The Type of content to display in the ContentBrowser&lt;/typeparam&gt;
+/// &lt;typeparam name=&#34;T&#34;&gt;The Type of content to display in the ContentBrowser&lt;/typeparam&gt;
 public class ContentEditor&lt;T&gt; : UITypeEditor
 {
     public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
@@ -338,14 +337,14 @@ public class ContentEditor&lt;T&gt; : UITypeEditor
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

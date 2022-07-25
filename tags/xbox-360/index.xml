@@ -6,11 +6,7 @@
     <description>Recent content in Xbox 360 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 31 Dec 2009 22:31:58 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/xbox-360/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 31 Dec 2009 22:31:58 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/xbox-360/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Correcting XNA&#39;s Gamma Correction</title>
       <link>https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/</link>
@@ -55,7 +51,7 @@ Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on 
       
       <guid>https://therealmjp.github.io/posts/profiling-events/</guid>
       <description>Over the past week or so I&amp;rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible. One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something. I narrowed it down to two options:
- notify owners via the ICollisionOwner interface I was using  OR</description>
+notify owners via the ICollisionOwner interface I was using OR</description>
     </item>
     
     <item>
@@ -65,7 +61,7 @@ Lately I&amp;rsquo;ve been doing some research into inferred rendering (more on 
       
       <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
       <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments:  sam - Feb 4, 2009
+Comments: sam - Feb 4, 2009
 This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
 #### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 2010 1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
     </item>

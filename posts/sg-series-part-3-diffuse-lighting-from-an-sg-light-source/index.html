@@ -11,13 +11,9 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
 Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
-<meta itemprop="datePublished" content="2016-10-10T07:08:51&#43;00:00" />
-<meta itemprop="dateModified" content="2016-10-10T07:08:51&#43;00:00" />
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"><meta itemprop="datePublished" content="2016-10-10T07:08:51+00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:08:51+00:00" />
 <meta itemprop="wordCount" content="2300">
-
-
-
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source" />
 <meta property="og:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
 Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
@@ -26,9 +22,10 @@ Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2016-10-10T07:08:51+00:00" />
 <meta property="article:modified_time" content="2016-10-10T07:08:51+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SG Series Part 3: Diffuse Lighting From an SG Light Source"/>
 <meta name="twitter:description" content="This is part 3 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
@@ -79,6 +76,8 @@ Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -97,28 +96,28 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <p>In the <a href="https://mynameismjp.wordpress.com/2016/10/09/sg-series-part-2-spherical-gaussians-101/">previous post</a> we covered a few of the universal properties of SG&rsquo;s. Now that we have a few tools on our utility belt, let&rsquo;s discuss an example of how we can actually use those properties to our advantage in a rendering scenario. Let&rsquo;s say we have a surface point <strong>x</strong> being lit by a light source <strong>L</strong>, with the light source being represented by an SG named <strong>GL</strong>. Recall from the previous article that the equation for computing the outgoing radiance towards the eye for a surface with a Lambertian diffuse BRDF looks like the following:</p>
 <p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} L_{i}(\mathbf{i}, \mathbf{x})cos(\theta_{i})d\Omega $$</p>
 <p>For punctual light sources that are essentially a scaled delta function, computing this is as easy as N dot L. But we&rsquo;re in trouble if we have an area light source, since we typically don&rsquo;t have a closed form solution to the integral. But let&rsquo;s suppose that we have some strange Gaussian light source, whose angular falloff can be exactly represented by an SG (normally area light sources are considered  to have uniform emission over their surface, but let&rsquo;s imagine we have case where the emission is non-uniform). If we can treat the light as an SG, then we can start to consider some of the handy Gaussian tools that we laid out earlier. In particular the inner product starts to seem really useful: it gives us the result of integrating the product of two SG&rsquo;s, which is basically what we&rsquo;re trying to accomplish in our diffuse lighting equation. The big catch is that we&rsquo;re not integrating the product of two SG&rsquo;s, we&rsquo;re instead integrating the product of an SG with a clamped cosine lobe. Obviously a Gaussian lobe has a different shape compared to a clamped cosine lobe, but perhaps if we squint our eyes from a distance you could substitute one for another. This approach was taken by <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2009/12/sg.pdf">Wang et al.</a>[1], who suggested fitting a cosine lobe to a single SG with <strong>λ</strong>=2.133 and <strong>a</strong>=1.17. If we follow in their footsteps, the diffuse calculation is straightforward:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">SG</span> <span class="nf">CosineLobeSG</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="n">direction</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">SG</span> <span class="n">cosineLobe</span><span class="p">;</span>
-    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">direction</span><span class="p">;</span>
-    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="mf">2.133f</span><span class="p">;</span>
-    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="mf">1.17f</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">cosineLobe</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">float3</span> <span class="nf">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">SG</span> <span class="n">cosineLobe</span> <span class="o">=</span> <span class="n">CosineLobeSG</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">SGInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">cosineLobe</span><span class="p">)</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">float3</span> <span class="nf">SGDiffuseInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="error-analysis">Error Analysis<a href="#error-analysis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">SG</span> <span class="nf">CosineLobeSG</span><span class="p">(</span><span class="n">in</span> <span class="n">float3</span> <span class="n">direction</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SG</span> <span class="n">cosineLobe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Axis</span> <span class="o">=</span> <span class="n">direction</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Sharpness</span> <span class="o">=</span> <span class="mf">2.133f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cosineLobe</span><span class="p">.</span><span class="n">Amplitude</span> <span class="o">=</span> <span class="mf">1.17f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">cosineLobe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">float3</span> <span class="nf">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SG</span> <span class="n">cosineLobe</span> <span class="o">=</span> <span class="n">CosineLobeSG</span><span class="p">(</span><span class="n">normal</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">max</span><span class="p">(</span><span class="n">SGInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">cosineLobe</span><span class="p">),</span> <span class="mf">0.0f</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">float3</span> <span class="nf">SGDiffuseInnerProduct</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">SGIrradianceInnerProduct</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="error-analysis">Error Analysis<a href="#error-analysis" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Not too bad, eh? Of course it&rsquo;s worth taking a closer look at our cosine lobe approximation, since that&rsquo;s definitely going to introduce some error. Perhaps the best way to do this is to look at the graphs of a real cosine lobe and our SG approximation side-by-side:</p>
 <p><a href="https://www.desmos.com/calculator/pecunlgzhe"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sg_cosine_approximation_alt.png" alt="sg_cosine_approximation_alt"></a></p>
 <center><i>Comparison of a clamped cosine cosine lobe (red) with an SG approximation (blue)</i></center>
@@ -139,54 +138,54 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <p>$$ L_{o}(\mathbf{o}, \mathbf{x}) = \frac{C_{diffuse}}{\pi} \int_{\Omega} G_{L}(\mathbf{i};\mathbf{\mu},\lambda,a)cos(\theta_{i})d\Omega $$</p>
 <p>$$ L_{o}(\mathbf{o}, \mathbf{x}) \approx cos(\theta_{\mu}) \frac{C_{diffuse}}{\pi} \int_{\Omega} G_{L}(\mathbf{i};\mathbf{\mu},\lambda,a)d\Omega $$</p>
 <p>Translating to HLSL, we get the following functions:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIrradiancePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">float</span> <span class="n">cosineTerm</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">cosineTerm</span> <span class="o">*</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">)</span> <span class="o">/</span>
-    <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">float3</span> <span class="nf">SGDiffusePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">SGIrradiancePunctual</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>If we overlay the graph of our super-cheap irradiance approximation on the graph we were looking at earlier, we get this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">float3</span> <span class="nf">SGIrradiancePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">cosineTerm</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">cosineTerm</span> <span class="o">*</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">Pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Amplitude</span><span class="p">)</span> <span class="o">/</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">float3</span> <span class="nf">SGDiffusePunctual</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">albedo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">float3</span> <span class="n">brdf</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">/</span> <span class="n">Pi</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">SGIrradiancePunctual</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="o">*</span> <span class="n">brdf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>If we overlay the graph of our super-cheap irradiance approximation on the graph we were looking at earlier, we get this:</p>
 <p><a href="https://www.desmos.com/calculator/mfsufusbqk"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_irradiance_approximation2.png" alt="sglight_irradiance_approximation"></a></p>
 <center><i>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The green graph was computed by pulling the cosine term out of the integral, and multiplying it with the result of integrating the SG light about the sphere.</i></center>
 <p>The result shouldn&rsquo;t be a surprise: it&rsquo;s just a scaled version of the standard clamped cosine.It&rsquo;s pretty obvious just by looking that this particular optimization will introduce quite a bit of error, particularly where theta is greater than π/2. But it is cheap, since we&rsquo;ve effectively turned an SG into a point light. This is makes it a useful tool for cases where we may want to approximate the convolution of an SG light source with a BRDF or some other function that isn&rsquo;t easily represented as an SG.</p>
 <h2 id="a-more-accurate-approximation">A More Accurate Approximation<a href="#a-more-accurate-approximation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>So it&rsquo;s nice to have a cheap option, but what if we want more accuracy than our inner product approximation? Fortunately for us, <a href="http://www.selfshadow.com/">Stephen Hill</a> was able to formulate another alternative approximation that directly fits a curve to the integral of a cosine lobe with an SG. His implementation is actually formulated for a normalized SG (where the integral about the sphere is equal to 1.0), but we can easily account for this by computing the integral and scaling the result by that value:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="nf">SGIrradianceFitted</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">const</span> <span class="kt">float</span> <span class="n">muDotN</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">;</span>
-    <span class="k">const</span> <span class="kt">float</span> <span class="n">lambda</span> <span class="o">=</span> <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
-
-    <span class="k">const</span> <span class="kt">float</span> <span class="n">c0</span> <span class="o">=</span> <span class="mf">0.36f</span><span class="p">;</span>
-    <span class="k">const</span> <span class="kt">float</span> <span class="n">c1</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0f</span> <span class="o">*</span> <span class="n">c0</span><span class="p">)</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">eml</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambda</span><span class="p">)</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">em2l</span> <span class="o">=</span> <span class="n">eml</span> <span class="o">*</span> <span class="n">eml</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">rl</span> <span class="o">=</span> <span class="n">rcp</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">+</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">em2l</span> <span class="o">-</span> <span class="n">rl</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="p">(</span><span class="n">eml</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">)</span> <span class="o">*</span> <span class="n">rl</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">scale</span><span class="p">)</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">x0</span> <span class="o">=</span> <span class="n">c0</span> <span class="o">*</span> <span class="n">muDotN</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">x</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">n</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">muDotN</span><span class="p">)</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">x1</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">x</span><span class="p">;</span>
-
-    <span class="kt">float</span> <span class="n">result</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bias</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">result</span> <span class="o">*</span> <span class="n">ApproximateSGIntegral</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">)</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>The result is very close to the ground truth, which is very cool considering that it might actually be cheaper than our inner product approximation!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">float3</span> <span class="nf">SGIrradianceFitted</span><span class="p">(</span><span class="n">in</span> <span class="n">SG</span> <span class="n">lightingLobe</span><span class="p">,</span> <span class="n">in</span> <span class="n">float3</span> <span class="n">normal</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">float</span> <span class="n">muDotN</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">.</span><span class="n">Axis</span><span class="p">,</span> <span class="n">normal</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">float</span> <span class="n">lambda</span> <span class="o">=</span> <span class="n">lightingLobe</span><span class="p">.</span><span class="n">Sharpness</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">float</span> <span class="n">c0</span> <span class="o">=</span> <span class="mf">0.36f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">float</span> <span class="n">c1</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0f</span> <span class="o">*</span> <span class="n">c0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">eml</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambda</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">em2l</span> <span class="o">=</span> <span class="n">eml</span> <span class="o">*</span> <span class="n">eml</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">rl</span> <span class="o">=</span> <span class="n">rcp</span><span class="p">(</span><span class="n">lambda</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0f</span> <span class="o">+</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">em2l</span> <span class="o">-</span> <span class="n">rl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="p">(</span><span class="n">eml</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">)</span> <span class="o">*</span> <span class="n">rl</span> <span class="o">-</span> <span class="n">em2l</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0f</span> <span class="o">-</span> <span class="n">scale</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">x0</span> <span class="o">=</span> <span class="n">c0</span> <span class="o">*</span> <span class="n">muDotN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">n</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">muDotN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">x1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">y</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">result</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bias</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">result</span> <span class="o">*</span> <span class="n">ApproximateSGIntegral</span><span class="p">(</span><span class="n">lightingLobe</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The result is very close to the ground truth, which is very cool considering that it might actually be cheaper than our inner product approximation!</p>
 <p><a href="https://www.desmos.com/calculator/ke219swxv3"><img src="/images/converted/sg-series-part-3-diffuse-lighting-from-an-sg-light-source/sglight_irradiance_fitted.png" alt="SGLight_Irradiance_Fitted"></a></p>
 <center><i>The resulting irradiance from an SG light source (with sharpness of 4.0) as function of the angle between the light source and the surface normal. The red graph was computed using numerical integration, while the blue graph was computed using an SG inner product of the light source with a cosine lobe approximated as an SG. The orange graph was computed using Stephen Hill's fitted curve approximation.</i></center>
 <p>If we once again visualize the result on the sphere and compare with our previous results, we get the following:</p>
@@ -202,7 +201,7 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 <hr />
 ###
 [MJP](http://mynameismjp.wordpress.com/ "mpettineo@gmail.com") - <time datetime="2017-10-09 14:38:29">Oct 1, 2017</time>
-<p>Hi Stefan, I updated the link to Wang et al.&lsquo;s paper. Thank you for pointing that out! As for Stephen Hill&rsquo;s fitted SG irradiance approximation, the link that I currently have in there just points to his home page, which is still the same. He hasn&rsquo;t formally published his approximation anywhere, so I don&rsquo;t have anything else to link to at the moment.</p>
+<p>Hi Stefan, I updated the link to Wang et al.&rsquo;s paper. Thank you for pointing that out! As for Stephen Hill&rsquo;s fitted SG irradiance approximation, the link that I currently have in there just points to his home page, which is still the same. He hasn&rsquo;t formally published his approximation anywhere, so I don&rsquo;t have anything else to link to at the moment.</p>
 <hr />
 ###
 [Wumpf](http://wumpfblog.wordpress.com "r_andreas2@web.de") - <time datetime="2016-10-13 00:24:24">Oct 4, 2016</time>
@@ -250,14 +249,14 @@ Part 6 - <a href="../sg-series-part-6-step-into-the-baking-lab/">Step Into The 
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>

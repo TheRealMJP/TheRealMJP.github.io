@@ -8,26 +8,23 @@
 <meta itemprop="name" content="Bindless Texturing for Deferred Rendering and Decals">
 <meta itemprop="description" content="https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever. In place of the old system, both API&rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory.">
-<meta itemprop="datePublished" content="2016-03-25T08:39:36&#43;00:00" />
-<meta itemprop="dateModified" content="2016-03-25T08:39:36&#43;00:00" />
+To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever."><meta itemprop="datePublished" content="2016-03-25T08:39:36+00:00" />
+<meta itemprop="dateModified" content="2016-03-25T08:39:36+00:00" />
 <meta itemprop="wordCount" content="7687">
-
-
-
 <meta itemprop="keywords" content="DirectX 12,Graphics," /><meta property="og:title" content="Bindless Texturing for Deferred Rendering and Decals" />
 <meta property="og:description" content="https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever. In place of the old system, both API&rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory." />
+To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2016-03-25T08:39:36+00:00" />
 <meta property="article:modified_time" content="2016-03-25T08:39:36+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Bindless Texturing for Deferred Rendering and Decals"/>
 <meta name="twitter:description" content="https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever. In place of the old system, both API&rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory."/>
+To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, you&rsquo;ve probably noticed that there&rsquo;s a lot of buzz and excitement around the new graphics API&rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&rsquo;ve ditched the old slot-based system for binding resources that&rsquo;s been in use since&hellip;forever."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -68,6 +65,8 @@ To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, yo
 			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
 		</ul>
 	</div>
+
+
 
 
 	<main class="site-main section-inner animated fadeIn faster">
@@ -211,7 +210,7 @@ To Bind, or Not To Bind Unless you&rsquo;ve been in a coma for the past year, yo
 <p>As for their performance, I unfortunately don&rsquo;t have another decal implementation to compare against. However if I set up test case where most of the screen is covered in around 11 decals, the cost of the deferred pass (no MSAA) goes from 1.50ms to 2.00ms on my GTX 970. If I branch over the decals entirely (including reading from the cluster bitfield buffer), then the cost drops to 1.33ms. For the forward path it costs about 1.55ms with no decals, 2.20ms with decals, and 1.38 branching over the entire decal step.</p>
 <h2 id="performance">Performance<a href="#performance" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>To measure performance, I captured GPU timing information via timestamp queries. All measurements were taken from the default camera position, at 1920x1080 resolution. The test scene is the CryTek Sponza (we really need a new test scene!) with 20 hand-placed spotlights, each casting a 1024x1024 shadow map. There&rsquo;s also a directional light for the sun that uses 4 2048x2048 shadow cascades. The scene uses normal, albedo, roughness, and metallic maps courtesy of <a href="http://www.alexandre-pestana.com/pbr-textures-sponza/">Alexandre Pestana</a>[16]. Here&rsquo;s what the frame breakdown looks like for the deferred texturing path, with no MSAA:</p>
-<pre><code>Render Total: 7.40ms (7.47ms max)
+<pre tabindex="0"><code>Render Total: 7.40ms (7.47ms max)
 Cluster Update: 0.08ms (0.08ms max)
 Sun Shadow Map Rendering: 1.30ms (1.34ms max)
 Spot Light Shadow Map Rendering: 1.04ms (1.04ms max)
@@ -219,7 +218,7 @@ G-Buffer Rendering: 0.67ms (0.67ms max)
 Deferred Rendering: 3.54ms (3.58ms max)
 Post Processing: 0.59ms (0.60ms max)
 </code></pre><p>&hellip;and here&rsquo;s what it looks like with 4x MSAA:</p>
-<pre><code>Render Total: 9.86ms (9.97ms max)
+<pre tabindex="0"><code>Render Total: 9.86ms (9.97ms max)
 Cluster Update: 0.08ms (0.08ms max)
 Sun Shadow Map Rendering: 1.30ms (1.34ms max)
 Spot Light Shadow Map Rendering: 1.04ms (1.05ms max)
@@ -295,7 +294,7 @@ MSAA Resolve: 0.21ms (0.21ms max)
 <hr />
 ####
 [Jeroen D Stout](http://gravatar.com/jeroenstout "jeroenstout@gmail.com") - <time datetime="2016-03-25 14:46:53">Mar 5, 2016</time>
-<p>Daniel, Hmm, to clarify, my thought was hypothetically you could store the &lsquo;nearest&rsquo; Mat-ID in the field (if it is a 3d texture) along with a U and a V (admittedly making it a much larger texture). That can get you a world position + UV + mat-ID and come closer to the data for &lsquo;deferred material rendering&rsquo;. It&rsquo;s perhaps not very practical.</p>
+<p>Daniel, Hmm, to clarify, my thought was hypothetically you could store the &rsquo;nearest&rsquo; Mat-ID in the field (if it is a 3d texture) along with a U and a V (admittedly making it a much larger texture). That can get you a world position + UV + mat-ID and come closer to the data for &lsquo;deferred material rendering&rsquo;. It&rsquo;s perhaps not very practical.</p>
 <hr />
 ####
 [Ingramb]( "ingramb@gmail.com") - <time datetime="2016-03-26 19:52:57">Mar 6, 2016</time>
@@ -367,14 +366,14 @@ MSAA Resolve: 0.21ms (0.21ms max)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

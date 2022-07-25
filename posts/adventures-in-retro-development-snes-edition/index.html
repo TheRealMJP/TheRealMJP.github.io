@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Adventures in Retro Development: SNES Edition">
-<meta itemprop="description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!">
-<meta itemprop="datePublished" content="2019-01-15T05:36:42&#43;00:00" />
-<meta itemprop="dateModified" content="2019-01-15T05:36:42&#43;00:00" />
+<meta itemprop="description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!"><meta itemprop="datePublished" content="2019-01-15T05:36:42+00:00" />
+<meta itemprop="dateModified" content="2019-01-15T05:36:42+00:00" />
 <meta itemprop="wordCount" content="4550">
-
-
-
 <meta itemprop="keywords" content="Uncategorized," /><meta property="og:title" content="Adventures in Retro Development: SNES Edition" />
 <meta property="og:description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/adventures-in-retro-development-snes-edition/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-01-15T05:36:42+00:00" />
 <meta property="article:modified_time" content="2019-01-15T05:36:42+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Adventures in Retro Development: SNES Edition"/>
 <meta name="twitter:description" content="When I was growing up, the SNES was easily my favorite console. How could it not be, with top-tier games like Super Metroid and Mega Man X available? I had always wanted to learn how to program for the SNES so that I could develop my own silly games for the hardware that ran my favorite games as a kid. I decided to use this past holiday break as an excuse to finally get started, and I had a great time doing it!"/>
@@ -62,6 +59,8 @@
 			<li><a href="https://therealmjp.github.io/publications/">Publications</a></li>
 		</ul>
 	</div>
+
+
 
 
 	<main class="site-main section-inner animated fadeIn faster">
@@ -112,7 +111,7 @@
 <p>In terms of programming 65816 assembly for the SNES, it&rsquo;s pretty straightforward. All of the normal 65816 opcodes work, so general assembly programming guides like the one I linked are almost totally applicable. Probably the most annoying part of working the 65816 is the fact that you can switch its accumulator (A) and index registers (X &amp; Y) between 8-bit and 16-bit modes by setting or clearing two bits in the status register. These not only affect the math operations that you can do on these registers, but they also affect the width of loads an stores performed with that memory. I tended to find myself having to switch to 8-bit mode fairly frequently in order to store a value to an 8-bit variable in memory, or an 8-bit I/O register. The fact that its a persistent state makes things extra confusing and error-prone, since you can&rsquo;t tell which kind of operation is being done just by looking at a piece of assembly code. It also makes it really easy to screw things up by accidentally leaving the processor in the incorrect state expected by a macro or subroutine, leading to subtle bugs. I&rsquo;ve found that some good documentation and conventions can go a long way in avoiding those issues. I feel like having explicit instructions for 8-bit and 16-bit operations would have been much easier from a programmer&rsquo;s point of view, but c&rsquo;est la vie.</p>
 <p>To get started with writing your program you just need to know where your WRAM is located in order to store and load from memory, and also where your ROM data is located in the address space. Working with ROM is awesome: you just read from it like normal memory, with nothing special required to access it. This might be a big shock coming from modern game development where you typically need to use OS API&rsquo;s to copy data from disk into RAM before you can actually use. Your code is also stored in ROM and usually you just execute it right from there, which lets you freely intermingle code and content.</p>
 <p>To see where things are placed in the address space, you can look at the <a href="http://problemkaputt.de/fullsnes.htm#snesmemorymap">memory map</a>. However the assembler you use can typically help you out here by letting you name different segments, and then specify which segment variables and data should be placed in when you declare them. One funky thing about the address space is that you&rsquo;ll see the &ldquo;system area&rdquo; (which contains the I/O registers and first 8KB of WRAM) mapped in there multiple times. This is called &ldquo;mirroring&rdquo;, and its done to let you access those things without having to constantly switch the data bank register (DBR) or use long addressing mode. The basic gist is that its faster and more flexible for the processor to access things using a 16-byte offset from the 8-bit DBR (forming a full 24-bit address), so ideally you want to work within a single 64 KB bank of memory for as long as you can. The mirroring helps with this, since you can flip through different 32 KB chunks of LoROM and still be able to access the stuff in the system area:</p>
-<pre><code>+------+-------------+-------------------------+
+<pre tabindex="0"><code>+------+-------------+-------------------------+
 | Bank |   Offset    | Contents                |
 +----------------------------------------------+
 | 0x00 |   0x0000    | System Area             |
@@ -266,14 +265,14 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

@@ -6,11 +6,7 @@
     <description>Recent content in the blog on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Aug 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/the-blog/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 12 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/the-blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello, Hugo</title>
       <link>https://therealmjp.github.io/posts/hello-hugo/</link>

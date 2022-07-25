@@ -6,11 +6,7 @@
     <description>Recent content in Programming on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Feb 2014 06:58:04 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 04 Feb 2014 06:58:04 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Weighted Blended Order-Independent Transparency</title>
       <link>https://therealmjp.github.io/posts/weighted-blended-oit/</link>
@@ -28,7 +24,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       
       <guid>https://therealmjp.github.io/posts/sample-framework-updates/</guid>
       <description>You may have noticed that my latest sample now has a proper UI instead of the homegrown sliders and keyboard toggles that I was using in my older samples. What you might not have noticed is that there&amp;rsquo;s a whole bunch of behind-the-scenes changes to go with that new UI! Before I ramble on, here&amp;rsquo;s a quick bullet-point list of the new features:
- Switched to VS2012 and adopted a few C++11 features New UI back-end provided by AntTweakBar C#-based data-definition format for auto-generating UI Shader hot-swapping Better shader caching, and compressed cache files  It occurred to me a little while ago that I could try to develop my framework into something that enables rapid prototyping, instead of just being some random bits of cobbled-together code.</description>
+Switched to VS2012 and adopted a few C++11 features New UI back-end provided by AntTweakBar C#-based data-definition format for auto-generating UI Shader hot-swapping Better shader caching, and compressed cache files It occurred to me a little while ago that I could try to develop my framework into something that enables rapid prototyping, instead of just being some random bits of cobbled-together code.</description>
     </item>
     
     <item>
@@ -47,7 +43,7 @@ Back in December, Morgan McGuire and Louis Bavoil published a paper called Weig
       
       <guid>https://therealmjp.github.io/posts/dx11-2-tiled-resources/</guid>
       <description>Tiled resources seems to be the big-ticket item for the upcoming DX11.2 update. While the online documentation has some information about the new functions added to the API, there&amp;rsquo;s currently no information about the two tiers of tiled resource functionality being offered. Fortunately there is a sample app available that provides some clues. After poking around a bit last night, these were the differences that I noticed:
-  TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
+TIER2 supports MIN and MAX texture sampling modes that return the min or max of 4 neighboring texels.</description>
     </item>
     
     <item>
@@ -356,7 +352,7 @@ First things first: what am I talking about? I&amp;rsquo;m talking about someth
       
       <guid>https://therealmjp.github.io/posts/profiling-events/</guid>
       <description>Over the past week or so I&amp;rsquo;ve been completely reworking my collision system in order to better decouple it from other areas of code, and also make it more flexible. One part I got stuck on for a bit was deciding on the mechanism to use for notifying owners of collision components when the component collides with something. I narrowed it down to two options:
- notify owners via the ICollisionOwner interface I was using  OR</description>
+notify owners via the ICollisionOwner interface I was using OR</description>
     </item>
     
     <item>
@@ -366,7 +362,7 @@ First things first: what am I talking about? I&amp;rsquo;m talking about someth
       
       <guid>https://therealmjp.github.io/posts/deferred-shadow-maps-sample/</guid>
       <description>Got a new sample ready, this one shows how you can defer shadow map calculations to a separate screen-space pass using a depth buffer. Check it out on Ziggyware!
- Comments:  sam - Feb 4, 2009
+Comments: sam - Feb 4, 2009
 This sample does not works for me. I see the blank screen. My Video card is GF 9800 GT.
 #### [Alejandro Martinez](http://www.gaspgames.com/www.battletennis.com &#34;amartinez1660@gmail.com&#34;) - Feb 2, 2010 1./2. Points taken! 3. That&amp;rsquo;s quite a boost for the shadow map render and sampling (HW PCF or Ati&amp;rsquo;s Fetch4).</description>
     </item>

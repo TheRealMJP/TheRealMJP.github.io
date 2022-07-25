@@ -6,22 +6,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Half The Precision, Twice The Fun: Working With FP16 In HLSL">
-<meta itemprop="description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.">
-<meta itemprop="datePublished" content="2019-10-01T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2019-10-01T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="2950">
-
-
-
+<meta itemprop="description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values."><meta itemprop="datePublished" content="2019-10-01T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2019-10-01T00:00:00+00:00" />
+<meta itemprop="wordCount" content="2953">
 <meta itemprop="keywords" content="Graphics,Shading,DirectX 12,Vulkan," /><meta property="og:title" content="Half The Precision, Twice The Fun: Working With FP16 In HLSL" />
-<meta property="og:description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values." />
+<meta property="og:description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/shader-fp16/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/shader-fp16/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-10-01T00:00:00+00:00" />
 <meta property="article:modified_time" content="2019-10-01T00:00:00+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Half The Precision, Twice The Fun: Working With FP16 In HLSL"/>
-<meta name="twitter:description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values."/>
+<meta name="twitter:description" content="Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -64,6 +61,8 @@
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -71,258 +70,212 @@
 				<h1>Half The Precision, Twice The Fun: Working With FP16 In HLSL</h1>
 			</header>
 			<div class="content">
-				<p>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the <code>half</code> scalar type, which corresponded to a <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">floating-point value using 16-bits of precision</a>. Using it was crucial for extracting the best performance from Nvidia's FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values. But then the D3D10 era came along with its unified shader cores, and suddenly fp16 math was no more. None of the desktop hardware supported it anymore, and so HLSL went ahead and mapped the <code>half</code> type to <code>float</code> and called it day. And that's the end of story when it comes to fp16 in shaders, The End.</p>
-
-<p>...or not. It turns out that fp16 is still useful for the reasons it was originally useful back in the days of D3D9: it's a good way to improve throughput on a limited transitor/power budget, and the smaller storage size means that you can store more values in general purpose registers without having your thread occupancy suffer due to register pressure. As of Nvidia's new Turing architecture (AKA the RTX 2000 series), AMD's Vega (AKA gfx900, AKA GCN 5) series<sup class="footnote-ref" id="fnref:1"><a class="footnote" href="#fn:1">1</a></sup> and Intel's Gen8 architecture (used in Broadwell) fp16 is now back in the desktop world. Which means that us desktop graphics programmers now have to deal with it again. And of course if you're a mobile developer, it never really left in the first place. But how do you actually use fp16 in your shader code? That's exactly what this blog will explain!</p>
-
-<p>Before we get into the exact details, you should know that there's actually two parallel paths to using fp16 math in your shaders. This article will cover both, so you can decide which works best for your situation.</p>
-
+				<p>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the <code>half</code> scalar type, which corresponded to a <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">floating-point value using 16-bits of precision</a>. Using it was crucial for extracting the best performance from Nvidia&rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values. But then the D3D10 era came along with its unified shader cores, and suddenly fp16 math was no more. None of the desktop hardware supported it anymore, and so HLSL went ahead and mapped the <code>half</code> type to <code>float</code> and called it day. And that&rsquo;s the end of story when it comes to fp16 in shaders, The End.</p>
+<p>&hellip;or not. It turns out that fp16 is still useful for the reasons it was originally useful back in the days of D3D9: it&rsquo;s a good way to improve throughput on a limited transitor/power budget, and the smaller storage size means that you can store more values in general purpose registers without having your thread occupancy suffer due to register pressure. As of Nvidia&rsquo;s new Turing architecture (AKA the RTX 2000 series), AMD&rsquo;s Vega (AKA gfx900, AKA GCN 5) series<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and Intel&rsquo;s Gen8 architecture (used in Broadwell) fp16 is now back in the desktop world. Which means that us desktop graphics programmers now have to deal with it again. And of course if you&rsquo;re a mobile developer, it never really left in the first place. But how do you actually use fp16 in your shader code? That&rsquo;s exactly what this blog will explain!</p>
+<p>Before we get into the exact details, you should know that there&rsquo;s actually two parallel paths to using fp16 math in your shaders. This article will cover both, so you can decide which works best for your situation.</p>
 <h2 id="flexible-precision-aka-minimum-precision-aka-relaxed-precision">Flexible Precision (AKA Minimum Precision, AKA Relaxed Precision)<a href="#flexible-precision-aka-minimum-precision-aka-relaxed-precision" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
-<p>This is the older of the two fp16 paths, and has actually been around in <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/using-hlsl-minimum-precision]">D3D11</a> since Windows 8. OpenGL ES has also had a variant of this available for a long time. On this path, what you're basically doing is giving hints to the driver that say &quot;it's okay if you do these operations at less than full 32-bit precision, but it's also okay if you do them at full precision&quot;. This basically gives you runtime polymorphic shaders: your final shader only exists as 1 blob of compiled bytecode, but depending on the hardware and driver you may or may not get fp16 ops at runtime. The nice part is that this spares you the pain of having to compile your shader twice, which is great! The downside is that you're not really sure what's going on with the hardware unless you check device caps, and/or check the actual ISA generated by the driver.</p>
-
-<p>When working with HLSL, the way you get this behavior is by using the <code>min16float</code> type and its variants (<code>min16float2</code>, <code>min16float3x3</code>, etc.) <sup class="footnote-ref" id="fnref:2"><a class="footnote" href="#fn:2">2</a></sup>. By declaring this type for a variable you're providing a hint specifying that it's okay for the driver to store it with less precision, as long as it's greater than or equal to 16 bits. In general it works exactly as you'd expect: you can downcast from fp32 to to fp16 by casting with <code>min16float()</code>, and you'll get warnings if an assignment causes an implicit truncation:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="n">fp32</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
-<span class="n">min16float</span> <span class="n">fp16_x</span> <span class="o">=</span> <span class="n">fp32</span><span class="p">;</span>               <span class="c1">// truncation warning
-</span><span class="c1"></span><span class="n">min16float</span> <span class="n">fp16_y</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">fp32</span><span class="p">)</span><span class="p">;</span>
-</code></pre></div>
-<p>HLSL allows you to overload functions based on the input type being <code>float</code> or <code>min16float</code>, which means you can create dual versions of your utility functions for fp16 or fp32 when necessary without having to rename them:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp32
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="n">min16float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">min16float</span> <span class="n">x</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp16
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div>
-<p>If you enable warnings as errors (which you probably should!) you can start out by converting a few high-level values to fp16 and then letting the compiler point out all of the places where you need to explicitly cast to <code>min16float</code>. Unfortunately it won't catch places where you go from fp16 to fp32, since that doesn't truncate. So you'll need to watch out for those on your own. You'll also need to make sure that you're not inadvertantly using the <code>half</code> datatype, since by default this is still mapped to fp32 in HLSL! I would recommend making some defines in a common header file that map <code>half</code> to <code>min16float</code>, since that lets you avoid that potential issue. It also makes your code cleaner to look at IMO, and makes it easy to globally disable fp16 should you need to:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#</span><span class="cp">define half min16float</span><span class="cp">
-</span><span class="cp"></span><span class="cp">#</span><span class="cp">define half2 min16float2</span><span class="cp">
-</span><span class="cp"></span><span class="cp">#</span><span class="cp">define half3 min16float3</span><span class="cp">
-</span><span class="cp"></span><span class="cp">#</span><span class="cp">define half4 min16float4</span><span class="cp">
-</span><span class="cp"></span><span class="cp">#</span><span class="cp">define half3x3 min16float3x3</span><span class="cp">
-</span><span class="cp"></span><span class="cp">#</span><span class="cp">define half3x4 min16float3x4</span><span class="cp">
-</span><span class="cp"></span><span class="c1">// keep going if you need more matrix types
-</span></code></pre></div>
-<p>You'll also need to be careful with literals, which are a little weird when working with the <code>min16float</code> types. In HLSL you have 3 floating point suffixes: <code>f</code>, <code>d</code>, and <code>h</code>. These map to the <code>float</code>, <code>double</code>, and <code>half</code> types respectively. Sadly there's no literal for <code>min16float</code>, and the <code>h</code> suffix maps back to fp32 (since <code>half</code> is mapped to <code>float</code> internally). So for literals you'll instead want to use an unadorned literal (leave off the suffix entirely), and let the compiler sort it out on assignment. The unfortunate side effect of doing this is that calls to overloaded functions can resolve to the fp32 version if you pass a literal:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp32
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="n">min16float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">min16float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">min16float</span> <span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp16
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="n">min16float</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
-<span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="p">;</span>     <span class="c1">// truncation warning!
-</span></code></pre></div>
-<p>Fortunately you can work around this by explicitly casting the literal to 16-bit type:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="n">min16float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="p">;</span>     <span class="c1">// no warning
-</span></code></pre></div>
-<p>There's one more big gotcha with flexible precision: you can't store them in buffer resources like constant buffers and structured buffers. It makes sense if you think about it: it's okay for temporary values stored in registers to be runtime polymorphic, but it would be really bad if the size and packing of your constant buffer changed depending on the video card and driver you were using! So you're stuck using 32-bit types for those cases. Ideally you would want to store fp16 values in your buffers, since that gives you more compact data and also lets you avoid any cost there might be from converting fp32 to fp16 in the shader core. But your only real option for doing that is to pack the fp16 values in a 32-bit type, and then convert back and forth in the shader:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">CBLayout</span>
-<span class="p">{</span>
-    <span class="n">uint</span> <span class="n">xy</span><span class="p">;</span>    <span class="c1">// two fp16 values packed in the upper and lower 16 bits
-</span><span class="c1"></span><span class="p">}</span><span class="p">;</span>
-
-<span class="n">ConstantBuffer</span><span class="o">&lt;</span><span class="n">CBLayout</span><span class="o">&gt;</span> <span class="n">CB</span><span class="p">;</span>
-
-<span class="n">min16float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">f16tof32</span><span class="p">(</span><span class="n">CB</span><span class="p">.</span><span class="n">x</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-<span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">f16tof32</span><span class="p">(</span><span class="n">CB</span><span class="p">.</span><span class="n">y</span> <span class="o">&gt;</span><span class="o">&gt;</span> <span class="mi">16</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-</code></pre></div>
-<p>Really you're asking the compiler to convert from fp16 -&gt; fp32 and then truncate back down to fp16, and hoping that the driver's JIT compiler is smart enough to remove all of that when it generates the final ISA. <a href="https://gpuopen.com/first-steps-implementing-fp16/">Tom Hammersley's post</a> on GPUOpen suggest that AMD's drivers are capable of recognizing this pattern, but I have no idea how reliable that is in practice across all vendors.</p>
-
-<p>If you're using the open source <a href="https://github.com/microsoft/DirectXShaderCompiler">DirectX Shader Compiler</a> (DXC) to compile your HLSL, then all of this works in both D3D12 and Vulkan. When compiling to DXIL, you'll see the compiler emit code that uses the <code>half</code> data type. It will also mark the shader as requiring the &quot;minimum-precision&quot; feature. When <a href="https://github.com/microsoft/DirectXShaderCompiler/wiki/SPIR%E2%80%90V-CodeGen">compiling to SPIR-V</a>, you'll see that ops involving min16float are decorated with <a href="https://www.khronos.org/registry/spir-v/specs/1.0/SPIRV.html#_a_id_relaxedprecisionsection_a_relaxed_precision">RelaxedPrecision</a>, which is the SPIR-V version of minimum precision. FXC also supports the minimum precision types for D3D11 and D3D12, if you're unfortunate enough to still be using that (which probably applies to most of us).</p>
-
-<p>If you want to check what the hardware supports at runtime, in D3D11 you can query the device's <a href="https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm#LowPrecisionShaders">minimum precision</a> support by calling <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11device-checkfeaturesupport">ID3D11Device::CheckFeatureSupport</a> and passing <code>D3D11_FEATURE_SHADER_MIN_PRECISION_SUPPORT</code> to get back a <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_feature_data_shader_min_precision_support">D3D11_FEATURE_DATA_SHADER_MIN_PRECISION_SUPPORT</a> struct with the caps. In D3D12 it's similar, except you want to ask for <code>D3D12_FEATURE_D3D12_OPTIONS</code> and look at the <code>MinPrecisionSupport</code> member of the returned <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_d3d12_options">D3D12_FEATURE_DATA_D3D12_OPTIONS </a> structure. Unfortunately these values aren't really a guarantee: the driver is free to choose what precision to use for any particular operation even if it reports fp16 support. So you really need to use an IHV disassembly tool if you want to be 100% sure of what your GPU is doing. As of right now this value reports 16-bit support for Vega or later on AMD for both D3D11 and D3D12. Intel also reports that it supports fp16 on my Gen9 integrated GPU. Meanwhile for my Turing-based RTX 2080 the driver reports full fp16 support through D3D11, but not through D3D12. Strange!</p>
-
-<p>Unfortunately for Vulkan there's no caps or extensions to indicate how the hardware will interpret <code>RelaxedPrecision</code> operations. This means that IHV tools or documentation are your only means of determining whether or not your operations will actually execute at fp16 precision.</p>
-
-<p>When targetting Vulkan you also have an additional path for targetting fp16 through <a href="https://github.com/KhronosGroup/SPIRV-Tools">spirv-opt</a>, which is the standard SPIR-V optimizer used by both glslc as well as DXC. Very recently a new <code>--relax-float-ops</code> pass was added to spirv-opt, which automatically tags everything with <code>RelaxedPrecision</code>. More details are provided in <a href="https://www.lunarg.com/wp-content/uploads/2019/09/Automatic-RelaxedPrecision-Decoration-and-Conversion-in-Spirv-Opt_r1.pdf">this whitepaper</a>. This pass can also be enabled when using DXC by using the <code>-Oconfig</code> command line argument to invoke additional spirv-opt passes. I'm not sure how actually useful this is in practice, since you're generally going to want to be doing certain things at fp32 when they actually require that amount of precision.</p>
-
+<p>This is the older of the two fp16 paths, and has actually been around in <a href="https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/using-hlsl-minimum-precision%5D">D3D11</a> since Windows 8. OpenGL ES has also had a variant of this available for a long time. On this path, what you&rsquo;re basically doing is giving hints to the driver that say &ldquo;it&rsquo;s okay if you do these operations at less than full 32-bit precision, but it&rsquo;s also okay if you do them at full precision&rdquo;. This basically gives you runtime polymorphic shaders: your final shader only exists as 1 blob of compiled bytecode, but depending on the hardware and driver you may or may not get fp16 ops at runtime. The nice part is that this spares you the pain of having to compile your shader twice, which is great! The downside is that you&rsquo;re not really sure what&rsquo;s going on with the hardware unless you check device caps, and/or check the actual ISA generated by the driver.</p>
+<p>When working with HLSL, the way you get this behavior is by using the <code>min16float</code> type and its variants (<code>min16float2</code>, <code>min16float3x3</code>, etc.) <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. By declaring this type for a variable you&rsquo;re providing a hint specifying that it&rsquo;s okay for the driver to store it with less precision, as long as it&rsquo;s greater than or equal to 16 bits. In general it works exactly as you&rsquo;d expect: you can downcast from fp32 to to fp16 by casting with <code>min16float()</code>, and you&rsquo;ll get warnings if an assignment causes an implicit truncation:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">float</span> <span class="n">fp32</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">fp16_x</span> <span class="o">=</span> <span class="n">fp32</span><span class="p">;</span>               <span class="c1">// truncation warning
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">min16float</span> <span class="n">fp16_y</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">fp32</span><span class="p">);</span>
+</span></span></code></pre></div><p>HLSL allows you to overload functions based on the input type being <code>float</code> or <code>min16float</code>, which means you can create dual versions of your utility functions for fp16 or fp32 when necessary without having to rename them:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp32
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">min16float</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>If you enable warnings as errors (which you probably should!) you can start out by converting a few high-level values to fp16 and then letting the compiler point out all of the places where you need to explicitly cast to <code>min16float</code>. Unfortunately it won&rsquo;t catch places where you go from fp16 to fp32, since that doesn&rsquo;t truncate. So you&rsquo;ll need to watch out for those on your own. You&rsquo;ll also need to make sure that you&rsquo;re not inadvertantly using the <code>half</code> datatype, since by default this is still mapped to fp32 in HLSL! I would recommend making some defines in a common header file that map <code>half</code> to <code>min16float</code>, since that lets you avoid that potential issue. It also makes your code cleaner to look at IMO, and makes it easy to globally disable fp16 should you need to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#define half min16float
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define half2 min16float2
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define half3 min16float3
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define half4 min16float4
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define half3x3 min16float3x3
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define half3x4 min16float3x4
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">// keep going if you need more matrix types
+</span></span></span></code></pre></div><p>You&rsquo;ll also need to be careful with literals, which are a little weird when working with the <code>min16float</code> types. In HLSL you have 3 floating point suffixes: <code>f</code>, <code>d</code>, and <code>h</code>. These map to the <code>float</code>, <code>double</code>, and <code>half</code> types respectively. Sadly there&rsquo;s no literal for <code>min16float</code>, and the <code>h</code> suffix maps back to fp32 (since <code>half</code> is mapped to <code>float</code> internally). So for literals you&rsquo;ll instead want to use an unadorned literal (leave off the suffix entirely), and let the compiler sort it out on assignment. The unfortunate side effect of doing this is that calls to overloaded functions can resolve to the fp32 version if you pass a literal:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp32
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">min16float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">min16float</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>     <span class="c1">// truncation warning!
+</span></span></span></code></pre></div><p>Fortunately you can work around this by explicitly casting the literal to 16-bit type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="n">min16float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">x</span><span class="p">);</span>     <span class="c1">// no warning
+</span></span></span></code></pre></div><p>There&rsquo;s one more big gotcha with flexible precision: you can&rsquo;t store them in buffer resources like constant buffers and structured buffers. It makes sense if you think about it: it&rsquo;s okay for temporary values stored in registers to be runtime polymorphic, but it would be really bad if the size and packing of your constant buffer changed depending on the video card and driver you were using! So you&rsquo;re stuck using 32-bit types for those cases. Ideally you would want to store fp16 values in your buffers, since that gives you more compact data and also lets you avoid any cost there might be from converting fp32 to fp16 in the shader core. But your only real option for doing that is to pack the fp16 values in a 32-bit type, and then convert back and forth in the shader:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">CBLayout</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uint</span> <span class="n">xy</span><span class="p">;</span>    <span class="c1">// two fp16 values packed in the upper and lower 16 bits
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ConstantBuffer</span><span class="o">&lt;</span><span class="n">CBLayout</span><span class="o">&gt;</span> <span class="n">CB</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">f16tof32</span><span class="p">(</span><span class="n">CB</span><span class="p">.</span><span class="n">x</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">min16float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">min16float</span><span class="p">(</span><span class="n">f16tof32</span><span class="p">(</span><span class="n">CB</span><span class="p">.</span><span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">));</span>
+</span></span></code></pre></div><p>Really you&rsquo;re asking the compiler to convert from fp16 -&gt; fp32 and then truncate back down to fp16, and hoping that the driver&rsquo;s JIT compiler is smart enough to remove all of that when it generates the final ISA. <a href="https://gpuopen.com/first-steps-implementing-fp16/">Tom Hammersley&rsquo;s post</a> on GPUOpen suggest that AMD&rsquo;s drivers are capable of recognizing this pattern, but I have no idea how reliable that is in practice across all vendors.</p>
+<p>If you&rsquo;re using the open source <a href="https://github.com/microsoft/DirectXShaderCompiler">DirectX Shader Compiler</a> (DXC) to compile your HLSL, then all of this works in both D3D12 and Vulkan. When compiling to DXIL, you&rsquo;ll see the compiler emit code that uses the <code>half</code> data type. It will also mark the shader as requiring the &ldquo;minimum-precision&rdquo; feature. When <a href="https://github.com/microsoft/DirectXShaderCompiler/wiki/SPIR%E2%80%90V-CodeGen">compiling to SPIR-V</a>, you&rsquo;ll see that ops involving min16float are decorated with <a href="https://www.khronos.org/registry/spir-v/specs/1.0/SPIRV.html#_a_id_relaxedprecisionsection_a_relaxed_precision">RelaxedPrecision</a>, which is the SPIR-V version of minimum precision. FXC also supports the minimum precision types for D3D11 and D3D12, if you&rsquo;re unfortunate enough to still be using that (which probably applies to most of us).</p>
+<p>If you want to check what the hardware supports at runtime, in D3D11 you can query the device&rsquo;s <a href="https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm#LowPrecisionShaders">minimum precision</a> support by calling <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11device-checkfeaturesupport">ID3D11Device::CheckFeatureSupport</a> and passing <code>D3D11_FEATURE_SHADER_MIN_PRECISION_SUPPORT</code> to get back a <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_feature_data_shader_min_precision_support">D3D11_FEATURE_DATA_SHADER_MIN_PRECISION_SUPPORT</a> struct with the caps. In D3D12 it&rsquo;s similar, except you want to ask for <code>D3D12_FEATURE_D3D12_OPTIONS</code> and look at the <code>MinPrecisionSupport</code> member of the returned <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_d3d12_options">D3D12_FEATURE_DATA_D3D12_OPTIONS </a> structure. Unfortunately these values aren&rsquo;t really a guarantee: the driver is free to choose what precision to use for any particular operation even if it reports fp16 support. So you really need to use an IHV disassembly tool if you want to be 100% sure of what your GPU is doing. As of right now this value reports 16-bit support for Vega or later on AMD for both D3D11 and D3D12. Intel also reports that it supports fp16 on my Gen9 integrated GPU. Meanwhile for my Turing-based RTX 2080 the driver reports full fp16 support through D3D11, but not through D3D12. Strange!</p>
+<p>Unfortunately for Vulkan there&rsquo;s no caps or extensions to indicate how the hardware will interpret <code>RelaxedPrecision</code> operations. This means that IHV tools or documentation are your only means of determining whether or not your operations will actually execute at fp16 precision.</p>
+<p>When targetting Vulkan you also have an additional path for targetting fp16 through <a href="https://github.com/KhronosGroup/SPIRV-Tools">spirv-opt</a>, which is the standard SPIR-V optimizer used by both glslc as well as DXC. Very recently a new <code>--relax-float-ops</code> pass was added to spirv-opt, which automatically tags everything with <code>RelaxedPrecision</code>. More details are provided in <a href="https://www.lunarg.com/wp-content/uploads/2019/09/Automatic-RelaxedPrecision-Decoration-and-Conversion-in-Spirv-Opt_r1.pdf">this whitepaper</a>. This pass can also be enabled when using DXC by using the <code>-Oconfig</code> command line argument to invoke additional spirv-opt passes. I&rsquo;m not sure how actually useful this is in practice, since you&rsquo;re generally going to want to be doing certain things at fp32 when they actually require that amount of precision.</p>
 <h2 id="explicit-fp16">Explicit FP16<a href="#explicit-fp16" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
-<p>Like the name suggests, with this path you'll be writing code that explicitly works with fp16 data types instead of polymorphic types. Being explicit has its advantages: you know for sure that it's going to be run at exactly 16-bit precision without having to query device caps. But the major downside is that your shader will now only work on devices that support the related features and extensions. This means you'll most likely need to compile shaders with and without fp16 types, at least until fp16-capable hardware is ubiquitious on desktop. The other major advantage of being explicit is that you can actually use fp16 data types in your resources, which means you can pack fp16/uint16 data in your constant buffers and structured buffers without needing a pile of ugly code to unpack and convert from 32-bit types. That's not only convenient, it also makes it easier for you and the driver to avoid unnecessary conversions when performing fp16 math.</p>
-
-<p>Explicit fp16 is only <a href="https://github.com/microsoft/DirectXShaderCompiler/wiki/16-Bit-Scalar-Types">supported in DXC</a> through Shader Model 6.2, which means there's no support for FXC or D3D11. To compile your shader for explict fp16 you'll want to pass <code>-enable-16bit-types</code> as an argument and make sure that you're using one of the <code>*_6_2</code> profiles (or higher). Once you flip this switch, the <code>half</code> type stops behaving as a <code>float</code> and instead acts as a true fp16 type. They've also added a new <code>float16_t</code> type that you can use as well, along with matching <code>float32_t</code> and <code>float64_t</code> types. Here's simplified version of the table from their wiki showing how each type behaves with and without the switch:</p>
-
+<p>Like the name suggests, with this path you&rsquo;ll be writing code that explicitly works with fp16 data types instead of polymorphic types. Being explicit has its advantages: you know for sure that it&rsquo;s going to be run at exactly 16-bit precision without having to query device caps. But the major downside is that your shader will now only work on devices that support the related features and extensions. This means you&rsquo;ll most likely need to compile shaders with and without fp16 types, at least until fp16-capable hardware is ubiquitious on desktop. The other major advantage of being explicit is that you can actually use fp16 data types in your resources, which means you can pack fp16/uint16 data in your constant buffers and structured buffers without needing a pile of ugly code to unpack and convert from 32-bit types. That&rsquo;s not only convenient, it also makes it easier for you and the driver to avoid unnecessary conversions when performing fp16 math.</p>
+<p>Explicit fp16 is only <a href="https://github.com/microsoft/DirectXShaderCompiler/wiki/16-Bit-Scalar-Types">supported in DXC</a> through Shader Model 6.2, which means there&rsquo;s no support for FXC or D3D11. To compile your shader for explict fp16 you&rsquo;ll want to pass <code>-enable-16bit-types</code> as an argument and make sure that you&rsquo;re using one of the <code>*_6_2</code> profiles (or higher). Once you flip this switch, the <code>half</code> type stops behaving as a <code>float</code> and instead acts as a true fp16 type. They&rsquo;ve also added a new <code>float16_t</code> type that you can use as well, along with matching <code>float32_t</code> and <code>float64_t</code> types. Here&rsquo;s simplified version of the table from their wiki showing how each type behaves with and without the switch:</p>
 <table>
 <thead>
 <tr>
-<th align="center">HLSL Type</th>
-<th align="center">Without -enable-16bit-types</th>
-<th align="center">-enable-16bit-types</th>
+<th style="text-align:center">HLSL Type</th>
+<th style="text-align:center">Without -enable-16bit-types</th>
+<th style="text-align:center">-enable-16bit-types</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-<td align="center">float</td>
-<td align="center">float32_t</td>
-<td align="center">float32_t</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">float32_t</td>
+<td style="text-align:center">float32_t</td>
 </tr>
-
 <tr>
-<td align="center">float32_t</td>
-<td align="center">float32_t</td>
-<td align="center">float32_t</td>
+<td style="text-align:center">float32_t</td>
+<td style="text-align:center">float32_t</td>
+<td style="text-align:center">float32_t</td>
 </tr>
-
 <tr>
-<td align="center">min10float</td>
-<td align="center">min16float(warning)</td>
-<td align="center">float16_t(warning)</td>
+<td style="text-align:center">min10float</td>
+<td style="text-align:center">min16float(warning)</td>
+<td style="text-align:center">float16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">min16float</td>
-<td align="center">min16float</td>
-<td align="center">float16_t(warning)</td>
+<td style="text-align:center">min16float</td>
+<td style="text-align:center">min16float</td>
+<td style="text-align:center">float16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">half</td>
-<td align="center">float32_t</td>
-<td align="center">float16_t</td>
+<td style="text-align:center">half</td>
+<td style="text-align:center">float32_t</td>
+<td style="text-align:center">float16_t</td>
 </tr>
-
 <tr>
-<td align="center">float16_t</td>
-<td align="center">N/A</td>
-<td align="center">float16_t</td>
+<td style="text-align:center">float16_t</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">float16_t</td>
 </tr>
-
 <tr>
-<td align="center">double</td>
-<td align="center">float64_t</td>
-<td align="center">float64_t</td>
+<td style="text-align:center">double</td>
+<td style="text-align:center">float64_t</td>
+<td style="text-align:center">float64_t</td>
 </tr>
-
 <tr>
-<td align="center">float64_t</td>
-<td align="center">float64_t</td>
-<td align="center">float64_t</td>
+<td style="text-align:center">float64_t</td>
+<td style="text-align:center">float64_t</td>
+<td style="text-align:center">float64_t</td>
 </tr>
-
 <tr>
-<td align="center">int</td>
-<td align="center">int32_t</td>
-<td align="center">int32_t</td>
+<td style="text-align:center">int</td>
+<td style="text-align:center">int32_t</td>
+<td style="text-align:center">int32_t</td>
 </tr>
-
 <tr>
-<td align="center">int32_t</td>
-<td align="center">int32_t</td>
-<td align="center">int32_t</td>
+<td style="text-align:center">int32_t</td>
+<td style="text-align:center">int32_t</td>
+<td style="text-align:center">int32_t</td>
 </tr>
-
 <tr>
-<td align="center">uint</td>
-<td align="center">uint32_t</td>
-<td align="center">uint32_t</td>
+<td style="text-align:center">uint</td>
+<td style="text-align:center">uint32_t</td>
+<td style="text-align:center">uint32_t</td>
 </tr>
-
 <tr>
-<td align="center">uint32_t</td>
-<td align="center">uint32_t</td>
-<td align="center">uint32_t</td>
+<td style="text-align:center">uint32_t</td>
+<td style="text-align:center">uint32_t</td>
+<td style="text-align:center">uint32_t</td>
 </tr>
-
 <tr>
-<td align="center">min12int</td>
-<td align="center">min16int(warning)</td>
-<td align="center">int16_t(warning)</td>
+<td style="text-align:center">min12int</td>
+<td style="text-align:center">min16int(warning)</td>
+<td style="text-align:center">int16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">min16int</td>
-<td align="center">min16int</td>
-<td align="center">int16_t(warning)</td>
+<td style="text-align:center">min16int</td>
+<td style="text-align:center">min16int</td>
+<td style="text-align:center">int16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">int16_t</td>
-<td align="center">N/A</td>
-<td align="center">int16_t</td>
+<td style="text-align:center">int16_t</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">int16_t</td>
 </tr>
-
 <tr>
-<td align="center">min12uint</td>
-<td align="center">min16uint(warning)</td>
-<td align="center">uint16_t(warning)</td>
+<td style="text-align:center">min12uint</td>
+<td style="text-align:center">min16uint(warning)</td>
+<td style="text-align:center">uint16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">min16uint</td>
-<td align="center">min16uint</td>
-<td align="center">uint16_t(warning)</td>
+<td style="text-align:center">min16uint</td>
+<td style="text-align:center">min16uint</td>
+<td style="text-align:center">uint16_t(warning)</td>
 </tr>
-
 <tr>
-<td align="center">uint16_t</td>
-<td align="center">N/A</td>
-<td align="center">uint16_t</td>
+<td style="text-align:center">uint16_t</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">uint16_t</td>
 </tr>
-
 <tr>
-<td align="center">int64_t</td>
-<td align="center">int64_t</td>
-<td align="center">int64_t</td>
+<td style="text-align:center">int64_t</td>
+<td style="text-align:center">int64_t</td>
+<td style="text-align:center">int64_t</td>
 </tr>
-
 <tr>
-<td align="center">uint64_t</td>
-<td align="center">uint64_t</td>
-<td align="center">uint64_t</td>
+<td style="text-align:center">uint64_t</td>
+<td style="text-align:center">uint64_t</td>
+<td style="text-align:center">uint64_t</td>
 </tr>
 </tbody>
 </table>
-
-<p>As you can see you also get 16-bit signed/unsigned integers with this flag, which is great for packing more data into your buffers. The compiler also convieniently maps the <code>min16float</code>/<code>min16int</code>/<code>min16uint</code> minimum precision types to their native 16-bit counterparts, which can simplify porting older code. Just be aware that the compiler will emit a warning in this case, which is meant to remind you that you're no longer getting the &quot;flexible precision&quot; behavior that those types normally provide.</p>
-
-<p>Like I mentioned earlier, in this mode <code>half</code> is back to representing true fp16 values instead of being sliently mapped to the <code>float</code> type under the hood. This also means that the <code>h</code> suffix for literals actually works the way you want it to, which lets you avoid the amiguities that unadorned literals cause with overload resolution. In my opinion this results in cleaner and easier to understand code with less surprising behavior. Here's the example that I showed earlier with functions overloaded by return and parameter types, except this time we'll use explicit fp16:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp32
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="n">half</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">half</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">half</span> <span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// do some stuff in fp16
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="n">half</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span><span class="n">h</span><span class="p">;</span>
-<span class="n">half</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="mf">1.0</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="p">;</span>  <span class="c1">// this is fine!
-</span></code></pre></div>
-<p>With explicit fp16 we know that we're giving up the convenience of polymorphic data types, which means our compiled shader will only run on hardware that actually supports fp16 operations. So how do we check this in our graphics APIs? In D3D12, we do this by calling <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12device-checkfeaturesupport">ID3D12::CheckFeatureSupport</a> and passing <code>D3D12_FEATURE_D3D12_OPTIONS4</code> to obtain a <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_d3d12_options4">D3D12_FEATURE_DATA_D3D12_OPTIONS4</a> structure, and checking the value of the <code>Native16BitShaderOpsSupported</code> member. Note that the DXIL produced by the compiler will look very similar to what you would get when using the minimum precision types. The major difference is that it will be marked with the <code>UseNativeBit16</code> flag in the metadata, which tells the runtime and driver that the fp16 ops need to be natively supported.</p>
-
-<p>On Vulkan things are unfortunately a bit more complicated, since you need to deal with extensions. First, you'll want to check if your GPU and driver support the <a href="https://github.com/KhronosGroup/Vulkan-Docs/blob/master/appendices/VK_KHR_shader_float16_int8.txt">VK_KHR_shader_float16_int8</a> extension. If it does, you'll have two extended device properties that you need to check: <code>shaderFloat16</code> for fp16 support, and <code>shaderInt8</code> for 8-bit integer support. If <code>shaderFloat16</code> is set, then you can use native fp16 math operations in your shaders. However this only applies to math operations, and not anything involving I/O with resources! For that you need to check the <a href="https://github.com/KhronosGroup/Vulkan-Docs/blob/1.0/doc/specs/vulkan/appendices/VK_KHR_16bit_storage.txt">VK_KHR_16bit_storage</a> extension, which includes 4 new properties that you need to check: <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, <code>storagePushConstant16</code>, and <code>storageInputOutput16</code>. These 4 flags correspond to the SPIR-V capabilities outlined in the <a href="http://htmlpreview.github.io/?https://github.com/KhronosGroup/SPIRV-Registry/blob/master/extensions/KHR/SPV_KHR_16bit_storage.html">SPV_KHR_16bit_storage</a> extension, and basically tell you what classes of resources can use fp16 types in them. Nvidia Turing-based hardware currently <a href="https://vulkan.gpuinfo.org/displayreport.php?id=6907#extended">reports support</a> for <code>shaderFloat16</code>, <code>shaderInt8</code>, <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, and <code>storagePushConstant16</code>, but not <code>storageInputOutput16</code>. Meanwhile AMD Vega and Navi-based hardware <a href="https://vulkan.gpuinfo.org/displayreport.php?id=6934#extended">reports support</a> for <code>shaderFloat16</code>, <code>shaderInt8</code>, <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, and <code>storageInputOutput16</code>, but not <code>storagePushConstant16</code>. So basically you'll want to avoid using <code>half</code> types as inputs or outputs from your shader entry points since <code>storageInputOutput16</code> isn't universally supported, and you'll also want to avoid using 16-bit push constants since <code>storagePushConstant16</code> isn't universally supported.</p>
-
-<p>That's a lot of details, but we're not quite done yet! It turns out that the original SPIR-V spec had a bunch of instructions included as &quot;extension instructions&quot;, which are documented <a href="https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html">here</a>. These are mostly transcendental functions like <code>Pow</code> and <code>Sin</code>, as well as the <code>FClamp</code> instruction that's commonly used for implementing the <code>saturate()</code> intrinsic. The original spec for these defined them as only taking 32-bit floating point inputs, which meant it was illegal to use them with fp16 values. The <a href="https://github.com/KhronosGroup/SPIRV-Registry/blob/master/extensions/AMD/SPV_AMD_gpu_shader_half_float.asciidoc">SPV_AMD_gpu_shader_half_float</a> extension from AMD lifted this restriction, allowing AMD hardware to support these instructions with fp16 values. Fortunately the SPIR-V spec was revised to add full fp16 support sometime after that AMD extension was released, which means the extension is no longer necessary. Or rather I should say it's <em>almost</em> unnecessary, since the interpolation instructions still only support fp32 (the AMD extension registry has been updated to reflect this). <sup class="footnote-ref" id="fnref:3"><a class="footnote" href="#fn:3">3</a></sup></p>
-
+<p>As you can see you also get 16-bit signed/unsigned integers with this flag, which is great for packing more data into your buffers. The compiler also convieniently maps the <code>min16float</code>/<code>min16int</code>/<code>min16uint</code> minimum precision types to their native 16-bit counterparts, which can simplify porting older code. Just be aware that the compiler will emit a warning in this case, which is meant to remind you that you&rsquo;re no longer getting the &ldquo;flexible precision&rdquo; behavior that those types normally provide.</p>
+<p>Like I mentioned earlier, in this mode <code>half</code> is back to representing true fp16 values instead of being sliently mapped to the <code>float</code> type under the hood. This also means that the <code>h</code> suffix for literals actually works the way you want it to, which lets you avoid the amiguities that unadorned literals cause with overload resolution. In my opinion this results in cleaner and easier to understand code with less surprising behavior. Here&rsquo;s the example that I showed earlier with functions overloaded by return and parameter types, except this time we&rsquo;ll use explicit fp16:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">float</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="kt">float</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp32
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">half</span> <span class="nf">DoSomething</span><span class="p">(</span><span class="n">in</span> <span class="n">half</span> <span class="n">x</span><span class="p">,</span> <span class="n">in</span> <span class="n">half</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do some stuff in fp16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">half</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span><span class="n">h</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">half</span> <span class="n">y</span> <span class="o">=</span> <span class="n">DoSomething</span><span class="p">(</span><span class="mf">1.0</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>  <span class="c1">// this is fine!
+</span></span></span></code></pre></div><p>With explicit fp16 we know that we&rsquo;re giving up the convenience of polymorphic data types, which means our compiled shader will only run on hardware that actually supports fp16 operations. So how do we check this in our graphics APIs? In D3D12, we do this by calling <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12device-checkfeaturesupport">ID3D12::CheckFeatureSupport</a> and passing <code>D3D12_FEATURE_D3D12_OPTIONS4</code> to obtain a <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_d3d12_options4">D3D12_FEATURE_DATA_D3D12_OPTIONS4</a> structure, and checking the value of the <code>Native16BitShaderOpsSupported</code> member. Note that the DXIL produced by the compiler will look very similar to what you would get when using the minimum precision types. The major difference is that it will be marked with the <code>UseNativeBit16</code> flag in the metadata, which tells the runtime and driver that the fp16 ops need to be natively supported.</p>
+<p>On Vulkan things are unfortunately a bit more complicated, since you need to deal with extensions. First, you&rsquo;ll want to check if your GPU and driver support the <a href="https://github.com/KhronosGroup/Vulkan-Docs/blob/master/appendices/VK_KHR_shader_float16_int8.txt">VK_KHR_shader_float16_int8</a> extension. If it does, you&rsquo;ll have two extended device properties that you need to check: <code>shaderFloat16</code> for fp16 support, and <code>shaderInt8</code> for 8-bit integer support. If <code>shaderFloat16</code> is set, then you can use native fp16 math operations in your shaders. However this only applies to math operations, and not anything involving I/O with resources! For that you need to check the <a href="https://github.com/KhronosGroup/Vulkan-Docs/blob/1.0/doc/specs/vulkan/appendices/VK_KHR_16bit_storage.txt">VK_KHR_16bit_storage</a> extension, which includes 4 new properties that you need to check: <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, <code>storagePushConstant16</code>, and <code>storageInputOutput16</code>. These 4 flags correspond to the SPIR-V capabilities outlined in the <a href="http://htmlpreview.github.io/?https://github.com/KhronosGroup/SPIRV-Registry/blob/master/extensions/KHR/SPV_KHR_16bit_storage.html">SPV_KHR_16bit_storage</a> extension, and basically tell you what classes of resources can use fp16 types in them. Nvidia Turing-based hardware currently <a href="https://vulkan.gpuinfo.org/displayreport.php?id=6907#extended">reports support</a> for <code>shaderFloat16</code>, <code>shaderInt8</code>, <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, and <code>storagePushConstant16</code>, but not <code>storageInputOutput16</code>. Meanwhile AMD Vega and Navi-based hardware <a href="https://vulkan.gpuinfo.org/displayreport.php?id=6934#extended">reports support</a> for <code>shaderFloat16</code>, <code>shaderInt8</code>, <code>storageBuffer16BitAccess</code>, <code>uniformAndStorageBuffer16BitAccess</code>, and <code>storageInputOutput16</code>, but not <code>storagePushConstant16</code>. So basically you&rsquo;ll want to avoid using <code>half</code> types as inputs or outputs from your shader entry points since <code>storageInputOutput16</code> isn&rsquo;t universally supported, and you&rsquo;ll also want to avoid using 16-bit push constants since <code>storagePushConstant16</code> isn&rsquo;t universally supported.</p>
+<p>That&rsquo;s a lot of details, but we&rsquo;re not quite done yet! It turns out that the original SPIR-V spec had a bunch of instructions included as &ldquo;extension instructions&rdquo;, which are documented <a href="https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html">here</a>. These are mostly transcendental functions like <code>Pow</code> and <code>Sin</code>, as well as the <code>FClamp</code> instruction that&rsquo;s commonly used for implementing the <code>saturate()</code> intrinsic. The original spec for these defined them as only taking 32-bit floating point inputs, which meant it was illegal to use them with fp16 values. The <a href="https://github.com/KhronosGroup/SPIRV-Registry/blob/master/extensions/AMD/SPV_AMD_gpu_shader_half_float.asciidoc">SPV_AMD_gpu_shader_half_float</a> extension from AMD lifted this restriction, allowing AMD hardware to support these instructions with fp16 values. Fortunately the SPIR-V spec was revised to add full fp16 support sometime after that AMD extension was released, which means the extension is no longer necessary. Or rather I should say it&rsquo;s <em>almost</em> unnecessary, since the interpolation instructions still only support fp32 (the AMD extension registry has been updated to reflect this). <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
 <p>When <a href="https://github.com/Microsoft/DirectXShaderCompiler/blob/master/docs/SPIR-V.rst#minimal-precision-scalar-types">using DXC to compile HLSL to SPIR-V</a> with <code>-enable-16bit-types</code> you should see ops generated that use types declared like this:</p>
-<pre><code>%half = OpTypeFloat 16
-%v3half = OpTypeVector %half 3</code></pre>
-<p>...as opposed to seeing ops with the <code>RelaxedPrecision</code> tag. You'll also see ops indicating which extension features are required, such as <code>OpCapability Float16</code> for general fp16 math support and <code>OpCapability UniformAndStorageBuffer16BitAccess</code> for using 16-bit types in uniform or storage buffers.</p>
-
+<pre tabindex="0"><code>%half = OpTypeFloat 16
+%v3half = OpTypeVector %half 3
+</code></pre><p>&hellip;as opposed to seeing ops with the <code>RelaxedPrecision</code> tag. You&rsquo;ll also see ops indicating which extension features are required, such as <code>OpCapability Float16</code> for general fp16 math support and <code>OpCapability UniformAndStorageBuffer16BitAccess</code> for using 16-bit types in uniform or storage buffers.</p>
 <h2 id="conclusion">Conclusion<a href="#conclusion" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-
-<p>Hopefully this gives you enough information to decide on how to move forward with fp16 in your HLSL codebase. As of right now using the flexible precision path seems to be the only reasonable choice for targetting PC hardware, since fp16 math is only supported on very recent video cards. However it seems clear to me that explicit fp16 is going to be future, since it's much nicer to work with once you can use it. The only question is how long it will take until we can safely ignore all hardware that can't do it. I'm not the kind of person to predict the future, so I'll leave that part up to someone else. 😄</p>
-<div class="footnotes">
-
+<p>Hopefully this gives you enough information to decide on how to move forward with fp16 in your HLSL codebase. As of right now using the flexible precision path seems to be the only reasonable choice for targetting PC hardware, since fp16 math is only supported on very recent video cards. However it seems clear to me that explicit fp16 is going to be future, since it&rsquo;s much nicer to work with once you can use it. The only question is how long it will take until we can safely ignore all hardware that can&rsquo;t do it. I&rsquo;m not the kind of person to predict the future, so I&rsquo;ll leave that part up to someone else. 😄</p>
+<div class="footnotes" role="doc-endnotes">
 <hr>
-
 <ol>
-<li id="fn:1">AMD's Polaris series (gfx803) supports fp16 at full rate (non-packed, unlike Vega) but it doesn't seem to be exposed in any API. Update 10/7/2019: Allan MacKinnon has helpfully pointed me to <a href="https://github.com/GPUOpen-Drivers/AMDVLK/issues/94">this GitHub issue</a> where AMD engineers explained why they never enabled fp16 support for pre-gfx900 hardware.
- <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
-<li id="fn:2">There's actually a few other types such as <code>min10float</code> and <code>min16uint</code> to along with the 16-bit float types, but this article is just going to focus on fp16.
- <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
-<li id="fn:3">The current version of DXC is erroneously marking the SPIR-V as requiring the SPV_AMD_gpu_shader_half_float extension when any of the extended instructions are emitted for fp16. I've filed an <a href="https://github.com/microsoft/DirectXShaderCompiler/issues/2500">issue</a>, and I assume it will fixed very soon.
- <a class="footnote-return" href="#fnref:3"><sup>[return]</sup></a></li>
+<li id="fn:1">
+<p>AMD&rsquo;s Polaris series (gfx803) supports fp16 at full rate (non-packed, unlike Vega) but it doesn&rsquo;t seem to be exposed in any API. Update 10/7/2019: Allan MacKinnon has helpfully pointed me to <a href="https://github.com/GPUOpen-Drivers/AMDVLK/issues/94">this GitHub issue</a> where AMD engineers explained why they never enabled fp16 support for pre-gfx900 hardware.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>There&rsquo;s actually a few other types such as <code>min10float</code> and <code>min16uint</code> to along with the 16-bit float types, but this article is just going to focus on fp16.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>The current version of DXC is erroneously marking the SPIR-V as requiring the SPV_AMD_gpu_shader_half_float extension when any of the extended instructions are emitted for fp16. I&rsquo;ve filed an <a href="https://github.com/microsoft/DirectXShaderCompiler/issues/2500">issue</a>, and I assume it will fixed very soon.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
 </ol>
 </div>
 
@@ -332,7 +285,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/shading">Shading</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/directx-12">DirectX 12</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/vulkan">Vulkan</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2950 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2953 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-09-30 17:00 -0700</p>
 			</footer>
 		</article>
@@ -355,14 +308,14 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>

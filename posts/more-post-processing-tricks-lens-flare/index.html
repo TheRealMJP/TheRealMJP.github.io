@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="More Post-Processing Tricks: Lens Flare">
-<meta itemprop="description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically.">
-<meta itemprop="datePublished" content="2009-12-15T08:53:17&#43;00:00" />
-<meta itemprop="dateModified" content="2009-12-15T08:53:17&#43;00:00" />
+<meta itemprop="description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically."><meta itemprop="datePublished" content="2009-12-15T08:53:17+00:00" />
+<meta itemprop="dateModified" content="2009-12-15T08:53:17+00:00" />
 <meta itemprop="wordCount" content="751">
-
-
-
 <meta itemprop="keywords" content="Programming," /><meta property="og:title" content="More Post-Processing Tricks: Lens Flare" />
 <meta property="og:description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/more-post-processing-tricks-lens-flare/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/more-post-processing-tricks-lens-flare/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2009-12-15T08:53:17+00:00" />
 <meta property="article:modified_time" content="2009-12-15T08:53:17+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="More Post-Processing Tricks: Lens Flare"/>
 <meta name="twitter:description" content="I was playing Killzone 2 the other day, which reminded me of the lens flare trick they used. Unlike most games, which use some sprites controlled by an occlusion query, they applied the effect as a post-process similar to bloom. The upside is that it works for all bright areas and not pre-defined areas (the sun), and you don&rsquo;t have to do occlusion queries or anything like that since that&rsquo;s handled automatically."/>
@@ -64,6 +61,8 @@
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -78,7 +77,7 @@
 3.  Blur both towards the center of the screen and away from it
 4.  Combine additively with the bloom buffer</p>
 <p>To fake a chromatic aberration, Killzone 2 uses a strong orange tint for areas closer to the center of the screen and a purple tint on the periphery.  Upon some further close analysis it started to look like they were doing it in two passes with a different tint and different texture coordinate scaling for each pass.  I decided to make my implementation the same,  so I could produce similar results.  This is the shader code I came up with:</p>
-<pre><code>const static float4 vPurple = float4(0.7f, 0.2f, 0.9f, 1.0f);
+<pre tabindex="0"><code>const static float4 vPurple = float4(0.7f, 0.2f, 0.9f, 1.0f);
 const static float4 vOrange = float4(0.7f, 0.4f, 0.2f, 1.0f);
 const static float fThreshold = 0.1f;
 
@@ -95,7 +94,7 @@ uniform float fBlurScale)    : COLOR0
     float2 vNormalizedCoord = vMirrorCoord * 2.0f - 1.0f;
     vNormalizedCoord *= fTexScale;
 
-    // We'll blur towards the center of screen, and also away from it.
+    // We&#39;ll blur towards the center of screen, and also away from it.
     float2 vTowardCenter = normalize(-vNormalizedCoord);
     float2 fBlurDist = fBlurScale * NumSamples;
     float2 vStartPoint = vNormalizedCoord + ((vTowardCenter / g_vSourceDimensions) * fBlurDist);
@@ -108,7 +107,7 @@ uniform float fBlurScale)    : COLOR0
     {
         float2 vSampleTexCoord = vSamplePos * 0.5f + 0.5f;
 
-        // Don't add in samples past texture border
+        // Don&#39;t add in samples past texture border
         if (vSampleTexCoord.x &gt;= 0 &amp;&amp; vSampleTexCoord.x &lt;= 1.0f
             &amp;&amp; vSampleTexCoord.y &gt;=0 &amp;&amp; vSampleTexCoord.y &lt;= 1.0f)
         {
@@ -161,9 +160,7 @@ technique LensFlareSecondPass
 }
 </code></pre><p>Obviously the code is severely unoptimized, but it&rsquo;s late and I&rsquo;m tired.  Here&rsquo;s a screen of what it looks like (ignore the obnoxious brightness and bloom, please):</p>
 <p><a href="/images/converted/more-post-processing-tricks-lens-flare/screen.png"><img src="/images/converted/more-post-processing-tricks-lens-flare/screen_resized_300.png" alt="" title="Screen"></a></p>
-<pre><code>
-
-</code></pre><hr>
+<pre tabindex="0"><code></code></pre><hr>
 <h3 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p><a href="http://moorx.wordpress.com" title="mail.clang@gmail.com">moorx</a> - <time datetime="2009-12-15 04:46:31">Dec 2, 2009</time></p>
@@ -211,14 +208,14 @@ technique LensFlareSecondPass
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

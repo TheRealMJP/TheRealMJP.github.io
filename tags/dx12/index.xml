@@ -6,10 +6,15 @@
     <description>Recent content in DX12 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Dec 2018 02:01:27 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/dx12/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Mon, 25 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/dx12/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GPU Memory Pools in D3D12</title>
+      <link>https://therealmjp.github.io/posts/gpu-memory-pool/</link>
+      <pubDate>Mon, 25 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/gpu-memory-pool/</guid>
+      <description>Basics of GPU Memory Integrated/UMA GPUs Dedicated/NUMA GPUs How It Works In D3D12 Common Patterns in D3D12 Textures And The Two-Step Upload Working With The COPY Queue Allocating Staging Memory What About Buffers? What About DirectStorage? Results From My Testing App CPU Write Performance CPU Read Performance GPU Read Performance, Normal Access GPU Read Performance, Non-Coalesced Access GPU Read Performance, Various Buffer Sizes Conclusion When the monkey&amp;rsquo;s paw granted our wish for lower-level/explicit graphics APIs, one of the consequences was that we were much more directly exposed to the fact that GPUs can have their own separate set of physical memory.</description>
+    </item>
     
     <item>
       <title>Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption</title>
@@ -53,7 +58,10 @@ Welcome to part 5 of the series! If you&amp;rsquo;ve read all of the articles so
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome back! For the past two articles we&amp;rsquo;ve been taking a in-depth look at how a fictional GPU converts command buffers into lots of shader threads, and also how synchronization of those threads affects the overall performance of the GPU.</description>
     </item>
     
     <item>
@@ -66,7 +74,10 @@ Part 4 - GPU Preemption</description>
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to Part 3 of the series! In this article, I&amp;rsquo;m going to talk a bit about how multiple command processors can be used to increase the overall performance of a GPU by reducing the amount of time that shader cores sit idle.</description>
     </item>
     
     <item>
@@ -79,7 +90,10 @@ Part 4 - GPU Preemption</description>
 Part 1 - What&amp;rsquo;s a Barrier?
 Part 2 - Synchronizing GPU Threads
 Part 3 - Multiple Command Processors
-Part 4 - GPU Preemption</description>
+Part 4 - GPU Preemption
+Part 5 - Back To The Real World
+Part 6 - Experimenting With Overlap and Preemption
+Welcome to part 2 of the series! In the previous article, I explained the basics of what a barrier is, and talked about the various reasons for why you need to use a barrier on a GPU.</description>
     </item>
     
     <item>

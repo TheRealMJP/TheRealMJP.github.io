@@ -6,26 +6,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Approximating Subsurface Scattering With Spherical Gaussians">
-<meta itemprop="description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &quot;wrapped&quot; or &quot;blurred&quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.">
-<meta itemprop="datePublished" content="2020-02-09T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2020-02-09T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="2376">
-<meta itemprop="image" content="https://therealmjp.github.io/images/sss/sss_sg_featured_image.png">
-
-
-
+<meta itemprop="description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &ldquo;wrapped&rdquo; or &ldquo;blurred&rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing."><meta itemprop="datePublished" content="2020-02-09T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-02-09T00:00:00+00:00" />
+<meta itemprop="wordCount" content="2376"><meta itemprop="image" content="https://therealmjp.github.io/images/sss/sss_sg_featured_image.png">
 <meta itemprop="keywords" content="Graphics,Shading," /><meta property="og:title" content="Approximating Subsurface Scattering With Spherical Gaussians" />
-<meta property="og:description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &quot;wrapped&quot; or &quot;blurred&quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing." />
+<meta property="og:description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &ldquo;wrapped&rdquo; or &ldquo;blurred&rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/sss-sg/" />
-<meta property="og:image" content="https://therealmjp.github.io/images/sss/sss_sg_featured_image.png" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sss-sg/" /><meta property="og:image" content="https://therealmjp.github.io/images/sss/sss_sg_featured_image.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-02-09T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-02-09T00:00:00+00:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://therealmjp.github.io/images/sss/sss_sg_featured_image.png"/>
 
 <meta name="twitter:title" content="Approximating Subsurface Scattering With Spherical Gaussians"/>
-<meta name="twitter:description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &quot;wrapped&quot; or &quot;blurred&quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing."/>
+<meta name="twitter:description" content="In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &ldquo;wrapped&rdquo; or &ldquo;blurred&rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -68,6 +63,8 @@
 	</div>
 
 
+
+
 	<div class="bg-img"></div>
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
@@ -76,20 +73,13 @@
 				<h1>Approximating Subsurface Scattering With Spherical Gaussians</h1>
 			</header>
 			<div class="content">
-				<p>In my <a href="../sss-intro/">previous post</a>, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &quot;wrapped&quot; or &quot;blurred&quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you're working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing. If you have bandwidth to spare and/or your shader is mostly bottlenecked by ALU throughput, then a lookup texture could be relatively cheap. In other scenarios it could singificantly increase the average execution time of the shader program. Either way it tends to make your life as a programmer a bit more difficult, especially when it comes to providing a suitable workflow for content creators that use your engine. In particular things get complicated if you want to allow these creators to use customizable (or arbitrary) diffusion profiles, and even more complicated if they want to be able to vary the profile spatially (imagine trying to nail the look of intricate makeup without being able to vary the scattering parameters).</p>
-
-<p>If you're skilled in the dark arts of approximating complex integrals with simpler functions, you could probably see yourself doing that for the lookup texture generated by a single diffusion kernel (and like I <a href="http://c0de517e.blogspot.com/2011/09/mathematica-and-skin-rendering.html">mentioned last time</a> Angelo Pesce already took a stab at this for the kernel used in the original implementation of preintegrated SSS). However you would probably be less enthusiastic about doing this for a whole set of lookup textures. Instead, wouldn't it would be much nicer if we could work with a more analytical approach that could approximate a wide range of scattering profiles without any precomputation? The rest of this post will talk about one possible way of achieving this using spherical gaussians.</p>
-
+				<p>In my <a href="../sss-intro/">previous post</a>, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &ldquo;wrapped&rdquo; or &ldquo;blurred&rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing. If you have bandwidth to spare and/or your shader is mostly bottlenecked by ALU throughput, then a lookup texture could be relatively cheap. In other scenarios it could singificantly increase the average execution time of the shader program. Either way it tends to make your life as a programmer a bit more difficult, especially when it comes to providing a suitable workflow for content creators that use your engine. In particular things get complicated if you want to allow these creators to use customizable (or arbitrary) diffusion profiles, and even more complicated if they want to be able to vary the profile spatially (imagine trying to nail the look of intricate makeup without being able to vary the scattering parameters).</p>
+<p>If you&rsquo;re skilled in the dark arts of approximating complex integrals with simpler functions, you could probably see yourself doing that for the lookup texture generated by a single diffusion kernel (and like I <a href="http://c0de517e.blogspot.com/2011/09/mathematica-and-skin-rendering.html">mentioned last time</a> Angelo Pesce already took a stab at this for the kernel used in the original implementation of preintegrated SSS). However you would probably be less enthusiastic about doing this for a whole set of lookup textures. Instead, wouldn&rsquo;t it would be much nicer if we could work with a more analytical approach that could approximate a wide range of scattering profiles without any precomputation? The rest of this post will talk about one possible way of achieving this using spherical gaussians.</p>
 <h1 id="blurring-a-light-with-an-sg">Blurring A Light With an SG<a href="#blurring-a-light-with-an-sg" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-
-<p>Unfortunately I haven't come up with any magical solutions for how to analytically compute the result of irradiance being convolved with a diffusion profile, even with the constraints used in the original preintegrated subsurface scattering technique (point lights, and making the assumption that the point being shaded is on the surface of a sphere). However, it turns out that we can achieve this somewhat indirectly by instead blurring the <em>incident radiance</em> and computing the resulting irradiance from that. It's not the same thing conceptually, but it does produce similar results to what we're after. The most obvious choice to do this kind of operation is probably spherical harmonics (SH): with SH we store spherical signals in the frequency domain, which makes it trivial to perform convolutions on the data (this is in fact how irradiance is <a href="https://cseweb.ucsd.edu/~ravir/papers/envmap/envmap.pdf">traditionally computed</a> from a set of SH coefficients representing incoming radiance). However this frequency domain representation means that we are unable to represent high-frequency components without storing and working with very large numbers of coefficients. In other words an SH approach might work well for something like an environment probe used for ambient lighting, but it can be pretty inaccurate when used for a punctual light source. To show you what I mean, here's a comparison showing what the irradiance from a simple directional light looks like when computed analytically versus being projected onto L1 SH with 4 coefficients, and L2 SH with 9 coeffecients:</p>
-
-<p><figure><img src="/images/sss/sh_dirlight_comparison.png" alt="comparison of computing irradiance from a directional light with L1 SH and L2 SH projections"></figure></p>
-
-<p>You can see quite clearly that we're already getting a filtered, lower-frequency version of the lighting response just by going through low-order SH. This means that the SH approach can be suitable for relatively large/wide diffusion kernels, but it's not a great fit in terms of being able to seamlessly scale from small scattering amounts to larger mean scattering distances.</p>
-
-<p>As an alternative to SH, we can instead consider using our old friend <a href="../sg-series-part-2-spherical-gaussians-101/">the Spherical Gaussian</a> (SG). SG's have five properties that are of interest to us when it comes to trying to approximate the response from a filtered light source:</p>
-
+<p>Unfortunately I haven&rsquo;t come up with any magical solutions for how to analytically compute the result of irradiance being convolved with a diffusion profile, even with the constraints used in the original preintegrated subsurface scattering technique (point lights, and making the assumption that the point being shaded is on the surface of a sphere). However, it turns out that we can achieve this somewhat indirectly by instead blurring the <em>incident radiance</em> and computing the resulting irradiance from that. It&rsquo;s not the same thing conceptually, but it does produce similar results to what we&rsquo;re after. The most obvious choice to do this kind of operation is probably spherical harmonics (SH): with SH we store spherical signals in the frequency domain, which makes it trivial to perform convolutions on the data (this is in fact how irradiance is <a href="https://cseweb.ucsd.edu/~ravir/papers/envmap/envmap.pdf">traditionally computed</a> from a set of SH coefficients representing incoming radiance). However this frequency domain representation means that we are unable to represent high-frequency components without storing and working with very large numbers of coefficients. In other words an SH approach might work well for something like an environment probe used for ambient lighting, but it can be pretty inaccurate when used for a punctual light source. To show you what I mean, here&rsquo;s a comparison showing what the irradiance from a simple directional light looks like when computed analytically versus being projected onto L1 SH with 4 coefficients, and L2 SH with 9 coeffecients:</p>
+<p><img src="/images/sss/sh_dirlight_comparison.png" alt="comparison of computing irradiance from a directional light with L1 SH and L2 SH projections"></p>
+<p>You can see quite clearly that we&rsquo;re already getting a filtered, lower-frequency version of the lighting response just by going through low-order SH. This means that the SH approach can be suitable for relatively large/wide diffusion kernels, but it&rsquo;s not a great fit in terms of being able to seamlessly scale from small scattering amounts to larger mean scattering distances.</p>
+<p>As an alternative to SH, we can instead consider using our old friend <a href="../sg-series-part-2-spherical-gaussians-101/">the Spherical Gaussian</a> (SG). SG&rsquo;s have five properties that are of interest to us when it comes to trying to approximate the response from a filtered light source:</p>
 <ol>
 <li>They can be oriented in any direction, which means they can be lined up perfectly with a punctual light source</li>
 <li>They have an aribitrary sharpness parameter ( \( \lambda \) ) that lets them represent a range of filtering parameters, including very narrow kernels</li>
@@ -97,86 +87,55 @@
 <li>An SG convolved with a delta gives you another SG. This means we can use an SG to represent a filtering kernel, apply it to a punctional light source, and get another SG</li>
 <li>We have a good approximation for <a href="../sg-series-part-3-diffuse-lighting-from-an-sg-light-source/">computing the resulting irradiance from an SG light source</a></li>
 </ol>
-
-<p>With this in mind, the approach looks fairly straightforward: first, we come up with an SG that represents the filtering kernel we will use to approximate our scattering profile. Wider kernels will have a lower sharpness parameter, while more narrow kernels will have a higher sharpness. We can then normalize the SG to ensure that it integrates to 1 over the entire sphere, which is critical for ensuring energy conservation in the filtering process. Once we have a normalized SG representing the filtering kernel, we combine it with our light source by setting the axis ( \( \mu \) ) parameter of the SG equal to the direction to the light source, and multiplying the SG's amplitude ( \( a \) ) by the attenuated intensity of the light source. This effectively gives us an SG light source, for which we can compute the diffuse response in the usual way by using Stephen Hill's fitted irradiance approximation and multiplying the resulting irradiance by \( \frac{albedo}{\pi} \). For scattering profiles that vary by wavelength (which is typically the case) we extend this process by coming up with a separate SG for the red, green, and blue channels and evaluating each separately. When doing this the light intensity can actually be factored out if we like, which means we can leave the SG with its normalized amplitude and multiply with the attenuated light intensity afterwards. Here's what this all might look like in code form:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">float3</span> <span class="n">diffuse</span> <span class="o">=</span> <span class="n">nDotL</span><span class="p">;</span>
-<span class="k">if</span><span class="p">(</span><span class="n">EnableSSS</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// Represent the diffusion profiles as spherical gaussians
-</span><span class="c1"></span>    <span class="n">SG</span> <span class="n">redKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">SG</span> <span class="n">greenKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">SG</span> <span class="n">blueKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">z</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-
-    <span class="c1">// Compute the irradiance that would result from convolving a punctual light source
-</span><span class="c1"></span>    <span class="c1">// with the SG filtering kernels
-</span><span class="c1"></span>    <span class="n">diffuse</span> <span class="o">=</span> <span class="n">float3</span><span class="p">(</span><span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">redKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
-                     <span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">greenKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
-                     <span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">blueKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span><span class="p">.</span><span class="n">x</span><span class="p">)</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">float3</span> <span class="n">lightingResponse</span> <span class="o">=</span> <span class="n">diffuse</span> <span class="o">*</span> <span class="n">LightIntensity</span> <span class="o">*</span> <span class="n">DiffuseAlbedo</span> <span class="o">*</span> <span class="n">InvPi</span><span class="p">;</span>
-</code></pre></div>
-<p>For this snippet we used a very simple mapping from an arbitrary <code>ScatterAmt</code> parameter to an SG sharpness, where \( \lambda = \frac{1}{ScatterAmt} \). This doesn't directly map to a diffusion kernel that's specified in terms of distance from the shading point, but we'll come back to that latter. First, let's see what this looks like when we apply this algorithm for a simple directional light with various values of <code>ScatterAmt</code>:</p>
-
-<p><figure><img src="/images/sss/sg_scattering.png" alt="Comparison of SG directional light prefiltering using various parameters"></figure></p>
-
-<p>From these results, it looks like this gets us pretty close to our goal of approximating the subsurface scattering response of a point light with aribtrary scattering widths. And we're doing all of that with pure shader math, no lookup textures required! The first image in the top-left also shows that we can scale the filtering all the way down to the &quot;no scattering&quot; case just fine, which is convenient.</p>
-
-<p>If you wanted to optimize this further you could probably start by pulling out the portions of <code>SGIrradianceFitted</code> that aren't dependent on the SG sharpness, since the normal and axis are the same for all 3 SG's. However in practice you will probably want to combine this with the normal map prefiltering technique described in the preintegrated subsurface scattering article, since that will simulate scattering through small-scale bumps. If you do this you'll end up with separate normal values for each channel, in which case you won't be able to make the same optimization.</p>
-
+<p>With this in mind, the approach looks fairly straightforward: first, we come up with an SG that represents the filtering kernel we will use to approximate our scattering profile. Wider kernels will have a lower sharpness parameter, while more narrow kernels will have a higher sharpness. We can then normalize the SG to ensure that it integrates to 1 over the entire sphere, which is critical for ensuring energy conservation in the filtering process. Once we have a normalized SG representing the filtering kernel, we combine it with our light source by setting the axis ( \( \mu \) ) parameter of the SG equal to the direction to the light source, and multiplying the SG&rsquo;s amplitude ( \( a \) ) by the attenuated intensity of the light source. This effectively gives us an SG light source, for which we can compute the diffuse response in the usual way by using Stephen Hill&rsquo;s fitted irradiance approximation and multiplying the resulting irradiance by \( \frac{albedo}{\pi} \). For scattering profiles that vary by wavelength (which is typically the case) we extend this process by coming up with a separate SG for the red, green, and blue channels and evaluating each separately. When doing this the light intensity can actually be factored out if we like, which means we can leave the SG with its normalized amplitude and multiply with the attenuated light intensity afterwards. Here&rsquo;s what this all might look like in code form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">float3</span> <span class="n">diffuse</span> <span class="o">=</span> <span class="n">nDotL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">EnableSSS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Represent the diffusion profiles as spherical gaussians
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">SG</span> <span class="n">redKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SG</span> <span class="n">greenKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SG</span> <span class="n">blueKernel</span> <span class="o">=</span> <span class="n">MakeNormalizedSG</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="o">/</span> <span class="n">max</span><span class="p">(</span><span class="n">ScatterAmt</span><span class="p">.</span><span class="n">z</span><span class="p">,</span> <span class="mf">0.0001f</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Compute the irradiance that would result from convolving a punctual light source
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// with the SG filtering kernels
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">diffuse</span> <span class="o">=</span> <span class="n">float3</span><span class="p">(</span><span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">redKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">).</span><span class="n">x</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                     <span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">greenKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">).</span><span class="n">x</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                     <span class="n">SGIrradianceFitted</span><span class="p">(</span><span class="n">blueKernel</span><span class="p">,</span> <span class="n">normal</span><span class="p">).</span><span class="n">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">float3</span> <span class="n">lightingResponse</span> <span class="o">=</span> <span class="n">diffuse</span> <span class="o">*</span> <span class="n">LightIntensity</span> <span class="o">*</span> <span class="n">DiffuseAlbedo</span> <span class="o">*</span> <span class="n">InvPi</span><span class="p">;</span>
+</span></span></code></pre></div><p>For this snippet we used a very simple mapping from an arbitrary <code>ScatterAmt</code> parameter to an SG sharpness, where \( \lambda = \frac{1}{ScatterAmt} \). This doesn&rsquo;t directly map to a diffusion kernel that&rsquo;s specified in terms of distance from the shading point, but we&rsquo;ll come back to that latter. First, let&rsquo;s see what this looks like when we apply this algorithm for a simple directional light with various values of <code>ScatterAmt</code>:</p>
+<p><img src="/images/sss/sg_scattering.png" alt="Comparison of SG directional light prefiltering using various parameters"></p>
+<p>From these results, it looks like this gets us pretty close to our goal of approximating the subsurface scattering response of a point light with aribtrary scattering widths. And we&rsquo;re doing all of that with pure shader math, no lookup textures required! The first image in the top-left also shows that we can scale the filtering all the way down to the &ldquo;no scattering&rdquo; case just fine, which is convenient.</p>
+<p>If you wanted to optimize this further you could probably start by pulling out the portions of <code>SGIrradianceFitted</code> that aren&rsquo;t dependent on the SG sharpness, since the normal and axis are the same for all 3 SG&rsquo;s. However in practice you will probably want to combine this with the normal map prefiltering technique described in the preintegrated subsurface scattering article, since that will simulate scattering through small-scale bumps. If you do this you&rsquo;ll end up with separate normal values for each channel, in which case you won&rsquo;t be able to make the same optimization.</p>
 <h1 id="accounting-for-curvature">Accounting For Curvature<a href="#accounting-for-curvature" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-
-<p>If you're familiar with how preintegrated SSS works, you may have already realized a problem with our proposed technique: it's not accounting for the curvature of the surface. If we were to just use the same set of sharpness values everywhere on an arbitrary mesh the results would not look correct, because the falloff/wrap caused by the SG would be same regardless of how flat or curved the surface is. Another way of saying this is that since our SG works purely in an angular domain, we're effectively getting larger or smaller scattering distances across the mesh. Fortunately this problem is solvable with a bit of math. Recall that an SG has the following form:</p>
-
-<p><span  class="math">\[ G(\mathbf{v};\mathbf{\mu},\lambda,a) = ae^{\lambda(\mathbf{\mu} \cdot \mathbf{v} - 1)} \]</span></p>
-
+<p>If you&rsquo;re familiar with how preintegrated SSS works, you may have already realized a problem with our proposed technique: it&rsquo;s not accounting for the curvature of the surface. If we were to just use the same set of sharpness values everywhere on an arbitrary mesh the results would not look correct, because the falloff/wrap caused by the SG would be same regardless of how flat or curved the surface is. Another way of saying this is that since our SG works purely in an angular domain, we&rsquo;re effectively getting larger or smaller scattering distances across the mesh. Fortunately this problem is solvable with a bit of math. Recall that an SG has the following form:</p>
+<p>$$ G(\mathbf{v};\mathbf{\mu},\lambda,a) = ae^{\lambda(\mathbf{\mu} \cdot \mathbf{v} - 1)} $$</p>
 <p>or alternatively:</p>
-
-<p><span  class="math">\[ G(\mathbf{v};\mathbf{\mu},\lambda,a) = ae^{\lambda(\cos(\theta) - 1)} \]</span></p>
-
-<p>Since it only depends on the cosine of the angle between the sample point and the SG axis direction, the &quot;width&quot; of the SG is fixed in the angular domain but variable in terms of Euclidean distance if we were to vary the radius ( \( r \) ) of the sphere that it's defined on. Therefore we need to redefine our SG in terms of Euclidean distance ( \( d \) ) between the SG center on the surface of the sphere ( \( c \) ) and the shading point ( \( s \) ), where \( \theta \) is the angle between the surface normal and SG axis (which is aligned with the light direction):</p>
-
-<p><figure><img src="/images/sss/sg_coordinate_system.png" alt="The coordinate system for working with a spherical gaussian"></figure></p>
-
+<p>$$ G(\mathbf{v};\mathbf{\mu},\lambda,a) = ae^{\lambda(\cos(\theta) - 1)} $$</p>
+<p>Since it only depends on the cosine of the angle between the sample point and the SG axis direction, the &ldquo;width&rdquo; of the SG is fixed in the angular domain but variable in terms of Euclidean distance if we were to vary the radius ( \( r \) ) of the sphere that it&rsquo;s defined on. Therefore we need to redefine our SG in terms of Euclidean distance ( \( d \) ) between the SG center on the surface of the sphere ( \( c \) ) and the shading point ( \( s \) ), where \( \theta \) is the angle between the surface normal and SG axis (which is aligned with the light direction):</p>
+<p><img src="/images/sss/sg_coordinate_system.png" alt="The coordinate system for working with a spherical gaussian"></p>
 <p>We can then use the following to get the distance between the points:</p>
-
-<p><span  class="math">\[ d = 2r\sin(\frac{\theta}{2}) \]</span></p>
-
+<p>$$ d = 2r\sin(\frac{\theta}{2}) $$</p>
 <p>If we flip that around to get the value of \( \theta \) in terms of distance, we get this:</p>
-
-<p><span  class="math">\[ \theta = \sin^{-1}(\frac{d}{2r})2 \]</span></p>
-
+<p>$$ \theta = \sin^{-1}(\frac{d}{2r})2 $$</p>
 <p>We can then plug that into the second form of the SG definition and get the following:</p>
-
-<p><span  class="math">\[ G(d;\lambda,a,r) = ae^{\lambda(\cos(\sin^{-1}(\frac{d}{2r})2) - 1)} \]</span></p>
-
+<p>$$ G(d;\lambda,a,r) = ae^{\lambda(\cos(\sin^{-1}(\frac{d}{2r})2) - 1)} $$</p>
 <p>This looks pretty gnarly, but fortunately we can simplify this by making the substitution \( \cos(2\sin^{-1}(x)) = 1 - 2x^{2} \), which gives us something much nicer once we clean it up a bit:</p>
-
-<p><span  class="math">\[ G(d;\lambda,a,r) = ae^{\frac{-\lambda d^2}{2r^2}} \]</span></p>
-
-<p>In case that's too hard to read, this is the exponent part on its own:</p>
-
-<p><span  class="math">\[ \frac{-\lambda d^2}{2r^2} \]</span></p>
-
-<p>This is now really close to a standard 1D Gaussian form, which is pretty neat! It's also now quite clear that the effective width of the SG will increase as the radius increases, which is not what we wanted for subsurface scattering. This is confirmed if we <a href="https://www.desmos.com/calculator/yg6mflmavo">graph this out</a> for a few values of \( r \):</p>
-
-<p><figure><img src="/images/sss/sg_radius_graphs.png" alt="Graphs showing an SG reparameterized in terms of euclidian distance on spheres with radius 0.25, 0.5, and 1.0"></figure></p>
-
+<p>$$ G(d;\lambda,a,r) = ae^{\frac{-\lambda d^2}{2r^2}} $$</p>
+<p>In case that&rsquo;s too hard to read, this is the exponent part on its own:</p>
+<p>$$ \frac{-\lambda d^2}{2r^2} $$</p>
+<p>This is now really close to a standard 1D Gaussian form, which is pretty neat! It&rsquo;s also now quite clear that the effective width of the SG will increase as the radius increases, which is not what we wanted for subsurface scattering. This is confirmed if we <a href="https://www.desmos.com/calculator/yg6mflmavo">graph this out</a> for a few values of \( r \):</p>
+<p><img src="/images/sss/sg_radius_graphs.png" alt="Graphs showing an SG reparameterized in terms of euclidian distance on spheres with radius 0.25, 0.5, and 1.0"></p>
 <p>The good news is that we can fix this very easily: we just need that \( r^2 \) term to drop out, which will happen if we multiply \( \lambda \) by \( r^2 \). Doing that gives up exactly a 1D Gaussian, except with a \( \lambda \) in the numerator of the exponent instead of the usual \( \sigma \) in the denominator:</p>
-
-<p><span  class="math">\[ G(d;\lambda,a) = ae^{\frac{-\lambda d^2}{2}} \]</span></p>
-
-<p>This final form gives us the fixed width kernel that we're after, as long as we can compute the effective radius from the curvature of the mesh. We can do that using pixel shader derivatives as described in the preintegrated SSS article, or we can precompute it and store it in a texture or per-vertex. This also gives another interpretation of our <code>ScatterAmt</code> parameter that we used earlier: it's the \( \sigma \) parameter of a Gaussian centered around the point \( c \).</p>
-
+<p>$$ G(d;\lambda,a) = ae^{\frac{-\lambda d^2}{2}} $$</p>
+<p>This final form gives us the fixed width kernel that we&rsquo;re after, as long as we can compute the effective radius from the curvature of the mesh. We can do that using pixel shader derivatives as described in the preintegrated SSS article, or we can precompute it and store it in a texture or per-vertex. This also gives another interpretation of our <code>ScatterAmt</code> parameter that we used earlier: it&rsquo;s the \( \sigma \) parameter of a Gaussian centered around the point \( c \).</p>
 <h1 id="applying-to-ambient-lighting">Applying To Ambient Lighting<a href="#applying-to-ambient-lighting" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-
-<p>In most real-time scenarios we're going to be combining lighting from punctual light sources with precomputed GI stored as either spherical or hemispherical probes in 3D space. For SH probes, I already outlined a workable approach earlier in this article. Really you just need some kind of function for generating the SH coefficients for a Guassian, and then we can multiply that with the SH lighting environment to pre-filter it. Something similar to what <a href="http://cseweb.ucsd.edu/~ravir/papers/invrend/invrend.pdf">Ravi Ramamoorthi proposed for approximating a Torrance-Sparrow NDF</a> would probably work pretty well:</p>
-
-<p><span  class="math">\[ \Lambda \rho \approx e^{-(\sigma l)^{2}} \]</span></p>
-
-<p>For probes encoded as a set of SG's, we can make use of <a href="http://web.wakayama-u.ac.jp/~iwasaki/project/biscale/sa2012.pdf">Kei Iwasaki's forumula for approximating the convolution of two SG's</a> (brought to my attention by <a href="http://graphicrants.blogspot.com/2018/05/normal-map-filtering-using-vmf-part-3.html">Brian Karis's blog post</a>), which looks like this once implemented in HLSL:</p>
-<pre><code>//-------------------------------------------------------------------------------------------------
-// Approximates the convolution of two SG's as another SG
+<p>In most real-time scenarios we&rsquo;re going to be combining lighting from punctual light sources with precomputed GI stored as either spherical or hemispherical probes in 3D space. For SH probes, I already outlined a workable approach earlier in this article. Really you just need some kind of function for generating the SH coefficients for a Guassian, and then we can multiply that with the SH lighting environment to pre-filter it. Something similar to what <a href="http://cseweb.ucsd.edu/~ravir/papers/invrend/invrend.pdf">Ravi Ramamoorthi proposed for approximating a Torrance-Sparrow NDF</a> would probably work pretty well:</p>
+<p>$$ \Lambda \rho \approx e^{-(\sigma l)^{2}} $$</p>
+<p>For probes encoded as a set of SG&rsquo;s, we can make use of <a href="http://web.wakayama-u.ac.jp/~iwasaki/project/biscale/sa2012.pdf">Kei Iwasaki&rsquo;s forumula for approximating the convolution of two SG&rsquo;s</a> (brought to my attention by <a href="http://graphicrants.blogspot.com/2018/05/normal-map-filtering-using-vmf-part-3.html">Brian Karis&rsquo;s blog post</a>), which looks like this once implemented in HLSL:</p>
+<pre tabindex="0"><code>//-------------------------------------------------------------------------------------------------
+// Approximates the convolution of two SG&#39;s as another SG
 //-------------------------------------------------------------------------------------------------
 SG ConvolveSGs(in SG x, in SG y)
 {
@@ -186,15 +145,11 @@ SG ConvolveSGs(in SG x, in SG y)
     convolvedSG.Amplitude = 2 * Pi * x.Amplitude * y.Amplitude / (x.Sharpness + y.Sharpness);
 
     return convolvedSG;
-}</code></pre>
-<p>The approach is then similar to what we do for punctual lights: come up with the normalized SG's for red/green/blue, convolve them with each SG in the lighting probe, and compute the resulting irradiance.</p>
-
+}
+</code></pre><p>The approach is then similar to what we do for punctual lights: come up with the normalized SG&rsquo;s for red/green/blue, convolve them with each SG in the lighting probe, and compute the resulting irradiance.</p>
 <h1 id="limitations-and-future-work">Limitations and Future Work<a href="#limitations-and-future-work" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-
-<p>Compared with standard Lambertian diffuse, this approach is much more math-heavy. I have implemented and shipped this technique in two games already, so it's definitely usable. But obviously you'll want to be wary of the extra ALU and register pressure that it can add to a shader program.</p>
-
-<p>In terms of the visual results, it mostly suffers from the same major visual drawbacks that you get with preintegrated subsurface scattering. In particular there's no great solution for handling shadow edges, and your results may suffer if your technique for computing curvature has errors or discontinuities. It also does nothing to account for scattering through thin surfaces like the ears, so that has to be handled separately. It also shares another limitation with preintegrated SSS: it assumes punctional light sources. For area lights you would need to do something more complicated, perhaps using the LTC framework.</p>
-
+<p>Compared with standard Lambertian diffuse, this approach is much more math-heavy. I have implemented and shipped this technique in two games already, so it&rsquo;s definitely usable. But obviously you&rsquo;ll want to be wary of the extra ALU and register pressure that it can add to a shader program.</p>
+<p>In terms of the visual results, it mostly suffers from the same major visual drawbacks that you get with preintegrated subsurface scattering. In particular there&rsquo;s no great solution for handling shadow edges, and your results may suffer if your technique for computing curvature has errors or discontinuities. It also does nothing to account for scattering through thin surfaces like the ears, so that has to be handled separately. It also shares another limitation with preintegrated SSS: it assumes punctional light sources. For area lights you would need to do something more complicated, perhaps using the LTC framework.</p>
 <p>I also have not taken the time to come up with a more principled approach for applying the normal map prefiltering based on the <code>ScatterAmt</code> parameter. Currently I use a simple ad-hoc mapping from that parameter to lerp factors between the detail normal map and the base normal map, which works well enough but could certainly be improved. If anybody has thoughts on this, please let me know in the comments or on Twitter!</p>
 
 			</div>
@@ -226,14 +181,14 @@ SG ConvolveSGs(in SG x, in SG y)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>

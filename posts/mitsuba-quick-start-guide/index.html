@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Mitsuba Quick-Start Guide">
-<meta itemprop="description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation.">
-<meta itemprop="datePublished" content="2015-04-04T20:36:44&#43;00:00" />
-<meta itemprop="dateModified" content="2015-04-04T20:36:44&#43;00:00" />
+<meta itemprop="description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation."><meta itemprop="datePublished" content="2015-04-04T20:36:44+00:00" />
+<meta itemprop="dateModified" content="2015-04-04T20:36:44+00:00" />
 <meta itemprop="wordCount" content="3694">
-
-
-
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="Mitsuba Quick-Start Guide" />
 <meta property="og:description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/mitsuba-quick-start-guide/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/mitsuba-quick-start-guide/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2015-04-04T20:36:44+00:00" />
 <meta property="article:modified_time" content="2015-04-04T20:36:44+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Mitsuba Quick-Start Guide"/>
 <meta name="twitter:description" content="Angelo Pesce&rsquo;s recent blog post brought up a great point towards the end of the article: having a &ldquo;ground-truth&rdquo; for comparison can be extremely important for evaluating your real-time techniques. For approximations like pre-integrated environment maps it can help visualize what kind of effect your approximation errors will have on a final rendered image, and and in many other cases it can aid you in tracking down bugs in your implementation."/>
@@ -64,6 +61,8 @@
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -92,7 +91,7 @@
 <h3 id="3-configuring-and-rendering">3. Configuring and Rendering<a href="#3-configuring-and-rendering" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>Now that we have our scene imported, let&rsquo;s try doing an actual render. First, click the button in the toolbar with the gear icon. It should bring up the following dialog, which lets you configure your rendering settings:</p>
 <p><a href="/images/converted/mitsuba-quick-start-guide/pt_settings.png"><img src="/images/converted/mitsuba-quick-start-guide/pt_settings.png" alt="PT_Settings"></a></p>
-<p>That first setting specifies which integrator that you want to use for rendering. If you&rsquo;re not familiar with the terminology being used here, an&quot;integrator&rdquo; is basically the overall rendering technique used for computing how much light is reflected back towards the camera for every pixel. If you&rsquo;re not sure which technique to use, the path tracer is a good default choice. It makes use of unbiased monte carlo techniques to compute diffuse and specular reflectance from both direct and indirect light sources, which essentially means that if you increase the number of samples it will always converge on the &ldquo;correct&rdquo; result. The main downside is that it can generate noisy results for scenes where a majority of surfaces don&rsquo;t have direct visibility of emissive light sources, since the paths are always traced starting at the camera. The bidirectional path tracer aims to improve on this by also tracing additional paths starting from the light sources. The regular path tracer also won&rsquo;t handle volumetrics, and so you will need to switch to the volumetric path tracer if you every want to experiment with that.</p>
+<p>That first setting specifies which integrator that you want to use for rendering. If you&rsquo;re not familiar with the terminology being used here, an&quot;integrator&quot; is basically the overall rendering technique used for computing how much light is reflected back towards the camera for every pixel. If you&rsquo;re not sure which technique to use, the path tracer is a good default choice. It makes use of unbiased monte carlo techniques to compute diffuse and specular reflectance from both direct and indirect light sources, which essentially means that if you increase the number of samples it will always converge on the &ldquo;correct&rdquo; result. The main downside is that it can generate noisy results for scenes where a majority of surfaces don&rsquo;t have direct visibility of emissive light sources, since the paths are always traced starting at the camera. The bidirectional path tracer aims to improve on this by also tracing additional paths starting from the light sources. The regular path tracer also won&rsquo;t handle volumetrics, and so you will need to switch to the volumetric path tracer if you every want to experiment with that.</p>
 <p>For a path tracer, the primary quality setting is the &ldquo;Samples per pixel&rdquo; option. This dictates how many samples to take for every pixel in the output image, and so you can effectively think of it as the amount of supersampling. Increasing it will reduce aliasing from the primary rays, and also reduce the variance in the results of computing reflectance off of the surfaces. Using more samples will of course increase the rendering time as well, so use it carefully. The &ldquo;Sampler&rdquo; option dictates the strategy used for generating the random samples that are used for monte carlo integration, which can also have a pretty large effect on the resulting variance. I would suggest reading through <em>Physically Based Rendering</em> if you&rsquo;d like to learn more about the various strategies, but if you&rsquo;re not sure then the &ldquo;low discrepancy sampler&rdquo; is a good default choice. Another important option is the &ldquo;maximum depth&rdquo; setting, which essentially lets you limit the renderer to using a fixed number of bounces. Setting it to 1 only gives you emissive surfaces and lights (light -&gt; camera), setting it to 2 gives you emissive + direct lighting on all surfaces (light -&gt; surface -&gt; camera), setting it to 3 gives you emissive + direct lighting + 1 bounce of indirect lighting (light -&gt; surface -&gt; surface -&gt; camera), and so on. The default value of -1 essentially causes the renderer to keep picking paths until it hits a light source,  or the transmittance back to the camera is below a particular threshold.</p>
 <p>Once you&rsquo;ve configured everything the way I did in the picture above, go and hit OK to close the dialog. After than, press the big green &ldquo;play&rdquo; button in the toolbar to start the renderer. Once it starts, you&rsquo;ll see an interactive view of the renderer completing the image one tile at a time. If you have a decent CPU it shouldn&rsquo;t take more than 10-15 seconds to finish, at which point you should see this:</p>
 <p><a href="/images/converted/mitsuba-quick-start-guide/initial_pt.png"><img src="/images/converted/mitsuba-quick-start-guide/initial_pt.png" alt="Initial_PT"></a></p>
@@ -203,14 +202,14 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

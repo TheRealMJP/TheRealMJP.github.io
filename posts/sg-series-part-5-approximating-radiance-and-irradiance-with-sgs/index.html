@@ -11,13 +11,9 @@ Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
 Part 2 - Spherical Gaussians 101
 Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
-Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s">
-<meta itemprop="datePublished" content="2016-10-10T07:12:13&#43;00:00" />
-<meta itemprop="dateModified" content="2016-10-10T07:12:13&#43;00:00" />
+Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"><meta itemprop="datePublished" content="2016-10-10T07:12:13+00:00" />
+<meta itemprop="dateModified" content="2016-10-10T07:12:13+00:00" />
 <meta itemprop="wordCount" content="4927">
-
-
-
 <meta itemprop="keywords" content="Graphics," /><meta property="og:title" content="SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s" />
 <meta property="og:description" content="This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
 Part 1 - A Brief (and Incomplete) History of Baked Lighting Representations
@@ -26,9 +22,10 @@ Part 3 - Diffuse Lighting From an SG Light Source
 Part 4 - Specular Lighting From an SG Light Source
 Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2016-10-10T07:12:13+00:00" />
 <meta property="article:modified_time" content="2016-10-10T07:12:13+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SG Series Part 5: Approximating Radiance and Irradiance With SG&#39;s"/>
 <meta name="twitter:description" content="This is part 5 of a series on Spherical Gaussians and their applications for pre-computed lighting. You can find the other articles here:
@@ -79,6 +76,8 @@ Part 5 - Approximating Radiance and Irradiance With SG&rsquo;s"/>
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -113,7 +112,7 @@ By Krishnavedala (Own work) [CC0], via Wikimedia Commons</em></p>
 <p>So far we&rsquo;ve been fitting 1D data sets, but the techniques we&rsquo;re using also work in multiple dimensions. So for instance, let&rsquo;s say we had a bunch of scattered samples in random directions on a sphere defined by a 2D spherical coordinate system. And let&rsquo;s say that these samples represent something like&hellip;oh I don&rsquo;t know&hellip;the amount of incoming lighting along an infinitesimally narrow ray oriented in that direction.  If we take all of these data points and throw some least squares at it, we can end up with a series of N Spherical Gaussians whose sum can serve as an approximation for radiance in any direction on the sphere! We just need our fitting algorithm to spit out the axis, amplitude, and sharpness of each Gaussian, or if we want can fix one of more of the SG parameters ahead of time and only fit the remaining parameters. It should be immediately obvious why this is useful, since a set of SG coefficients can be stored very compactly compared to a gigantic set of radiance samples. Of course if we only use a few Gaussians the resulting approximation will probably lose details from the original radiance function, but this is no different from spherical harmonics or other common techniques for storing approximate representations of radiance or irradiance. Let&rsquo;s take a look at what a fit actually looks like using an HDR environment map as input data:</p>
 <p><img src="/images/converted/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/sgfit_comparison_ls_alt.png" alt="SGFit_Comparison_LS_Alt"></p>
 <center><i>Approximating radiance on a sphere using a sum of Spherical Gaussians. The left image shows the original source radiance function taken from an HDR environment map. The middle image shows a least squares fit of 12 SG's, and right image shows a fit of 24 SG's.</i></center>
-<p>These images were generated <a href="https://twitter.com/YuriyODonnell">Yuriy O&rsquo;Donnell</a>&lsquo;s <a href="https://github.com/kayru/Probulator">Probulator</a>[5], which is an excellent tool for comparing various ways of approximating radiance and irradiance on a sphere. One important thing to note here is that the  fit was only performed on the amplitude of the SG&rsquo;s: the axis and sharpness are pre-determined based on the number of SG&rsquo;s. Probulator generates the lobe axis directions using <a href="http://blog.marmakoide.org/?p=1">Vogel&rsquo;s method</a>[6], but any technique for distributing points on a sphere would also work. Fitting only the lobe amplitude significantly simplifies the solve, since there are less parameters to optimize. Solving for a single parameter also allows us to use <a href="https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)">linear least squares</a>[7], while fitting all of the parameters would require use of complex and expensive <a href="https://en.wikipedia.org/wiki/Non-linear_least_squares">non-linear least squares</a>[8] algorithms. Solving for less parameters also decreases the storage costs, since only the amplitudes need to be stored per-probe while the directions and sharpness can be global constants. Either way it&rsquo;s good to keep in mind when examining the results. In particular it helps explain why the white lobe in the middle image doesn&rsquo;t quite line up with the bright windows in the source environment. Aside from that, the results are probably what you would expect: doubling the number of lobes increases the possible complexity and sharpness of the resulting approximation, which in this case allows it to provide a better representation of some of the high-frequency details in the source image.</p>
+<p>These images were generated <a href="https://twitter.com/YuriyODonnell">Yuriy O&rsquo;Donnell</a>&rsquo;s <a href="https://github.com/kayru/Probulator">Probulator</a>[5], which is an excellent tool for comparing various ways of approximating radiance and irradiance on a sphere. One important thing to note here is that the  fit was only performed on the amplitude of the SG&rsquo;s: the axis and sharpness are pre-determined based on the number of SG&rsquo;s. Probulator generates the lobe axis directions using <a href="http://blog.marmakoide.org/?p=1">Vogel&rsquo;s method</a>[6], but any technique for distributing points on a sphere would also work. Fitting only the lobe amplitude significantly simplifies the solve, since there are less parameters to optimize. Solving for a single parameter also allows us to use <a href="https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)">linear least squares</a>[7], while fitting all of the parameters would require use of complex and expensive <a href="https://en.wikipedia.org/wiki/Non-linear_least_squares">non-linear least squares</a>[8] algorithms. Solving for less parameters also decreases the storage costs, since only the amplitudes need to be stored per-probe while the directions and sharpness can be global constants. Either way it&rsquo;s good to keep in mind when examining the results. In particular it helps explain why the white lobe in the middle image doesn&rsquo;t quite line up with the bright windows in the source environment. Aside from that, the results are probably what you would expect: doubling the number of lobes increases the possible complexity and sharpness of the resulting approximation, which in this case allows it to provide a better representation of some of the high-frequency details in the source image.</p>
 <h2 id="going-negative">Going Negative<a href="#going-negative" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>One odd thing you might notice in the SG approximation is the overly dark areas towards the bottom-right of the sphere. They look somewhat similar to the darkening that can show up in SH approximations, which happens due to negative coefficients being used for the SH polynomials. It turns out that something very similar is happening with our SG fit: the least squares optimizations is returning negative coefficients for some of our lobes in an attempt to minimize the error of the resulting fit.If you&rsquo;re having trouble understanding why this would happen, let&rsquo;s go back to 1D for a quick example. For the last 1D example I cheated a bit: the data we were fitting our Gaussians to was actually just some random noise applied to the sum of 3 Gaussians. This is why our Gaussian fit so closely resembled the source data. This time, we&rsquo;ll fitting some lobes to a more complex data set:</p>
 <p><a href="/images/converted/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/ls_negative_fit_data.png"><img src="/images/converted/sg-series-part-5-approximating-radiance-and-irradiance-with-sgs/ls_negative_fit_data.png" alt="LS_Negative_Fit_Data"></a></p>
@@ -232,14 +231,14 @@ By Krishnavedala (Own work) [CC0], via Wikimedia Commons</em></p>
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>

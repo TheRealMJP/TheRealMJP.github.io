@@ -6,29 +6,24 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Read My Chapter in Ray Tracing Gems II!">
-<meta itemprop="description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
-Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR.">
-<meta itemprop="datePublished" content="2021-08-22T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2021-08-22T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="827">
-<meta itemprop="image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png">
-
-
-
+<meta itemprop="description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&rsquo;s free to download as a PDF from the publisher&rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &ldquo;Using Bindless Resources With DirectX Raytracing&rdquo;, which as you&rsquo;d expect is all about using bindless techniques in the context of DXR."><meta itemprop="datePublished" content="2021-08-22T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2021-08-22T00:00:00+00:00" />
+<meta itemprop="wordCount" content="827"><meta itemprop="image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png">
 <meta itemprop="keywords" content="Graphics,Ray Tracing,DirectX 12," /><meta property="og:title" content="Read My Chapter in Ray Tracing Gems II!" />
-<meta property="og:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
-Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR." />
+<meta property="og:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&rsquo;s free to download as a PDF from the publisher&rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &ldquo;Using Bindless Resources With DirectX Raytracing&rdquo;, which as you&rsquo;d expect is all about using bindless techniques in the context of DXR." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/rtg2-bindless/" />
-<meta property="og:image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/rtg2-bindless/" /><meta property="og:image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-22T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-08-22T00:00:00+00:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://therealmjp.github.io/images/rtg2-bindless/rtg2-bindless.png"/>
 
 <meta name="twitter:title" content="Read My Chapter in Ray Tracing Gems II!"/>
-<meta name="twitter:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
-Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR."/>
+<meta name="twitter:description" content="Ray Tracing Gems II was released a few weeks ago, and like the first one it&rsquo;s free to download as a PDF from the publisher&rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &ldquo;Using Bindless Resources With DirectX Raytracing&rdquo;, which as you&rsquo;d expect is all about using bindless techniques in the context of DXR."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -71,6 +66,8 @@ Yours truly contributed a chapter called &quot;Using Bindless Resources With Dir
 	</div>
 
 
+
+
 	<div class="bg-img"></div>
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
@@ -79,24 +76,18 @@ Yours truly contributed a chapter called &quot;Using Bindless Resources With Dir
 				<h1>Read My Chapter in Ray Tracing Gems II!</h1>
 			</header>
 			<div class="content">
-				<p><figure><img src="/images/rtg2-bindless/rtg2-bindless.png" alt="comparison of computing irradiance from a directional light with L1 SH and L2 SH projections"></figure></p>
-
-<p><a href="https://www.realtimerendering.com/raytracinggems/rtg2/index.html">Ray Tracing Gems II</a> was released a few weeks ago, and like the first one it's free to <a href="https://link.springer.com/content/pdf/10.1007%2F978-1-4842-7185-8.pdf">download as a PDF</a> from the publisher's website. There are 50 articles in this thing written by over 80 authors, so I think it's safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.</p>
-
-<p>Yours truly contributed a chapter called &quot;Using Bindless Resources With DirectX Raytracing&quot;, which as you'd expect is all about using bindless techniques in the context of DXR. I had already written a simple <a href="https://github.com/TheRealMJP/DXRPathTracer">open source path tracer</a> in DXR which uses bindless for all SRVs, so it seemed like a natural fit for me to write full article that dives into all of the details required to make that happen. I also wasn't aware of a comprehensive article or tutorial explaining the ins and outs of bindless in D3D12, and I thought my article could help fill that niche. Hopefully I was successful! If you do end up reading it, feel free to let me know if you have any thoughts or have any lingering questions that I can help clear up.</p>
-
-<p>I also wanted to use this blog post as an opportunity to emphasize a few things in an informal way, just in case they don't fully come through in the article:</p>
-
+				<p><img src="/images/rtg2-bindless/rtg2-bindless.png" alt="comparison of computing irradiance from a directional light with L1 SH and L2 SH projections"></p>
+<p><a href="https://www.realtimerendering.com/raytracinggems/rtg2/index.html">Ray Tracing Gems II</a> was released a few weeks ago, and like the first one it&rsquo;s free to <a href="https://link.springer.com/content/pdf/10.1007%2F978-1-4842-7185-8.pdf">download as a PDF</a> from the publisher&rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.</p>
+<p>Yours truly contributed a chapter called &ldquo;Using Bindless Resources With DirectX Raytracing&rdquo;, which as you&rsquo;d expect is all about using bindless techniques in the context of DXR. I had already written a simple <a href="https://github.com/TheRealMJP/DXRPathTracer">open source path tracer</a> in DXR which uses bindless for all SRVs, so it seemed like a natural fit for me to write full article that dives into all of the details required to make that happen. I also wasn&rsquo;t aware of a comprehensive article or tutorial explaining the ins and outs of bindless in D3D12, and I thought my article could help fill that niche. Hopefully I was successful! If you do end up reading it, feel free to let me know if you have any thoughts or have any lingering questions that I can help clear up.</p>
+<p>I also wanted to use this blog post as an opportunity to emphasize a few things in an informal way, just in case they don&rsquo;t fully come through in the article:</p>
 <ul>
-<li>Bindless is great, it really is! There are downsides of course (mostly on the tooling and debugging side of things), but I firmly believe the pros outweigh the cons. I don't really see any future for the older binding models.</li>
-<li>It's hard to oversell how bad of an experience it is dealing with multiple root signatures and descriptor tables/ranges compared to bindless.  Once you go bindless a lot of that complexity just disappears, which could end up being a good thing for people that are new to D3D12/Vulkan or graphics programming in general.</li>
-<li>On a related note: just don't bother with local root signatures in DXR, at least for binding descriptor tables. Ray tracing is inherently global, and it makes so much sense to have global access to all of your resources/descriptors.</li>
-<li>In the article I mention how the indirection offered by using descriptor indices can let you do some really cool things. Basically as long as you keep your descriptor index persistent, you're free to update the descriptor located at the index without having to also go and update whatever data structures have that index in it. Got a ring buffer system where you swap to a different buffer when the contents are updated by the CPU? Just update the descriptor when you do that and everything keeps working great! Same goes for updating textures due to streaming in new mips, or swapping between aliased render target textures as part of an adaptive resolution system.</li>
-<li>Bindless is awesome for CPU performance and really helps unlock the original dream of low CPU overhead that was promised by D3D12 and Vulkan. Once you've moved all of your &quot;binding&quot; out of API functions and into your own user-managed memory you can do things <em>much</em> more quickly, and you can really fly through your draw calls. Combine that with multithreaded command buffer recoding and you can do a ton of draws and dispatches with very low latency.</li>
+<li>Bindless is great, it really is! There are downsides of course (mostly on the tooling and debugging side of things), but I firmly believe the pros outweigh the cons. I don&rsquo;t really see any future for the older binding models.</li>
+<li>It&rsquo;s hard to oversell how bad of an experience it is dealing with multiple root signatures and descriptor tables/ranges compared to bindless.  Once you go bindless a lot of that complexity just disappears, which could end up being a good thing for people that are new to D3D12/Vulkan or graphics programming in general.</li>
+<li>On a related note: just don&rsquo;t bother with local root signatures in DXR, at least for binding descriptor tables. Ray tracing is inherently global, and it makes so much sense to have global access to all of your resources/descriptors.</li>
+<li>In the article I mention how the indirection offered by using descriptor indices can let you do some really cool things. Basically as long as you keep your descriptor index persistent, you&rsquo;re free to update the descriptor located at the index without having to also go and update whatever data structures have that index in it. Got a ring buffer system where you swap to a different buffer when the contents are updated by the CPU? Just update the descriptor when you do that and everything keeps working great! Same goes for updating textures due to streaming in new mips, or swapping between aliased render target textures as part of an adaptive resolution system.</li>
+<li>Bindless is awesome for CPU performance and really helps unlock the original dream of low CPU overhead that was promised by D3D12 and Vulkan. Once you&rsquo;ve moved all of your &ldquo;binding&rdquo; out of API functions and into your own user-managed memory you can do things <em>much</em> more quickly, and you can really fly through your draw calls. Combine that with multithreaded command buffer recoding and you can do a ton of draws and dispatches with very low latency.</li>
 </ul>
-
-<p>Finally, I want to finish with a note addressing Shader Model 6.6 and the new &quot;dynamic resource binding&quot; feature. When I started working on the article it was March of 2020, since RTG II was originally supposed to be released that year. At the time the idea of a new HLSL feature that makes it simple and trivial to access bindless descriptors was little more than some <a href="https://github.com/microsoft/DirectXShaderCompiler/issues/1067">hopes and dreams in a GitHub issue</a>, and I thought the situation would be the same by the time the release date rolled around. I did not expect the book release to be pushed back, I <em>really</em> did not expect for Shader Model 6.6 to be <a href="https://devblogs.microsoft.com/directx/in-the-works-hlsl-shader-model-6-6/">announced</a> before the year end, and I <em>definitely</em> did not expect for the D3D team to release an awesome new <a href="https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/">Agility SDK</a> that allowed for SM 6.6 to be deployed to end user machines without waiting for Windows updates. But of course all of those things happened, when meant by the time the chapter came out people were already using dynamic resources in their code. It's too bad, but it was of course bound to happen eventually. For those not using the latest-and-greatest the article should still help with spelling out the right HLSL and root signature incantations required for pre-SM6.6 bindless, and those that are on the bleeding edge can simply ignore that part and make use of the other content. On the plus side: dynamic resources are really really great. They fix a lot of little rough edges that show up when doing bindless the old way, and take an even further step towards simplifying and reducing the number of root signatures.</p>
-
+<p>Finally, I want to finish with a note addressing Shader Model 6.6 and the new &ldquo;dynamic resource binding&rdquo; feature. When I started working on the article it was March of 2020, since RTG II was originally supposed to be released that year. At the time the idea of a new HLSL feature that makes it simple and trivial to access bindless descriptors was little more than some <a href="https://github.com/microsoft/DirectXShaderCompiler/issues/1067">hopes and dreams in a GitHub issue</a>, and I thought the situation would be the same by the time the release date rolled around. I did not expect the book release to be pushed back, I <em>really</em> did not expect for Shader Model 6.6 to be <a href="https://devblogs.microsoft.com/directx/in-the-works-hlsl-shader-model-6-6/">announced</a> before the year end, and I <em>definitely</em> did not expect for the D3D team to release an awesome new <a href="https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/">Agility SDK</a> that allowed for SM 6.6 to be deployed to end user machines without waiting for Windows updates. But of course all of those things happened, when meant by the time the chapter came out people were already using dynamic resources in their code. It&rsquo;s too bad, but it was of course bound to happen eventually. For those not using the latest-and-greatest the article should still help with spelling out the right HLSL and root signature incantations required for pre-SM6.6 bindless, and those that are on the bleeding edge can simply ignore that part and make use of the other content. On the plus side: dynamic resources are really really great. They fix a lot of little rough edges that show up when doing bindless the old way, and take an even further step towards simplifying and reducing the number of root signatures.</p>
 <p>Thanks for reading!</p>
 
 			</div>
@@ -128,14 +119,14 @@ Yours truly contributed a chapter called &quot;Using Bindless Resources With Dir
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>

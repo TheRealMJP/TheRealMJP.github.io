@@ -6,18 +6,14 @@
     <description>Recent content in Shading on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Oct 2021 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/shading/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 11 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/shading/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Shader Permutation Problem - Part 1: How Did We Get Here?</title>
       <link>https://therealmjp.github.io/posts/shader-permutations-part1/</link>
       <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-permutations-part1/</guid>
-      <description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&#39;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&#39;t believe me, just go ahead and search for &amp;quot;unreal compiling shaders meme&amp;quot; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
+      <description>It is no secret that we tend to have a bit of a problem with shader permutations in real-time graphics. It&amp;rsquo;s such a bad problem that it not only affects graphics programmers, but also trickles down to all of the other content creators that use an engine. If you don&amp;rsquo;t believe me, just go ahead and search for &amp;ldquo;unreal compiling shaders meme&amp;rdquo; on Google images and see what comes up. There are many great ones to choose from, but personally I am a bit partial to this one:</description>
     </item>
     
     <item>
@@ -26,8 +22,7 @@
       <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-permutations-part2/</guid>
-      <description>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
-If you&#39;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
+      <description>_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&amp;rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
     </item>
     
     <item>
@@ -36,7 +31,7 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/dxil-linking/</guid>
-      <description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&#39;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&#39;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
+      <description>While doing some research for a different blog post, I happened to discover that DXC is capable of linking together multiple compiled DXIL binaries into single complete shader program of any stage (vertex, pixel, compute, etc.). I had known that this was a thing you could do for D3D11 with the old fxc-based compiler stack, but I wasn&amp;rsquo;t aware that DXC could now do it as well. It turns out that the new lib_6_x targets aren&amp;rsquo;t just usable for creating DXR state objects: you can also compile whatever you want into libraries and link them together into a full binary for a non-raytracing shader.</description>
     </item>
     
     <item>
@@ -45,7 +40,7 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Sun, 09 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/sss-sg/</guid>
-      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;quot;wrapped&amp;quot; or &amp;quot;blurred&amp;quot; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&#39;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
+      <description>In my previous post, where I gave a quick overview of real-time subsurface scattering techniques, I mentioned that one of the potential downsides of preintegrated subsurface scattering was that it relied on sampling a precomputed lookup texture for storing the appropriate &amp;ldquo;wrapped&amp;rdquo; or &amp;ldquo;blurred&amp;rdquo; lighting response for a given lighting angle and surface curvature. Depending on the hardware you&amp;rsquo;re working with as well as the exact details of the shader program, sampling a lookup texture can be either a good or a bad thing.</description>
     </item>
     
     <item>
@@ -54,7 +49,7 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Sun, 06 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/sss-intro/</guid>
-      <description>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what&#39;s commonly used to shade skin and other materials in recent games.</description>
+      <description>A little while ago I was doing some research into the state-of-the-art for approximating subsurface scattering effects in real-time (mainly for skin rendering), and I had taken a bunch of loose notes to help me keep all of the details straight. I thought it might be useful to turn those notes into a full blog post, in case anyone else out there needs an overview of what&amp;rsquo;s commonly used to shade skin and other materials in recent games.</description>
     </item>
     
     <item>
@@ -63,7 +58,7 @@ If you&#39;ve read the previous article then you hopefully have a decent underst
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-fp16/</guid>
-      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
+      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&amp;rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
     </item>
     
   </channel>

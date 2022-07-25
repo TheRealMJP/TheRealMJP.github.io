@@ -6,19 +6,15 @@
     <description>Recent content in DirectX 12 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 22 Aug 2021 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://therealmjp.github.io/tags/directx-12/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 22 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/directx-12/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Read My Chapter in Ray Tracing Gems II!</title>
       <link>https://therealmjp.github.io/posts/rtg2-bindless/</link>
       <pubDate>Sun, 22 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/rtg2-bindless/</guid>
-      <description>Ray Tracing Gems II was released a few weeks ago, and like the first one it&#39;s free to download as a PDF from the publisher&#39;s website. There are 50 articles in this thing written by over 80 authors, so I think it&#39;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
-Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With DirectX Raytracing&amp;quot;, which as you&#39;d expect is all about using bindless techniques in the context of DXR.</description>
+      <description>Ray Tracing Gems II was released a few weeks ago, and like the first one it&amp;rsquo;s free to download as a PDF from the publisher&amp;rsquo;s website. There are 50 articles in this thing written by over 80 authors, so I think it&amp;rsquo;s safe to say that this book is absolutely jam-packed with useful knowledge and techniques related to ray tracing.
+Yours truly contributed a chapter called &amp;ldquo;Using Bindless Resources With DirectX Raytracing&amp;rdquo;, which as you&amp;rsquo;d expect is all about using bindless techniques in the context of DXR.</description>
     </item>
     
     <item>
@@ -27,7 +23,7 @@ Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-fp16/</guid>
-      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&#39;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
+      <description>Those of you who have been working on desktop and console graphics long enough will remember working with fp16 math in shaders during the D3D9 era. Back then HLSL supported the half scalar type, which corresponded to a floating-point value using 16-bits of precision. Using it was crucial for extracting the best performance from Nvidia&amp;rsquo;s FX series, 6-series, and 7-series hardware, since it could perform many fp16 operations at faster rate than it could for full-precision 32-bit values.</description>
     </item>
     
     <item>
@@ -38,7 +34,7 @@ Yours truly contributed a chapter called &amp;quot;Using Bindless Resources With
       <guid>https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/</guid>
       <description>https://github.com/TheRealMJP/DeferredTexturing
 https://github.com/TheRealMJP/DeferredTexturing/releases (Precompiled Binaries)
-To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever. In place of the old system, both API&amp;rsquo;s have a adopted a new model[1] based around placing opaque resource descriptors in contiguous ranges of GPU-accessible memory.</description>
+To Bind, or Not To Bind Unless you&amp;rsquo;ve been in a coma for the past year, you&amp;rsquo;ve probably noticed that there&amp;rsquo;s a lot of buzz and excitement around the new graphics API&amp;rsquo;s that are available for PC and mobile. One of the biggest changes brought by both D3D12 and Vulkan is that they&amp;rsquo;ve ditched the old slot-based system for binding resources that&amp;rsquo;s been in use since&amp;hellip;forever.</description>
     </item>
     
   </channel>

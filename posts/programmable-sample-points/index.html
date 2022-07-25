@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Stairway To (Programmable Sample Point) Heaven">
-<meta itemprop="description" content="What Is and Should Never Be Historically, the sub-pixel location of MSAA sample points was totally out of your control as a programmer. Typically the hardware used rotated grid patterns such as this one, which were fixed for every pixel in your render target. For FEATURE_LEVEL_10_1, D3D added the concept of standard sample patterns that were required to be supported by the hardware. These were nice, in that you could specify the appropriate quality level and know exactly where the samples would be located.">
-<meta itemprop="datePublished" content="2015-09-14T03:31:37&#43;00:00" />
-<meta itemprop="dateModified" content="2015-09-14T03:31:37&#43;00:00" />
-<meta itemprop="wordCount" content="5239">
-
-
-
+<meta itemprop="description" content="What Is and Should Never Be Historically, the sub-pixel location of MSAA sample points was totally out of your control as a programmer. Typically the hardware used rotated grid patterns such as this one, which were fixed for every pixel in your render target. For FEATURE_LEVEL_10_1, D3D added the concept of standard sample patterns that were required to be supported by the hardware. These were nice, in that you could specify the appropriate quality level and know exactly where the samples would be located."><meta itemprop="datePublished" content="2015-09-14T03:31:37+00:00" />
+<meta itemprop="dateModified" content="2015-09-14T03:31:37+00:00" />
+<meta itemprop="wordCount" content="5237">
 <meta itemprop="keywords" content="Uncategorized," /><meta property="og:title" content="Stairway To (Programmable Sample Point) Heaven" />
 <meta property="og:description" content="What Is and Should Never Be Historically, the sub-pixel location of MSAA sample points was totally out of your control as a programmer. Typically the hardware used rotated grid patterns such as this one, which were fixed for every pixel in your render target. For FEATURE_LEVEL_10_1, D3D added the concept of standard sample patterns that were required to be supported by the hardware. These were nice, in that you could specify the appropriate quality level and know exactly where the samples would be located." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/programmable-sample-points/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/programmable-sample-points/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2015-09-14T03:31:37+00:00" />
 <meta property="article:modified_time" content="2015-09-14T03:31:37+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Stairway To (Programmable Sample Point) Heaven"/>
 <meta name="twitter:description" content="What Is and Should Never Be Historically, the sub-pixel location of MSAA sample points was totally out of your control as a programmer. Typically the hardware used rotated grid patterns such as this one, which were fixed for every pixel in your render target. For FEATURE_LEVEL_10_1, D3D added the concept of standard sample patterns that were required to be supported by the hardware. These were nice, in that you could specify the appropriate quality level and know exactly where the samples would be located."/>
@@ -64,6 +61,8 @@
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -79,7 +78,7 @@
 <p><em>Update: Andrew Lauritzen has informed me via <a href="https://twitter.com/AndrewLauritzen/status/643458084195581952">Twitter</a> that Intel GPU&rsquo;s do in fact support custom sample locations! Thank you again, Andrew!</em></p>
 <h2 id="how-does-it-work">How Does It Work?<a href="#how-does-it-work" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Before we get into use cases, let&rsquo;s quickly go over how to actually work with programmable sample points. Since I usually only use D3D when working on PC&rsquo;s, I&rsquo;m going to focus on the extensions for Maxwell GPU&rsquo;s that were exposed in NVAPI. If you look in the NVAPI headers, you&rsquo;ll find a function for creating an extended rasterizer state, with a corresponding description structure that has new members:</p>
-<pre><code>NvU32 ForcedSampleCount;
+<pre tabindex="0"><code>NvU32 ForcedSampleCount;
 bool ProgrammableSamplePositionsEnable;
 bool InterleavedSamplingEnable;
 NvU8 SampleCount;
@@ -94,7 +93,7 @@ NvU32 reserved[16];
 </code></pre><p>There&rsquo;s a few other goodies in there (like conservative rasterization, and Post-Z coverage!), but the members that we&rsquo;re concerned with are <strong>ProgrammableSamplePositionsEnable</strong>, <strong>InterleavedSamplingEnable</strong>, <strong>SampleCount</strong>, <strong>SamplePositionsX</strong>, and <strong>SamplePositionsY</strong>. <strong>ProgrammableSamplePositionsEnable</strong> is self-explanatory: it enables the functionality. <strong>SampleCount</strong> is also pretty obvious: it&rsquo;s the MSAA sample count that we&rsquo;re using for rendering. <strong>SamplePositionsX</strong> and <strong>SamplePositionsY</strong> are pretty clear in terms of what they&rsquo;re used for: they&rsquo;re for specifying the X and Y coordinates of our MSAA sample points. What&rsquo;s not clear at all is how the API interprets those values. My initial guess was that they should contain 8-bit fixed point numbers where (0,0) is the top left of the pixel, and (255,255) is the bottom right. This was close, but not quite: they&rsquo;re actually 4-bit fixed-point values that correspond to points in the D3D Sample Coordinate System. If you&rsquo;re not familiar with this particular coordinate system (and you&rsquo;re probably not), there&rsquo;s a nice diagram in the documentation for the <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/Ff476218(v=VS.85).aspx">D3D11_STANDARD_MULTISAMPLE_QUALITY_LEVELS enumeration</a>[2]<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>:</p>
 <p><a href="/images/converted/programmable-sample-points/d3d-sample-coordinate-system.png"><img src="/images/converted/programmable-sample-points/d3d-sample-coordinate-system.png" alt="D3D Sample Coordinate System"></a></p>
 <p>There&rsquo;s also a bit more information in the documentation for <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff471396(v=vs.85).aspx">EvaluateAttributeSnapped</a>:</p>
-<pre><code>Only the least significant 4 bits of the first two components (U, V) of the pixel offset are used.
+<pre tabindex="0"><code>Only the least significant 4 bits of the first two components (U, V) of the pixel offset are used.
 The conversion from the 4-bit fixed point to float is as follows (MSB...LSB),
 where the MSB is both a part of the fraction and determines the sign:
 
@@ -117,7 +116,7 @@ where the MSB is both a part of the fraction and determines the sign:
 </code></pre><p>So basically we have 16 buckets work with in X and Y, with the ability to have sample points sit on the top or left edges, but not on the bottom or right edges. Now as for the NVAPI extension, it uses this same coordinate system, except that all values or positive. This means that there is no sign bit, as in the values passed to EvaluateAttributeSnapped. Instead you can picture the coordinate system as ranging from 0 to 15, with 8 (0.5) corresponding to the center of the pixel:</p>
 <p><a href="/images/converted/programmable-sample-points/nvapi-sample-grid1.png"><img src="/images/converted/programmable-sample-points/nvapi-sample-grid1_resized_620.png" alt="NVAPI Sample Grid"></a></p>
 <p>Personally I like this coordinate system better, since having the pixel center at 0.5 is consistent with the coordinate system used for pixel shader positions and UV coordinates. It also means that going from a [0, 1] float to the fixed point representation is pretty simple:</p>
-<pre><code>rsDesc.SamplePositionsX[i] = uint8(Clamp(SamplePositions1x[i].x * 16.0f, 0.0f, 15.0f));
+<pre tabindex="0"><code>rsDesc.SamplePositionsX[i] = uint8(Clamp(SamplePositions1x[i].x * 16.0f, 0.0f, 15.0f));
 </code></pre><p>Now, what about that <strong>InterleavedSamplingEnable</strong> member that&rsquo;s also part of the struct? This is a somewhat poorly-named parameter that controls whether you&rsquo;re specifying the same sample positions for all 4 pixels in a 2x2 quad, or whether you&rsquo;re specifying separate sample positions for each quad pixel. The API works such that the first N points correspond to the top left pixel, the next N correspond to the top right pixel, then the bottom left, followed by the bottom right. This means that for 2xMSAA you need to specify 8 coordinates, and for 4xMSAA you need  to specify 16 coordinates. For 8xMSAA we would need to specify 32 coordinates, but unfortunately NVAPI only lets us specify 16 values. In this case, the 16 values correspond to the sample points in the top left and bottom left pixels of the quad.</p>
 <h2 id="case-study-low-resolution-rendering">Case Study: Low-Resolution Rendering<a href="#case-study-low-resolution-rendering" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>So now that we have programmable sample points, what exactly should we do with them? MFAA-style temporal jittering is a pretty obvious use case, but surely there&rsquo;s other ways to make use of this functionality. One idea I&rsquo;ve been kicking around has been to use MSAA as way to implement half-resolution rendering. Rendering particles at half resolution is really common in games, since blending many layers of particles can result in high costs from pixel shading and framebuffer operations. It can be an easy win in many cases, as long as the content you&rsquo;re rendering won&rsquo;t suffer too much from being shaded at half-rate and upsampled to full resolution. The main issue of course is that you can&rsquo;t just naively upsample the result, since the half-resolution rasterization and depth testing will cause noticeably incorrect results around areas where the transparent geometry was occluded by opaque geometry. Here&rsquo;s a comparison between half-resolution particle rendering with a naive bilinear upscale (left), and full-resolution rendering (right):</p>
@@ -145,7 +144,7 @@ where the MSB is both a part of the fraction and determines the sign:
 <p>In the last step, I run another full-screen pixel shader that samples the low-resolution render target and blends it on top of the full-resolution render target. The important part of this step is choosing how exactly to filter when upsampling. If we just use plain bilinear filtering, the results will be smooth but the transparents will incorrectly bleed over onto occluding opaque pixels. If we instead use the MSAA render target and just load the single subsample that corresponds to the pixel being shaded, the results will look &ldquo;blocky&rdquo; due to the point sampling. So we must choose between filtering and point sampling, just as we did with nearest-depth upsampling. In the resolve step we already detected sub-pixel edges, and so we can already use that to determine when to switch to point sampling. This gets us most of the way there, but not all of the way. For bilinear filtering we&rsquo;re going to sample a 2x2 neighborhood from the low-resolution texture, but our resolve step only detected edges within a single pixel. This means that if there&rsquo;s an edge between two adjacent low-resolution pixels, then we&rsquo;ll get a bleeding artifact if we sample across that edge. To show you what I mean, here&rsquo;s an image showing low-resolution MSAA on the left, and full-resolution rendering on the right:</p>
 <p><a href="/images/converted/programmable-sample-points/msaa_edgebleed.png"><img src="/images/converted/programmable-sample-points/msaa_edgebleed_resized_620.png" alt="MSAA_EdgeBleed"></a></p>
 <p>To detect this particular case, I decided to use an alpha comparison as a heuristic for changes in occlusion:</p>
-<pre><code>float4 msaaResult = LowResTextureMSAA.Load(lowResPos, lowResSampleIdx);
+<pre tabindex="0"><code>float4 msaaResult = LowResTextureMSAA.Load(lowResPos, lowResSampleIdx);
 float4 filteredResult = LowResTexture.SampleLevel(LinearSampler, UV, 0.0f);
 float4 result = filteredResult;
 if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
@@ -303,17 +302,17 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 [Beware of SV_Coverage &#8211; Yosoygames](http://www.yosoygames.com.ar/wp/2017/02/beware-of-sv_coverage/ "") - <time datetime="2017-02-28 11:50:23">Feb 2, 2017</time>
 <p>[…] been obvious). Neither GL spec, docs, MSDN docs and other readings warned me about these gotchas. MJP’s blogposts were very useful, but that’s it. And they weren’t very specific to […]</p>
 <hr />
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>Some of you might remember ATI&rsquo;s old &ldquo;<a href="http://www.tweakguides.com/ATICAT_7.html">Temporal AA</a>&rdquo; feature from their Catalyst Control Panel, which had a similar approach to MFAA in that it alternated sample patterns every frame. However unlike MFAA, it just relied on display persistance to combine samples from adjacent frames, instead of explicitly combining them in a shader. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>Some of you might remember ATI&rsquo;s old &ldquo;<a href="http://www.tweakguides.com/ATICAT_7.html">Temporal AA</a>&rdquo; feature from their Catalyst Control Panel, which had a similar approach to MFAA in that it alternated sample patterns every frame. However unlike MFAA, it just relied on display persistance to combine samples from adjacent frames, instead of explicitly combining them in a shader.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>If you&rsquo;ve been working with D3D11 for a long time and you don&rsquo;t recognize these diagrams, you&rsquo;re not going crazy. The original version of the D3D11 docs were completely missing all of this information, which actually made the &ldquo;standard&rdquo; MSAA patterns somewhat useless. <a href="/images/converted/programmable-sample-points/d3d11-smq-old.png">This</a> is what the docs for D3D11_STANDARD_MULTISAMPLE_QUALITY_LEVELS look like in the old DirectX SDK documentation, and <a href="/images/converted/programmable-sample-points/d3d11-eas-old.png">this</a> is what EvaluateAttributeSnapped looked like. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>If you&rsquo;ve been working with D3D11 for a long time and you don&rsquo;t recognize these diagrams, you&rsquo;re not going crazy. The original version of the D3D11 docs were completely missing all of this information, which actually made the &ldquo;standard&rdquo; MSAA patterns somewhat useless. <a href="/images/converted/programmable-sample-points/d3d11-smq-old.png">This</a> is what the docs for D3D11_STANDARD_MULTISAMPLE_QUALITY_LEVELS look like in the old DirectX SDK documentation, and <a href="/images/converted/programmable-sample-points/d3d11-eas-old.png">this</a> is what EvaluateAttributeSnapped looked like.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 			</div>
 			<hr class="post-end">
@@ -321,7 +320,7 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/uncategorized">Uncategorized</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5239 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>5237 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2015-09-13 20:31 -0700</p>
 			</footer>
 		</article>
@@ -344,14 +343,14 @@ if(msaaResult.a - filteredResult.a &gt; CompositeSubPixelThreshold)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

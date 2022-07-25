@@ -7,20 +7,17 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Correcting XNA&#39;s Gamma Correction">
 <meta itemprop="description" content="One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
-Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline.">
-<meta itemprop="datePublished" content="2009-12-31T22:31:58&#43;00:00" />
-<meta itemprop="dateModified" content="2009-12-31T22:31:58&#43;00:00" />
+Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline."><meta itemprop="datePublished" content="2009-12-31T22:31:58+00:00" />
+<meta itemprop="dateModified" content="2009-12-31T22:31:58+00:00" />
 <meta itemprop="wordCount" content="1150">
-
-
-
 <meta itemprop="keywords" content="DirectX,Programming,Xbox 360,XNA," /><meta property="og:title" content="Correcting XNA&#39;s Gamma Correction" />
 <meta property="og:description" content="One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
 Lately I&rsquo;ve been doing some research into inferred rendering (more on that later), and while working up a prototype renderer in XNA I decided that I would (for once) be gamma-correct throughout the pipeline." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/correcting-xnas-gamma-correction/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2009-12-31T22:31:58+00:00" />
 <meta property="article:modified_time" content="2009-12-31T22:31:58+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Correcting XNA&#39;s Gamma Correction"/>
 <meta name="twitter:description" content="One thing I never used to pay attention to is gamma correction. This is mainly because it rarely gets mentioned, and also because you can usually get pretty good results without ever even thinking about it. However it only took a few days at my new job for me to realize just how essential it is if you want professional-quality results.
@@ -67,6 +64,8 @@ Lately I&rsquo;ve been doing some research into inferred rendering (more on that
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -79,16 +78,14 @@ Lately I&rsquo;ve been doing some research into inferred rendering (more on that
 <p>1.  The fact that the 360 uses a 4-segment piecewise linear approximation curve to perform conversion to and from sRGB, which gives quite different results compared to what you get with PC GPU&rsquo;s.</p>
 <p>2.  The fact that blending behavior is different in DX9 and DX10-level GPU&rsquo;s, regardless of which API you use.  DX9 GPU&rsquo;s will perform framebuffer blending after conversion to sRGB (which is mathematically incorrect), while DX10 GPU&rsquo;s will do the blending in linear space and then convert the blended result to sRGB.  There is a cap to detect this behavior (D3DPMISCCAPS_POSTBLENDSRGBCONVERT) but it&rsquo;s only available if you create an IDirect3D9Ex device.</p>
 <p>So yeah, that&rsquo;s annoying.  But like most limitations in the framework you can work around them if you&rsquo;re determined enough, and fortunately this one is a piece of cake.  Well&hellip;on the PC, at least.  So let&rsquo;s start with the first half, sampling sRGB textures.  Like I mentioned before there&rsquo;s a nice convenient sampler state in D3D9 that will do the sRGB-&gt;linear automatically, but XNA&rsquo;s SamplerState just doesn&rsquo;t have it.  But fortunately that&rsquo;s not the only way to set sampler states&hellip;we can also get the Effects framework to do it for us by defining a sampler_state in our effect files.  So I took a peek at the <a href="http://msdn.microsoft.com/en-us/library/ee418548%28VS.85%29.aspx#Sampler_Stage_States">D3D9 Effect States documentation</a>, and added the appropriate state declaration to my effect file.  And it worked!  For the lazy, all you have to do is this (important line in bold):</p>
-<pre><code>texture2D DiffuseMap;
+<pre tabindex="0"><code>texture2D DiffuseMap;
 sampler2D DiffuseSampler = sampler_state
 {
    Texture = &lt;DiffuseMap&gt;;
    **SRGBTexture = true;**
 };
-
-
 </code></pre><p>Okay now for the other half, sRGB writes.  Once again D3D9 has a convenient render state that does all of the work for us, and the Effects framework can set render states for us if we include them in a pass declaration.  But unfortunately this time the Effect States documentation didn&rsquo;t have anything for SRGBWRITEENABLE.  Too determined to give up, I followed the standard convention of effect states and chopped the prefix off the &ldquo;D3DRS_&rdquo; prefix.  And hey, it worked!</p>
-<pre><code>technique Transparent
+<pre tabindex="0"><code>technique Transparent
 {
     pass Pass1
     {
@@ -101,7 +98,7 @@ sampler2D DiffuseSampler = sampler_state
 </code></pre><p>So we&rsquo;ve solved our gamma problems&hellip;at least if you&rsquo;re only targeting the PC and you&rsquo;re using Effects.  If you&rsquo;re not using Effects, then I don&rsquo;t know of any way to toggle those states.  It&rsquo;s probably possible with some sort of interop/reflection voodoo, but I don&rsquo;t know enough about these things to recommend it.</p>
 <p>There&rsquo;s also the Xbox 360 problem, which is actually two problems in one.  The first problem is that the Xbox 360 doesn&rsquo;t use sampler and render states to control sRGB read and writes.  It instead uses the D3D10 convention of having special surface formats for textures and render targets that control whether conversion takes place.  I don&rsquo;t have access to my Xbox 360 at the moment so I can&rsquo;t verify for sure, but I strongly suspect that the effect states won&rsquo;t work.  And even if they did work you&rsquo;d still have the second problem, which is that the Xbox uses that piecewise approximation curve  (<a href="http://www.valvesoftware.com/publications/2008/GDC2008_PostProcessingInTheOrangeBox.pdf">this presentation</a> by Valve shows some of the nastiness that can occur with it).</p>
 <p>Fortunately we can bypass those problems by doing the conversion ourselves in the shader.  The good news is that the code is a piece of cake&hellip;the bad news is that it&rsquo;s not super cheap since it involves raising your RGB color value to a non-integral power. Here&rsquo;s the code:</p>
-<pre><code>// Converts from linear RGB space to sRGB.
+<pre tabindex="0"><code>// Converts from linear RGB space to sRGB.
 float3 LinearToSRGB(in float3 color)
 {
     return pow(color, 1/2.2f);
@@ -166,14 +163,14 @@ float3 SRGBToLinear(in float3 color)
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

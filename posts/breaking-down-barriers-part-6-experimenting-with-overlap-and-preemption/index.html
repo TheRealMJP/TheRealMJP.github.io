@@ -13,13 +13,9 @@ Part 3 - Multiple Command Processors
 Part 4 - GPU Preemption
 Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
-In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput.">
-<meta itemprop="datePublished" content="2018-12-10T02:01:27&#43;00:00" />
-<meta itemprop="dateModified" content="2018-12-10T02:01:27&#43;00:00" />
-<meta itemprop="wordCount" content="4403">
-
-
-
+In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput."><meta itemprop="datePublished" content="2018-12-10T02:01:27+00:00" />
+<meta itemprop="dateModified" content="2018-12-10T02:01:27+00:00" />
+<meta itemprop="wordCount" content="4401">
 <meta itemprop="keywords" content="Graphics,DX12," /><meta property="og:title" content="Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption" />
 <meta property="og:description" content="This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
 Part 1 - What&rsquo;s a Barrier?
@@ -30,9 +26,10 @@ Part 5 - Back To The Real World
 Part 6 - Experimenting With Overlap and Preemption
 In the previous art_icl_es we took a look at how barriers typically work on GPUs, and then we examined how multiple hardware queues can help with preemption and overall throughput." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/breaking-down-barriers-part-6-experimenting-with-overlap-and-preemption/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2018-12-10T02:01:27+00:00" />
 <meta property="article:modified_time" content="2018-12-10T02:01:27+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Breaking Down Barriers - Part 6: Experimenting With Overlap and Preemption"/>
 <meta name="twitter:description" content="This is Part 6 of a series about GPU synchronization and preemption. You can find the other articles here:
@@ -85,6 +82,8 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -104,28 +103,28 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 <p>Before I wrote these articles, I decided that it would be fun and educational to examine how different GPU&rsquo;s respond to the explicit synchronization and multi-queue functionality offered by DX12. Unfortunately, I found it was rather difficult to do this in practice. The IHV&rsquo;s have some vendor-specific tools for gathering timing data from an offline capture, but they&rsquo;re not really set up to easily show you the degree to which different workloads were overlapping on the GPU. <a href="https://blogs.msdn.microsoft.com/pix/2017/01/17/introducing-pix-on-windows-beta/">PIX for Windows</a> has the ability to show overlapping draws or dispatches in its timeline view, but at the time it also wasn&rsquo;t available yet. It also doesn&rsquo;t currently show overlapping work from compute queues, and it can only show you timing during an offline analysis process. (AMD now has a really awesome <a href="https://gpuopen.com/gaming-product/radeon-gpu-profiler-rgp/">GPU profiler</a> that only shows you overlapping work on the GPU, but also shows you what the GPU is doing in response to barriers! Unfortunately I wrote the test app and blog post back in January of 2017, and RGP didn&rsquo;t come out until July of that year).</p>
 <p>After getting frustrated at my available options, I decided to try my hand at building my own timing system. D3D12 does have a built-in mechanism for tracking GPU execution timings via <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn903946(v=vs.85).aspx">timestamp queries</a>, which are useful for getting very coarse-grained timing data (for instance, overall GPU frame time, or the time required to complete all opaque draw calls). However they&rsquo;re pretty useless when it comes to determining thread-level parallelism on the GPU. This is because it&rsquo;s not specified how timestamps behave with regards to barriers and synchronization. The documentation says nothing about whether a timestamp should wait for all previous draws/dispatches to complete, or whether they should be affected by transition barriers. This means you wrap a draw call with timestamps, you don&rsquo;t know if the second timestamp will record as soon as the command processor kicks of the draw or if it will record after the draw call is finished. In practice I&rsquo;ve seen varying behavior from different vendors: in some cases a timestamp would cause a sync point, in others it wouldn&rsquo;t. This all lead me to my &ldquo;screw it, I&rsquo;ll build my own timers&rdquo; moment.</p>
 <p>Fortunately, making my own shader timer wasn&rsquo;t too difficult&hellip;or at least for my use case, which was a toy application where I was willing to bend the rules a bit. Really all I needed was for a shader to write to some bit of CPU-accessible memory at the start and end of the program, and I could have the CPU monitor that memory and record the timestamp. To do this I needed to use a custom heap that had the exact properties that I wanted:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">D3D12_HEAP_DESC</span> <span class="n">heapDesc</span> <span class="o">=</span> <span class="p">{</span> <span class="p">}</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">SizeInBytes</span> <span class="o">=</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Flags</span> <span class="o">=</span> <span class="n">D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Alignment</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CPUPageProperty</span> <span class="o">=</span> <span class="n">D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CreationNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">MemoryPoolPreference</span> <span class="o">=</span> <span class="n">D3D12_MEMORY_POOL_L0</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">D3D12_HEAP_TYPE_CUSTOM</span><span class="p">;</span>
-<span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">VisibleNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">DXCall</span><span class="p">(</span><span class="n">DX12</span><span class="o">:</span><span class="o">:</span><span class="n">Device</span><span class="o">-</span><span class="o">&gt;</span><span class="n">CreateHeap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heapDesc</span><span class="p">,</span> <span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">workload</span><span class="p">.</span><span class="n">ReadbackHeap</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-</code></pre></div><p>The important bits here are  the CPUPageProperty, and the MemoryPoolPreference. Setting the page property to WRITE_COMBINE ensures that the memory is uncached from the CPU point of view, which is important since the GPU will be writing to that memory and not a CPU core. Using MEMORY_POOL_L0 also ensures that the heap will live in system memory (as opposed to device memory on the video card), which means that the CPU can access it. It also makes it more likely that the heap will be uncached from the point of view of the GPU. If the GPU writes to an internal cache instead of directly to memory, it&rsquo;s likely that the CPU wouldn&rsquo;t see the write until the cache line was evicted. In the end this hopefully gives us coherent, but slow communication between the GPU and CPU.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">D3D12_HEAP_DESC</span> <span class="n">heapDesc</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">SizeInBytes</span> <span class="o">=</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Flags</span> <span class="o">=</span> <span class="n">D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Alignment</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CPUPageProperty</span> <span class="o">=</span> <span class="n">D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">CreationNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">MemoryPoolPreference</span> <span class="o">=</span> <span class="n">D3D12_MEMORY_POOL_L0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">D3D12_HEAP_TYPE_CUSTOM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">heapDesc</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">VisibleNodeMask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">DXCall</span><span class="p">(</span><span class="n">DX12</span><span class="o">::</span><span class="n">Device</span><span class="o">-&gt;</span><span class="n">CreateHeap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heapDesc</span><span class="p">,</span> <span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">workload</span><span class="p">.</span><span class="n">ReadbackHeap</span><span class="p">)));</span>
+</span></span></code></pre></div><p>The important bits here are  the CPUPageProperty, and the MemoryPoolPreference. Setting the page property to WRITE_COMBINE ensures that the memory is uncached from the CPU point of view, which is important since the GPU will be writing to that memory and not a CPU core. Using MEMORY_POOL_L0 also ensures that the heap will live in system memory (as opposed to device memory on the video card), which means that the CPU can access it. It also makes it more likely that the heap will be uncached from the point of view of the GPU. If the GPU writes to an internal cache instead of directly to memory, it&rsquo;s likely that the CPU wouldn&rsquo;t see the write until the cache line was evicted. In the end this hopefully gives us coherent, but slow communication between the GPU and CPU.</p>
 <p>The other key component of making this work was figuring out a way have the first thread write its value to the &ldquo;start&rdquo; buffer, and having the last thread write its value to the &ldquo;end&rdquo; buffer. The API doesn&rsquo;t make any guarantees about the order in which threads are executed for a dispatch or draw call, so I didn&rsquo;t want to rely on SV_DispatchThreadID or SV_Position to determine the first or last invocation. Instead, I used atomics on a global counter buffer to figure out an ordered index for each thread:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">uint</span> <span class="n">prevValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">CounterBuffer</span><span class="p">.</span><span class="n">InterlockedAdd</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">prevValue</span><span class="p">)</span><span class="p">;</span>
-<span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">=</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">ShaderStartBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
-
-<span class="c1">// Do actual shader workload
-</span><span class="c1"></span>
-<span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span><span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">NumWorkloadElements</span><span class="p">)</span>
-    <span class="n">ShaderEndBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
-</code></pre></div><p>I wrote the frame number in the start/end buffers so that they would be monotonically increasing counters, thus avoiding the need to clear them frame.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">uint</span> <span class="n">prevValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">CounterBuffer</span><span class="p">.</span><span class="n">InterlockedAdd</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">prevValue</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ShaderStartBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Do actual shader workload
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">prevValue</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">NumWorkloadElements</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ShaderEndBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CBuffer</span><span class="p">.</span><span class="n">FrameNum</span><span class="p">;</span>
+</span></span></code></pre></div><p>I wrote the frame number in the start/end buffers so that they would be monotonically increasing counters, thus avoiding the need to clear them frame.</p>
 <p>The general process for timing a single frame&rsquo;s workload goes like this:</p>
 <ul>
 <li>Issue a command to clear the CounterBuffer to 0 using ClearUnorderedAccessViewUint</li>
@@ -266,7 +265,7 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 <hr>
 <h2 id="comments">Comments:<a href="#comments" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h4 id="heading"><a href="#heading" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
-<p>[]( &ldquo;&quot;) - <time datetime="2018-12-11 09:34:08">Dec 2, 2018</time></p>
+<p><a href="%22%22"></a> - <time datetime="2018-12-11 09:34:08">Dec 2, 2018</time></p>
 <p>Really good article, as always! I think there&rsquo;s a small typo in &ldquo;but no overlap between A and B. &ldquo;, should be C instead of B?</p>
 <hr />
 ####
@@ -304,7 +303,7 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://therealmjp.github.io/tags/graphics">Graphics</a></span><span class="tag"><a href="https://therealmjp.github.io/tags/dx12">DX12</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4403 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4401 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-12-09 18:01 -0800</p>
 			</footer>
 		</article>
@@ -327,14 +326,14 @@ In the previous art_icl_es we took a look at how barriers typically work on GPUs
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
 
 

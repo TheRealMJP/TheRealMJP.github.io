@@ -6,19 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="Radiosity, DX11 Style">
-<meta itemprop="description" content="Radiosity isn&rsquo;t exactly new. According to Wikipedia it&rsquo;s been used for rendering since the early 80&rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point.">
-<meta itemprop="datePublished" content="2011-01-31T08:08:09&#43;00:00" />
-<meta itemprop="dateModified" content="2011-01-31T08:08:09&#43;00:00" />
+<meta itemprop="description" content="Radiosity isn&rsquo;t exactly new. According to Wikipedia it&rsquo;s been used for rendering since the early 80&rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point."><meta itemprop="datePublished" content="2011-01-31T08:08:09+00:00" />
+<meta itemprop="dateModified" content="2011-01-31T08:08:09+00:00" />
 <meta itemprop="wordCount" content="4312">
-
-
-
 <meta itemprop="keywords" content="DirectX,DirectX 11,Graphics,Programming," /><meta property="og:title" content="Radiosity, DX11 Style" />
 <meta property="og:description" content="Radiosity isn&rsquo;t exactly new. According to Wikipedia it&rsquo;s been used for rendering since the early 80&rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://therealmjp.github.io/posts/radiosity-dx11-style/" />
+<meta property="og:url" content="https://therealmjp.github.io/posts/radiosity-dx11-style/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2011-01-31T08:08:09+00:00" />
 <meta property="article:modified_time" content="2011-01-31T08:08:09+00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Radiosity, DX11 Style"/>
 <meta name="twitter:description" content="Radiosity isn&rsquo;t exactly new. According to Wikipedia it&rsquo;s been used for rendering since the early 80&rsquo;s, and this page looks like it may have been the first web page on the Internet. The basic premise is dead simple: for each point where you want to bake lighting (typically either a texel in a lightmap, or a vertex in a mesh), render the rest of the scene and any exterior light sources (skydome, area lights, sun, whatever) in all directions within a hemisphere surrounding the surface normal at that point."/>
@@ -64,6 +61,8 @@
 	</div>
 
 
+
+
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
@@ -87,7 +86,7 @@
 <p>To prepare for baking, the scene and all of its individual meshes are loaded and processed. As part of the processing, I calculate a per-vertex tangent frame using a modified version of <a href="http://www.terathon.com/code/tangent.html">this approach</a>. The tangents are needed for normal mapping, but they&rsquo;re also used as a frame of reference for baking each vertex. This is because I store H-basis irradiance in tangent space. Tangent space provides a natural frame of reference for the hemisphere about the normal, and is also consistent across the vertices of a triangle. This lets me interpolate the coefficients across a triangle, which wouldn&rsquo;t be possible if each vertex used a different frame of reference during integration. It also allows for a simple irradiance lookup with the tangent space normal sampled from a normal map, or (0, 0, 1) if normal mapping isn&rsquo;t used.</p>
 <h1 id="baking">Baking<a href="#baking" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>The baking loop looks something like this:</p>
-<pre><code>for each Iteration
+<pre tabindex="0"><code>for each Iteration
     for each Mesh
         Extract vertex data
         for each Vertex
@@ -104,15 +103,15 @@
 </code></pre><p>Basically we do N + 1 iterations, where N is the number of indirect bounces we want to factor in. For the first iteration we add in all direct light sources (the skydome), for the second we add in the bounce lighting from the first pass plus the indirect-only lighting (the sun), and in all subsequent passes we only render the scene geometry with baked lighting.</p>
 <h2 id="vertex-baking">Vertex Baking<a href="#vertex-baking" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>For each vertex, we need to determine the radiance emitted from each surface visible around the hemisphere.  This hemisphere of radiance values is known as the <em>field-radiance function.</em> Determining the radiance value for any surface is simple: we just render the corresponding mesh and evaluate the BRDF in the pixel shader, which in our case means sampling the albedo texture and using it to modulate the diffuse lighting.  Since we&rsquo;re going do it using rasterization, we&rsquo;ll render to a hemicube for the reasons mentioned previously. To represent my hemicube, I used 5  R16G16B16A16_FLOAT render target textures storing HDR color values. To keep things simple I made them all equal-sized, and rendered each face as if it were a full cube map rather than a hemicube. However I used the scissor test to scissor out the half of the cube face that would not be needed, for all faces other than the first. Initially I used 256x256 textures for the render targets, but eventually lowered it to 64x64. Increasing the resolution does increase the quality slightly, but gains become diminishing very quickly past 64x64. This is because the irradiance integration filters out the high-frequency components, so any small details missed due to the small render target size have very little effect on the end result. For the first pass, the scene is rendered with color writes disabled. This is because the mesh surfaces do not yet have incident lighting, and thus do not emit any radiance. Conceptually you can imagine this as though all light sources just began emitting light, and the light has yet to reach the mesh surfaces. So essentially we just render the mesh geometry to the depth buffer, in order &ldquo;block out&rdquo; the sky and determine the overall visibility for that vertex. Once we&rsquo;ve done this we render the skydome with a depth value of 1.0, so that any rendered geometry occludes it. Thus we &ldquo;fill in&rdquo; the rest of the hemicube texels with radiance values emitted by the skydome. For the skydome I used the CIE Clear Sky model, which is simple and easy to implement in a pixel shader. The final result in the hemicube textures looks like this: <a href="/images/converted/radiosity-dx11-style/hemicube_firstpass.png"><img src="/images/converted/radiosity-dx11-style/hemicube_firstpass.png" alt="" title="Hemicube_FirstPass"></a> For the second pass, we use the results of the first pass as the incident lighting light for each surface pixel. This effectively causes the skydome lighting to &ldquo;bounce&rdquo; off the surface, adding indirect lighting. We also evaluate the diffuse contribution from the sun for each pixel, so that we get an indirect contribution from the sun as well. This contribution is calculated using a simple N (dot) L with the interpolated vertex normal, and the sun direction. A shadow visibility term is also added using a shadow map, which is rendered as a low-resolution cascaded shadow map. Then the sum of the baked lighting and and the sun light are modulated with the diffuse albedo, which is sampled from a texture. So the final exit radiance value for a pixel is computed like this:</p>
-<pre><code>radiance = (bakedLighting + sunLight * sunVisibility) * diffuseAlbedo
+<pre tabindex="0"><code>radiance = (bakedLighting + sunLight * sunVisibility) * diffuseAlbedo
 </code></pre><p>After the scene is rendered, the skydome is omitted since it&rsquo;s contribution was already handled in the first pass. Thus the final hemicube looks like this: <a href="/images/converted/radiosity-dx11-style/hemicube_secondpass.png"><img src="/images/converted/radiosity-dx11-style/hemicube_secondpass.png" alt="" title="Hemicube_SecondPass"></a> For all subsequent passes, only the baked vertex irradiance is used for computing the exit radiance of each pixel. This is because the contribution from both of our light sources have already been added in previous passes, and we only need to further compute indirect lighting terms.</p>
 <h2 id="integration">Integration<a href="#integration" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Once we&rsquo;ve rendered the scene to all 5 sides of the hemicube, we have a full field-radiance function for the hemisphere stored in a texture map. At this point we could now compute a full irradiance distribution function for the hemisphere, which would provide us with an irradiance value for any possible surface normal. Such a function would be computed by convolving our field radiance with a cosine kernel, which is done by evaluating the following integral:</p>
 <p>$$ I(p,N_{p})=\int_{\Omega}L(p,\omega_{i})(N_{p}\circ\omega_{i})d\omega_{i} $$</p>
-<p>Unfortunately, a full irradiance distribution function in a texture map isn&rsquo;t all that useful since it&rsquo;s too much data to store per-vertex. So instead we&rsquo;ll  represent the irradiance map using 2nd-order spherical harmonics, using the method outlined in the paper &ldquo;<a href="http://graphics.stanford.edu/papers/envmap/">An Efficient Representation for Irradiance Environment Maps</a>&quot;. The basic procedure is to first convert the radiance map to a spherical harmonic representation by integrating against the spherical harmonic basis functions, and then convolve the result with a cosine kernel to compute irradiance. The following integral is used for projecting onto SH:</p>
+<p>Unfortunately, a full irradiance distribution function in a texture map isn&rsquo;t all that useful since it&rsquo;s too much data to store per-vertex. So instead we&rsquo;ll  represent the irradiance map using 2nd-order spherical harmonics, using the method outlined in the paper &ldquo;<a href="http://graphics.stanford.edu/papers/envmap/">An Efficient Representation for Irradiance Environment Maps</a>&rdquo;. The basic procedure is to first convert the radiance map to a spherical harmonic representation by integrating against the spherical harmonic basis functions, and then convolve the result with a cosine kernel to compute irradiance. The following integral is used for projecting onto SH:</p>
 <p>$$ L_{lm}=\int_{\theta=0}^{\pi}\int_{\phi=0}^{\pi}L(\theta,\phi)Y_{lm}(\theta,\phi)sin{\theta}d{\theta}d{\phi} $$</p>
 <p>For radiance stored in a texture map, we can implement this integration by using the method described in Peter-Pike Sloan&rsquo;s <a href="http://www.ppsloan.org/publications/StupidSH36.pdf">Stupid Spherical Harmonics Tricks</a>. For our purposes we&rsquo;ll modify the algorithm by first converting each texel&rsquo;s SH radiance to irradiance by convolving with a cosine kernel, and then converting the SH coefficients to 1st-order H-basis representation. This allows us to sum 12 values per texel, rather than the 27 required for 2nd-order SH. The algorithm looks something like this:</p>
-<pre><code>for each Hemicube Face
+<pre tabindex="0"><code>for each Hemicube Face
     for each Texel
         Sample radiance
         Calculate direction vector for the texel
@@ -125,7 +124,7 @@
 <p>My  implementation ended up being 2 passes: the first performing the conversion to H-basis irradiance and reducing each row of each face texture to a single set of RGB coefficients, and the second reducing to only 1 set of RGB coefficients. In the first pass, the threads are dispatched in 1x64x5 thread groups, with each group containing 64x1x1 threads. The following diagram shows how the threads are distributed relative to the hemicube textures for the first 2 faces:</p>
 <p><a href="/images/converted/radiosity-dx11-style/integration.png"><img src="/images/converted/radiosity-dx11-style/integration.png" alt="" title="Integration"></a></p>
 <p>The projection onto SH and cosine kernel convolution can be implemented pretty easily in HLSL, using values taken from the irradiance environment mapping paper. My HLSL code looks like this:</p>
-<pre><code>void ProjectOntoSH(in float3 n, in float3 color, out float3 sh[9])
+<pre tabindex="0"><code>void ProjectOntoSH(in float3 n, in float3 color, out float3 sh[9])
 {
     // Cosine kernel
     const float A0 = 3.141593f;
@@ -148,7 +147,7 @@
     sh[8] = 0.546274f * (n.x * n.x - n.y * n.y) * A2 * color;
 }
 </code></pre><p>Converting that to H-basis is also simple, and is expressed as a matrix multiplication. The values for the transformation matrix are given in the source paper. This is the shader code that I used:</p>
-<pre><code>void ConvertToHBasis(in float3 sh[9], out float3 hBasis[4])
+<pre tabindex="0"><code>void ConvertToHBasis(in float3 sh[9], out float3 hBasis[4])
 {
     const float rt2 = sqrt(2.0f);
     const float rt32 = sqrt(3.0f / 2.0f);
@@ -175,7 +174,7 @@
 </code></pre><p>After the first pass, we&rsquo;re left with a single buffer containing 64x5x3 float4 values, where each consecutive set of 3 float4 values represents the sum of all RGB H-basis coefficients for that row.  To reduce to a single set of coefficients, we dispatch a reduction pass containing 1x3x1 groups of 64x1x5 threads.  With this setup each group sums all 64 of the R, G, or B coefficients for a particular hemicube face and stores the result in shared memory. Once this has completed, the first thread of each group sums the 5 values for each hemicube to produe a single set of H-basis coefficients. This last step is somewhat sub-optimal since only a single thread performs the work, however for summing only 5 values I didn&rsquo;t think it was worth it to try anything fancy or split the reduction into another pass. The following diagram shows the thread layout:</p>
 <p><a href="/images/converted/radiosity-dx11-style/reduction.png"><img src="/images/converted/radiosity-dx11-style/reduction.png" alt="" title="Reduction"></a></p>
 <p>The final result of this process is 3 sets of 4 H-basis coefficients (1 for each RGB channel) representing the irradiance across the hemisphere around the vertex normal, oriented in tangent space. After vertices are baked in this manner, I sum the vertex coefficients for each mesh with the results from the previous iteration in order to sum the bounces (which I do with a really simple compute shader). After the desired number of iterations, the coefficients are ready to be used at runtime and combined with direct sun lighting. Evaluating the H-basis coefficients to compute irradiance for a normal is pretty simple. I use the following code in my pixel shader, which takes a tangent space normal and the interpolated coefficients from the vertices:</p>
-<pre><code>float3 GetHBasisIrradiance(in float3 n, in float3 H0, in float3 H1, in float3 H2, in float3 H3)
+<pre tabindex="0"><code>float3 GetHBasisIrradiance(in float3 n, in float3 H0, in float3 H1, in float3 H2, in float3 H3)
 {
     float3 color = 0.0f;
 
@@ -309,14 +308,14 @@
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2021 <a href="https://therealmjp.github.io/">MJP</a></p>
+		<p>&copy; 2022 <a href="https://therealmjp.github.io/">MJP</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://therealmjp.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>
 	</footer>
 
 
-	<script src="https://therealmjp.github.io/js/main.min.d1b247cbe4b98a4f2db4cae020d2b180d0b585a34ed4d751cb0072d5676fc52a.js" integrity="sha256-0bJHy+S5ik8ttMrgINKxgNC1haNO1NdRywBy1WdvxSo="></script>
+	<script src="https://therealmjp.github.io/js/main.min.6e4a8d6406e68b5f99eb4fd82c6e3eaa5aa471527d2d301aceaecdfefdd04bc9.js" integrity="sha256-bkqNZAbmi1+Z60/YLG4+qlqkcVJ9LTAazq7N/v3QS8k="></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
