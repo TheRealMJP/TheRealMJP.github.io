@@ -6,11 +6,11 @@
     <description>Recent content in Graphics on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GPU Memory Pools in D3D12</title>
       <link>https://therealmjp.github.io/posts/gpu-memory-pool/</link>
-      <pubDate>Mon, 25 Jul 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/gpu-memory-pool/</guid>
       <description>Basics of GPU Memory Integrated/UMA GPUs Dedicated/NUMA GPUs How It Works In D3D12 Common Patterns in D3D12 Textures And The Two-Step Upload Should We Upload Buffers? Working With The COPY Queue Two COPY Queues Are Better Than One? Allocating Staging Memory What About DirectStorage? Results From My Testing App CPU Write Performance CPU Read Performance GPU Read Performance, Normal Access GPU Read Performance, Non-Coalesced Access GPU Read Performance, Various Buffer Sizes Conclusion When the monkey&amp;rsquo;s paw granted our wish for lower-level/explicit graphics APIs, one of the consequences was that we were much more directly exposed to the fact that GPUs can have their own separate set of physical memory.</description>
