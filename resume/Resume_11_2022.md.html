@@ -1,0 +1,178 @@
+<meta charset="utf-8"><style class="fallback">body{visibility:hidden;}</style>
+                        **Matt Pettineo**
+                        mpettineo@gmail.com
+                        https://therealmjp.github.io/
+                        https://github.com/TheRealMJP
+
+
+Experience
+===================================================
+
+2021-Present
+: *Engine Technical Lead, Ready At Dawn Studios*
+: <br><br>• Worked closely with engineers from Qualcomm and Oculus to map out efficient rendering strategies for the Oculus Quest 2. Wrote a series of low-level performance benchmarks to extract performance characteristics of the Quest 2 GPU and Vulkan driver.
+: <br><br>• Architected a proposal to implement virtual texturing and GPU-driven rendering to improve batching and performance on the Quest 2. Wrote a prototype virtual texture system that made use of sparse (tiled) resources, sampler feedback, and runtime page generation + block compression.
+: <br><br>• Provided daily technical guidance and mentoring to the other 8 members of the engine team
+: <br><br>• Worked with the tools lead to direct efforts to bring up a new standalone world editor alongside improved world-creation workflows for future titles. Re-worked lighting and shadowing systems to make them compatible with the new editor.
+: <br><br>• Designed a new low-level "stateless" draw and compute interface for the engine that's built around universal support for bindless resources.
+
+2015-2021
+: *Lead Engine Programmer, Ready At Dawn Studios*
+: <br><br>• Served as the sole lead and manager for the engine team consisting of 6-7 programmers. Provided guidance, direction, and mentoring to members of the team. Planned high-level roadmaps and worked with reports to generate tasks.
+: <br><br>• Wrote the initial prototype of the data-driven ECS that was adopted into the engine. Worked with gameplay engineers to flesh out the interfaces and ensure it had required functionality for their use cases.
+: <br><br>• Implemented VR rendering optimizations including instanced stereo rendering and a software solution for variable-rate shading. Adapted existing rendering features to make them work correctly in PC VR.
+: <br><br>• Wrote a new runtime occlusion culling system based on CPU rasterization of low-poly proxy occluder meshes. Implemented the full authoring and processing pipeline for artists and designers.
+: <br><br>• Implemented a generic projected decal system using bindless textures to allow for arbitrary texture sampling within the forward rendering pixel shader. Wrote a fallback system using a runtime atlas for D3D11.
+: <br><br>• Worked with another programmer to implement the D3D12 backend for the engine. Wrote a system for pre-creating PSOs at load time using a state registration interface. Later implemented full bindless support for shader inputs with a PS4 compatibility layer.
+: <br><br>• Re-wrote the core material and shader system to provide a more extensible interface and reduce the number of required shader permutations. Wrote a flexible system to allow choosing whether or not to permute on material parameters without requiring source code changes.
+: <br><br>• Optimized CPU performance for frustum culling and mesh LOD selection using ISPC. Worked with a gameplay programmer to globally improve component system update scheduling across the entire engine.
+
+2012-2015
+: *Co-Lead Engine Programmer, Ready At Dawn Studios*
+: <br><br>• Worked with a co-lead to direct, mentor, and manage a team of 9-10 engine programmers.
+: <br><br>• Primary programmer responsible for the engine’s PS4 graphics back-end: wrote optimized platform-centric paths for multithreaded command buffer generation, low-level shader binding, shader optimization and scalarization using PS4-specific intrinsics, synchronization and cache management, usage of depth and color metadata, etc.
+: <br><br>* Implemented Forward+ rendering with support for multiple depth bins, FFT-based artist-driven lens flare effects, hair shading, eye shading with refraction and caustics, pre-filtered roughness maps, deferred decal system, and dynamic AO based on proxy occluder capsules.
+: <br><br>• Implemented a custom Temporal AA solution that utilized MSAA and higher-order filtering to achieve high temporal stability with no flickering.
+: <br><br>• Researched and implemented an improved shadow mapping system that utilized Exponential Variance Shadow Maps and Sample Distribution Shadow Maps to improve usability, filtering quality, and perceived shadow map resolution
+: <br><br>• Collaborated with teammates to research and implement spherical gaussians as an alternative encoding for lightmaps. Added support for using spherical gaussian radiance with cloth, hair, and skin shading models
+: <br><br>• Re-wrote the shader compilation pipeline to allow for lazy generation of required shader permutations in the offline content build pipeline once the full mesh + material combination was known.
+: <br><br>• Worked with artists and designers to heavily optimize content for The Order: 1886 to ensure it shipped at a stable 30 fps on PS4. Optimized streaming, decompression, memory allocators, and gameplay system memory usage across the entire game.
+
+2009-2012
+: *Engine Programmer, Ready At Dawn Studios*
+: <br><br>• Collaborated with a small team to make a playable vertical slice demo that was ultimately used to get The Order: 1886 green-lit, serving as one of two graphics programmers
+: <br><br>• Implemented spotlight/directional light shadow maps, pre-convolved specular reflection probes, classic G-Buffer deferred rendering, compute-based auto exposure, depth field with bokeh, and bloom/glare effects. Also implemented the engine's pre-computed occlusion culling system along with artist-facing tools for authoring and visualization.
+: <br><br>• Ported the engine’s PC graphics layer from D3D9 to D3D11. Wrote back-end platform and graphics code for PC, Vita, PS3, and prototype PS4 hardware.
+: <br><br>• Helped to bring-up an Optix-based GI baking pipeline and get it ready for production. Implemented H-basis encoding for both irradiance and visibility, using the visibility result for diffuse and specular occlusion. Implemented support for importance-sampled quad, disc, and spherical area light sources
+: <br><br>• Worked on functionality, fixes, and optimizations for the PS3 renderer used for the God of War Origins collection. Replicated PSP-specific rendering functionality in programmable shaders, optimized usage of split memory pools to maximize GPU bandwidth, and resolved GPU crashes related to executing freed command buffers
+
+2007-2009
+: *Software Engineer, Crestron Electronics*
+: <br><br>• Worked on the all-in-one Windows software package used for programming custom commercial and home automation setups using Crestron controllers and interfaces
+: <br><br>• Collaborated with a team of 4-5 working in a VB6 codebase that interoperated with native COM components written in C++ using MFC and ATL
+: <br><br>• Re-wrote the core networking and graphics interfaces used by the application in order to improve functionality and reduce bugs.
+
+Education
+===================================================================
+
+B.S. in Computer Engineering (2007)
+: *The College of New Jersey*
+: <br>Ewing, NJ
+
+Game Credits
+===================================================================
+
++ *Lone Echo 2* (PC/Oculus Rift, Ready At Dawn Studios, 2021)
++ *Echo VR* (Oculus Quest, Ready At Dawn Studios, 2020)
++ *Echo Combat* (PC/Oculus Rift, Ready At Dawn Studios, 2018)
++ *Lone Echo* (PC/Oculus Rift, Ready At Dawn Studios, 2017)
++ *Deformers* (PC/PS4/XB1, Ready At Dawn Studios, 2017)
++ *The Order: 1886* (PS4, Ready At Dawn Studios, 2015)
++ *God of War Origins Collection* (PS3, Ready At Dawn Studios, 2011)
+
+Publications
+===============================================================
+
+Conference Talks
+---------------------------------------------------------------
+
++ [*Breaking Down Barriers: An Introduction to GPU Synchronization*](https://github.com/TheRealMJP/GDC2019_Public)
+  <br>Advanced Graphics Techniques Tutorial Session, GDC 2019
+
++ [*Advanced Lighting R&D at Ready At Dawn Studios*](http://blog.selfshadow.com/publications/s2015-shading-course/)
+  <br>Physically Based Shading in Theory and Practice, SIGGRAPH 2015
+
++ [*Rendering The Alternate History of The Order: 1886*](http://advances.realtimerendering.com/s2015/index.html)
+  <br>Advances in Real-Time Rendering in Games, SIGGRAPH 2015
+
++ [*Crafting a Next-Gen Material Pipeline for The Order: 1886*](http://www.readyatdawn.com/slides/RAD_GDC_2014.pptx)
+  <br>GDC 2014 (longer, updated version of the GDC 2013 talk)
+
++ [*Crafting a Next-Gen Material Pipeline for The Order: 1886*](http://blog.selfshadow.com/publications/s2013-shading-course/)
+  <br>Physically Based Shading in Theory and Practice, SIGGRAPH 2013
+
+Books
+---------------------------------------------------------------
+
++ [*Ray Tracing Gems 2*](https://www.realtimerendering.com/raytracinggems/rtg2/index.html)
+  <br>Chapter 17 - Using Bindless Resources with DirectX Raytracing
+  <br>Nvidia/Apress 2021
+
++ [*OpenGL Insights*](http://openglinsights.com/)
+  <br>Chapter 15 - Depth of Field with Bokeh Rendering
+  <br>CRC Press 2012
+
++ [*Practical Rendering and Computation with Direct3D 11*](https://www.routledge.com/Practical-Rendering-and-Computation-with-Direct3D-11/Zink-Pettineo-Hoxley/p/book/9780367659257)
+  <br>AK Peters/CRC Press 2021
+
+Select Blog Articles
+---------------------------------------------------------------------
+
++ [*Breaking Down Barriers*](https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/)
+  <br>6-part series explaning the basics of GPU synchronization, preemption, and multi-queue submission
+
++ [*Approximating Subsurface Scattering With Spherical Gaussians*](https://therealmjp.github.io/posts/sss-sg/)
+  <br>Describes a new approach to pre-integrated subsurface scattering that uses spherical gaussians to implement a configurable scattering kernel
+
++ [*Lightmap Baking and Spherical Gaussians Series*](https://therealmjp.github.io/posts/new-blog-series-lightmap-baking-and-spherical-gaussians/)
+  <br>6-part series describing what spherical gaussians are, and how to use them to represent pre-computed global illumination
+
++ [*Bindless Texturing for Deferred Rendering and Decals*](https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/)
+  <br>Examines an approach to deferred rendering that stores UVs and gradients in a slim G-Buffer, and later samples bindless textures using the UVs and material index.
+  <br>Also describes how to implement decal projectors using bindless techniques.
+
++ [*A Sampling of Shadow Techniques*](https://therealmjp.github.io/posts/shadow-maps/)
+  <br>Describes common approaches to implemented cascaded shadow maps, and examines the quality and performance of various shadow map representations and filtering techniques.
+
++ [*Signal Processing and MSAA Series*](https://therealmjp.github.io/posts/upcoming-series-on-signal-processing-and-msaa/)
+  <br>4-part series that gives an overview of signal processing concepts used in graphics, and follows that with explorations of MSAA and non-standard resolve filters.
+
+
+Open Source Projects
+===================================================================
+
+All of my open source projects can be found on my [GitHub profile](https://github.com/TheRealMJP).
+
++ [*DXR Path Tracer*](https://github.com/TheRealMJP/DXRPathTracer)
+  <br>A simple progressive unidirectional pathtracer implemented in DXR
+
++ [*Deferred Texturing*](https://github.com/TheRealMJP/DeferredTexturing)
+  <br>Companion project to my [Bindless Texturing blog post]((https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/). Implements clustered forward and deferred texturing rendering paths with spot + directional shadows and bindless decal projectors.
+
++ [*Baking Lab*](https://github.com/TheRealMJP/BakingLab)
+  <br>Companion project to my [Spherical Gaussian blog series](https://therealmjp.github.io/posts/new-blog-series-lightmap-baking-and-spherical-gaussians/). Implements a progressive, Embree-based CPU lightmap baker with various lightmap basis modes available for comparison. Implements radiosity normal maps, spherical harmonics, H-basis, and spherical gaussians,
+
++ [*Shadows*](https://github.com/TheRealMJP/Shadows)
+  <br>Companion project to my [shadow map blog post](https://therealmjp.github.io/posts/shadow-maps/). Implements various forms of percentage closer filtering along with variance shadow maps (VSM), exponential variance shadow maps (EVSM), and moment shadow maps (MSM).
+
++ [*MSAA Filter*](https://github.com/TheRealMJP/MSAAFilter)
+  <br>Companion project to my [SIGGRAPH 2015 talk](http://advances.realtimerendering.com/s2015/index.html). Implements an integrated MSAA and temporal antialiasing solution with various options for configuring the MSAA resolve and TAA algorithm.
+
++ [*Overlapped Execution*](https://github.com/TheRealMJP/OverlappedExecution)
+  <br>Companion project to my [Breaking Down Barriers blog series](https://therealmjp.github.io/posts/breaking-down-barriers-part-1-whats-a-barrier/). Submits and monitors the execution time of dummy graphics and compute workloads to visualize how multiple draws and dispatches execute concurrently on the GPU.
+
++ [*Specular AA*](https://github.com/TheRealMJP/SpecularAA)
+  <br>Companion project to my [SIGGRAPH 2013 talk](http://blog.selfshadow.com/publications/s2013-shading-course/). Implements roughness map pre-filtering by taking normal map mip footprint into account, and allows comparing against a ground-truth texture space shading implemention.
+
++ [*LowRes Rendering*](https://github.com/TheRealMJP/LowResRendering)
+  <br>Companion project to my [blog post about programmable MSAA sample points](https://therealmjp.github.io/posts/programmable-sample-points/). Implements a form of variable rate shading in software for transparent particles by enabling MSAA and forcing the subsample positions to match the grid-aligned pixel locations of the full-resolution render target.
+
++ [*Sample Pattern*](https://github.com/TheRealMJP/SamplePattern)
+  <br>A simple tool that visualizes the locations of the hardware's MSAA sample points within a pixel.
+
++ [*DX11 Samples*](https://github.com/TheRealMJP/DX11Samples)
+  <br>A release-only repo containing older D3D11 sample projects that were previously hosted on CodePlex.
+
+<style>dt { width: 110px; font-family: arial} dd { padding-bottom: 1px }
+.md h1:before, .md h2:before { content: none }
+.md ul li.plus { list-style-type: none; margin-left: -40px; padding-bottom: 10px}
+.md table.table { margin-left: -15px; padding-bottom: 20px }
+.md table.table tr { vertical-align: top }
+.md table.table th { color: #000; background: none; border: none; padding-bottom: 2px }
+.md table.table tr:nth-child(even) { background: none }
+.md table.table td { background: none; border: none; padding-bottom: 0px; padding-top: 2px }
+.md table {page-break-inside: auto}
+em.asterisk { font-style: normal; font-weight: bold }</style>
+<script>markdeepOptions = {definitionStyle:'short', tocStyle:'short'}</script>
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
