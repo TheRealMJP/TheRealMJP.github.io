@@ -22,7 +22,7 @@
       <pubDate>Mon, 11 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>https://therealmjp.github.io/posts/shader-permutations-part2/</guid>
-      <description>_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&amp;rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
+      <description>_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_If you&amp;rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode.</description>
     </item>
     
     <item>
