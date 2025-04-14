@@ -5,8 +5,266 @@
 		<description>Recent content in Posts on The Danger Zone</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
-		<lastBuildDate>Sun, 07 Jan 2024 00:00:00 +0000</lastBuildDate>
+		<lastBuildDate>Tue, 25 Feb 2025 00:00:00 +0000</lastBuildDate>
 		<atom:link href="https://therealmjp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>To Early-Z, or Not To Early-Z</title>
+			<link>https://therealmjp.github.io/posts/to-earlyz-or-not-to-earlyz/</link>
+			<pubDate>Tue, 25 Feb 2025 00:00:00 +0000</pubDate>
+			
+			<guid>https://therealmjp.github.io/posts/to-earlyz-or-not-to-earlyz/</guid>
+			<description>Depth In The Logical Rendering Pipeline Where Does Early-Z Fit In? When Does Early-Z Have To Be Disabled? Discard/Alpha Test Pixel Shader Depth Export UAVs/Storage Textures/Storage Buffers Forcing Early-Z Forced Early-Z With UAVs And Depth Writes Rasterizer Order Views/Fragment Shader Interlock Summary and Conclusion One of the things we often take for granted on GPUs is the idea of early Z testing. It&amp;rsquo;s the main reason why Z prepasses exist at all, and it&amp;rsquo;s one of the things that has allowed forward rendering to remain viable without being completely overwhelmed by pixel shader overdraw (instead it merely gets overwhelmed by quad overshading, but I digress).</description>
+			<content:encoded><![CDATA[<p><img src="/images/early-z/early-z.png" alt=""></p>
+<div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#depth-in-the-logical-rendering-pipeline">Depth In The Logical Rendering Pipeline</a></li>
+    <li><a href="#where-does-early-z-fit-in">Where Does Early-Z Fit In?</a></li>
+    <li><a href="#when-does-early-z-have-to-be-disabled">When Does Early-Z Have To Be Disabled?</a>
+      <ul>
+        <li><a href="#discardalpha-test">Discard/Alpha Test</a></li>
+        <li><a href="#pixel-shader-depth-export">Pixel Shader Depth Export</a></li>
+        <li><a href="#uavsstorage-texturesstorage-buffers">UAVs/Storage Textures/Storage Buffers</a></li>
+      </ul>
+    </li>
+    <li><a href="#forcing-early-z">Forcing Early-Z</a>
+      <ul>
+        <li><a href="#forced-early-z-with-uavs-and-depth-writes">Forced Early-Z With UAVs And Depth Writes</a></li>
+        <li><a href="#rasterizer-order-viewsfragment-shader-interlock">Rasterizer Order Views/Fragment Shader Interlock</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary-and-conclusion">Summary and Conclusion</a></li>
+  </ul>
+</nav>
+</div>
+<p>One of the things we often take for granted on GPUs is the idea of early Z testing. It&rsquo;s the main reason why Z prepasses exist at all, and it&rsquo;s one of the things that has allowed forward rendering to remain viable without being completely overwhelmed by pixel shader overdraw (instead it merely gets overwhelmed by quad overshading, but I digress). Despite its ubiquity and decades of use, I find that early Z can still be confusing and is often misunderstood. This is for a few reasons, but personally I think it&rsquo;s because it&rsquo;s usually deployed as a &ldquo;magic&rdquo; optimization that&rsquo;s not really supposed to be noticeable or observable by the programmer (aside from performance, of course). That lack of explicit-ness tends to make it unclear as to whether early Z is actually working unless you look at the performance and/or pixel shader execution statistics. In light of that, I&rsquo;m going to use this post to give an overview of what &ldquo;Early-Z&rdquo; is, how it works, and when it doesn&rsquo;t work. At the end, I&rsquo;ll finish with a handy table to summarize the useful information.</p>
+<p>While explaining things, I&rsquo;ll include insights and screenshots from my <a href="https://github.com/TheRealMJP/EarlyZTest">DX12 Early-Z Tester</a> that you can find on GitHub. This testing app can create many of the scenarios that we&rsquo;ll discuss below, while also displaying the number of pixel shader invocations as a way to determine whether or not Early-Z culling occurred.</p>
+<p>I would also like to make it clear up-front that this article is primarily focused on desktop-class graphics hardware, and not mobile. While much of what&rsquo;s here likely applies to mobile GPUs, I am not familiar enough with them to confidently explain how they may or not diverge from their desktop cousins.</p>
+<h2 id="depth-in-the-logical-rendering-pipeline">Depth In The Logical Rendering Pipeline</h2>
+<p>Graphics APIs such as D3D, Vulkan, and GL are specified in terms of what&rsquo;s called a <em>logical</em> pipeline for rendering. This pipeline is intentionally abstract and not strictly tied to a specific hardware implementation, and instead dictates the behavior that the programmmer can expect to see when the draw a triangle. This necessarily gives IHVs and drivers a lot of latitude to structure their hardware in different ways, as well as to change their implemention over generations of hardware. For example, the <a href="https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-graphics-pipeline">D3D logical pipeline</a> looks like this:</p>
+<p><img src="/images/early-z/d3d_pipeline.jpg" alt="The D3D logical rendering pipeline"></p>
+<p>This pipeline hasn&rsquo;t fundamentally changed for D3D12 (aside from the addition of mesh shaders) and is very similar in GL/Vulkan, albeit with different terminology. In all cases the actual depth buffer operations are specified to happen at the very end of this logical pipeline after the pixel/fragment shader has run. D3D calls this stage the <a href="https://learn.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage">Output-Merger</a> or OM for short, and it&rsquo;s the logical stage where writes/blending to render target occurs and also where depth/stencil operations logically occur. While it might seem weird that depth operations are the end if you&rsquo;re looking at things from a modern viewpoint, if you apply a historical context it really makes sense:</p>
+<ul>
+<li>The main purpose of depth/stencil operations is to control whether anything gets written to the render targets, so it makes sense that it would be in the same logical stage where write/blend operations occur</li>
+<li>The pixel shader can do certain operations, such as discard/alpha test, that also affect depth operations</li>
+<li>The earliest GPUs with hardware depth buffers performed depth operations at the end, since it was originally a visibility algorithm and not so much an optimization</li>
+</ul>
+<p>The important bit here is that this &ldquo;logical&rdquo; structure fits what you see in your results, regardless of how the GPU actually produced them. The GPU might have had an explicit binning phase, or may have combined your VS + HS + DS all in to one hardware shader stage, but either way you see that depth testing has produced the render target and depth buffer values that you would expect.</p>
+<p>Looking through the lens of the logical pipeline, it should also be apparent why the default behavior of UAVs/storage buffers/storage textures is that writes to them from a pixel/fragment are unaffected by the depth test. After all, depth operations come <em>after</em> the pixel shader and so there&rsquo;s no reason to expect otherwise. In practice things are of course more complex when it comes to UAVs, but more on that later.</p>
+<h2 id="where-does-early-z-fit-in">Where Does Early-Z Fit In?</h2>
+<p>Ok, so obviously we know that the logical pipeline does not tell the full story here since you&rsquo;re reading an article about Early-Z. So how does it work, if the pipeline says depth operations happen at the very end? The answer is that drivers have enough wiggle room to be &ldquo;sneaky&rdquo; and silently move depth operations up before the pixel shader actually runs so that it can cull the pixel shader entirely:</p>
+<p><img src="/images/early-z/d3d_pipeline_early_z.png" alt="The D3D logical rendering pipeline with early-z added"></p>
+<p>Basically the driver will look at the current pixel shader and render states, and make a call as to whether it would be safe to cull pixel shader executions and still produce the same observable the results that the logical pipeline dictates. If we&rsquo;re talking about bog-standard opaque rendering that only writes to a render target this actually really simple: culling the pixel shader is fine since the only observable output is the render target writes, and so there&rsquo;s no visible difference between culling the render target write and culling the entire pixel shader before it even runs. This works even if depth writes are enabled: the early Z operations can test the existing Z buffer first and commit the Z write if the test passes, while also allowing the pixel shader to run. Later on if some other pixel/fragment ends up having a depth that also passes the depth test due to being closer, that&rsquo;s fine since the render target results will just get overwritten. In that regard the order of the drawn triangles doesn&rsquo;t matter, you get the same result either way in the end. There&rsquo;s of course a <em>performance</em> difference from the ordering: with depth writes enabled you ideally want to order triangles from closer to further so that you have fewer &ldquo;wasted&rdquo; pixel shader threads that ultimately don&rsquo;t contribute. Or alternatively you can use the popular approach of a depth-only prepass, which effectively guarantees that the depth buffer is pre-seeded with the closest depth and thus the pixel shader will (mostly) only run for those visible pixels. Either way, it&rsquo;s pretty clever that hardware and drivers can do this sort of thing to improve performance while still conforming to the logical pipeline!</p>
+<p>Let&rsquo;s try a simple test case in our test app to verify this. For this test case and others shared here, I&rsquo;ll be running them on my AMD RX 7900 XT. First, let&rsquo;s draw two triangles in back-to-front order with the red triangle being further from the camera:</p>
+<p><img src="/images/early-z/z-tester-back-to-front.png" alt=""></p>
+<p>You can see that in this case we end up with 648000 pixel shader invocations for these triangles. Let&rsquo;s now reverse the draw order so that we draw with the more optimal front-to-back ordering:</p>
+<p><img src="/images/early-z/z-tester-front-to-back.png" alt=""></p>
+<p>This time we only shaded 440640 pixels, which is substantially fewer! This is Early-Z in action, working the way we would expect.</p>
+<p>One thing to keep in mind is that even for cases where Early-Z is considered &ldquo;safe&rdquo; to do, it&rsquo;s still ultimately up to the driver and the hardware to make that call unless you force its hand (more on that later). The driver may decide not to based on heuristics, since the hardware might have to take extra steps to be able to perform Early-Z culling. The granularity at which pixels are culled as part of Early-Z can also vary depending on the hardware in question. The earliest PC hardware to use Early-Z did so with &ldquo;hierarchical depth buffers&rdquo; (Hi-Z for short), where the hardware would maintain a separate buffer containing the min and max depth values for an NxN region of the depth buffer. Such a structure is useful, since it allows for fast and coarse z cull without requiring the bandwidth of reading the depth buffer values. During the D3D10 era both ATI/AMD and Nvidia gained the ability to perform fine-grained early Z tests as well, but <a href="https://fgiesen.wordpress.com/2011/07/08/a-trip-through-the-graphics-pipeline-2011-part-7/">hierarchical depth buffers are still used</a> to coarsely cull before performing the more expensive fine-grained tests.</p>
+<h2 id="when-does-early-z-have-to-be-disabled">When Does Early-Z Have To Be Disabled?</h2>
+<p>In the standard opaque rendering case we mentioned earlier, we discussed how it was &ldquo;safe&rdquo; for the driver to cull the pixel shader if the Early-Z test failed. But clearly there are cases where the driver can&rsquo;t do this since it would violate the rules of the logical pipeline. Let&rsquo;s now go through the most common cases.</p>
+<h3 id="discardalpha-test">Discard/Alpha Test</h3>
+<p>This is probably the most common one to encounter, and probably also mentioned the most in the context of &ldquo;things that break Early-Z&rdquo;. As a quick recap, if the pixel shader executes a <code>discard</code> operation (or uses it indirectly through the <code>clip()</code> intrinsic) then all depth, stencil, and render target writes skipped for that pixel. This clearly has implications for Early-Z if depth writes are enabled, since the depth write can&rsquo;t actually be committed until the pixel shader runs to completion. At first thought, it may seem like the driver has no choice but to fall back to &ldquo;Late-Z&rdquo; in the case of pixel shader discard + depth writes. While this is certainly a possibility, many GPUs are still be able to perform some degree of early depth testing to reject and cull pixel shader executions even if it has to defer the depth write until afterwards. The reason GPUs can do this is because discard doesn&rsquo;t <em>change</em> the z/depth of the pixel that was produced by interpolating the triangle&rsquo;s vertex positions: it merely makes the write of that depth conditional. Therefore it is still &ldquo;safe&rdquo; to cull a pixel shader thread with discard if the rasterized depth fails the depth test based on the current depth buffer contents. You can see this called out in this <a href="https://www.slideshare.net/slideshow/dx11-performancereloaded/46398197">older slide from GDC 2013</a>, which shows how the coarse hierarchical depth tests still occur while deferring depth writes until after the pixel shader runs:</p>
+<p><img src="/images/early-z/discard_early_z.png" alt="A diagram from a joint AMD/Nvidia presentation from GDC 2013 showing how coarse depth cull remains enabled when discard is used with depth writes"></p>
+<p>While &ldquo;splitting&rdquo; the depth test in this way can allow Early-Z culling to still occur for discard scenarios, the fact that depth is written later in the pipeline can potentially have adverse effects on our Early-Z culling rate. To see this in action, let&rsquo;s revisit the front-to-back test case we looked at earlier. Except this time, in the pixel shader we&rsquo;ll have a <code>discard</code> that never actually gets executed:</p>
+<p><img src="/images/early-z/z-tester-front-to-back-discard.png" alt=""></p>
+<p>With this scenario we get about 582000 PS invocations, with the final value fluctuating slightly from frame-to-frame. This cull rate is not nearly as great was what we achieved in the no-discard case, since a lot of pixels from the further triangle are going to get accepted by the Early-Z test before the Z buffer has been updated by the closer triangle. We can try to verify this hypothesis by inserting a global barrier between the draws to force the first draw to finish before starting the second:</p>
+<p><img src="/images/early-z/z-tester-front-to-back-discard-barrier.png" alt=""></p>
+<p>With the barrier (which to be clear, you wouldn&rsquo;t want to do in practice!) we now get an Early-Z culling rate that&rsquo;s much closer to what we got without the discard. We can also confirm with the testing app that clearing the depth buffer to the closest possible value results in no pixel shaader invocations. This suggests that it can be good practice to try to render all of your non-alpha-test opaques first, or at least ones that have a good chance of occluding things. Only performing discard in a depth prepass followed by a full opaque pass with EQUAL depth testing can also be effective for ensuring that the heavier opaque pixel shader doesn&rsquo;t execute for occluded pixels.</p>
+<p>Meanwhile, if depth writes are <em>not</em> enabled then Early-Z is totally compatible with shader discard. For that case the depth buffer doesn&rsquo;t need to be updated, so it&rsquo;s completely safe to perform the depth test early and cull the pixel shader before it runs. This means that discard can be used freely as an optimization in particles and other transparent draws without worrying about affecting Early-Z.</p>
+<p>One very important thing to note is that the <em>implications to Early-Z apply as long as your compiled shader instruction stream contains any discard at all!</em> This is still true even not pixel ever ends up being discarded, since the driver must make decisions about Early-Z up-front before actually running your shader. Therefore a runtime branch on a constant or uniform to avoid a discard can still have Early-Z implications even if that branch is never taken.</p>
+<p>It&rsquo;s also worth noting that exporting coverage from the pixel shader via <code>SV_Coverage</code>/<code>gl_SampleMask</code> has exactly the same implications as performing a <code>discard</code>, so the same rules apply in terms of Early-Z.</p>
+<h3 id="pixel-shader-depth-export">Pixel Shader Depth Export</h3>
+<p>Typically the depth value used for depth testing is generated by interpolating Z from the triangle vertices. However pixel/fragment shaders also have the ability to fully &ldquo;override&rdquo; this depth value if they choose to. In HLSL this is done with the <code>SV_Depth</code> attribute, whereas in GLSL you make use of the <code>gl_FragDepth</code> global. Depth export can be a useful tool, but it naturally creates issues for Early-Z. Short of being able to see into the future, there&rsquo;s simply no way for the hardware to know what the depth value is going to be without executing the pixel shader. Thus the hardware has no choice but to fall back to Late-Z for any shaders that manually export a depth value. Notably the situation is the same regardless of whether or not depth writes are enabled: in both cases Late-Z is the only safe option that respects the logical pipeline. We can confirm this behavior with our testing app:</p>
+<p><img src="/images/early-z/z-tester-arbitrary-depth.png" alt=""></p>
+<h4 id="conservative-depth-export">Conservative Depth Export</h4>
+<p>D3D11 later added variants of depth export that are collectively known as <a href="http://localhost:1313/posts/d3d11-features/">conservative depth export</a>. These variants allow you to add a constraint on the depth value output by the pixel shader in the form of an inequality. For example, <code>SV_DepthGreaterEqual</code> allows you to generate a depth value with the constraint that it must be greater than or equal to the &ldquo;natural&rdquo; pixel depth that was calculated by interpolating the triangle vertex positions. The reason these exist is that this constraint can potentially allow the hardware to safely enable a degree of Early-Z functionality despite the final depth not being known until the pixel shader executes. For that to occur, the inequality has to &ldquo;oppose&rdquo; the inequality used as part of the depth render state. Returning to our <code>SV_DepthGreaterEqual</code> example: let&rsquo;s say we have depth writes disabled but depth testing enabled with a <code>LESS_EQUAL</code> depth function. In this scenario the driver and hardware can determine that the pixel shader can only <em>increase</em> the natural depth from interpolation, which means that if the natural depth fails the depth test the pixel will always fail no matter the results of the shader. Therefore the pixel shader can be safely culled with no visible effect on the outputs. This is very similar to the situation for shader discard, where Early-Z can also be enabled for this case since the shader can&rsquo;t invalidate the results of the Early-Z test.</p>
+<p>Just as with <code>discard</code>, things get more complicated when depth writes are combined with conservative depth export. In this case depth writes can&rsquo;t be committed before the pixel shader runs, since the final depth value isn&rsquo;t known yet. Therefore it must be postponed until the Late-Z stage. Potentially the hardware can still perform an Early-Z cull as it does for the discard case, assuming it&rsquo;s capable of such a thing. On such hardware conservative depth export retains an advantage over arbitrary depth export even when depth writes are enabled, with the same caveats about reduced Early-Z culling rates that apply for discard. We can confirm this in our testing app:</p>
+<p><img src="/images/early-z/z-tester-conservative-depth.png" alt=""></p>
+<p>Here we very early end up with the full 648000 shader invocations, which is actually even worse than what we encountered with discard. Forcing a barrier once again gives us an almost-perfect culling rate:</p>
+<p><img src="/images/early-z/z-tester-conservative-depth-barrier.png" alt=""></p>
+<h3 id="uavsstorage-texturesstorage-buffers">UAVs/Storage Textures/Storage Buffers</h3>
+<p>Buckle up everyone, because this is where things get even more complicated. As I alluded to earlier, pixel shaders that make use of arbitrary writes to textures or buffers will also cause the hardware to switch to Late-Z. The underlying assumption made by drivers that enable Early-Z is that the pixel shader is a &ldquo;pure&rdquo; function with well-defined outputs and no side effects. Writes to UAVs/storage buffers/storage textures violate these assumptions, since by nature they are side effects of running the shader. Faced with such a shader, drivers have no choice but to fall back to using Late-Z so that depth testing does not affect the values written to the UAVs.</p>
+<p>&hellip;unless Early-Z is forced on, which is a feature that was added to APIs alongside shader-writable resources. So let&rsquo;s talk about that next.</p>
+<h2 id="forcing-early-z">Forcing Early-Z</h2>
+<p>While the &ldquo;UAVs ignore depth testing&rdquo; behavior makes sense through the lens of the logical pipeline, it&rsquo;s clearly not a useful behavior for a lot of things you can do with arbitrary pixel shader writes. As an example straight from 2009, consider an Order Independent Transparency algorithm that appends transparent fragments to a linked list so they can be sorted later. Appending transparent fragments that are occluded by opaque surfaces makes no sense, and manually performing depth testing in the shader doesn&rsquo;t save you the full cost of executing the pixel shader the way that Early-Z cull does. The Early-Z hardware is <em>right there</em>, we should just be able to use it!</p>
+<p>D3D11 addressed this need by letting your tag your pixel shader entry points with a then-new <code>[earlydepthstencil]</code> attribute. While a bit of a mouthful, this attribute <a href="https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm#16.12%20Pixel%20Shader%20Execution%20Control:%20Force%20Early/Late%20Depth/Stencil%20Test">does exactly what it says it does</a>: it forces all depth and stencil operations to happen <em>before</em> the pixel shader executes, and requires that the pixel shader be culled entirely if the test fails. This gives us exactly what we want for the OIT case described earlier: we get both the results and the optimizations we want from the depth test, and we can still do fancy UAV stuff. In fact your don&rsquo;t even necessarilly need to use this on on pixel shaders with UAVs, it can be appled to any pixel shader where you want to force the behavior.</p>
+<p>Now this is clearly great and useful, but before slapping that attribute on every shader one has to consider what it means to fully move all depth reads and writes to before the pixel shader. For example, any kind of depth export is completely incompatible with this attribute<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> and those shader depth outputs are completely ignored. More subtly, it also breaks <code>discard</code> behavior if depth writes are enabled: the <code>discard</code> will still prevent render target writes, but the depth buffer write will have already happened before the <code>discard</code> occurs and thus the new depth will still be written. Here&rsquo;s what it looks like in practice:</p>
+<p><img src="/images/early-z/forceearlyz-discard.png" alt="Images showing alpha-test foliage without and with forcing Early-Z"></p>
+<p>Notice how the leaves in the right image are still applying alpha testing, but they&rsquo;re occluding each other as if there were no alpha testing. This could be quite unexpected if you didn&rsquo;t think it all the way through, and is probably not ever what you want!</p>
+<p>Here&rsquo;s a simpler example from the testing app that shows what&rsquo;s happening even more clearly:</p>
+<p><img src="/images/early-z/z-tester-discard-forced-early-z.png" alt=""></p>
+<p>You&rsquo;re generally fine if you have depth writes enabled with <code>[earlydepthstencil]</code> as long as you&rsquo;re not using <code>discard</code>, depth exports, UAVs, or anything else that we already mentioned as causing issues for automatically enabling Early-Z. In such cases performing the depth test + write early is fine since there&rsquo;s no possibility for the pixel shader to modify the depth in any way, and render target writes already have implicit ordering guarantees.</p>
+<h3 id="forced-early-z-with-uavs-and-depth-writes">Forced Early-Z With UAVs And Depth Writes</h3>
+<p>Ok so let&rsquo;s say we really wanna get crazy and use UAVs together with depth writes and forced Early-Z. What happens in this case? The short answer is that you can still get a race condition between overlapping pixels, just like any other usage of UAVs from the pixel shader. While the Early-Z depth test + update <em>can</em> cull an already-occluded pixel before its shader has a chance to run, this will only happen if the triangle containing the culled pixel was submitted <em>after</em> the triangle that occludes it. If the triangles are not submitted in this order (or they intersect), then the closer and further pixels can run concurrently and will end up racing each other.</p>
+<p>Here&rsquo;s two examples of that this ends up looking like:</p>
+<p><img src="/images/early-z/forceearlyz-uav.png" alt="The D3D logical rendering pipeline with Early-Z added"></p>
+<p>This is a bit of a bummer, since it means you&rsquo;re essentially stuck with regular fixed-function render target writes if you need to also enable hardware depth writes<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. This may force you to require a depth prepass, and it&rsquo;s not ideal to have such a requirement for correctness of our results. However this one more option that we have yet to explore&hellip;.</p>
+<h3 id="rasterizer-order-viewsfragment-shader-interlock">Rasterizer Order Views/Fragment Shader Interlock</h3>
+<p>Before we wrap up, I wanted to touch on how <a href="https://learn.microsoft.com/en-us/windows/win32/direct3d11/rasterizer-order-views">ROVs</a>/<a href="https://registry.khronos.org/vulkan/specs/latest/man/html/VK_EXT_fragment_shader_interlock.html">FSI</a> factors into the Early-Z + depth write situation. ROVs guarantee two things:</p>
+<ol>
+<li>That pixel shaders mapping to the same pixel coordinate will not have overlapping access to the ROV resource, and can safely perform read/modify/write operations without requiring atomic operations</li>
+<li>That accesses to ROV resources happen in API submission order, similar to how render target writes/blending works</li>
+</ol>
+<p>If you&rsquo;re not using depth writes, then the results you get from ROVs + <code>[earlydepthstencil]</code> are straightforward: you&rsquo;ll only get writes from pixels that pass the depth test, and those writes will happen in submission order. This is very handy for OIT and other similar techniques. But what about if depth writes are enabled? In this case it seems like we should again get results that match old-school render target writes/blends, where the last visible write is from the closest pixel that ultimately passes the Z test. Getting these expected z-order results assumes that Early-Z tests happen in order of API submission, such that you get one of two results when two pixels overlap:</p>
+<ul>
+<li>The &ldquo;closer&rdquo; pixel performs Z operations first, and so the &ldquo;further&rdquo; pixel shader thread is culled before it even runs</li>
+<li>The &ldquo;further&rdquo; pixel performs Z operations first, but the &ldquo;top&rdquo; pixel is guaranteed for its write to happen second (and thus be visible) because of ROV rules</li>
+</ul>
+<p>If we think about it, this really the same situation that we have if we just use regular render target writes instead of ROVs: the writes happen in submission order, and so the Z operations must also happen in submission order to get the correct results.</p>
+<p>From some simple tests I&rsquo;ve performed on my AMD RX 7900 XT, it does seem that this works! But like anything mentioned in this article, you should try to verify yourself on the hardware that you care on. I&rsquo;ve tested successfully in more complex scenes, and it also works as expected in the testing app:</p>
+<p><img src="/images/early-z/z-tester-rovs.png" alt=""></p>
+<p>Regardless, this approach would still be incompatible with <code>discard</code> or depth export just like any other pixel shader that forces Early-Z. And of course there&rsquo;s the inherent performance overhead of ROVs, which varies depending on the hardware, the amount of parallelism, the amount of overdraw, and the size of the critical section in the shader.</p>
+<h2 id="summary-and-conclusion">Summary and Conclusion</h2>
+<p>To sum things up, here&rsquo;s a table listing the expected implicit behavior that a driver will use for Early-Z if you don&rsquo;t force it:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Shader Features</th>
+<th style="text-align:center">Depth Writes Enabled</th>
+<th style="text-align:center">Expected Early-Z Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">None</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Likely Early-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">discard</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Likely Early-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">depth export</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Always Late-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">conservative depth export</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Likely Early-Z if opposing the depth test direction, otherwise Late-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">UAV writes</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Always Late-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">None</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Likely Early-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">discard</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Possibly Early-Z with additional Late-Z write/test, potentially reduced early PS culling rate</td>
+</tr>
+<tr>
+<td style="text-align:center">depth export</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Always Late-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">conservative depth export</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Possibly Early-Z + Late Z if opposing the depth test direction, with potentially reduced early PS culling rate. Otherwise Late-Z</td>
+</tr>
+<tr>
+<td style="text-align:center">UAV writes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Always Late-Z</td>
+</tr>
+</tbody>
+</table>
+<p>And now let&rsquo;s also sum up the expected behavior when forcing Early-Z using <code>[earlydepthstencil]</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Shader Features</th>
+<th style="text-align:center">Depth Writes Enabled</th>
+<th style="text-align:center">Expected Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">None</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Correct results</td>
+</tr>
+<tr>
+<td style="text-align:center">discard</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">Correct results</td>
+</tr>
+<tr>
+<td style="text-align:center">depth export</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center"><strong>Depth export is ignored!</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">conservative depth export</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center"><strong>Depth export is ignored!</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">UAV writes</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">UAV writes will only happen for pixels that pass the depth test, but overlapping pixels are unordered</td>
+</tr>
+<tr>
+<td style="text-align:center">ROV writes</td>
+<td style="text-align:center">No</td>
+<td style="text-align:center">UAV writes will only happen for pixels that pass the depth test, and writes happen in submission order</td>
+</tr>
+<tr>
+<td style="text-align:center">None</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Corerct results</td>
+</tr>
+<tr>
+<td style="text-align:center">discard</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><strong>Incorrect results, discard will not affect Z writes!</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">depth export</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><strong>Depth export is ignored!</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">conservative depth export</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><strong>Depth export is ignored!</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">UAV writes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">UAV writes will not match Z order! Overlapping pixels can race.</td>
+</tr>
+<tr>
+<td style="text-align:center">ROV writes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">ROV writes will match the expected Z-tested results</td>
+</tr>
+</tbody>
+</table>
+<p>Hopefully these tables and the article itself gave you some intuition for understanding when the driver is sneaking in Early-Z automatically, while also giving you an understanding of what exactly happens when you force Early-Z on for your pixel shader. Thanks for reading!</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>AMD has a Vulkan extension called <a href="https://docs.vulkan.org/features/latest/features/proposals/VK_AMD_shader_early_and_late_fragment_tests.html">VK_AMD_shader_early_and_late_fragment_tests</a> that relaxes the requirement of having no depth exports when forcing Early-Z. Since AMD hardware can support both early and late Z tests, it can allow the early Z test to still be used for initially rejecting fragments while not committing the Z write until after the (conservative) depth has been exported by the fragment shader.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>If you want to forego hardware depth writes and tests, you can use atomics to combine some number of depth bits with some remaining &ldquo;payload&rdquo; bits. This is most viable with a visiblity buffer, since even with 64-bit atomics you likely only have 32-bits of payload to work with.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+]]></content:encoded>
+		</item>
 		
 		<item>
 			<title>Shader Printf in HLSL and DX12</title>

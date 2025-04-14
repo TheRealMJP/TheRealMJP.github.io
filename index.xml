@@ -6,7 +6,16 @@
     <description>Recent content on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 25 Feb 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>To Early-Z, or Not To Early-Z</title>
+      <link>https://therealmjp.github.io/posts/to-earlyz-or-not-to-earlyz/</link>
+      <pubDate>Tue, 25 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/to-earlyz-or-not-to-earlyz/</guid>
+      <description>Depth In The Logical Rendering Pipeline Where Does Early-Z Fit In? When Does Early-Z Have To Be Disabled? Discard/Alpha Test Pixel Shader Depth Export UAVs/Storage Textures/Storage Buffers Forcing Early-Z Forced Early-Z With UAVs And Depth Writes Rasterizer Order Views/Fragment Shader Interlock Summary and Conclusion One of the things we often take for granted on GPUs is the idea of early Z testing. It&amp;rsquo;s the main reason why Z prepasses exist at all, and it&amp;rsquo;s one of the things that has allowed forward rendering to remain viable without being completely overwhelmed by pixel shader overdraw (instead it merely gets overwhelmed by quad overshading, but I digress).</description>
+    </item>
+    
     <item>
       <title>Shader Printf in HLSL and DX12</title>
       <link>https://therealmjp.github.io/posts/hlsl-printf/</link>
