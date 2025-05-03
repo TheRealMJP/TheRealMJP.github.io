@@ -6,11 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="The Shader Permutation Problem - Part 2: How Do We Fix It?">
-<meta itemprop="description" content="_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode."><meta itemprop="datePublished" content="2021-10-11T00:00:00+00:00" />
+<meta itemprop="description" content="Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
+If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode."><meta itemprop="datePublished" content="2021-10-11T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-10-11T00:00:00+00:00" />
 <meta itemprop="wordCount" content="5685"><meta itemprop="image" content="https://therealmjp.github.io/images/shaders/dune_trees.png">
 <meta itemprop="keywords" content="Graphics,Shading," /><meta property="og:title" content="The Shader Permutation Problem - Part 2: How Do We Fix It?" />
-<meta property="og:description" content="_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode." />
+<meta property="og:description" content="Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
+If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://therealmjp.github.io/posts/shader-permutations-part2/" /><meta property="og:image" content="https://therealmjp.github.io/images/shaders/dune_trees.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-10-11T00:00:00+00:00" />
@@ -20,7 +22,8 @@
 <meta name="twitter:image" content="https://therealmjp.github.io/images/shaders/dune_trees.png"/>
 
 <meta name="twitter:title" content="The Shader Permutation Problem - Part 2: How Do We Fix It?"/>
-<meta name="twitter:description" content="_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_ If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode."/>
+<meta name="twitter:description" content="Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions
+If you&rsquo;ve read the previous article then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode."/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -76,7 +79,7 @@
 			</header>
 			<div class="content">
 				<p><img src="/images/shaders/dune_trees.png" alt="dune screenshot showing Paul&amp;rsquo;s prescience abilitoes"></p>
-<center>_Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions_</center>
+<p><em><center>Pictured above: Paul Atreides visualizing his full tree of shader permutations and regretting his decisions</center></em></p>
 <p>If you&rsquo;ve read <a href="../shader-permutations-part1">the previous article</a> then you hopefully have a decent understanding of how shader permutations ended up being such a common issue. The good news is that there is some hope for the future: if we look across recent game releases as well as the features available in the latest GPUs and APIs, we do see some promising avenues for digging ourselves out of our self-imposed avalanche of compiled bytecode. In my opinion nothing I&rsquo;m going to mention here is a silver bullet on its own: each technique comes with a set of trade-offs to be carefully evaluated in the context of an engine and the games that run on it. Regardless, it&rsquo;s inspiring to see smart and resourceful people come up with clever approaches that help to sidestep some of the issues that I&rsquo;ve brought up the previous article.</p>
 <h3 id="only-compile-what-you-need">Only Compile What You Need<a href="#only-compile-what-you-need" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <!---
