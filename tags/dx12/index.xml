@@ -6,7 +6,16 @@
     <description>Recent content in DX12 on The Danger Zone</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/dx12/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://therealmjp.github.io/tags/dx12/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ten Years of D3D12</title>
+      <link>https://therealmjp.github.io/posts/ten-years-of-d3d12/</link>
+      <pubDate>Sun, 07 Sep 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://therealmjp.github.io/posts/ten-years-of-d3d12/</guid>
+      <description>For those of us that have been using it from the start, it can be hard to believe that Direct3D 12 has been around for nearly ten years now. Windows 10 was released on July 29th 2015, and D3D12 has been with us ever since. While it&amp;rsquo;s true that this is the longest we&amp;rsquo;ve gone between major D3D version updates, it&amp;rsquo;s also not fair to say that the API has remained static.</description>
+    </item>
+    
     <item>
       <title>To Early-Z, or Not To Early-Z</title>
       <link>https://therealmjp.github.io/posts/to-earlyz-or-not-to-earlyz/</link>
